@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/public_bg"
+              android:orientation="vertical"
+    >
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/public_bg"
+            android:orientation="vertical"
+            >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical"
+            >
+            <RelativeLayout
+                android:id="@+id/rl1"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="如何查看所有设备地图分布?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+            <RelativeLayout
+                android:id="@+id/rl2"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="如何使用电子围栏功能?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl3"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="如何添加我的机器?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl4"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="如何使用历史轨迹功能?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl5"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="如何查看设备工作分布图?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl6"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="没有机器如何报修?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl7"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="我是安装师傅,我想把机器移交给机主?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+            <RelativeLayout
+                android:id="@+id/rl8"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="我是机主,我想邀请伙伴共享我的机器数据?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl9"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="我是机主,我想机器共享的某账户?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl10"
+                style="@style/layout_item"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="工时页面统计说明?"
+                    />
+
+                <TextView
+                    style="@style/personal_edit_text"
+                    android:layout_marginRight="@dimen/public_layout_padding_left"
+                    android:layout_toLeftOf="@+id/arrowTip1"
+                    android:background="@null"
+                    android:text=""
+                    />
+
+                <ImageView
+                    style="@style/personal_arrow_image"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                style="@style/line_layout"
+                android:layout_marginLeft="@dimen/common_left_gap"
+                />
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

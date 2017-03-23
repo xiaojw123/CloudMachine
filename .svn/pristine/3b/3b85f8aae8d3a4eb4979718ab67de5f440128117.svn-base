@@ -1,0 +1,228 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f0eff5"
+    android:orientation="vertical"
+    android:paddingBottom="10dp" >
+
+
+    
+    <!--    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/common_main"
+        android:padding="8dp" >
+      <ImageView
+            android:id="@+id/backImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/common1_gap"
+            android:background="@drawable/back_item_selector"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:shadowColor="#80000000"
+            android:shadowDx="1.2"
+            android:shadowDy="1.2"
+            android:shadowRadius="3"
+            android:text="注册"
+            android:textColor="@color/white"
+            android:textSize="@dimen/common_title_textsize" />
+    </RelativeLayout>  -->
+    
+        <com.cloudmachine.utils.widgets.TitleView
+        android:id="@+id/title_layout_reg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+    </com.cloudmachine.utils.widgets.TitleView>
+    
+        <LinearLayout
+         android:id="@+id/phonelayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+         android:layout_weight="1"
+         android:background="#f0eff5"
+         android:layout_marginTop="15dp"
+        android:orientation="vertical" >
+
+
+
+       <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+             <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/common_line_height"
+                android:background="@color/line_bg" />
+                   	          <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            
+            android:background="@color/white"
+            >
+              <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="手机号"
+             android:paddingLeft="15dp"
+               android:textColor="#000000"
+             android:textSize="@dimen/common_text1"
+            android:layout_gravity="center"/>
+              
+              <com.cloudmachine.utils.widgets.ClearEditTextView
+                android:id="@+id/phone_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:phoneNumber="true"
+                android:hint="请输入手机号 "
+                android:padding="10dp"
+                android:textColorHint="@color/personFont"
+                android:textSize="@dimen/common_text1" />
+          </LinearLayout>
+          <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/common_line_height"
+                android:background="@color/line_bg" />
+ 
+         <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="20dp"
+                android:gravity="left" >
+
+                <CheckBox
+                    android:id="@+id/check_box"
+                    android:checked="true"
+                    android:layout_width="wrap_content"            
+                    android:button="@drawable/checkboxitem"
+                    android:layout_marginRight="8dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="同意"
+                    android:textColor="@color/common_main" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="《云机械用户注册协议》"
+                    android:textColor="#10b1fd" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/next_btn"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="20dp"
+                android:layout_margin="10dp"
+                android:text="下一步"
+                android:background="@drawable/shapenextbutton"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+    
+        
+        
+             <LinearLayout
+        android:id="@+id/codelayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="15dp"
+        android:visibility="gone"
+        android:orientation="vertical" >
+
+
+
+       <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+ 
+             <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            
+            >
+            
+              <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="手机号"
+            android:paddingLeft="15dp"
+            android:textColor="#000000"
+             android:textSize="18.0dip"
+            android:layout_gravity="center"/>
+             <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="短信验证码"
+            android:textColor="#fc7320"
+             android:textSize="18.0dip"
+            android:layout_gravity="center"/>
+                <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="到"
+            android:textColor="#000000"
+             android:textSize="18.0dip"
+            android:layout_gravity="center"/>
+                 <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="111111111111"
+            android:textColor="#000000"
+             android:textSize="18.0dip"
+            android:layout_gravity="center"/>
+          </LinearLayout>
+       
+ 
+         <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center" >
+
+               <com.cloudmachine.utils.widgets.ClearEditTextView
+                android:id="@+id/code_text"
+                android:layout_width="180dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="@drawable/codeedit"
+                android:hint="请输入验证码"
+                android:padding="15dp"
+                android:textColor="@color/black"
+                android:textSize="18.0dip" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/Twonext_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_margin="10dp"
+                android:text="下一步"
+                android:background="@drawable/btn_blue_round"
+                android:textColor="@drawable/button_colorselect" />
+        </LinearLayout>
+    </LinearLayout>
+        
+        
+        
+        
+    
+</LinearLayout>

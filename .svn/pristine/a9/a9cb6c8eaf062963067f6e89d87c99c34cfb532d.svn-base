@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical" >
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="303px"
+            android:text="扫描二维码打开APP下载页面"
+            android:textColor="@color/public_black_9"
+            android:textSize="@dimen/public_textsize3" />
+
+        <ImageView
+            android:layout_width="503px"
+            android:layout_height="503px"
+            android:layout_gravity="center"
+            android:layout_marginTop="70px"
+            android:src="@drawable/api" />
+    </LinearLayout>
+
+
+</LinearLayout>

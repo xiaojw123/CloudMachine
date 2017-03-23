@@ -1,0 +1,304 @@
+package com.cloudmachine.activities;
+
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.JavascriptInterface;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+
+import com.cloudmachine.R;
+import com.cloudmachine.autolayout.widgets.TitleView;
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MutableHeightViewWrapper;
+
+/**
+ * 项目名称：CloudMachine
+ * 类描述：我要云盒子,购买云盒子页面
+ * 创建人：shixionglu
+ * 创建时间：2017/2/5 下午2:31
+ * 修改人：shixionglu
+ * 修改时间：2017/2/5 下午2:31
+ * 修改备注：
+ */
+@SuppressLint("SetJavaScriptEnabled")
+public class WanaCloudBox extends BaseAutoLayoutActivity implements View.OnClickListener, Handler.Callback {
+
+    private Button      mBtnBuyNow;
+    private WebView     wvWanaBox;
+    private ProgressBar progressBar;
+    private Context     mContext;
+    private String URLString = "http://h5.test.cloudm.com/box_detail";
+    private TitleView titleLayout;
+    private ImageView ivBack;
+    private Handler   mHandler;
+    private ImageView ivShareBox;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_wana_cloudbox);
+        mContext = this;
+        mHandler = new Handler(this);
+        initContent();
+        initTitleView();
+        initView();
+        initWebView();
+    }
+
+    private void initTitleView() {
+
+        titleLayout = (TitleView) findViewById(R.id.title_layout);
+        titleLayout.setTitle("云盒子");
+        titleLayout.setLeftImage(-1, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String call = "javascript:h5_boxDetail_backMainPage()";
+                wvWanaBox.loadUrl(call);
+            }
+        });
+    }
+
+    private void initWebView() {
+        wvWanaBox = (WebView) findViewById(R.id.wana_box);
+
+        // 设置可以自动加载图片
+        wvWanaBox.getSettings().setLoadsImagesAutomatically(true);
+        wvWanaBox.getSettings().setBuiltInZoomControls(true);
+        wvWanaBox.getSettings().setJavaScriptEnabled(true);
+        wvWanaBox.getSettings().setUseWideViewPort(true);
+        wvWanaBox.getSettings().setLoadWithOverviewMode(true);
+        wvWanaBox.getSettings().setDefaultTextEncodingName("utf-8");
+        wvWanaBox.getSettings().setGeolocationEnabled(true);
+        wvWanaBox.getSettings().setDomStorageEnabled(true);
+        //优先使用缓存：
+        //		webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        //不使用缓存：
+        wvWanaBox.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        //		webview.clearHistory();
+        //		webview.clearFormData();
+        //		webview.clearCache(true);
+        wvWanaBox.setWebChromeClient(new MyWebChromeClient());
+
+        if (Build.VERSION.SDK_INT >= 8) {
+            wvWanaBox.getSettings().setPluginState(WebSettings.PluginState.ON);
+        } else {
+            // webview.getSettings().setPluginsEnabled(true);
+        }
+        wvWanaBox.setWebViewClient(new WebViewClient() {
+            public void onReceivedError(WebView view, int errorCode,
+                                        String description, String failingUrl) {
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // TODO Auto-generated method stub
+                //				if(urlFilter.filtrate(url)){
+                //					return true;
+                //				}
+                //				url = addToken(url);
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+
+        });
+        wvWanaBox.loadUrl(URLString);
+        //注册信息
+        wvWanaBox.addJavascriptInterface(new SBA(), "UIControllerSBA");
+        wvWanaBox.addJavascriptInterface(new HBA(), "UIControllerHBA");
+        wvWanaBox.addJavascriptInterface(new SBU(), "UIControllerSBU");
+        wvWanaBox.addJavascriptInterface(new HBU(), "UIControllerHBU");
+
+    }
+
+    private void initContent() {
+
+
+    }
+
+    private void initView() {
+        //立即购买
+        mBtnBuyNow = (Button) findViewById(R.id.buy_now);
+        mBtnBuyNow.setOnClickListener(this);
+        progressBar = (ProgressBar) findViewById(R.id.webview_progressbar);
+        ivBack = (ImageView) findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(this);
+        ivShareBox = (ImageView) findViewById(R.id.iv_sharebox);
+        ivShareBox.setOnClickListener(this);
+        //mBtnBuyNow.setVisibility(View.GONE);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ObjectAnimator titleHide = ObjectAnimator.ofInt(new MutableHeightViewWrapper(titleLayout), "height", dip2px(48), 0);
+                titleHide.setDuration(100);
+                titleHide.start();
+            }
+        }, 0);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.buy_now:
+                Constants.toActivity(WanaCloudBox.this, ConfirmInformationActivity.class, null, false);
+                break;
+            case R.id.iv_back:
+                finish();
+                break;
+            case R.id.iv_sharebox:
+
+                break;
+        }
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        return false;
+    }
+
+    final class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+            new AlertDialog.Builder(mContext)
+                    .setTitle(getResources().getString(R.string.app_name))
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    result.confirm();
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    result.cancel();
+                                }
+                            })
+                    .create()
+                    .show();
+
+            return true;
+        }
+
+        @Override
+        public void onGeolocationPermissionsShowPrompt(String origin,
+                                                       android.webkit.GeolocationPermissions.Callback callback) {
+            super.onGeolocationPermissionsShowPrompt(origin, callback);
+            callback.invoke(origin, true, false);
+        }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            // TODO Auto-generated method stub
+            super.onProgressChanged(view, newProgress);
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress(0);
+            progressBar.setProgress(newProgress);
+            if (newProgress == 100) {
+                progressBar.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        removeCookie(this);
+        super.onDestroy();
+    }
+
+    private void removeCookie(Context context) {
+        CookieSyncManager.createInstance(context);
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.removeAllCookie();
+        CookieSyncManager.getInstance().sync();
+    }
+
+
+    //展示购买按钮
+    class SBU {
+        @JavascriptInterface
+        public void showBuyBtn() {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ObjectAnimator showBuyBtnAnimator = ObjectAnimator.ofInt(new MutableHeightViewWrapper(mBtnBuyNow), "height", 0, dip2px(42));
+                    showBuyBtnAnimator.setDuration(300);
+                    showBuyBtnAnimator.start();
+                }
+            }, 0);
+        }
+    }
+
+    //隐藏购买按钮
+    class HBU {
+        @JavascriptInterface
+        public void hideBuyBtn() {
+            Constants.MyLog("隐藏按钮逻辑");
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ObjectAnimator objectAnimator = ObjectAnimator.ofInt(new MutableHeightViewWrapper(mBtnBuyNow), "height", dip2px(42), 0);
+                    objectAnimator.setDuration(300);
+                    objectAnimator.start();
+                }
+            }, 0);
+        }
+    }
+
+    //展示返回键,隐藏头标题
+    class SBA {
+        @JavascriptInterface
+        public void showBackBtn() {
+            Constants.MyLog("方法1执行");
+            ivBack.setVisibility(View.VISIBLE);
+            ivShareBox.setVisibility(View.VISIBLE);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ObjectAnimator titleHide = ObjectAnimator.ofInt(new MutableHeightViewWrapper(titleLayout), "height", dip2px(48), 0);
+                    titleHide.setDuration(100);
+                    titleHide.start();
+                }
+            }, 0);
+        }
+    }
+
+    //隐藏返回按钮,展示头标题
+    class HBA {
+        @JavascriptInterface
+        public void hideBackBtn() {
+            Constants.MyLog("方法2执行");
+            ivBack.setVisibility(View.GONE);
+            ivShareBox.setVisibility(View.GONE);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ObjectAnimator titleShow = ObjectAnimator.ofInt(new MutableHeightViewWrapper(titleLayout), "height", 0, dip2px(48));
+                    titleShow.setDuration(100);
+                    titleShow.start();
+                }
+            }, 0);
+        }
+    }
+
+    public int dip2px(float dpValue) {
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+}

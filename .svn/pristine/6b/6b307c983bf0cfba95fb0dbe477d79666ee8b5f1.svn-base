@@ -1,0 +1,5 @@
+package com.cloudmachine.activities;
+
+public class MachineModelActivity extends BaseAutoLayoutActivity{
+
+}

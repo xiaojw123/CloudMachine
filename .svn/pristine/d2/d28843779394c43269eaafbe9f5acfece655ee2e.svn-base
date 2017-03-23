@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.cloudmachine">
+    <permission
+        android:name="com.cloudmachine.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+
+
+    <!-- Required  一些系统要求的权限，如访问网络等 -->
+    <uses-permission android:name="com.cloudmachine.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Optional for location -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!-- 极光推送 结束 -->
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <!-- 以下为二维码扫描必须的权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <application
+        android:name=".app.MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.taobao.android.hotfix.APPSECRET"
+            android:value="b762380bf7c5cf0c414a6d9d99dff96e" />
+        <meta-data
+            android:name="com.taobao.android.hotfix.RSASECRET"
+            android:value="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC9YeNvk5bWNxEnm+4gp1XSvUgw8EqzVL9PKlPrxkegMWGCF4w/KhtY6d+UW4Z5doeMMMXL3AoDON+AbIsKFcbf58y5xWknJ024uL935jTocX8Qvw6Uxp1rnnhV3G2GRITQq5JOxgEvAiT4MJrrh/rrloE4NzK9JfaL6rjQbhya5uKqa6TpafMpHkR4Lx/61923ZunBjoJvUTKXyAuw3Woig93cicvznXLJ4Vvng3LKFORSJiST+nUQBTQcXCMkOv5Bov9yB4W63YTj0IzfF5ODONtpwdD5UKIKfvz7FXIpEZp81W2xuUqi4FgkQ11DD3+UoW2xFC45fB76OFN36mzNAgMBAAECggEBAJKrcT1EjJky5LJMbUwUzL79oR9lujTQ+akSGxSK54YFOINMQW3Z6nweBO4dRDRlu+yzCT0tGQQN0+reJYCWBQP7ve5SGXIdWnAphQAS5f7vh30suto2SEzE2mWE5b4K6uHBPvqLFveVLZSZ8CFhms9CLKmg9kbPU/ZgvumNndHIjwQqeuNE8d0jGDNCytVFosQHKvixqpJxvHMbwBhwkMA+pEF5g1UVRKGonk/q/nj3hVITSMYpSrx59Okt0M574dv60ea84UPWJ4RvNlCGir6ebfa5eY+kHkLJTFIzvJAxXhXGRyva1f3B4MMgCoc6I21UK/yy4+5da26cTWcNuoECgYEA+ixU94HJ48Mnd2NfFx0pkilMSFOCXDsYulGJKM3ja4c/CkU7B2MBHDIUDrwZUciQGd5WAvQcQ8nBMK/cBHDtCdlCsd6qT5eSYfFD/gLNSOdz7fbF3wzfK0MfVlF1KHffMWCZuo4v6iONUEZ/vwNcn5Dx6ioavaAT0csXy38vPQUCgYEAwcsWvh7535K6Oqjm4d4P0hft9+FYF2pJtG6N4A+pJcMTvQPCYuzY+buqrm4quid6WU2eZ+gfzAHo0Mn/ZMlkgjKv7JEM1Z4FS0jIgQ/p4QbuxHfPDeaQV50wpduuDawK5YNtH6Yt9HUd0RDnUcoYdnYzXuKYMYF+SHuxPvtbuykCgYEA2U5u07uSgdw/yO2xaKN1O7fRwjV/09ulhBpVGPOWqw2EzcgLGUR/b110nMP4/lhIC6BceB5Q+vUicccgR19MFzT4QQbYS2Cuz5LB67/FT6F0yuyDPlew9qRMcS86pFdTsVFm12yw5CHTmzpRtrsV1qkR6cR/C94juSU/2wz0HH0CgYB04O24gKonYzEaS9/j/bABABmv1KLyjFIjlkHPDuLvOXZgGzJTw5EhHURVq2/tkf3CeoO9G0yCF+y4b/uuZ6BMvhFIVjstYv7CZwU2gciGxU2gBLpGIfaQQOekQJf6+vYfcmKQIgO5WiE/hDhfJcoXODbHVVaBFR56zM8bszGh8QKBgGS4zySO6r8cAVptxNtT7I59F9Z5hH6hYfKTu5iVYhS1GbMPaJAuHFCgUiP7O4cXh3OLAr7Ad9sBv/RMIz/csAslR0c022R0JIbCnvqso5d5tz9NDMaaNJKhaG07JMD8bngAhdFffBHdsoElMvxV8hWJjw6iWENY76qrO58AKPy5" />
+
+
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="ffd30c2fe06c5aed9bf94e5068781c0a" />
+        <meta-data
+            android:name="design_width"
+            android:value="1080" >
+        </meta-data>
+        <meta-data
+            android:name="design_height"
+            android:value="1920" >
+        </meta-data>
+
+        <activity
+            android:name=".activities.LoadingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="cn.sharesdk.framework.ShareSDKUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+            <intent-filter>
+                <data android:scheme="tencent100371282" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="cn.sharesdk.onekeyshare.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.cloudmachine.main.SwitchViewActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.main.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.MainMapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cloudmachine.main.NoticeInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cloudmachine.activities.InputPhoneNum"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.cloudmachine.activities.InputCode"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.cloudmachine.activities.EditPersonalActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.cloudmachine.activities.UpdatePwdActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.cloudmachine.activities.SuggestBackActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name="com.cloudmachine.main.NewBlogActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.cloudmachine.activities.FindPasswordActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name=".activities.UpdateInfoActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.cloudmachine.main.DeviceActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name=".activities.WebviewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.AboutCloudActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SearchPoiActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CityActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.AgentInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.AddDeviceActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.cloudmachine.main.NewReplyActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name=".activities.SettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SettingMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cloudmachine.activities.MessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cloudmachine.activities.SearchActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name="com.cloudmachine.activities.DeviceMcActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.cloudmachine.activities.OilWearActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.WorkTimeActivity"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.EngineActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.HydraulicActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.OilAmountActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.FaultDitailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.FaultDitailsListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.MapOneActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.MapViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.HistoricalTrackActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.PermissionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.QrCodeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.DeviceMcMemberActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.GuideActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.EditLayoutActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustUnspecified|adjustResize" />
+        <activity
+            android:name="com.cloudmachine.main.photoImgeView.ImagePagerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.main.MipcaActivityCapture"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.MessageContentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.cloudmachine.activities.BeginnerGuideActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
+        <!-- 多图选择 -->
+        <activity
+            android:name="com.cloudmachine.main.photo.AlbumActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.main.photo.ImageFile"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.main.photo.ShowAllPhoto"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.main.photo.GalleryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.activities.RepairBasicInfomationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.activities.NewRepairActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.activities.DeviceListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.activities.MachineTypeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.activities.MachineBrandActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.activities.MachineModelActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.activities.MachineAddressActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.activities.CheckMachineActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="com.cloudmachine.activities.GetDecviceListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+
+        <activity
+            android:name="com.cloudmachine.activities.EvaluationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+
+        <activity
+            android:name="com.cloudmachine.activities.RepairRecordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" >
+        </activity>
+
+        com.cloudmachine.activities.RepairBasicInfomationActivity
+        <!--
+        <activity
+            android:name="com.cloudmachine.main.photoImgeView.ImagePagerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            >
+        </activity>
+        -->
+
+        <receiver android:name=".broadcast.DownloadReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Required SDK核心功能 -->
+        <activity
+            android:name="cn.jpush.android.ui.PushActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.cloudmachine" />
+            </intent-filter>
+        </activity>
+        <!-- Required  SDK核心功能 -->
+        <service
+            android:name="cn.jpush.android.service.DownloadService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
+        <!-- Required SDK 核心功能 -->
+        <service
+            android:name="cn.jpush.android.service.PushService"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTER" />
+                <action android:name="cn.jpush.android.intent.REPORT" />
+                <action android:name="cn.jpush.android.intent.PushService" />
+                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+            </intent-filter>
+        </service>
+
+        <!-- Required SDK核心功能 -->
+        <receiver
+            android:name="cn.jpush.android.service.PushReceiver"
+            android:enabled="true" >
+            <intent-filter android:priority="1000" >
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" /> <!-- Required  显示通知栏 -->
+                <category android:name="com.cloudmachine" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+            <!-- Optional -->
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Required SDK核心功能 -->
+        <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
+
+        <!-- User defined.  For test only  用户自定义的广播接收器 -->
+        <receiver
+            android:name="com.cloudmachine.broadcast.MyReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!-- Required  用户注册SDK的intent -->
+                <action android:name="cn.jpush.android.intent.UNREGISTRATION" />
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!-- Required  用户接收SDK消息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!-- Required  用户接收SDK通知栏信息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!-- Required  用户打开自定义通知栏的intent -->
+                <action android:name="cn.jpush.android.intent.ACTION_RICHPUSH_CALLBACK" /> <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
+                <action android:name="cn.jpush.android.intent.CONNECTION" /> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <category android:name="com.cloudmachine" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Required  . Enable it you can get statistics data with channel -->
+        <meta-data
+            android:name="JPUSH_CHANNEL"
+            android:value="developer-default" />
+        <meta-data
+            android:name="JPUSH_APPKEY"
+            android:value="f2d4c2e7ac5f3f997b8278ab" /> <!-- </>值来自开发者平台取得的AppKey -->
+        <!-- 正式云机械key：f2d4c2e7ac5f3f997b8278ab -->
+        <!--
+        友盟统计  放到 MyApplication 里设置了
+		<meta-data
+            android:name="UMENG_APPKEY"
+            android:value="57bd696d67e58e71d3000d02" >
+        </meta-data>
+        -->
+    </application>
+
+</manifest>

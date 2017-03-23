@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/public_bg"
+                android:fitsSystemWindows="true"
+                android:clipToPadding="false"
+    >
+
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_bar_height"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/view_bottom_tab"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/tab_one_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+
+            <ImageView
+                android:id="@+id/tab_one_image"
+                android:layout_width="@dimen/main_bar_image_width_1"
+                android:layout_height="@dimen/main_bar_image_height"
+                android:layout_marginTop="@dimen/main_bar_image_padding"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_work_time_tab_one" />
+
+            <TextView
+                android:id="@+id/tab_one_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/main_bar_image_padding"
+                android:text="工时"
+                android:textColor="@color/main_bar_text_dw"
+                android:textSize="@dimen/main_bar_text_size"
+                android:layout_alignLeft="@id/tab_one_image"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tab_two_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+
+            <ImageView
+                android:id="@+id/tab_two_image"
+                android:layout_width="@dimen/main_bar_image_width_1"
+                android:layout_height="@dimen/main_bar_image_height"
+                android:layout_marginTop="@dimen/main_bar_image_padding"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_data_statistics_tab_two" />
+
+            <TextView
+                android:id="@+id/tab_two_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/main_bar_image_padding"
+                android:text="统计"
+                android:textColor="@color/main_bar_text_dw"
+                android:textSize="@dimen/main_bar_text_size"
+                android:layout_alignLeft="@id/tab_two_image"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frame_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_bar" >
+    </FrameLayout>
+
+</RelativeLayout>

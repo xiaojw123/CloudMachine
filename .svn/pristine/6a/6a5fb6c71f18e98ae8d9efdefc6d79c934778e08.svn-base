@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/public_bg"
+                android:orientation="vertical"
+    >
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.cloudmachine.autolayout.widgets.TitleView>
+
+
+    <RelativeLayout
+        android:id="@+id/to_pay"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/public_height_160"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        >
+        <TextView
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:textColor="@color/mc_state2"
+            android:text="合计: ¥1499"
+            />
+
+        <Button
+            android:id="@+id/btn_topay"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:background="@color/update_color_bg"
+            android:layout_alignParentRight="true"
+            android:text="去付款"
+            android:textColor="@color/white"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_layout"
+        android:layout_above="@id/to_pay"
+        >
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/public_bg"
+                    android:orientation="vertical"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        >
+                        <RelativeLayout
+                            android:id="@+id/rl_type"
+                            style="@style/layout_item"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_type"
+                                style="@style/personal_left_text"
+                                android:text="机器类型"
+                                />
+
+                            <TextView
+                                android:id="@+id/device_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                                android:layout_toRightOf="@id/tv_type"
+                                android:text=""
+                                android:textColor="@color/hint"
+                                android:textSize="@dimen/public_textsize1" />
+
+
+                            <TextView
+                                android:id="@+id/select0"
+                                style="@style/personal_edit_text"
+                                android:layout_marginRight="@dimen/public_layout_padding_left"
+                                android:layout_toLeftOf="@+id/arrowTip0"
+                                android:background="@null"
+                                android:text="请选择"
+                                />
+
+                            <ImageView
+                                android:id="@+id/arrowTip0"
+                                style="@style/personal_arrow_image"
+                                />
+                        </RelativeLayout>
+
+                        <!--机器品牌-->
+                        <RelativeLayout
+                            android:id="@+id/rl_brand"
+                            style="@style/layout_item"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_brand"
+                                style="@style/personal_left_text"
+                                android:text="机器品牌"
+                                />
+
+                            <TextView
+                                android:id="@+id/device_brand"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                                android:layout_toRightOf="@id/tv_brand"
+                                android:text=""
+                                android:textColor="@color/hint"
+                                android:textSize="@dimen/public_textsize1" />
+
+
+                            <TextView
+                                android:id="@+id/select1"
+                                style="@style/personal_edit_text"
+                                android:layout_marginRight="@dimen/public_layout_padding_left"
+                                android:layout_toLeftOf="@+id/arrowTip1"
+                                android:background="@null"
+                                android:text="请选择"
+                                />
+
+                            <ImageView
+                                android:id="@+id/arrowTip1"
+                                style="@style/personal_arrow_image"
+                                />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            style="@style/line_layout"
+                            android:layout_marginLeft="@dimen/common_left_gap"
+                            />
+                        <!--机器型号-->
+                        <RelativeLayout
+                            android:id="@+id/rl_model"
+                            style="@style/layout_item"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_model"
+                                style="@style/personal_left_text"
+                                android:text="机器型号"
+                                />
+
+                            <TextView
+                                android:id="@+id/device_model"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                                android:layout_toRightOf="@id/tv_model"
+                                android:text=""
+                                android:textColor="@color/hint"
+                                android:textSize="@dimen/public_textsize1" />
+
+                            <TextView
+                                android:id="@+id/select2"
+                                style="@style/personal_edit_text"
+                                android:layout_marginRight="@dimen/public_layout_padding_left"
+                                android:layout_toLeftOf="@+id/arrowTip2"
+                                android:background="@null"
+                                android:text="请选择"
+                                />
+
+                            <ImageView
+                                android:id="@+id/arrowTip2"
+                                style="@style/personal_arrow_image"
+                                />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            style="@style/line_layout"
+                            android:layout_marginLeft="@dimen/common_left_gap"
+                            />
+
+                        <RelativeLayout
+                            android:id="@+id/rl_contact_name"
+                            style="@style/layout_item"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_contact_name"
+                                style="@style/personal_left_text"
+                                android:text="联系人姓名"
+                                />
+
+                            <com.cloudmachine.utils.widgets.ClearEditTextView
+                                android:id="@+id/et_confirm_nickname"
+                                android:layout_toRightOf="@id/tv_contact_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:background="@null"
+                                android:hint=""
+                                android:padding="10dp"
+                                android:textColor="@color/public_edit_text"
+                                android:textColorHint="@color/hint"
+                                android:textSize="@dimen/public_textsize1"
+                                android:singleLine="true"
+                                android:gravity="right"
+                                />
+
+                            <!--<TextView
+                                style="@style/personal_edit_text"
+                                android:layout_marginRight="@dimen/public_layout_padding_left"
+                                android:layout_toLeftOf="@+id/arrowTip3"
+                                android:background="@null"
+                                android:text="请选择"
+                                android:visibility="invisible"
+                                />
+
+                            <ImageView
+                                android:id="@+id/arrowTip3"
+                                style="@style/personal_arrow_image"
+                                android:visibility="invisible"
+                                />-->
+                        </RelativeLayout>
+
+                      <!--  <LinearLayout
+                            android:id="@+id/ll_nickname"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/common_layout_height"
+                            android:background="@color/white"
+                            android:orientation="horizontal"
+                            android:paddingLeft="@dimen/public_layout_padding_left"
+                            >
+
+                            <TextView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@null"
+                                android:text="联系人姓名"
+                                android:textColor="#000000"
+                                android:textSize="@dimen/public_textsize1" />
+
+                            <com.cloudmachine.utils.widgets.ClearEditTextView
+                                android:id="@+id/et_confirm_nickname"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@null"
+                                android:hint=""
+                                android:padding="10dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/hint"
+                                android:textSize="@dimen/public_textsize1"
+                                android:singleLine="true"
+                                />
+                        </LinearLayout>-->
+
+                        <LinearLayout
+                            style="@style/line_layout"
+                            android:layout_marginLeft="@dimen/common_left_gap"
+                            />
+
+                        <RelativeLayout
+                            android:id="@+id/rl_phone_number"
+                            style="@style/layout_item"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_phone_number"
+                                style="@style/personal_left_text"
+                                android:text="手机号码"
+                                />
+
+                            <com.cloudmachine.utils.widgets.ClearEditTextView
+                                android:id="@+id/et_confirm_phone_number"
+                                android:layout_toRightOf="@id/tv_phone_number"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:background="@null"
+                                android:hint=""
+                                android:padding="10dp"
+                                android:textColor="@color/public_edit_text"
+                                android:textColorHint="@color/hint"
+                                android:textSize="@dimen/public_textsize1"
+                                android:singleLine="true"
+                                android:gravity="right"
+                                />
+
+                            <!--<TextView
+                                style="@style/personal_edit_text"
+                                android:layout_marginRight="@dimen/public_layout_padding_left"
+                                android:layout_toLeftOf="@+id/arrowTip4"
+                                android:background="@null"
+                                android:text="请选择"
+                                android:visibility="invisible"
+                                />
+
+                            <ImageView
+                                android:id="@+id/arrowTip4"
+                                style="@style/personal_arrow_image"
+                                android:visibility="invisible"
+                                />-->
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            style="@style/line_layout"
+                            android:layout_marginLeft="@dimen/common_left_gap"
+                            />
+
+                        <RelativeLayout
+                            android:id="@+id/rl_location"
+                            style="@style/layout_item"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_location"
+                                style="@style/personal_left_text"
+                                android:text="所在地区"
+                                />
+                            <TextView
+                                android:id="@+id/install_location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                                android:layout_toRightOf="@id/tv_location"
+                                android:text=""
+                                android:textColor="@color/hint"
+                                android:textSize="@dimen/public_textsize1" />
+
+                            <TextView
+                                style="@style/personal_edit_text"
+                                android:layout_marginRight="@dimen/public_layout_padding_left"
+                                android:layout_toLeftOf="@+id/arrowTip5"
+                                android:background="@null"
+                                android:text="请选择"
+                                />
+
+                            <ImageView
+                                android:id="@+id/arrowTip5"
+                                style="@style/personal_arrow_image"
+                                />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            style="@style/line_layout"
+                            android:layout_marginLeft="@dimen/common_left_gap"
+                            />
+
+                        <RelativeLayout
+                            android:id="@+id/rl_street_adress"
+                            style="@style/layout_item"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_street_address"
+                                style="@style/personal_left_text"
+                                android:text="街道地址"
+                                />
+                            <TextView
+                                android:id="@+id/install_street_address"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                                android:layout_toRightOf="@id/tv_street_address"
+                                android:text=""
+                                android:textColor="@color/hint"
+                                android:textSize="@dimen/public_textsize1" />
+
+                            <TextView
+                                style="@style/personal_edit_text"
+                                android:layout_marginRight="@dimen/public_layout_padding_left"
+                                android:layout_toLeftOf="@+id/arrowTip6"
+                                android:background="@null"
+                                android:text="请选择"
+                                android:visibility="invisible"
+                                />
+
+                            <ImageView
+                                android:id="@+id/arrowTip6"
+                                style="@style/personal_arrow_image"
+                                android:visibility="invisible"
+                                />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:id="@+id/privacyInfo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/public_bg"
+                            android:orientation="vertical"
+                            >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/personal_item_padding"
+                                android:background="@color/white"
+                                android:orientation="vertical">
+
+                                <RelativeLayout
+                                    android:id="@+id/rl_weixin_pay"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/public_height_140">
+
+                                    <ImageView
+                                        android:id="@+id/iv_weixin_pay"
+                                        android:layout_width="@dimen/public_height_100"
+                                        android:layout_height="@dimen/public_height_100"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginLeft="@dimen/public_left_margin_42"
+                                        android:src="@drawable/weixinpay"
+                                        />
+
+                                    <TextView
+                                        android:id="@+id/tv_weixinpay"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginLeft="@dimen/public_left_margin_42"
+                                        android:layout_toRightOf="@id/iv_weixin_pay"
+                                        android:text="微信支付"
+                                        android:textSize="16sp"
+                                        />
+
+                                    <CheckBox
+                                        android:id="@+id/cb_weixin_pay"
+                                        style="@style/PayCheckBox"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginRight="@dimen/public_left_margin_42"
+                                        android:clickable="false"
+                                        />
+
+                                </RelativeLayout>
+
+                                <LinearLayout
+                                    style="@style/line_layout"
+                                    android:layout_marginLeft="@dimen/common_left_gap"
+                                    />
+
+                                <RelativeLayout
+                                    android:id="@+id/rl_alipay"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/public_height_140">
+
+                                    <ImageView
+                                        android:id="@+id/iv_alipay"
+                                        android:layout_width="@dimen/public_height_100"
+                                        android:layout_height="@dimen/public_height_100"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginLeft="@dimen/public_left_margin_42"
+                                        android:src="@drawable/aliapy"
+                                        />
+
+                                    <TextView
+                                        android:id="@+id/tv_alipay"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginLeft="@dimen/public_left_margin_42"
+                                        android:layout_toRightOf="@id/iv_alipay"
+                                        android:text="支付宝支付"
+                                        android:textSize="16sp"
+                                        />
+
+                                    <CheckBox
+                                        android:id="@+id/cb_alipay"
+                                        style="@style/PayCheckBox"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginRight="@dimen/public_left_margin_42"
+                                        android:clickable="false"
+                                        />
+
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/public_bg"
+                            android:orientation="vertical"
+                            >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/personal_item_padding"
+                                android:background="@color/white"
+                                android:orientation="vertical">
+
+                                <RelativeLayout
+                                    android:id="@+id/rl_coupon"
+                                    style="@style/layout_item"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/tv_coupon"
+                                        style="@style/personal_left_text"
+                                        android:text="优惠券"
+                                        />
+
+                                    <ImageView
+                                        android:id="@+id/arrowTip7"
+                                        style="@style/personal_arrow_image"
+                                        />
+
+                                    <TextView
+                                        android:id="@+id/select3"
+                                        style="@style/personal_edit_text"
+                                        android:layout_marginRight="14dp"
+                                        android:background="@null"
+                                        android:text="无可用"
+                                        android:layout_alignBaseline="@+id/tv_coupon"
+                                        android:layout_alignBottom="@+id/tv_coupon"
+                                        android:layout_toLeftOf="@+id/arrowTip7"
+                                        android:layout_toStartOf="@+id/arrowTip7"
+                                        android:layout_marginEnd="14dp"/>
+                                </RelativeLayout>
+
+                                <LinearLayout
+                                    style="@style/line_layout"
+                                    android:layout_marginLeft="@dimen/common_left_gap"
+                                    />
+
+                                <RelativeLayout
+                                    android:id="@+id/rl_distribution_mode"
+                                    style="@style/layout_item"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/tv_distribution_mode"
+                                        style="@style/personal_left_text"
+                                        android:text="配送方式"
+                                        />
+
+                                    <TextView
+                                        android:id="@+id/select4"
+                                        style="@style/personal_edit_text"
+                                        android:layout_marginRight="@dimen/public_layout_padding_left"
+                                        android:layout_toLeftOf="@+id/arrowTip8"
+                                        android:background="@null"
+                                        android:text=""
+                                        />
+
+                                    <ImageView
+                                        android:id="@+id/arrowTip8"
+                                        style="@style/personal_arrow_image"
+                                        />
+                                </RelativeLayout>
+
+                                <LinearLayout
+                                    style="@style/line_layout"
+                                    android:layout_marginLeft="@dimen/common_left_gap"
+                                    />
+
+                                <RelativeLayout
+                                    android:id="@+id/rl_installation_time"
+                                    style="@style/layout_item"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/tv_installation_time"
+                                        style="@style/personal_left_text"
+                                        android:text="安装时间"
+                                        />
+
+                                    <TextView
+                                        android:id="@+id/select5"
+                                        style="@style/personal_edit_text"
+                                        android:layout_marginRight="@dimen/public_layout_padding_left"
+                                        android:layout_toLeftOf="@+id/arrowTip9"
+                                        android:background="@null"
+                                        android:text=""
+                                        />
+
+                                    <ImageView
+                                        android:id="@+id/arrowTip9"
+                                        style="@style/personal_arrow_image"
+                                        />
+                                </RelativeLayout>
+
+                                <LinearLayout
+                                    style="@style/line_layout"
+                                    android:layout_marginLeft="@dimen/common_left_gap"
+                                    />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </FrameLayout>
+
+        </ScrollView>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,14 @@
+package com.cloudmachine.utils;
+
+public class UMengKey {
+
+	public static final String mc_scanning_start = "mc_scanning_start";	//一键检测-开始
+	public static final String mc_scanning_stop = "mc_scanning_stop";	//一键检测-取消
+	public static final String mc_main_map = "mc_main_map";	//机器地图模式点击
+	public static final String mc_main_list = "mc_main_list";	//机器列表模式点击
+	public static final String mc_main_list_item_click = "mc_main_list_item_click";	//首页列表Item点击
+	public static final String mc_main_list_cloud_device_click = "mc_main_list_cloud_device_click";	//首页列表体验机点击
+	public static final String mc_main_map_marker = "mc_main_map_marker";	//首页地图机器点击
+	public static final String mc_main_map_infoWindow = "mc_main_map_infoWindow";	//首页地图机器详情点击
+	public static final String mc_main_map_cloud_device_click = "mc_main_map_cloud_device_click";	//首页地图体验机点击
+}

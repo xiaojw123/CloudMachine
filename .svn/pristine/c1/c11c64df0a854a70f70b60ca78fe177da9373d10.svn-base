@@ -1,0 +1,123 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical" >
+    
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+        />
+    <com.cloudmachine.utils.widgets.XListView
+                android:id="@+id/listView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="@color/public_transparent"
+                android:divider="@color/public_line"
+                android:dividerHeight="0dp"
+                android:focusable="true"
+                android:scrollbars="none" 
+                android:visibility="gone"
+                /> 
+
+   
+   <LinearLayout 
+       android:id="@+id/empty_layout"
+       android:layout_width="fill_parent"
+       android:layout_height="fill_parent"
+       android:orientation="vertical"
+       >
+       <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/main1_search_padding"
+    	android:layout_marginRight="@dimen/main1_search_padding"
+    	android:layout_marginTop="@dimen/main1_guide_marginBottom"
+        android:orientation="horizontal" >
+		<LinearLayout 
+		    android:layout_width="match_parent"
+            android:layout_height="@dimen/main1_guide_height"
+            android:layout_weight="1"
+		    >
+		    <LinearLayout
+            android:id="@+id/beginners_guide"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_btn_main1_guide"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="@dimen/main1_guide1_image1_width"
+                android:layout_height="@dimen/main1_guide1_image1_height"
+                android:background="@drawable/main1_guide1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/main1_guide1_image_to_text"
+                android:text="@string/main1_guide1"
+                android:textColor="@color/public_black_5"
+                android:textSize="@dimen/public_textsize3" />
+        </LinearLayout>
+		</LinearLayout>
+		<LinearLayout 
+		    android:layout_width="@dimen/public_layout_padding_left"
+            android:layout_height="@dimen/main1_guide_height"
+		    >
+		    
+		</LinearLayout>
+        <LinearLayout 
+		    android:layout_width="match_parent"
+            android:layout_height="@dimen/main1_guide_height"
+            android:layout_weight="1"
+            
+		    >
+		    <LinearLayout
+            android:id="@+id/cloudm_box"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_btn_main1_guide"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="@dimen/main1_guide1_image2_width"
+                android:layout_height="@dimen/main1_guide1_image2_height"
+                android:background="@drawable/main1_guide2"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/main1_guide1_image_to_text"
+                android:text="@string/main1_guide2"
+                android:textColor="@color/public_black_5"
+                android:textSize="@dimen/public_textsize3" />
+        </LinearLayout>
+		 </LinearLayout> 
+
+        
+    </LinearLayout>
+    <ImageView 
+        android:id="@+id/empty_image"
+        android:layout_width="@dimen/main1_empty_image_wh"
+        android:layout_height="@dimen/main1_empty_image_wh"
+        android:layout_marginTop="@dimen/main1_empty_image_marginTop"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/main1_empty_image"
+        />
+    <TextView 
+        style="@style/main_empty_text"
+        android:text="@string/main1_empty_text1"
+        />
+    <TextView 
+        style="@style/main_empty_text"
+        android:text="@string/main1_empty_text2"
+        />
+   </LinearLayout>
+
+</LinearLayout>

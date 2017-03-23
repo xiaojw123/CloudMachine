@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_white" 
+    android:orientation="vertical"
+    >
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:scrollbars="none"
+        android:layout_marginLeft="135px"
+        android:layout_marginRight="135px"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+             >
+			
+            <RatingBar
+                android:id="@+id/rb_rating_bar"
+                style="@style/roomRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/rating_start_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/rating_bar_margintop"
+                android:numStars="5"
+                android:rating="5" 
+                android:padding="0dp"
+                />
+			<!--android:layout_marginLeft="@dimen/rating_bar_marginleft"  -->
+            <TextView
+                android:id="@+id/tv_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/rating_bar_text_margintop"
+                android:text="@string/rating_bar"
+                android:textColor="@color/history_text"
+                android:textSize="@dimen/public_textsize5" />
+
+            <View
+                android:id="@+id/v_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/public_line_wh"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/rating_bar_line_margintop"
+                android:background="@color/radius_button_fill_white_dw" />
+			<LinearLayout 
+			    android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/rating_bar_oval_margintop"
+			    >
+			    <View
+                android:id="@+id/view1"
+                android:layout_width="@dimen/rating_bar_oval_size"
+                android:layout_height="@dimen/rating_bar_oval_size"
+                android:background="@drawable/oval_black" 
+                android:layout_gravity="center_vertical"
+                />
+<!-- android:layout_marginLeft="@dimen/rating_bar_oval_marginleft" -->
+            <TextView
+                android:id="@+id/tv_advantage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/v_divider"
+                android:layout_marginLeft="@dimen/radius_button_roundRadius"
+                android:layout_gravity="center_vertical"
+                android:text="@string/advantage"
+                android:textColor="@color/public_black_9"
+                android:textSize="@dimen/public_textsize5" />
+			</LinearLayout>
+            
+<!-- android:layout_marginLeft="@dimen/radius_button_roundRadius" -->
+            <com.cloudmachine.utils.widgets.tagview.TagCloudLayout
+                android:id="@+id/advantage"
+                android:layout_width="@dimen/taglayout_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/taglayout_margintop"
+                app:lineSpacing="@dimen/taglayout_spacing"
+                app:tagSpacing="@dimen/taglayout_spacing" />
+
+            <LinearLayout
+                android:id="@+id/rl_disadvantage"
+                android:layout_width="@dimen/taglayout_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/taglayout_margintop2"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <View
+                        android:id="@+id/view2"
+                        android:layout_width="@dimen/rating_bar_oval_size"
+                        android:layout_height="@dimen/rating_bar_oval_size"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/oval_black" />
+
+                    <TextView
+                        android:id="@+id/tv_advance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/radius_button_roundRadius"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/tag_advice"
+                        android:textColor="@color/public_black_9"
+                        android:textSize="@dimen/public_textsize5" />
+                </LinearLayout>
+                <!--
+     android:id="@+id/advantage"
+        android:layout_width="@dimen/taglayout_width"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_advantage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/taglayout_margintop"
+        app:lineSpacing="@dimen/taglayout_spacing"
+        app:tagSpacing="@dimen/taglayout_spacing"
+                -->
+
+                <com.cloudmachine.utils.widgets.tagview.TagCloudLayout
+                    android:id="@+id/disadvantage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/taglayout_margintop"
+                    app:lineSpacing="@dimen/taglayout_spacing"
+                    app:tagSpacing="@dimen/taglayout_spacing" />
+            </LinearLayout>
+
+            <!-- <com.cloudmachine.utils.widgets.ClearEditTextView
+                android:id="@+id/et_other_ad"
+                android:layout_width="@dimen/taglayout_width"
+                android:layout_height="@dimen/taglayout_height"
+                android:layout_below="@id/rl_disadvantage"
+                android:layout_centerHorizontal="true"
+                android:background="@null"
+                android:hint="其他建议"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint"
+                android:textSize="@dimen/public_textsize1" /> -->
+                
+                <LinearLayout
+                    android:id="@+id/et_other_ad"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/taglayout_height"
+                    android:layout_marginTop="34px"
+                    android:background="@drawable/radius_button_white_grey"
+                    android:padding="2dp"
+                    >
+                    <EditText 
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text=""
+                        android:hint="其他建议"
+                        android:gravity="top|left"
+                        android:background="@null"
+                        android:textSize="@dimen/public_textsize5" 
+                        />
+                    
+                </LinearLayout>
+
+            <com.cloudmachine.autolayout.widgets.RadiusButtonView
+                android:id="@+id/login_btn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/novice_guide_button_height"
+                cloudm:rbtn_fillColor_dw="@color/public_b_20"
+                cloudm:rbtn_fillColor_nm="@color/public_blue_bg"
+                cloudm:rbtn_strokeColor="@color/public_blue_bg"
+                cloudm:rbtn_text="@string/advice_now"
+                cloudm:rbtn_textColor="@color/public_white"
+                cloudm:rbtn_textSize="@dimen/about_button_textsize" 
+                android:layout_marginTop="80px"
+                android:layout_marginBottom="80px"
+                />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

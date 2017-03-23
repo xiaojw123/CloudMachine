@@ -1,0 +1,328 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg"
+    android:orientation="vertical" >
+    
+     <LinearLayout
+         android:id="@+id/bottomLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/common_line_height"
+                        android:background="@color/mc_line" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:background="@color/white"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal" >
+
+                        <LinearLayout
+                            android:id="@+id/shareLayout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/common_layout_height"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_style_item"
+                            android:clickable="true"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal" >
+
+                            <ImageView
+                                android:id="@+id/share_img"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/share1" />
+
+                            <TextView
+                                android:id="@+id/share_textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="center_horizontal"
+                                android:text="分享"
+                                android:textColor="#939393"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="@dimen/common_line_height"
+                            android:layout_height="fill_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
+                            android:background="#e7e7e7" />
+
+                        <LinearLayout
+                            android:id="@+id/commentlayout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/common_layout_height"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_style_item"
+                            android:clickable="true"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal" >
+
+                            <ImageView
+                                android:id="@+id/comment_img"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/comment1" />
+
+                            <TextView
+                                android:id="@+id/comment_textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="center_horizontal"
+                                android:text="15"
+                                android:textColor="#939393"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="@dimen/common_line_height"
+                            android:layout_height="fill_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
+                            android:background="#e7e7e7" />
+
+                        <LinearLayout
+                            android:id="@+id/supportlayout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/common_layout_height"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_style_item"
+                            android:clickable="true"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal" >
+
+                            <ImageView
+                                android:id="@+id/support_img"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/best1" />
+
+                            <TextView
+                                android:id="@+id/support_textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="center_horizontal"
+                                android:text="赞"
+                                android:textColor="#939393"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+    
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_above="@id/bottomLayout"
+         >
+
+        <com.cloudmachine.utils.widgets.TitleView
+       android:id="@+id/title_layout"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content" >
+
+    </com.cloudmachine.utils.widgets.TitleView>
+    <ScrollView 
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+        >
+    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:background="@color/main_bg"
+        >
+        <RelativeLayout 
+        android:id="@+id/head_content_layout"
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:background="@color/main_bg"
+        >
+   
+	        <RelativeLayout
+	        android:id="@+id/qwert"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@color/white"
+	        
+	         android:layout_marginTop="15dp"
+	        android:layout_alignParentLeft="true" >
+	
+	            
+	             <ImageView
+	            android:layout_width="match_parent"
+	            android:layout_height="@dimen/common_line_height"
+	            android:background="#cbcbcb" />
+	            
+	        <ImageView
+	            android:id="@+id/info_img"
+	            android:layout_width="48dp"
+	            android:layout_height="48dp"
+	            android:layout_marginLeft="15dp"
+	            android:layout_marginTop="12dp"
+	            android:scaleType="centerCrop"
+	            android:src="@drawable/default_img" />
+	
+	        <TextView
+	            android:id="@+id/info_name"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="15dp"
+	            android:layout_marginTop="15dp"
+	            android:layout_toRightOf="@+id/info_img"
+	            android:ellipsize="end"
+	            android:singleLine="true"
+	            android:text=""
+	            android:textColor="@color/testUser"
+	            android:textSize="@dimen/usernamesize" />
+	
+	        <TextView
+	            android:id="@+id/info_time"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_below="@+id/info_name"
+	            android:layout_marginLeft="15dp"
+	            android:layout_marginTop="2dp"
+	            android:layout_toRightOf="@+id/info_img"
+	            android:ellipsize="end"
+	            android:singleLine="true"
+	            android:text="2014-12-12 15:20"
+	            android:textColor="@color/time"
+	            android:textSize="@dimen/timesize" />
+	    </RelativeLayout>
+	
+	    <RelativeLayout
+	        android:id="@+id/asdfg"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:clickable="true"
+	        android:background="@color/white"
+	        android:layout_below="@+id/qwert"
+	        android:paddingBottom="@dimen/common_view_min_gap"
+	         >
+	        <TextView
+	            android:id="@+id/blog_content"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentTop="true"
+	            android:textColor="@drawable/item_content"
+	            android:paddingTop="7dp"
+	            android:layout_marginLeft="@dimen/common_view_gap"
+	            android:layout_marginRight="@dimen/common_view_gap"
+	            android:paddingBottom="7dp"
+	            android:autoLink="web"
+	            android:gravity="top"
+	            android:textSize="@dimen/common_text1" 
+	            android:textIsSelectable="true"
+	            />
+<com.cloudmachine.utils.widgets.ImageArrayView
+	        	android:id="@+id/image_array_view"
+	            android:layout_width="match_parent"
+	       		android:layout_height="wrap_content"
+	       		android:layout_below="@+id/blog_content"
+	     	    android:layout_marginLeft="@dimen/common_view_gap"
+	     	    android:layout_marginRight="@dimen/common_view_gap"
+	     	    android:layout_marginBottom="@dimen/common_view_gap"
+	                   ></com.cloudmachine.utils.widgets.ImageArrayView>
+	    </RelativeLayout>
+	    
+	      <ImageView
+	            android:id="@+id/topline"
+	            android:layout_below="@+id/asdfg"
+	            android:layout_width="match_parent"
+	            android:layout_height="@dimen/common_line_height"
+	            android:background="#cbcbcb"
+	             />
+	          <ImageView
+	            android:id="@+id/bottomline"
+	            android:layout_below="@+id/topline"
+	            android:layout_width="match_parent"
+	            android:layout_height="@dimen/common_line_height"
+	            android:layout_marginTop="@dimen/common_view_gap"
+	            android:background="#cbcbcb" 
+	            />
+	            <RelativeLayout
+	                android:id="@+id/signLayout"
+	                android:layout_width="match_parent"
+	                android:layout_height="@dimen/common_layout_height"
+	                android:layout_below="@+id/bottomline"
+	                android:background="@color/white" >
+	
+	                <TextView
+	                    android:id="@+id/f5"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="match_parent"
+	                    android:layout_centerVertical="true"
+	                    android:layout_marginLeft="10dp"
+	                    android:gravity="center_vertical"
+	                    android:text="评论"
+	                    android:textColor="#333333"
+	                    android:textSize="@dimen/common_text1" />
+	                
+	                        <TextView
+	                    android:id="@+id/commentNum"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="match_parent"
+	                    android:layout_centerVertical="true"
+	                    android:layout_toRightOf="@+id/f5"
+	                    android:gravity="center_vertical"
+	                    android:text=""
+	                    android:textColor="#333333"
+	                    android:textSize="@dimen/common_text1" />
+	
+	                <TextView
+	                    android:id="@+id/nickname"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_centerVertical="true"
+	                    android:layout_toLeftOf="@+id/favourNum"
+	                    android:background="@null"
+	                    android:textSize="@dimen/common_text1"
+	                    android:text="赞"
+	                    android:textColor="@color/personFont" />
+	
+	                <TextView
+	                    android:id="@+id/favourNum"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_alignParentRight="true"
+	                    android:layout_centerVertical="true"
+	                    android:layout_marginRight="15dp"
+	                    android:textSize="@dimen/common_text1"
+	                    android:textColor="@color/personFont"
+	                    android:text="" />
+	            </RelativeLayout>
+            
+        </RelativeLayout>
+        <com.cloudmachine.utils.widgets.InnerXListViewe
+        android:id="@+id/comment_listview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/head_content_layout" 
+        />
+        </RelativeLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</RelativeLayout>

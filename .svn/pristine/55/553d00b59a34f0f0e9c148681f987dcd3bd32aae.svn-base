@@ -1,0 +1,385 @@
+<resources>
+
+    <dimen name="public_textsize1">48px</dimen>
+    <!-- 通用字体大小1 -->
+    
+    <dimen name="public_textsize2">40px</dimen>
+    <!-- 通用字体大小2 -->
+    
+    <dimen name="public_textsize3">42px</dimen>
+	<!-- 通用字体大小3 -->
+	
+    <dimen name="public_text_margintop">30px</dimen>
+    
+    <!--通用字体大小4-->
+    <dimen name="public_textsize4">34px</dimen>
+    
+    <!--通用字体大小5  -->
+    <dimen name="public_textsize5">37px</dimen>
+    
+    <!--通用字体大小6-->
+    <dimen name="public_textsize6">38px</dimen>
+    <dimen name="public_textsize7">44px</dimen>
+    <dimen name="public_textsize8">48px</dimen>
+    
+    
+    <dimen name="public_hieght1">210px</dimen>
+    
+    
+    <!-- 两行字体间距 -->
+
+
+    <!-- 右侧箭头的宽高 -->
+    <dimen name="arrow_next_width">25px</dimen>
+    <dimen name="arrow_next_height">43px</dimen>
+    
+    <!--通用分割线尺寸  -->
+    <dimen name="public_view_height1">24px</dimen>
+    
+    <!--油位悬浮球外包裹布局-->
+    <dimen name="public_layout_height2">260px</dimen>
+    <dimen name="public_divider_vertical_height">210px</dimen>
+    <!--油位悬浮球宽高-->
+    <dimen name="oil_level_size">154px</dimen>
+    <dimen name="oil_text_margintop">24px</dimen>
+    <dimen name="oil_marginRight">137px</dimen>
+    
+	<dimen name="work_hour_text_margintop">66px</dimen>    
+    <!--工作时长进度-->
+    <dimen name="work_hour_height">65px</dimen>
+    <dimen name="work_hour_width">248px</dimen>
+    <dimen name="work_hour_marginleft">137px</dimen>
+    <dimen name="work_hour_marginright">156px</dimen>
+    <dimen name="work_hour_margintop">74px</dimen>
+    
+    
+
+
+    <!-- 公共 -->
+	<dimen name="public_layout_padding_left">42px</dimen>
+	<dimen name="public_layout_padding_left_m">21px</dimen>
+	<dimen name="public_zero">0px</dimen>
+	<dimen name="public_line_wh">1px</dimen>
+	<dimen name="arrow_image_width">25px</dimen>
+	<dimen name="arrow_image_height">43px</dimen>
+	<dimen name="public_layout_item_height">126px</dimen>
+	
+	
+	<dimen name="update_pwd_left_title_width">260px</dimen>
+	
+    <!-- 启动页 -->
+    <dimen name="loading_image_width">517px</dimen>
+    <dimen name="loading_image_height">523px</dimen>
+    <dimen name="loading_image_marginTop">275px</dimen>
+    <dimen name="loading_text_marginBottom">103px</dimen>
+    <dimen name="loading_text_size">34px</dimen>
+    <dimen name="public_listview_height">180px</dimen>
+    <!-- listview条目高度 -->
+    <dimen name="public_listview_divider_marginLeft">18px</dimen>
+    <!-- listview分割线左边距 -->
+    <dimen name="public_no_margin">0px</dimen>
+
+    <!-- 标题栏 -->
+    <dimen name="public_title_margin">42px</dimen>
+    <dimen name="public_title_center_textsize">50px</dimen>
+    <dimen name="public_title_left_imagesize">48px</dimen>
+    <dimen name="leftmargin1">20px</dimen>
+    <!-- 左侧标题栏左边距 -->
+    
+    
+
+
+    <!-- 报修进度详情页面 -->
+    <dimen name="repair_rl_width">138px</dimen>
+    <!-- 左侧进度时刻的宽度 -->
+    <dimen name="cicle_select_size">55px</dimen>
+    <!-- 选中小圆球的款高 -->
+    <dimen name="circle_unselect_size">33px</dimen>
+    <dimen name="circle_select_leftmargin">42px</dimen>
+    <!-- 选中小圆球的左边距 -->
+    <dimen name="circle_select_margintop">76px</dimen>
+    <!-- 上边距 -->
+    <dimen name="circle_unselect_leftmargin">55px</dimen>
+    <!-- 未选中小圆球的左边距 -->
+    <dimen name="circle_unselect_margintop">68px</dimen>
+    <!-- 上边距 -->
+    <dimen name="rl_right_width">942px</dimen>
+    <!-- 右侧相对布局的宽度 -->
+    <dimen name="current_text_size">42px</dimen>
+    <dimen name="first_margintop">41px</dimen>
+    <!-- 第一行文字距离上面的高度 -->
+    <dimen name="second_margintop">30px</dimen>
+    <dimen name="line_width">3px</dimen>
+    <dimen name="line_height">74px</dimen>
+    <dimen name="header_height">132px</dimen>
+    <!-- 上面头布局的告度 -->
+    <dimen name="repair_image_size">59px</dimen>
+    <dimen name="header_leftmargin">42px</dimen>
+    <dimen name="repair_text_size">48px</dimen>
+    <dimen name="repair_text_leftmargin">22px</dimen>
+    <dimen name="bottom_line_height">24px</dimen>
+    <!-- 边线距离 -->
+    <dimen name="divider_height">1px</dimen>
+    <dimen name="repair_bottom_leftmargin">46px</dimen>
+    <dimen name="repair_bottom_textsize">44px</dimen>
+    <dimen name="repair_bottom_leftmargin2">50px</dimen>
+    <dimen name="repair_bottom_layoutheight">148px</dimen>
+
+    <!-- 检测报告页面 -->
+    <dimen name="detect_now_height">538px</dimen>
+    <dimen name="detect_report_iconsize">144px</dimen>
+    <dimen name="detect_report_height">194px</dimen>
+    <dimen name="detect_oval_size">439px</dimen>
+    <dimen name="detecting_oval_size">440px</dimen>
+    <dimen name="detecting_oval_button_height">144px</dimen>
+
+	
+	<!-- 引导页 -->
+	<dimen name="guide_image_bg_height">1230px</dimen>
+	<dimen name="guide_text_marginTop">60px</dimen>
+	<dimen name="guide_dot_marginBottom">78px</dimen>
+	<dimen name="guide_dot_diameter">27px</dimen>
+	<dimen name="guide_dot_padding">50px</dimen>
+	
+	<dimen name="guide_image_guide1_width">784px</dimen>
+	<dimen name="guide_image_guide1_height">777px</dimen>
+	<dimen name="guide_image_text1_width">483px</dimen>
+	<dimen name="guide_image_text1_height">166px</dimen>
+	<dimen name="guide_image_guide2_width">779px</dimen>
+	<dimen name="guide_image_guide2_height">713px</dimen>
+	<dimen name="guide_image_text2_width">646px</dimen>
+	<dimen name="guide_image_text2_height">169px</dimen>
+	<dimen name="guide_image_guide3_width">834px</dimen>
+	<dimen name="guide_image_guide3_height">716px</dimen>
+	<dimen name="guide_image_text3_width">539px</dimen>
+	<dimen name="guide_image_text3_height">165px</dimen>
+	<dimen name="guide_image_guide4_width">790px</dimen>
+	<dimen name="guide_image_guide4_height">713px</dimen>
+	<dimen name="guide_image_text4_width">537px</dimen>
+	<dimen name="guide_image_text4_height">165px</dimen>
+	<dimen name="guide_button_marginBottom">246px</dimen>
+	<dimen name="radius_button_width">576px</dimen>
+	<dimen name="radius_button_height">124px</dimen>
+	
+	<!-- 自定义圆弧按钮 -->
+	<dimen name="radius_button_strokeWidth">3px</dimen>
+	<dimen name="radius_button_roundRadius">16px</dimen>
+	<dimen name="radius_button_text_size">52px</dimen>
+	
+	<!-- title-->
+	<dimen name="public_title_height">146px</dimen>
+	<dimen name="public_title_textsize">52px</dimen>
+	<dimen name="public_title_left_textsize">46px</dimen>
+	<dimen name="public_title_back_image_width">48px</dimen>
+	
+	<!-- about -->
+	<dimen name="about_image_marginTop">283px</dimen>
+	<dimen name="about_text_marginTo_image">63px</dimen>
+	<dimen name="about_button_width">512px</dimen>
+	<dimen name="about_button_height">137px</dimen>
+	<dimen name="about_button_textsize">48px</dimen>
+	<dimen name="about_text_marginTo_button">108px</dimen>
+	
+
+	<!-- main -->
+	<dimen name="main_bar_height">160px</dimen>
+	<dimen name="main_bar_image_height">68px</dimen>
+	<dimen name="main_bar_image_width_1">82px</dimen>
+	<dimen name="main_bar_image_padding">24px</dimen>
+	<dimen name="main_bar_text_size">30px</dimen>
+	<dimen name="main_g_iamge1_width">625px</dimen>
+	<dimen name="main_g_iamge1_height">404px</dimen>
+	<dimen name="main_g_iamge1_marginTop">14px</dimen>
+	<dimen name="main_g_iamge1_marginLeft">154px</dimen>
+	<dimen name="main_g_iamge2_width">288px</dimen>
+	<dimen name="main_g_iamge2_height">125px</dimen>
+	<dimen name="main_g_iamge2_marginTop">40px</dimen>
+	<dimen name="main_g_iamge2_marginLeft">354px</dimen>
+	<dimen name="main_g_layout_paddingTop">290px</dimen>
+	<!-- main1 -->
+	<dimen name="main1_search_layout_height">144px</dimen>
+	<dimen name="main1_search_height">92px</dimen>
+	<dimen name="main1_search_padding">30px</dimen>
+	<dimen name="main1_search_image_wh">48px</dimen>
+	<dimen name="main1_search_image_text_padding">22px</dimen>
+	
+	<dimen name="main1_guide_width">486px</dimen>
+	<dimen name="main1_guide_height">192px</dimen>
+	<dimen name="main1_guide_marginBottom">24px</dimen>
+	<dimen name="main1_guide1_image1_width">80px</dimen>
+	<dimen name="main1_guide1_image1_height">84px</dimen>
+	<dimen name="main1_guide1_image2_width">76px</dimen>
+	<dimen name="main1_guide1_image2_height">69px</dimen>
+	<dimen name="main1_guide1_image_to_text">10px</dimen>
+	
+	<dimen name="main1_list_title_height">144px</dimen>
+	<dimen name="main1_list_title_icon_width">60px</dimen>
+	<dimen name="main1_list_title_icon_height">47px</dimen>
+	<dimen name="main1_list_title_map_width">63px</dimen>
+	<dimen name="main1_list_title_map_height">63px</dimen>
+	
+	<dimen name="main1_list_layout_height">192px</dimen>
+	<dimen name="main1_list_text_to_arrow">20px</dimen>
+	<dimen name="main1_list_image_wh">144px</dimen>
+	
+	<dimen name="main1_empty_image_marginTop">246px</dimen>
+	<dimen name="main1_empty_image_wh">600px</dimen>
+	<dimen name="main1_empty_image_to_text">20px</dimen>
+	
+	<dimen name="main2_empty_image_marginTop">360px</dimen>
+	<dimen name="main3_empty_button_height">598px</dimen>
+	
+	<!-- MC Map -->
+	<dimen name="mc_map_enclosure_button_width">475px</dimen>
+	<dimen name="mc_map_enclosure_button_height">113px</dimen>
+	<dimen name="mc_map_enclosure_button_layout_height">198px</dimen>
+	
+	<dimen name="mc_main_no_test_layout_marginTop">307px</dimen>
+	<dimen name="mc_main_no_test_layout_width">840px</dimen>
+	<dimen name="mc_main_no_test_layout_height">930px</dimen>
+	<dimen name="mc_main_no_test_iamge_height">439px</dimen>
+	<dimen name="mc_main_no_test_iamge_to_text">74px</dimen>
+	<dimen name="mc_main_no_test_text_to_text">40px</dimen>
+	<dimen name="mc_main_no_test_button_width">748px</dimen>
+	<dimen name="mc_main_no_test_button_height">120px</dimen>
+	<dimen name="mc_main_no_test_text_to_button">80px</dimen>
+	
+	<dimen name="mc_main_guide_image_width">575px</dimen>
+	<dimen name="mc_main_guide_image_height">352px</dimen>
+	<dimen name="mc_main_guide_image_marginTop">330px</dimen>
+	<dimen name="mc_main_guide_image_marginLeft">370px</dimen>
+	
+	<!-- 我的 -->
+	<dimen name="personal_image_layout_height">230px</dimen>
+	<dimen name="personal_image_wh">168px</dimen>
+	<dimen name="personal_image_to_arrow">36px</dimen>
+	<dimen name="personal_item_padding">56px</dimen>
+	
+	<!-- 新手引导 -->
+	<dimen name="novice_guide_iamge_width">902px</dimen>
+	<dimen name="novice_guide_iamge_height">2956px</dimen>
+	<dimen name="novice_guide_button_marginBottom">52px</dimen>
+	<dimen name="novice_guide_button_width">996px</dimen>
+	<dimen name="novice_guide_button_height">144px</dimen>
+	
+	<!-- 检测报告 -->
+	<dimen name="fault_ditails_lsit_height">130px</dimen>
+	<dimen name="fault_ditails_abnormal_image_wh">46px</dimen>
+	<dimen name="fault_ditails_text_to_list">40px</dimen>
+	
+	<!-- 登录 -->
+	<dimen name="login_title_height">150px</dimen>
+	<dimen name="login_image_wh">215px</dimen>
+	<dimen name="login_image_to_title">20px</dimen>
+	<dimen name="login_input_height">142px</dimen>
+	<dimen name="login_icon_wh">49px</dimen>
+	<!-- 注册 -->
+	<dimen name="register_title_text_size">70px</dimen>
+	<dimen name="register_code_layout_width">412px</dimen>
+	
+	<!-- 基本信息 -->
+	<dimen name="device_info_image_title_height">98px</dimen>
+	<dimen name="device_info_images_height">324px</dimen>
+	<dimen name="device_info_text_height">58px</dimen>
+	<dimen name="device_info_text_size">34px</dimen>
+
+	<!--一键检测椭圆尺寸-->
+	<dimen name="oval_size">364px</dimen>
+	<dimen name="btn_detect_now_width">265px</dimen>
+	<dimen name="btn_detect_now_height">86px</dimen>
+	<!--检测中-->
+	<dimen name="detect_title_height">120px</dimen>
+	<dimen name="detecting_marginleft1">92px</dimen>
+	<dimen name="detecting_marginleft2">222px</dimen>
+	<dimen name="detecting_marginleft3">204px</dimen>
+	<dimen name="detecting_item_height">132px</dimen>
+	<dimen name="detecting_item_leftmargin1">80px</dimen>
+	<dimen name="detecting_item_leftmargin2">258px</dimen>
+	<dimen name="detecting_item_leftmargin3">238px</dimen>
+	<dimen name="detecting_item_leftmargin4">19px</dimen>
+	
+	<!--报修页面-->
+	<dimen name="repair_completed">58px</dimen>
+	<dimen name="repair_completed_text_leftmargin">36px</dimen>
+	<dimen name="repair_item_height">192px</dimen>
+	<dimen name="repair_item_leftmargin">44px</dimen>
+	<dimen name="repair_item_text_margintop">36px</dimen>
+	<dimen name="repair_item_text_margintop5">38px</dimen>
+	<dimen name="repair_item_text_marginleft">27px</dimen>
+	<dimen name="repair_item_text_margintop2">32px</dimen>
+	<dimen name="repair_item_text_marginright">30px</dimen>
+	<dimen name="repair_item_text_margintop3">30px</dimen>
+	<dimen name="repair_item_text_margright">30px</dimen>
+	<dimen name="repair_item_text_margrtop4">25px</dimen>
+	<dimen name="repair_item_height2">90px</dimen>
+	<dimen name="repair_item_height3">110px</dimen>
+	<dimen name="repair_item_height4">87px</dimen>
+	<dimen name="repair_item_text_marginbottom">25px</dimen>
+	<dimen name="repair_bottom_height">230px</dimen>
+	<dimen name="repair_button_width">998px</dimen>
+	<dimen name="repair_button_height">145px</dimen>
+	<dimen name="oval_blue_size">20px</dimen>
+	<dimen name="oval_blue_leftmargin">43px</dimen>
+	<dimen name="oval_blue_topmargin">54px</dimen>
+	
+	<!--新增报修页面-->
+	<dimen name="new_repair_height1">146px</dimen>
+	<dimen name="new_repair_height2">226px</dimen>
+	<dimen name="new_repair_leftmargin1">77px</dimen>
+	<dimen name="new_repair_btn_marginleft">77px</dimen>
+	<dimen name="new_repair_btn_marginleft2">338px</dimen>
+	<dimen name="new_repair_btn_marginleft3">54px</dimen>
+	<dimen name="new_repair_logo_height">68px</dimen>
+	<dimen name="new_repair_logo_width">82px</dimen>
+	<dimen name="new_repair_text_height">98px</dimen>
+	<dimen name="new_repair_arrow_right_rightmargin">32px</dimen>
+	<dimen name="new_repair_margintop1">54px</dimen>
+	
+	<!--评价页面-->
+	<dimen name="rating_start_width">139px</dimen>
+	<dimen name="rating_start_height">86px</dimen>
+	<dimen name="rating_bar_margintop">98px</dimen>
+	<dimen name="rating_bar_marginleft">255px</dimen>
+	<dimen name="rating_bar_text_margintop">86px</dimen>
+	<dimen name="rating_bar_line_width">806px</dimen>
+	<dimen name="rating_bar_line_margintop">113px</dimen>
+	<dimen name="rating_bar_oval_size">10px</dimen>
+	<dimen name="rating_bar_oval_margintop">94px</dimen>
+	<dimen name="rating_bar_oval_marginleft">142px</dimen>
+	
+	<dimen name="screen_height">1920px</dimen>
+	<dimen name="screen_width">1080px</dimen>
+	
+	<dimen name="taglayout_width">810px</dimen>
+	<dimen name="taglayout_height">178px</dimen>
+	<dimen name="taglayout_spacing">26px</dimen>
+	<dimen name="taglayout_margintop">38px</dimen>
+	<dimen name="taglayout_margintop2">87px</dimen>
+	<dimen name="taglayout_marginleft3">136px</dimen>
+	<dimen name="taglayout_marginleft4">96px</dimen>
+	<dimen name="taglayout_margintop5">25px</dimen>
+	<dimen name="taglayout_marginbottom">23px</dimen>
+	<dimen name="taglayout_margintop6">95px</dimen>
+	
+	<!-- 标题字体与返回键的间距 -->
+	<dimen name="title_leftargin1">20px</dimen>
+	<dimen name="title_leftargin2">44px</dimen>
+	
+	<!--定义dialog的边距-->
+	<dimen name="dialog_padding">120px</dimen>
+	<dimen name="dialog_textSize">52px</dimen>
+	<dimen name="dialog_title_height">177px</dimen>
+	<dimen name="dialog_message_height">208px</dimen>
+	
+	<!--消息页面-->
+	<dimen name="image_size">144px</dimen>
+	<dimen name="image_leftmargin">44px</dimen>
+	<dimen name="image_topmargin">27px</dimen>
+	<dimen name="oval_message_size">30px</dimen>
+	<dimen name="message_rl_size1">159px</dimen>
+	<dimen name="message_rl_leftmargin1">46px</dimen>
+	<dimen name="message_rl_topmargin2">19px</dimen>
+	<dimen name="message_select_height">120px</dimen>
+	<dimen name="nomal_corners">5dp</dimen>
+	
+</resources>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>    
+<RelativeLayout 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    
+    <com.cloudmachine.utils.widgets.MyScrollLayout    
+	  xmlns:android="http://schemas.android.com/apk/res/android"    
+	  android:id="@+id/ScrollLayout"    
+	  android:layout_width="fill_parent"    
+	  android:layout_height="fill_parent">  
+	  
+        
+      <com.cloudmachine.utils.widgets.MyImageView
+        android:id="@+id/imageview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/default_img" >
+    </com.cloudmachine.utils.widgets.MyImageView>
+        
+      <!--  <ImageView
+ 	  android:id="@+id/img1"    
+	  android:background="@drawable/content_mg"    
+	  android:layout_width="fill_parent"    
+	  android:layout_height="fill_parent">
+	  </ImageView>   
+      
+	   <ImageView
+	  android:id="@+id/img2"       
+	  android:background="@drawable/content_mg"    
+	  android:layout_width="fill_parent"    
+	  android:layout_height="fill_parent">
+	  </ImageView>    
+	      
+	  <ImageView
+	  android:id="@+id/img3"
+	  android:background="@drawable/content_mg"     
+	  android:layout_width="fill_parent"    
+	  android:layout_height="fill_parent">    
+	  </ImageView>     -->
+ 	 
+	  
+  
+       
+	</com.cloudmachine.utils.widgets.MyScrollLayout> 
+
+    <LinearLayout 
+
+    	android:id="@+id/lineayout" 
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+        android:orientation="horizontal" 		    	
+    	android:layout_marginBottom="24.0dip" 
+    	android:layout_alignParentBottom="true" 
+    	android:layout_centerHorizontal="true">
+    	
+        
+      <ImageView  
+            android:id="@+id/bottom_img1" 
+            android:clickable="true"  
+            android:padding="5dp" 
+            android:layout_gravity="center_vertical" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:src="@drawable/guide_round" />
+        <!--   <ImageView 
+            android:id="@+id/bottom_img2" 
+            android:clickable="true"  
+            android:padding="5dp"  
+            android:layout_gravity="center_vertical" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:src="@drawable/guide_round" />
+        <ImageView 
+            android:id="@+id/bottom_img3" 
+            android:clickable="true"  
+            android:padding="5dp"  
+            android:layout_gravity="center_vertical" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:src="@drawable/guide_round" /> -->
+        
+        
+    </LinearLayout>
+    
+</RelativeLayout>
+

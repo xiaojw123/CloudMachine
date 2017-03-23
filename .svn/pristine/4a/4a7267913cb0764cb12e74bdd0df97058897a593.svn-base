@@ -1,0 +1,113 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+   
+    
+     <style name="main_bar_image" >
+        <item name="android:layout_width">@dimen/main_bar_image_height</item>
+        <item name="android:layout_height">@dimen/main_bar_image_height</item>
+        <item name="android:layout_marginTop">@dimen/main_bar_image_padding</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+    <style name="main_bar_text" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/main_bar_image_padding</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textColor">@color/main_bar_text_nm</item>
+        <item name="android:textSize">@dimen/main_bar_text_size</item>
+    </style>
+    <style name="personal_left_text" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/public_layout_padding_left</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textColor">@color/public_black</item>
+        <item name="android:textSize">@dimen/public_textsize1</item>
+    </style>
+    <style name="personal_edit_text" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textColor">@color/public_edit_text</item>
+        <item name="android:textSize">@dimen/public_textsize1</item>
+    </style>
+    <style name="personal_arrow_image" >
+        <item name="android:layout_width">@dimen/arrow_image_width</item>
+        <item name="android:layout_height">@dimen/arrow_image_height</item>
+        <item name="android:layout_marginRight">@dimen/public_layout_padding_left</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:src">@drawable/arrow_next</item>
+    </style>
+    <style name="line_layout" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/public_line_wh</item>
+        <item name="android:background">@color/public_line</item>
+    </style>
+    <style name="layout_item" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/public_layout_item_height</item>
+        <item name="android:background">@drawable/btn_style_item</item>
+        <item name="android:clickable">true</item>
+    </style>
+    <style name="main_empty_text" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@color/public_main_empty_text</item>
+        <item name="android:textSize">@dimen/public_textsize1</item>
+        <item name="android:layout_marginTop">@dimen/main1_empty_image_to_text</item>
+    </style>
+    <style name="mc_main_no_data_text" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@color/public_black_3</item>
+        <item name="android:textSize">@dimen/public_textsize1</item>
+    </style>
+    <style name="login_left_text" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@drawable/bg_text_login_back</item>
+        <item name="android:textSize">@dimen/public_title_left_textsize</item>
+    </style>
+    <style name="login_mid_text" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/public_black</item>
+        <item name="android:textSize">@dimen/public_title_textsize</item>
+    </style>
+    <style name="register_item_left_text" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/public_black</item>
+        <item name="android:textSize">@dimen/public_textsize1</item>
+        <item name="android:layout_marginLeft">@dimen/public_layout_padding_left</item>
+        <item name="android:layout_marginRight">@dimen/public_layout_padding_left</item>
+    </style>
+    <style name="register_clear_edit_text" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/public_black</item>
+        <item name="android:textSize">@dimen/public_textsize1</item>
+        <item name="android:textColorHint">@color/login_hint_text</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_marginRight">@dimen/public_layout_padding_left</item>
+    </style>
+    <style name="repair_basic_item_text" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/public_black</item>
+        <item name="android:textSize">@dimen/public_textsize1</item>
+        <item name="android:layout_marginLeft">@dimen/public_layout_padding_left</item>
+        <item name="android:singleLine">true</item>
+    </style>
+</resources>

@@ -1,0 +1,90 @@
+package com.cloudmachine.activities;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+import com.cloudm.autolayout.AutoLayoutActivity;
+import com.cloudmachine.utils.AppManager;
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.UMListUtil;
+import com.umeng.analytics.MobclickAgent;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
+public class BaseAutoLayoutActivity extends AutoLayoutActivity{
+
+	public static ArrayList<String> struList = new ArrayList<>();
+	private HashMap<String, String> mCustomMap;
+	private Stack<Activity> mActivityStack;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		UMListUtil.initCustomList();
+		UMListUtil.initStru1Map();
+		UMListUtil.initStru2Map();
+		super.onCreate(savedInstanceState);
+		AppManager.getAppManager().addActivity(this);
+		mActivityStack = AppManager.getAppManager().getActivityStack();
+		Set<Map.Entry<String, String>> stru1Entry = UMListUtil.stru1Map.entrySet();
+		Set<Map.Entry<String, String>> stru2Entry = UMListUtil.stru2Map.entrySet();
+		for (int i = 0 ;i < mActivityStack.size();i++) {
+			for (Map.Entry<String, String> stru1entry : stru1Entry) {
+				if (mActivityStack.get(i).getClass().getSimpleName().equals(stru1entry.getKey())) {
+					UMListUtil.stru1.add(stru1entry.getValue());
+				}
+			}
+			for (Map.Entry<String, String> stru2entry : stru2Entry
+					) {
+				if (mActivityStack.get(i).getClass().getSimpleName().equals(stru2entry.getKey())) {
+					UMListUtil.stru2.add(stru2entry.getValue());
+				}
+			}
+		}
+		MobclickAgent.onEvent(this,UMListUtil.stru1,1,"");
+		MobclickAgent.onEvent(this,UMListUtil.stru2,1,"");
+	}
+
+	@Override
+	protected void onResume() {
+		Constants.MyLog(getClass().getSimpleName());
+		Constants.MyLog("获取到信息");
+		mCustomMap = UMListUtil.customMap;
+		Set<Map.Entry<String, String>> entrySet = mCustomMap.entrySet();
+		for (Map.Entry<String,String> entry: entrySet
+			 ) {
+			if (entry.getKey().equals(getClass().getSimpleName())) {
+				MobclickAgent.onPageStart(entry.getValue());
+			}
+		}
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		Set<Map.Entry<String, String>> entrySet = mCustomMap.entrySet();
+		for (Map.Entry<String,String> entry: entrySet
+				) {
+			if (entry.getKey().equals(getClass().getSimpleName())) {
+				MobclickAgent.onPageEnd(entry.getValue());
+			}
+		}
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+
+		super.onDestroy();
+		AppManager.getAppManager().removeActivity(this);
+	}
+
+}

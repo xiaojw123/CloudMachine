@@ -1,0 +1,48 @@
+package com.cloudmachine.activities;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+import com.cloudmachine.utils.AppManager;
+import com.cloudmachine.utils.UMListUtil;
+import com.umeng.analytics.MobclickAgent;
+
+public class BaseActivity extends Activity{
+
+
+	private UMListUtil mUmListUtil;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		mUmListUtil = UMListUtil.getUMListUtil();//获取单例
+		mUmListUtil.sendStruEvent(this);//发送结构化事件
+		super.onCreate(savedInstanceState);
+		AppManager.getAppManager().addActivity(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		UMListUtil.startCustomEvent(this);//页面时长统计开始
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		UMListUtil.endCustomEvent(this);//页面时长统计结束
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		UMListUtil.removeList(this);//页面销毁,集合移除
+		super.onDestroy();
+
+	}
+
+}

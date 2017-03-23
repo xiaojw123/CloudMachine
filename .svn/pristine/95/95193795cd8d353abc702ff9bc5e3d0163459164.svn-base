@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Register -->
+    <string name="main_activity_exit">再按一次,退出云机械 </string>
+    <!-- Register -->
+    <string name="register_phone_null_fail">手机号不能为空！</string>
+    <string name="register_phone_not_correct">手机号不正确！</string>
+    <string name="register_nick_null">昵称不能为空！</string>
+    <string name="register_password_null">密码不能为空！</string>
+    <string name="register_password_lenght">密码不能小于6位！</string>
+    <string name="register_password_not_same">两次密码不相同！</string>
+    
+    
+	<!-- add_device -->
+    <string name="add_device_name_null">机器名称不能为空！</string>
+    <string name="add_device_type_null">机器种类不能为空！</string>
+    <string name="add_device_brand_null">机器品牌不能为空！</string>
+    <string name="add_device_model_null">机器型号不能为空！</string>
+    <string name="add_device_nameplate_null">机器铭牌照片不能为空！</string>
+    <string name="add_device_Engine_null">发动机号照片不能为空！</string>
+    <string name="add_device_card_null">标识贴不能为空！</string>
+    
+    <!-- Edit_Personal -->
+    <string name="edit_personal_nick_success">修改昵称成功！</string>
+    <string name="edit_personal_nick_fail">修改昵称失败！</string>
+    
+    <!-- mpchart -->
+    <string name="mpchart_not_date">数据为空，需要机器运行几天哦！</string>
+    
+    <!-- mc_datial -->
+    <string name="mc_detail_gps_not">该机器暂时无定位信息，请稍后重试！</string>
+    
+    <!-- ImagePager -->
+    <string name="imagepage_delet_image">要删除这张照片吗？</string>
+    
+    <!-- WorkTime -->
+    <string name="work_time_daily_nodata">没有数据哦</string>
+    <!-- Chart -->
+    <string name="chart_nodata">没有数据哦</string>
+    <!-- Historical -->
+    <string name="start_end_time_null">开始或结束时间不能为空哦！</string>
+    <string name="start_end_time_error">结束时间不能早于开始时间哦!</string>
+    <!-- Agent -->
+    <string name="agent_no_phone">网点电话为空，请稍后重试</string>
+    
+</resources>

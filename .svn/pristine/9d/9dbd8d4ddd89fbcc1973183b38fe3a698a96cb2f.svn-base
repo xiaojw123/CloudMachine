@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg" >
+
+    <LinearLayout
+        android:id="@+id/image_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/guide_image_bg_height"
+        android:background="@color/public_blue_bg"
+        android:gravity="center" >
+
+        <ImageView
+            android:layout_width="@dimen/guide_image_guide4_width"
+            android:layout_height="@dimen/guide_image_guide4_height"
+            android:background="@drawable/guide_iamge4" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="@dimen/guide_image_text4_width"
+        android:layout_height="@dimen/guide_image_text4_height"
+        android:layout_below="@id/image_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/guide_text_marginTop"
+        android:background="@drawable/guide_text4" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/guide_dot_marginBottom" >
+
+        <ImageView
+            android:layout_width="@dimen/guide_dot_diameter"
+            android:layout_height="@dimen/guide_dot_diameter"
+            android:background="@drawable/guide_dot_nm" />
+
+        <ImageView
+            android:layout_width="@dimen/guide_dot_diameter"
+            android:layout_height="@dimen/guide_dot_diameter"
+            android:layout_marginLeft="@dimen/guide_dot_padding"
+            android:background="@drawable/guide_dot_nm" />
+
+        <ImageView
+            android:layout_width="@dimen/guide_dot_diameter"
+            android:layout_height="@dimen/guide_dot_diameter"
+            android:layout_marginLeft="@dimen/guide_dot_padding"
+            android:background="@drawable/guide_dot_nm" />
+
+        <ImageView
+            android:layout_width="@dimen/guide_dot_diameter"
+            android:layout_height="@dimen/guide_dot_diameter"
+            android:layout_marginLeft="@dimen/guide_dot_padding"
+            android:background="@drawable/guide_dot_dw" />
+    </LinearLayout>
+
+    <com.cloudmachine.autolayout.widgets.RadiusButtonView
+        android:id="@+id/intoMain"
+        android:layout_width="@dimen/radius_button_width"
+        android:layout_height="@dimen/radius_button_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/guide_button_marginBottom"
+        cloudm:rbtn_text="@string/guide_button_text"
+        cloudm:rbtn_textSize="@dimen/about_button_textsize" 
+        cloudm:rbtn_fillColor_dw="@color/public_white"
+        cloudm:rbtn_fillColor_nm="@color/public_transparent"
+        cloudm:rbtn_strokeColor="@color/public_blue_bg"
+        cloudm:rbtn_textColor="@color/public_blue_bg"
+        />
+
+</RelativeLayout>

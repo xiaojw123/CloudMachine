@@ -1,0 +1,115 @@
+<resources>
+
+    <declare-styleable name="SlidingMenu">
+        <attr name="mode">
+            <enum name="left" value="0" />
+            <enum name="right" value="1" />
+        </attr>
+        <attr name="viewAbove" format="reference" />
+        <attr name="viewBehind" format="reference" />
+        <attr name="behindOffset" format="dimension" />
+        <attr name="behindWidth" format="dimension" />
+        <attr name="behindScrollScale" format="float" />
+        <attr name="touchModeAbove">
+            <enum name="margin" value="0" />
+            <enum name="fullscreen" value="1" />
+        </attr>
+        <attr name="touchModeBehind">
+            <enum name="margin" value="0" />
+            <enum name="fullscreen" value="1" />
+        </attr>
+        <attr name="shadowDrawable" format="reference" />
+        <attr name="shadowWidth" format="dimension" />
+        <attr name="fadeEnabled" format="boolean" />
+        <attr name="fadeDegree" format="float" />
+        <attr name="selectorEnabled" format="boolean" />
+        <attr name="selectorDrawable" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="addDItem_view">
+        <attr name="name" format="string" />
+        <attr name="hint" format="string" />
+        <attr name="content" format="string" />
+        <attr name="edit" format="boolean" />
+        <attr name="arrow" format="boolean" />
+        <attr name="required" format="boolean" />
+        <attr name="last" format="boolean" />
+        <attr name="titleTextSize" format="float" />
+        <attr name="cTextSize" format="float" />
+    </declare-styleable>
+    
+    <declare-styleable name="detectItem_view">
+        <attr name="detectItem" format="string" />
+        <attr name="referenceRange" format="string" />
+        <attr name="tvResult" format="string" />
+        <attr name="abnormal" format="boolean" />
+    </declare-styleable>
+    
+    
+    <declare-styleable name="radiusbut_view">
+        <attr name="rbtn_text" format="string" />
+        <attr name="rbtn_textColor" format="color" />
+        <attr name="rbtn_textSize" format="dimension" />
+        <attr name="rbtn_roundRadius" format="dimension" />
+        <attr name="rbtn_strokeColor" format="color" />
+        <attr name="rbtn_fillColor_nm" format="color" />
+        <attr name="rbtn_fillColor_dw" format="color" />
+    </declare-styleable>
+    <declare-styleable name="title_view">
+        <attr name="text" format="string" />
+        <attr name="left_drawable" format="reference" />
+        <attr name="right_drawable" format="reference" />
+        <attr name="left_text" format="string" />
+        <attr name="right_text" format="string" />
+        <attr name="right_text_edit" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="SwitchButton">
+        <attr name="bmWidth" format="dimension"></attr>
+        <attr name="bmHeight" format="dimension"></attr>
+    </declare-styleable>
+    <declare-styleable name="DashboardView">
+        <attr name="radius" format="dimension" /> <!-- 扇形半径 -->
+        <attr name="startAngle" format="integer" /> <!-- 起始角度 -->
+        <attr name="sweepAngle" format="integer" /> <!-- 绘制角度 -->
+        <attr name="bigSliceCount" format="integer" /> <!-- 长刻度条数 -->
+        <attr name="sliceCountInOneBigSlice" format="integer" /> <!-- 长刻度条数 -->
+        <attr name="arcColor" format="color" /> <!-- 弧度颜色 -->
+        <attr name="measureTextSize" format="dimension" /> <!-- 刻度字体大小 -->
+        <attr name="textColor" format="color" /> <!-- 字体颜色 -->
+        <attr name="headerTitle" format="string" /> <!-- 表头 -->
+        <attr name="headerTextSize" format="string" /> <!-- 表头字体大小 -->
+        <attr name="headerRadius" format="dimension" /> <!-- 表头半径 -->
+        <attr name="pointerRadius" format="dimension" /> <!-- 指针半径 -->
+        <attr name="circleRadius" format="dimension" /> <!-- 中心圆半径 -->
+        <attr name="minValue" format="integer" /> <!-- 最小值 -->
+        <attr name="maxValue" format="integer" /> <!-- 最大值 -->
+        <attr name="realTimeValue" format="float" /> <!-- 实时值 -->
+        <attr name="stripeWidth" format="dimension" /> <!-- 色带宽度 -->
+        <attr name="stripeMode"> <!-- 色条显示位置 -->
+            <enum name="normal" value="0" />
+            <enum name="inner" value="1" />
+            <enum name="outer" value="2" />
+        </attr>
+        <attr name="bgColor" format="color" /> <!-- 背景颜色 -->
+    </declare-styleable>
+    
+    
+    <declare-styleable name="TagCloudLayout">
+        <attr name="lineSpacing" format="dimension" />
+        <attr name="tagSpacing" format="dimension" />
+        <!-- 是否是固定布局 -->
+        <attr name="isFixed" format="boolean" />
+        <attr name="columnSize" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CircleTextImageView">
+        <attr name="citv_border_width" format="dimension" />
+        <attr name="citv_border_color" format="color" />
+        <attr name="citv_border_overlay" format="boolean" />
+        <attr name="citv_fill_color" format="color" />
+        <attr name="citv_text_text" format="string"/>
+        <attr name="citv_text_color" format="color"/>
+        <attr name="citv_text_size" format="dimension"/>
+        <attr name="citv_text_padding" format="dimension"/>
+    </declare-styleable>
+    
+</resources>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/public_bg"
+              android:orientation="vertical"
+    >
+
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <RelativeLayout
+        android:id="@+id/phoneLayout"
+        style="@style/layout_item"
+        android:background="@color/public_bg"
+        >
+
+        <TextView
+            android:id="@+id/f11"
+            style="@style/personal_left_text"
+            android:text=""
+            />
+
+        <TextView
+            android:id="@+id/edit_textPhone"
+            style="@style/personal_edit_text"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/public_layout_padding_left"
+            android:background="@null"
+            android:text=""
+            />
+
+        <ImageView
+            android:id="@+id/iv_calendar"
+            android:layout_width="@dimen/login_icon_wh"
+            android:layout_height="@dimen/login_icon_wh"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="42px"
+            android:src="@drawable/calendar"
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/public_layout_padding_left"
+        />
+
+    <!--<RelativeLayout
+        android:id="@+id/rl_current_month"
+        style="@style/layout_item"
+        >
+
+        <TextView
+            android:id="@+id/tv_current_month"
+            style="@style/personal_left_text"
+            android:text="本月"
+            />
+
+        <TextView
+            android:id="@+id/tv_current_month_value"
+            style="@style/personal_edit_text"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/public_layout_padding_left"
+            android:background="@null"
+            android:text="统计说明"
+            />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/public_layout_padding_left"
+        />-->
+
+    <RelativeLayout
+        android:id="@+id/rl_work_days"
+        style="@style/layout_item"
+        >
+
+        <TextView
+            android:id="@+id/tv_work_days"
+            style="@style/personal_left_text"
+            android:text="工作天数"
+            />
+
+        <TextView
+            android:id="@+id/tv_work_days_value"
+            style="@style/personal_edit_text"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/public_layout_padding_left"
+            android:background="@null"
+            android:text=""
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/public_layout_padding_left"
+        />
+
+    <RelativeLayout
+        android:id="@+id/rl_total_hours"
+        style="@style/layout_item"
+        >
+
+        <TextView
+            android:id="@+id/tv_total_hours"
+            style="@style/personal_left_text"
+            android:text="累计工时"
+            />
+
+        <TextView
+            android:id="@+id/tv_total_hours_value"
+            style="@style/personal_edit_text"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/public_layout_padding_left"
+            android:background="@null"
+            android:text=""
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/public_layout_padding_left"
+        />
+
+    <RelativeLayout
+        android:id="@+id/rl_ave_hours"
+        style="@style/layout_item"
+        >
+
+        <TextView
+            android:id="@+id/tv_ave_hours"
+            style="@style/personal_left_text"
+            android:text="平均工时"
+            />
+
+        <TextView
+            android:id="@+id/tv_ave_hours_value"
+            style="@style/personal_edit_text"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/public_layout_padding_left"
+            android:background="@null"
+            android:text=""
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/public_layout_padding_left"
+        />
+
+    <RelativeLayout
+        android:id="@+id/rl_work_rate"
+        style="@style/layout_item"
+        >
+
+        <TextView
+            android:id="@+id/tv_work_rate"
+            style="@style/personal_left_text"
+            android:text="开工率"
+            />
+
+        <TextView
+            android:id="@+id/tv_work_rate_value"
+            style="@style/personal_edit_text"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/public_layout_padding_left"
+            android:background="@null"
+            android:text=""
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/text_check_report_margintop"
+            android:text=""
+            android:textSize="@dimen/public_textsize1"
+            />
+
+        <LinearLayout
+            android:id="@+id/line2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/tv_line2"
+                android:layout_width="@dimen/text_line2_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/text_check_report_margintop2"
+                android:lineSpacingExtra="@dimen/text_check_report_margintop2"
+                android:text=""
+                android:textSize="@dimen/public_textsize1"
+                android:maxEms="16"
+                android:gravity="center_horizontal"
+                />
+
+            <TextView
+                android:id="@+id/tv_line3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/text_check_report_margintop2"
+                android:text=""
+                android:textSize="@dimen/public_textsize1"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

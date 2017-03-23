@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#f0eff5" >
+
+    <RelativeLayout
+        android:id="@+id/ll_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#c9c9ce"
+        android:paddingBottom="5dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp" >
+
+        <TextView 
+            android:id="@+id/cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text="取消"
+            android:clickable="true" 
+            android:textColor="@drawable/bg_text_mc_search"
+            android:paddingLeft="15dp"
+        	android:paddingRight="15dp"
+             />
+        
+        
+        
+        <LinearLayout
+            android:id="@+id/linearlayout_search"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_contact_search_bg"
+            android:layout_toLeftOf="@+id/cancle"
+            android:orientation="horizontal" >
+
+            <!-- android:layout_marginRight="30dp" -->
+
+            <EditText
+                android:id="@+id/et_search_keyword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawableLeft="@drawable/search_bar_icon_normal"
+                android:gravity="center_vertical"
+                android:hint="搜索"
+                android:imeOptions="actionSearch"
+                android:keepScreenOn="true"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:singleLine="true"
+                android:textColor="#8e8d93"
+                android:textSize="14sp" >
+            </EditText>
+
+
+            <ImageButton
+                android:id="@+id/ib_clear_text"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="10dp"
+                android:background="@null"
+                android:contentDescription="@string/app_name"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/clearedittext_delete"
+                android:visibility="gone" >
+            </ImageButton>
+        </LinearLayout>
+        
+                
+ 
+      
+    </RelativeLayout>
+
+</RelativeLayout>

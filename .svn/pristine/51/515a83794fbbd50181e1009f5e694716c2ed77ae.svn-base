@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="topOfShare">#59b8f7</color>
+    <color name="nullVew">#f8f8f8</color>
+    <color name="comactive">#fa468b</color>
+ 	<color name="juzhi">#58bae9</color>
+  	<color name="c_juzhi">#949494</color>
+    <color name="white">#ffffff</color>
+    <color name="botbg">#f9f9f9</color>
+    <color name="listColor">#000000</color>
+    <color name="black">#000000</color>
+    <color name="green">#77BC2A</color>
+    <color name="blue">#ffccddff</color>
+    <color name="grey">#58616d</color>
+    <color name="darkgrey">#ff404040</color>
+    <color name="toasterro">#9fd524</color>
+    <color name="lightgrey">#ff888888</color>
+    <color name="semitransparent">#80000000</color>
+    <color name="lightransparent">#a0000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="navpage">#FFE1E8EB</color>
+    <color name="xliview_header_bg">#fff</color>
+    <color name="xliview_footer_bg">#fff</color>
+    <color name="alert">#CC0000</color>
+    <color name="confirm">#FF8800</color>
+    <color name="info">#669900</color>
+    <color name="d5">#d5d5d5</color>
+    <color name="f7f8">#F7F8FA</color>
+    <color name="radiogroup_bg">#ededed</color>
+    <color name="active_info_left">#58bae9</color>
+    <color name="active_info_right">#4967d5</color>
+    <color name="tabSelected">#29a1f7</color>
+      <color name="tabUnSelected">#888888</color>
+      <color name="locationinfo">#5b87b4</color>
+      <color name="no_glob">#aaaaaa</color>
+      <color name="sendblog">#888888</color>
+
+    <!-- alipay -->
+    <color name="TextColorBlack">#FF000000</color>
+    <color name="TextColorWhite">#FFFFFFFF</color>
+    <color name="BgColor">#ffd1dce9</color>
+    <color name="ebebeb">#ffe8e8e8</color>
+    <color name="common_bg">#e8f3e0</color>
+    <color name="common_grey">#616161</color>
+    <color name="common_hint">#9a9a9a</color>
+    
+    <color name="common2_blue">#4bc3fb</color>
+    <color name="common2_green">#91d088</color>
+    <color name="common2_red">#f46a03</color>
+    
+
+    <!-- common -->
+    <color name="common_main">#333333</color>
+    <color name="commom_bg">#E9EAEC</color>
+    <color name="common_line">#e1e1e4</color>
+    <color name="common_list_gap">#ededed</color>
+    <!-- <color name="common_title_bg">#343339</color> -->
+    <color name="common_title_bg">#169ADA</color>                               <!--修改了标题栏的颜色  -->
+    <color name="common_text_hint">#4d000000</color>
+    <color name="commom_transparent_bg">#64000000</color>
+    <!-- popmenu -->
+    <color name="pop_color">#007cff</color>
+    <!-- LOGING -->
+    <color name="log_rad_but_green_stroke">#68a009</color>
+    <color name="log_rad_but_green_nm">#72ba2d</color>
+    <color name="line_bg">#cbcbcb</color>
+    <color name="common_or">#fd5003</color>
+    <color name="main_bg">#f1f1f1</color>
+    <color name="login_bg">#eeeeee</color>
+    <color name="common_text_or">#fd5003</color>
+    <color name="common_text_grey">#dbdbdb</color>
+    <color name="redcolor">#ff0000</color>
+     <color name="exitLogin">#e95856</color>
+    <!-- test -->
+    <color name="fontOfPersonTitle">#000000</color>
+    <color name="unfocused">#cccccccc</color>
+    <color name="pressed">#fff22fff</color>
+    <color name="selected">#fff33fff</color>
+    <color name="focused">#ffff44ff</color>
+    <color name="testUser">#0096de</color>
+    <color name="machinecolor">#0296ff</color>
+    <color name="time">#545454</color>
+    <color name="shareFont">#939393</color>
+     <color name="personFont">#999999</color>
+     <color name="personinfo">#aaaaaa</color>
+     <color name="share_bg">#80000000</color>
+     
+     <color name="popup_bg">#f2f2f2</color>
+    <color name="light_black">#a8a8a8</color>
+    <color name="dark_white">#dddddd</color>
+    
+    <!-- #FFDCE0DF -->
+    <color name="software_textColor_selected">#608094</color>  
+    <color name="software_textColor_unselected">#10b1fd</color> 
+    
+    <!-- button -->
+    <color name="button_textColor_selected">#608094</color>  
+    <color name="button_textColor_unselected">#10b1fd</color> 
+	
+	 <!-- device_info-->
+    <color name="device_scanning_text">#0cafed</color>
+    <color name="mc_line">#e1e1e4</color>
+    <color name="mc_device_old">#f0f0f0</color>
+    <color name="mc_device_old_text">#888888</color>
+    <color name="mc_device_hint_text">#555555</color>
+    <color name="mc_device_nopermission_text">#aaaaaa</color>
+    <color name="mc_engine_line">#d9d9d9</color>
+    <color name="mc_main_bg">#f0eff5</color>
+    <color name="mc_tophoto_bg">#ededed</color>
+    <color name="mc_oilwear_tab_bg">#f0eff5</color>
+    <color name="mc_green">#7bc543</color>
+    <color name="mc_grey">#d4d4d4</color>
+    <color name="mc_state0">#7fc44c</color>
+    <color name="mc_state1">#f6a604</color>
+    <color name="mc_state2">#e3590e</color>
+    <color name="mc_rad_but_dw_0">#33ffffff</color>
+    <color name="mc_rad_but_dw_1">#19000000</color>
+    <color name="mc_rad_but_red_stroke">#d03333</color>
+    <color name="mc_rad_but_red_nm">#e95856</color>
+    <color name="mc_rad_but_blue_stroke">#028bcc</color>
+    <color name="mc_rad_but_blue_nm">#0097df</color>
+    <color name="mc_rad_but_white_stroke">#cbcbcb</color>
+    <color name="mc_rad_but_white_nm">#ffffff</color>
+    <color name="mc_rad_but_grey_stroke">#7b828b</color>
+    <color name="mc_rad_but_grey_nm">#858c95</color>
+    <color name="mc_teston_stroke">#63a91f</color>
+    <color name="mc_teston_fill">#72ba2d</color>
+    
+    
+    <drawable name="mc_search_cancel_dw">#82aa0b</drawable>  
+    <drawable name="mc_search_cancel_nm">#9fd405</drawable>   
+     
+    <drawable name="mc_title_dw">#58616d</drawable>  
+    <drawable name="mc_title_nm">#ffffff</drawable>    
+    
+    <drawable name="mc_device_mtitle_nm">#777777</drawable>    
+    <drawable name="mc_device_mtitle_dw">#000000</drawable>    
+    
+    <color name="bg_list_item_gery">#33000000</color>
+    
+    <color name="result_view">#b0000000</color>
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="possible_result_points">#c0ffff00</color> 
+    
+    <color name="message_list_item_bg1">#ffffff</color> 
+    <color name="message_list_item_bg2">#10000000</color> 
+    
+    <color name="none_color">#00000000</color>
+ 	<color name="plugin_camera_black">#000000</color>
+ 	<color name="albumback">#efeff4</color>
+ 	
+ 	<color name="work_status_text0">#888888</color>
+ 	<color name="work_status_text1">#333333</color>
+    
+ 	<drawable name="login_out_dw">#d9d9d9</drawable>    
+    <drawable name="login_out_nm">#f4f4f4</drawable>   
+     
+    <!-- wheel_view-->
+    <color name="wheelview_province_line_border">#D0D0D0</color>
+    
+    <color name="oil_amount_proportion_text">#43b5ec</color>
+    <color name="oil_amount_proportion_last_text">#80c676</color>
+    
+    <color name="chart_not">#78f0eff5</color>
+    <color name="chart_yes">#784dc2fb</color>
+    <color name="chart_yes1">#788ed591</color>
+    <color name="chart_yes_dw">#1ecfcb</color><!-- #0097df -->
+    
+    <color name="chart_fault_fill">#f76f0f</color>
+    <color name="chart_Limit_line">#f07b24</color>
+    
+    <color name="historical_track_start_end_text">#444444</color>
+    <color name="main_bar_score_text">#ea4800</color>
+    
+    <color name="uncompleted_color">#A3E0D9</color>
+    <color name="uncompleted_text_color">#F8F8F8</color>
+ 	
+</resources>
