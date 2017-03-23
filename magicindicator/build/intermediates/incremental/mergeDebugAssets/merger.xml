@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/Users/shixionglu/Desktop/CloudMachine/magicindicator/src/main/assets"/><source path="/Users/shixionglu/Desktop/CloudMachine/magicindicator/build/generated/assets/shaders/debug"/></dataSet><dataSet config="debug"><source path="/Users/shixionglu/Desktop/CloudMachine/magicindicator/src/debug/assets"/></dataSet></merger>

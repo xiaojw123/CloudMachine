@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical"
+    >
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+    		android:layout_height="match_parent"
+    		android:orientation="vertical"
+            >
+            <include 
+                android:id="@+id/list_title_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#f7fcfb"
+                layout="@layout/sensor_list_item"/>
+            <ListView
+		        android:id="@+id/sensor_listview"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:dividerHeight="0px"
+		        android:divider="@color/public_line"
+		        android:scrollbars="none"
+		        
+		        />
+    
+        </LinearLayout>
+    
+            
+    
+
+</LinearLayout>

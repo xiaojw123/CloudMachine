@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/main1_list_layout_height"
+    android:background="@color/public_white"
+    >
+    <RelativeLayout 
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+        >
+        
+   
+	 <ImageView
+            android:id="@+id/info_img"
+            android:layout_width="@dimen/main1_list_image_wh"
+            android:layout_height="@dimen/main1_list_image_wh"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY" 
+            android:layout_marginLeft="@dimen/public_layout_padding_left"
+            />
+	 <LinearLayout 
+	     	android:id="@+id/arrow_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+	     >
+	     <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="@dimen/arrow_image_width"
+            android:layout_height="@dimen/arrow_image_height"
+            android:background="@drawable/arrow_next"
+            android:scaleType="centerCrop" 
+            android:layout_marginRight="@dimen/public_layout_padding_left"
+            android:visibility="invisible"
+            />
+	     <com.cloudmachine.utils.widgets.RadiusButtonView
+				        android:id="@+id/arrow_add"
+				        android:layout_width="248px"
+           	 			android:layout_height="106px"
+				        cloudm:rbtn_text="添加"
+            			android:textSize="@dimen/public_textsize1"
+            			android:layout_marginRight="@dimen/public_layout_padding_left"
+				        cloudm:rbtn_strokeColor="@color/public_blue_bg"
+				        cloudm:rbtn_fillColor_nm="@color/public_white"
+				        cloudm:rbtn_fillColor_dw="@color/public_white_10"
+				        cloudm:rbtn_textColor="@color/public_blue_bg"
+				        android:visibility="gone"
+				        ></com.cloudmachine.utils.widgets.RadiusButtonView>
+	     
+	 </LinearLayout>
+	 
+	 
+
+	 <LinearLayout 
+	     android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         android:layout_toLeftOf="@id/arrow_layout"
+         android:layout_toRightOf="@id/info_img"
+         android:gravity="center_vertical"
+         android:paddingLeft="@dimen/mc_search_List_imagegap_w"
+         android:paddingRight="@dimen/common_view_min_gap"
+         android:layout_marginTop="@dimen/common_view_gap"
+         android:layout_marginBottom="@dimen/common_view_gap"
+         android:layout_centerVertical="true"
+	     >
+	     <TextView 
+	        android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textSize="@dimen/public_textsize1"
+            android:textColor="@color/public_black"
+	         />
+	     <TextView 
+	        android:id="@+id/summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textSize="@dimen/public_textsize2"
+            android:textColor="@color/public_black_9b"
+	         />
+	 </LinearLayout>
+ </RelativeLayout>
+
+</LinearLayout>

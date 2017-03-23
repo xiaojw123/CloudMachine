@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <solid android:color="#FFFFFF"/>
+    <corners android:radius="5dp"/>
+<!--主页轮播图被选中样式白色-->
+</shape>

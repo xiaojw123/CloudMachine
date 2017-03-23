@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list  
+  xmlns:android="http://schemas.android.com/apk/res/android"  
+  android:oneshot="false"  
+  >  
+    <item android:drawable="@drawable/scanning1" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning2" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning3" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning4" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning5" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning6" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning7" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning8" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning9" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning10" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning11" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning12" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning13" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning14" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning15" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning16" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning17" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning18" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning19" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning20" android:duration="100"></item>  
+    <item android:drawable="@drawable/scanning21" android:duration="100"></item>  
+</animation-list> 

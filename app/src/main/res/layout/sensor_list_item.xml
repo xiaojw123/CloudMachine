@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/white"
+  android:orientation="vertical"
+  >
+  
+      <RelativeLayout 
+      android:id="@+id/right_layout"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/fault_ditails_lsit_height"
+      >
+      <LinearLayout 
+          android:id="@+id/right_image_layout"
+          android:layout_width="45dp"
+          android:layout_height="match_parent"
+          android:layout_alignParentRight="true"
+          android:paddingRight="@dimen/layout_item_padding_left"
+          android:gravity="right|center_vertical"
+          >
+          <ImageView
+            android:id="@+id/state_image"
+            android:layout_width="@dimen/fault_ditails_abnormal_image_wh"
+            android:layout_height="@dimen/fault_ditails_abnormal_image_wh"
+            android:scaleType="centerCrop" 
+            android:layout_centerVertical="true"
+            android:background="@drawable/abnormal"
+            android:visibility="gone"
+            />
+      </LinearLayout>
+      <LinearLayout 
+      android:layout_width="match_parent"
+  	  android:layout_height="match_parent"
+  	  android:layout_toLeftOf="@id/right_image_layout"
+  	  android:orientation="horizontal"
+      >
+      <TextView 
+          android:id="@+id/fault_name"
+          android:layout_width="match_parent"
+  	  android:layout_height="match_parent"
+  	  android:text="传感器"
+  	  android:layout_weight="2"
+  	  android:singleLine="true"
+         android:textSize="@dimen/public_textsize3"
+         android:textColor="@color/black"
+         android:gravity="center"
+          />
+      <TextView 
+          android:id="@+id/fault_range"
+          android:layout_width="match_parent"
+  	  android:layout_height="match_parent"
+  	  android:text="--"
+  	  android:layout_weight="3"
+  	  android:singleLine="true"
+         android:textSize="@dimen/public_textsize3"
+         android:textColor="@color/black"
+         android:gravity="center"
+          />
+      <TextView 
+          android:id="@+id/fault_date"
+          android:layout_width="match_parent"
+  	  android:layout_height="match_parent"
+  	  android:text="--"
+  	  android:layout_weight="3"
+  	  android:singleLine="true"
+         android:textSize="@dimen/public_textsize3"
+         android:textColor="@color/black"
+         android:gravity="center_vertical|right"
+          />
+  	</LinearLayout>
+      
+      
+      
+      </RelativeLayout>
+ 	
+ 	
+   <TextView 
+       android:id="@+id/line"
+       style="@style/line_layout"
+       android:layout_marginBottom="@dimen/public_line_wh"
+       />
+    	
+</LinearLayout>

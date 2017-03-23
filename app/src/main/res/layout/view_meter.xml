@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+	android:paddingBottom="9dp"
+    >
+    <RelativeLayout
+        android:id="@+id/meter_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:layout_marginLeft="15dp"
+		android:layout_marginRight="15dp"
+        >
+
+        <ImageView
+            android:id="@+id/meter_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/mc_engine_meter_icon" />
+
+        <ImageView
+            android:id="@+id/meter_pointer1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/mc_engine_pointer_icon" />
+        <ImageView
+            android:id="@+id/meter_pointer2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/mc_engine_pointer_icon2" />
+    </RelativeLayout>
+	<LinearLayout 
+	    android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/meter_layout"
+        android:orientation="horizontal"
+        android:layout_marginTop="-18dp"
+	    >
+
+        <LinearLayout
+            android:id="@+id/text_layout1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/meter1_text_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/meter1_text"
+                    style="@style/TextView.Meter_Text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="40" />
+
+                <TextView
+                    android:id="@+id/meter1_com"
+                    style="@style/TextView.Meter_Text1_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bar" />
+            </LinearLayout>
+            <LinearLayout 
+                android:id="@+id/meter1_text2_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                >
+                <TextView
+                android:id="@+id/meter1_text2"
+                style="@style/TextView.Meter_Text2_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="先导压力"
+                />
+                <TextView 
+                    android:id="@+id/meter1_text2_num"
+                    android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	style="@style/TextView.Meter_Text2_2"
+                	android:text="1"
+                	android:textColor="#e93634"
+                    />
+                <TextView 
+                    android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	style="@style/TextView.Meter_Text2"
+                	android:text=""
+                	android:textColor="@color/white"
+                    />
+            </LinearLayout>
+            
+            <TextView
+                android:id="@+id/meter1_text3"
+                style="@style/TextView.Meter_Text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正常"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/text_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" 
+            >
+
+            <LinearLayout
+                android:id="@+id/meter1_text_layout_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/meter1_text_2"
+                    style="@style/TextView.Meter_Text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="40" />
+
+                <TextView
+                    android:id="@+id/meter1_com_2"
+                    style="@style/TextView.Meter_Text1_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bar" />
+            </LinearLayout>
+            <LinearLayout 
+                android:id="@+id/meter1_text2_layout_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                >
+                <TextView
+                android:id="@+id/meter1_text2_2"
+                style="@style/TextView.Meter_Text2_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="先导压力"
+                />
+                <TextView 
+                    android:id="@+id/meter1_text2_num_2"
+                    android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	style="@style/TextView.Meter_Text2_2"
+                	android:text="2"
+                	android:textColor="#f6a604"
+                    />
+                <TextView 
+                    android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	style="@style/TextView.Meter_Text2"
+                	android:text=""
+                	android:textColor="@color/white"
+                    />
+            </LinearLayout>
+            
+            <TextView
+                android:id="@+id/meter1_text3_2"
+                style="@style/TextView.Meter_Text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正常"
+                />
+        </LinearLayout>
+
+	    
+	</LinearLayout>
+</RelativeLayout>

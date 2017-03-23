@@ -1,0 +1,403 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+              xmlns:radbtn="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/public_view_color"
+              android:orientation="vertical">
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/new_repair_height1"
+                android:layout_marginTop="@dimen/public_title_margin"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/public_layout_padding_left"
+                >
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:text="联系人"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <com.cloudmachine.utils.widgets.ClearEditTextView
+                    android:id="@+id/et_repairname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:hint="输入您的姓名"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/hint"
+                    android:textSize="@dimen/public_textsize1"
+                    />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/public_line_wh"
+                android:background="@color/list_divider_color"/>
+
+            <LinearLayout
+                android:id="@+id/et_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/common_layout_height"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/public_layout_padding_left"
+                >
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:text="联系方式"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <com.cloudmachine.utils.widgets.ClearEditTextView
+                    android:id="@+id/et_repair_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:hint="输入手机号码"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/hint"
+                    android:textSize="@dimen/public_textsize1"
+                    />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/public_view_height1"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl_showbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                >
+
+                <com.cloudmachine.autolayout.widgets.RadiusButtonView
+                    android:id="@+id/checkBtn"
+                    android:layout_width="@dimen/novice_guide_button_width"
+                    android:layout_height="@dimen/novice_guide_button_height"
+                    android:layout_gravity="center"
+                    radbtn:rbtn_fillColor_dw="@color/about_button_stroke"
+                    radbtn:rbtn_fillColor_nm="@color/public_white"
+                    radbtn:rbtn_strokeColor="@color/about_button_stroke"
+                    radbtn:rbtn_text="@string/btn_select_mac"
+                    radbtn:rbtn_textColor="@color/btn_color_blue"
+                    radbtn:rbtn_textSize="@dimen/about_button_textsize"/>
+
+                <ImageView
+                    android:layout_width="@dimen/new_repair_logo_height"
+                    android:layout_height="@dimen/new_repair_logo_height"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/new_repair_btn_marginleft2"
+                    android:src="@drawable/logo"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_checkMac"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/new_repair_text_height"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="如果已安装了云盒子可直接选择机器"
+                android:textColor="@color/history_text"
+                android:textSize="@dimen/public_textsize2"/>
+
+            <RelativeLayout
+                android:id="@+id/iv_type"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/new_repair_height1"
+                android:background="@color/public_white">
+
+                <TextView
+                    android:id="@+id/t1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/public_textsize3"
+                    android:text="产品"
+                    android:textColor="@color/public_black"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <TextView
+                    android:id="@+id/tv_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                    android:layout_toRightOf="@id/t1"
+                    android:text="选择机器类型"
+                    android:textColor="@color/hint"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <ImageView
+                    android:layout_width="@dimen/arrow_next_width"
+                    android:layout_height="@dimen/arrow_next_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/new_repair_arrow_right_rightmargin"
+                    android:src="@drawable/arrow_next"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/public_line_wh"
+                android:background="@color/list_divider_color"/>
+
+            <RelativeLayout
+                android:id="@+id/iv_brand"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/new_repair_height1"
+                android:background="@color/public_white">
+
+                <TextView
+                    android:id="@+id/t2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/public_textsize3"
+                    android:text="品牌"
+                    android:textColor="@color/public_black"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <TextView
+                    android:id="@+id/tv_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                    android:layout_toRightOf="@id/t2"
+                    android:text="选择机器品牌"
+                    android:textColor="@color/hint"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <ImageView
+                    android:layout_width="@dimen/arrow_next_width"
+                    android:layout_height="@dimen/arrow_next_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/new_repair_arrow_right_rightmargin"
+                    android:src="@drawable/arrow_next"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/public_line_wh"
+                android:background="@color/list_divider_color"/>
+
+            <RelativeLayout
+                android:id="@+id/iv_model"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/new_repair_height1"
+                android:background="@color/public_white">
+
+                <TextView
+                    android:id="@+id/t3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/public_textsize3"
+                    android:text="机型"
+                    android:textColor="@color/public_black"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <TextView
+                    android:id="@+id/tv_model"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                    android:layout_toRightOf="@id/t3"
+                    android:text="选择机器型号"
+                    android:textColor="@color/hint"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <ImageView
+                    android:layout_width="@dimen/arrow_next_width"
+                    android:layout_height="@dimen/arrow_next_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/new_repair_arrow_right_rightmargin"
+                    android:src="@drawable/arrow_next"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/public_line_wh"
+                android:background="@color/list_divider_color"/>
+
+            <LinearLayout
+                android:id="@+id/et_rackId"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/new_repair_height1"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/public_layout_padding_left"
+                    android:background="@null"
+                    android:text="机号"
+                    android:textColor="@color/public_black"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <com.cloudmachine.utils.widgets.ClearEditTextView
+                    android:id="@+id/et_rackIdname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                    android:background="@null"
+                    android:hint="输入您的机器铭牌号"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/hint"
+                    android:textSize="@dimen/public_textsize1"
+                    />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/public_line_wh"
+                android:background="@color/list_divider_color"/>
+
+            <RelativeLayout
+                android:id="@+id/iv_address"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/new_repair_height1"
+                android:background="@color/public_white">
+
+                <TextView
+                    android:id="@+id/t4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/public_textsize3"
+                    android:text="位置"
+                    android:textColor="@color/public_black"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <ImageView
+                    android:id="@+id/arrow_address"
+                    android:layout_width="@dimen/arrow_next_width"
+                    android:layout_height="@dimen/arrow_next_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/new_repair_arrow_right_rightmargin"
+                    android:src="@drawable/arrow_next"/>
+
+                <TextView
+                    android:id="@+id/text_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                    android:layout_toLeftOf="@id/arrow_address"
+                    android:layout_toRightOf="@id/t4"
+                    android:singleLine="true"
+                    android:text="输入机器所在位置"
+                    android:textColor="@color/hint"
+                    android:textSize="@dimen/public_textsize1"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/public_line_wh"
+                android:background="@color/list_divider_color"/>
+
+            <LinearLayout
+                android:id="@+id/et_desc"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/new_repair_height2"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:paddingLeft="15dp"
+                    android:text="故障描述"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/public_textsize1"/>
+
+                <com.cloudmachine.utils.widgets.ClearEditTextView
+                    android:id="@+id/et_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
+                    android:background="@null"
+                    android:hint="详细描述故障信息有利于技师更好的诊断"
+                    android:maxLines="16"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/hint"
+                    android:textSize="@dimen/public_textsize1"/>
+            </LinearLayout>
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.cloudmachine.autolayout.widgets.RadiusButtonView
+                    android:id="@+id/btn_bottom_repair"
+                    android:layout_width="@dimen/repair_button_width"
+                    android:layout_height="@dimen/repair_button_height"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="@dimen/public_textsize3"
+                    android:layout_marginTop="@dimen/repair_item_text_margintop5"
+                    radbtn:rbtn_fillColor_dw="@color/public_b_20"
+                    radbtn:rbtn_fillColor_nm="@color/public_blue_bg"
+                    radbtn:rbtn_strokeColor="@color/public_blue_bg"
+                    radbtn:rbtn_text="@string/btn_radio_submit"
+                    radbtn:rbtn_textColor="@color/public_white"
+                    radbtn:rbtn_textSize="@dimen/public_textsize7"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

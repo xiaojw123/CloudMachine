@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical"
+    >
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        >
+        <LinearLayout 
+            android:id="@+id/button_layout"
+            android:layout_width="match_parent"
+        	android:layout_height="@dimen/mc_map_enclosure_button_layout_height" 
+        	android:layout_alignParentBottom="true"
+        	android:background="@color/public_white"
+            >
+            <RelativeLayout 
+                android:layout_width="match_parent"
+        		android:layout_height="match_parent" 
+        		android:layout_weight="1"
+        		
+                >
+                <com.cloudmachine.autolayout.widgets.RadiusButtonView
+		        android:id="@+id/electronic_button"
+		        android:layout_width="@dimen/mc_map_enclosure_button_width"
+		        android:layout_height="@dimen/mc_map_enclosure_button_height"
+		        cloudm:rbtn_text="@string/mc_electronic_fence"
+		        cloudm:rbtn_textSize="@dimen/about_button_textsize" 
+		        android:layout_centerInParent="true"
+		        />
+            </RelativeLayout>
+            <RelativeLayout 
+                android:layout_width="match_parent"
+        		android:layout_height="match_parent" 
+        		android:layout_weight="1"
+                >
+                <com.cloudmachine.autolayout.widgets.RadiusButtonView
+		        android:id="@+id/historical_button"
+		        android:layout_width="@dimen/mc_map_enclosure_button_width"
+		        android:layout_height="@dimen/mc_map_enclosure_button_height"
+		        cloudm:rbtn_text="@string/mc_historical_track"
+		        cloudm:rbtn_textSize="@dimen/about_button_textsize"
+		        android:layout_centerInParent="true"
+		         />
+            </RelativeLayout>
+            
+        </LinearLayout>
+        <com.amap.api.maps2d.MapView
+        android:id="@+id/map"
+        android:layout_above="@id/button_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+    </RelativeLayout>
+    
+
+</LinearLayout>

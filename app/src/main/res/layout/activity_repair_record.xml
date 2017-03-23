@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/public_bg"
+    >
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <!-- 叠加的两个布局，有无维修记录 -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:id="@+id/no_repair_records"
+            android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+        	android:gravity="center_horizontal"
+        	android:orientation="vertical"
+        	android:background="@color/public_bg"
+        	android:visibility="gone"
+            >
+			<ImageView 
+		        android:layout_width="@dimen/main1_empty_image_wh"
+		        android:layout_height="@dimen/main1_empty_image_wh"
+		        android:layout_marginTop="@dimen/main2_empty_image_marginTop"
+		        android:layout_gravity="center_horizontal"
+		        android:background="@drawable/main3_empty_image"
+		        />
+		        <TextView 
+		        style="@style/main_empty_text"
+		        android:text="@string/main3_empty_text"
+		        />
+		        <com.cloudmachine.autolayout.widgets.RadiusButtonView
+			        android:id="@+id/btn_repair_now"
+			        android:layout_width="@dimen/main3_empty_button_height"
+			        android:layout_height="@dimen/novice_guide_button_height"
+			        android:layout_gravity="center_horizontal"
+			        cloudm:rbtn_strokeColor="@color/public_blue_bg"
+			        cloudm:rbtn_fillColor_nm="@color/public_blue_bg"
+			        cloudm:rbtn_fillColor_dw="@color/public_b_20"
+			        cloudm:rbtn_text="@string/main3_empty_button"
+			        cloudm:rbtn_textColor="@color/public_white"
+			        cloudm:rbtn_textSize="@dimen/about_button_textsize" 
+			        android:layout_marginTop="@dimen/main1_empty_image_to_text"
+			        />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/have_repair_records"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent" >
+			
+            <RelativeLayout
+                android:id="@+id/rl_repair_now"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/repair_bottom_height"
+                android:layout_alignParentBottom="true"
+                android:background="@color/public_white" >
+
+                <com.cloudmachine.autolayout.widgets.RadiusButtonView
+                    android:id="@+id/btn_bottom_repair"
+                    android:layout_width="@dimen/repair_button_width"
+                    android:layout_height="@dimen/repair_button_height"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/repair_item_text_margintop5"
+                    cloudm:rbtn_fillColor_dw="@color/public_b_20"
+                    cloudm:rbtn_fillColor_nm="@color/public_blue_bg"
+                    cloudm:rbtn_strokeColor="@color/public_blue_bg"
+                    cloudm:rbtn_text="@string/btn_repair_now"
+                    cloudm:rbtn_textColor="@color/public_white"
+                    cloudm:rbtn_textSize="@dimen/public_textsize7" />
+            </RelativeLayout>
+            
+            
+            <com.cloudmachine.utils.widgets.XListView
+                android:id="@+id/xlv_complete"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="@color/public_transparent"
+                android:divider="@color/public_transparent"
+                android:dividerHeight="@dimen/public_zero"
+                android:focusable="true"
+                android:scrollbars="none" 
+                android:layout_above="@id/rl_repair_now"
+                android:layout_alignParentTop="true"
+                />
+
+        <!--     <RelativeLayout
+                android:id="@+id/rl_repair_now"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/repair_bottom_height"
+                android:layout_alignParentBottom="true"
+                android:background="@color/public_white" >
+
+                <com.cloudmachine.autolayout.widgets.RadiusButtonView
+                    android:id="@+id/btn_bottom_repair"
+                    android:layout_width="@dimen/repair_button_width"
+                    android:layout_height="@dimen/repair_button_height"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/repair_item_text_margintop5"
+                    cloudm:rbtn_fillColor_dw="@color/about_button_stroke"
+                    cloudm:rbtn_fillColor_nm="@color/public_btn_stroke_color"
+                    cloudm:rbtn_strokeColor="@color/public_btn_stroke_color"
+                    cloudm:rbtn_text="@string/btn_repair_now"
+                    cloudm:rbtn_textColor="@color/public_white"
+                    cloudm:rbtn_textSize="@dimen/public_textsize7" />
+            </RelativeLayout> -->
+        </RelativeLayout>
+    </FrameLayout>
+
+</LinearLayout>
