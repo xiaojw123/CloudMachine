@@ -1,10 +1,5 @@
 package com.cloudmachine.net.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -13,12 +8,16 @@ import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
 import com.cloudmachine.struc.BaseBO;
-import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.NewRepairInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.Utils;
 import com.google.gson.Gson;
+
+import org.apache.http.NameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SubmitRepairAsync extends ATask{
 
@@ -88,17 +87,6 @@ public class SubmitRepairAsync extends ATask{
 		
 		list.add(Utils.addBasicValue("memberId", memberId));
 		if(null != newRepairInfo){
-//			if(mcDeviceInfo.getDeviceName()!=null){
-//				list.add(Utils.addBasicValue("memberId", memberId));
-//			}
-//			if(deviceId!=0){
-//				list.add(Utils.addBasicValue("id", String.valueOf(deviceId)));
-//			}
-//			list.add(Utils.addBasicValue("checkType", "1"));
-//			list.add(Utils.addBasicValue("memberId", String.valueOf(MemeberKeeper.getOauth(AddDeviceActivity.this).getId())));
-			
-			
-
 			list.add(Utils.addBasicValue("vmacopname",newRepairInfo.getVmacopname()));
 			list.add(Utils.addBasicValue("vmacoptel",newRepairInfo.getVmacoptel()));
 			list.add(Utils.addBasicValue("pk_prod_def",newRepairInfo.getPk_prod_def()));

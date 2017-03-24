@@ -52,6 +52,7 @@ import com.cloudmachine.utils.FileUtils;
 import com.cloudmachine.utils.PictureUtil;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.UMengKey;
+import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.utils.photo.util.PublicWay;
 import com.cloudmachine.utils.photo.util.Res;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
@@ -466,6 +467,10 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 				}
 			}
 			break;
+			case Constants.HANDLER_UPLOAD_SUCCESS:
+				String url = (String) msg.obj;
+				Constants.MyLog("拿到的图片链接"+url);
+				break;
 		default:
 			break;
 		}
@@ -474,7 +479,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+		Constants.MyLog("调用了一次");
 		Constants.MyLog("进来了");
 		Constants.MyLog("requestCode"+requestCode);
 		Constants.MyLog("resultCode"+resultCode);
@@ -499,10 +504,14 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 				selectedPhotos.clear();
 
 				if (photos != null&&photos.size()>0) {
-					String fileName = String.valueOf(System.currentTimeMillis());
-					Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(0));
-					String filename = FileUtils.saveBitmap(smallBitmap, fileName);
-					mPresenter.upLoadPhotoRequest(filename);
+
+					for (int i =0;i<photos.size();i++ ) {
+						String fileName = String.valueOf(System.currentTimeMillis());
+						Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(0));
+						String filename = FileUtils.saveBitmap(smallBitmap, fileName);
+						UploadPhotoUtils.getInstance(this).upLoadFile(filename, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
+					}
+
 					selectedPhotos.addAll(photos);
 				}
 				photoAdapter.notifyDataSetChanged();

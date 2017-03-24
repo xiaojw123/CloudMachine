@@ -232,6 +232,8 @@ public class Constants {
     public static final int HANDLER_SAVEARRIVALNOTICE_FAILD                            = HANDLER_SAVEARRIVALNOTICE_SUCCESS + 1;
     public static final int HANDLER_GETACCESSTOKEN_SUCCESS                            = HANDLER_SAVEARRIVALNOTICE_FAILD + 1;
     public static final int HANDLER_GETUSERMSG_SUCCESS                            = HANDLER_GETACCESSTOKEN_SUCCESS + 1;
+    public static final int HANDLER_UPLOAD_SUCCESS                            = HANDLER_GETUSERMSG_SUCCESS + 1;
+    public static final int HANDLER_UPLOAD_FAILD                           = HANDLER_UPLOAD_SUCCESS + 1;
 
 
     public static final String URL_LOGOCLOUDM = "https://f1.cloudm.com/logocloudm.png";
