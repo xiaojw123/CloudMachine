@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.cloudmachine.recycleadapter.delegate.HomeBannerItemDelegate;
 import com.cloudmachine.itemtype.HomeTypeItem;
+import com.cloudmachine.recycleadapter.delegate.HomeLocalDelegate;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
@@ -22,7 +23,10 @@ public class HomePageAdapter extends MultiItemTypeAdapter<HomeTypeItem> {
 
     public HomePageAdapter(Context context, List<HomeTypeItem> datas) {
         super(context, datas);
+        //轮播
         addItemViewDelegate(new HomeBannerItemDelegate());
+        //商城，保险，问答(本地)
+        addItemViewDelegate(new HomeLocalDelegate());
 
     }
 }

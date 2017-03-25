@@ -8,6 +8,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.recycleadapter.HomePageAdapter;
 import com.cloudmachine.struc.HomeBannerBean;
+import com.cloudmachine.struc.HomeLocalBean;
 import com.cloudmachine.struc.LatestDailyEntity;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 import com.cloudmachine.ui.homepage.model.HomePageModel;
@@ -85,6 +86,8 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
         homePageList.clear();
         LatestDailyEntity latestDailyEntity = (LatestDailyEntity)t;
         homePageList.add(new HomeBannerBean(latestDailyEntity.getTop_stories()));
+        //本地信息
+        homePageList.add(new HomeLocalBean());
         homePageAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(0);
         mSwipeRefreshLayout.setRefreshing(false);

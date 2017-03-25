@@ -174,5 +174,7 @@
      
      <!--button-->
      <dimen name="common_bottom_width">400dp</dimen>
+
+    <dimen name="common_height_60">110dp</dimen>
      
 </resources>

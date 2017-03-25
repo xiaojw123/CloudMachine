@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * 项目名称：CloudMachine
- * 类描述：
+ * 类描述：轮播图委托类型
  * 创建人：shixionglu
  * 创建时间：2017/3/20 下午5:45
  * 修改人：shixionglu
@@ -55,4 +55,6 @@ public class HomeBannerItemDelegate implements ItemViewDelegate<HomeTypeItem>, B
                 .setOnBannerClickListener(this)
                 .start();
     }
+
+
 }
