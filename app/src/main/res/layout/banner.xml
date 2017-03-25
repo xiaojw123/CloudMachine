@@ -5,7 +5,7 @@
              android:layout_width="match_parent"
              android:layout_height="200dp">
     
-    <com.cloudmachine.ui.widget.Banner.BannerViewPaper
+    <com.cloudmachine.utils.Banner.BannerViewPaper
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -33,7 +33,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:orientation="horizontal" >
-
+<!--轮播图中小圆点的位置的容器-->
 
     </LinearLayout>
 

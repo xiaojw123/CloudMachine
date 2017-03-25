@@ -3,7 +3,7 @@ package com.cloudmachine.ui.homepage.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.ui.bean.LatestDailyEntity;
+import com.cloudmachine.struc.LatestDailyEntity;
 
 import rx.Observable;
 

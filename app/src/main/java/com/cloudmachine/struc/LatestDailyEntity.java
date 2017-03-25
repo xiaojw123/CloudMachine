@@ -1,12 +1,13 @@
-package com.cloudmachine.ui.bean;
+package com.cloudmachine.struc;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by yiyi on 2016/12/27.
  */
 
-public class LatestDailyEntity {
+public class LatestDailyEntity implements Serializable{
 
     /**
      * date : 20140523

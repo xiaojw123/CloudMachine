@@ -1,9 +1,9 @@
-package com.cloudmachine.ui.adapter;
+package com.cloudmachine.recycleadapter;
 
 import android.content.Context;
 
-import com.cloudmachine.ui.delegate.HomeBannerItemDelegate;
-import com.cloudmachine.ui.itemtype.HomeTypeItem;
+import com.cloudmachine.recycleadapter.delegate.HomeBannerItemDelegate;
+import com.cloudmachine.itemtype.HomeTypeItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;

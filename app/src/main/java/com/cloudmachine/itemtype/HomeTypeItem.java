@@ -1,4 +1,4 @@
-package com.cloudmachine.ui.itemtype;
+package com.cloudmachine.itemtype;
 
 /**
  * 项目名称：CloudMachine

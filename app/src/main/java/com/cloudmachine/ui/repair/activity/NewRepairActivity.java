@@ -43,7 +43,7 @@ import com.cloudmachine.struc.MachineTypeInfo;
 import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.NewRepairInfo;
 import com.cloudmachine.struc.ResidentAddressInfo;
-import com.cloudmachine.ui.adapter.PhotoAdapter;
+import com.cloudmachine.recycleadapter.PhotoAdapter;
 import com.cloudmachine.ui.repair.contract.NewRepairContract;
 import com.cloudmachine.ui.repair.model.NewRepairModel;
 import com.cloudmachine.ui.repair.presenter.NewRepairPresenter;

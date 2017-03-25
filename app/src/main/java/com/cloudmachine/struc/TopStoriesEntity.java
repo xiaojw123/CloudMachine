@@ -1,12 +1,14 @@
-package com.cloudmachine.ui.bean;
+package com.cloudmachine.struc;
 
-import com.cloudmachine.ui.itemtype.HomeTypeItem;
+import com.cloudmachine.itemtype.HomeTypeItem;
+
+import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/1/10.
  */
 
-public class TopStoriesEntity implements HomeTypeItem {
+public class TopStoriesEntity implements HomeTypeItem ,Serializable{
     /**
      * title : 商场和很多人家里，竹制家具越来越多（多图）
      * image : http://p2.zhimg.com/9a/15/9a1570bb9e5fa53ae9fb9269a56ee019.jpg

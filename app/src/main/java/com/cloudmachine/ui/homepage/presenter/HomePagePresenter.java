@@ -1,6 +1,6 @@
 package com.cloudmachine.ui.homepage.presenter;
 
-import com.cloudmachine.ui.bean.LatestDailyEntity;
+import com.cloudmachine.struc.LatestDailyEntity;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 import com.cloudmachine.utils.Constants;
 

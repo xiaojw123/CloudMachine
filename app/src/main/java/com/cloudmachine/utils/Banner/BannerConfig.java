@@ -1,4 +1,4 @@
-package com.cloudmachine.ui.widget.Banner;
+package com.cloudmachine.utils.Banner;
 
 /**
  * Created by Administrator on 2017/1/10.

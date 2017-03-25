@@ -1,4 +1,4 @@
-package com.cloudmachine.ui.adapter;
+package com.cloudmachine.recycleadapter;
 
 import android.content.Context;
 import android.net.Uri;

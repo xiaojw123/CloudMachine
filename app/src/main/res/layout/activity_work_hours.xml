@@ -39,7 +39,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/main_bar_image_padding"
                 android:text="工时"
-                android:textColor="@color/main_bar_text_dw"
+                android:textColor="#29a1f7"
                 android:textSize="@dimen/main_bar_text_size"
                 android:layout_alignLeft="@id/tab_one_image"
                 />
@@ -69,7 +69,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/main_bar_image_padding"
                 android:text="统计"
-                android:textColor="@color/main_bar_text_dw"
+                android:textColor="#29a1f7"
                 android:textSize="@dimen/main_bar_text_size"
                 android:layout_alignLeft="@id/tab_two_image"
                 />

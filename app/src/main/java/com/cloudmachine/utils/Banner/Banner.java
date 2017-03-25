@@ -1,4 +1,4 @@
-package com.cloudmachine.ui.widget.Banner;
+package com.cloudmachine.utils.Banner;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -35,13 +35,13 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
     private int mIndicatorWidth;
     private int mIndicatorHeight;
     private int mIndicatorMargin;
-    private int bannerStyle = BannerConfig.CIRCLE_INDICATOR;
-    private int delayTime = BannerConfig.TIME;
-    private int scrollTime = BannerConfig.DURATION;
-    private boolean isAutoPlay = BannerConfig.IS_AUTO_PLAY;
-    private boolean isScroll = BannerConfig.IS_SCROLL;
-    private int mIndicatorSelectedResId = R.drawable.selected_radius;
-    private int mIndicatorUnselectedResId = R.drawable.unselected_radius;
+    private int     bannerStyle               = BannerConfig.CIRCLE_INDICATOR;
+    private int     delayTime                 = BannerConfig.TIME;
+    private int     scrollTime                = BannerConfig.DURATION;
+    private boolean isAutoPlay                = BannerConfig.IS_AUTO_PLAY;
+    private boolean isScroll                  = BannerConfig.IS_SCROLL;
+    private int     mIndicatorSelectedResId   = R.drawable.selected_radius;
+    private int     mIndicatorUnselectedResId = R.drawable.unselected_radius;
     private int titleHeight;
     private int titleBackground;
     private int titleTextColor;
@@ -54,16 +54,16 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
 
     private BannerPagerAdapter mAdapter;
 
-    private List<View> imageViews;
+    private List<View>      imageViews;
     private List<ImageView> indicatorImages;
-    private List imageUrls;
-    private List<String> titles;
+    private List            imageUrls;
+    private List<String>    titles;
 
     private BannerViewPaper mViewPaper;
-    private TextView bannerTitle;
-    private LinearLayout indicator;
-    private BannerScroller mScroller;
-    private DisplayMetrics dm;
+    private TextView        bannerTitle;
+    private LinearLayout    indicator;
+    private BannerScroller  mScroller;
+    private DisplayMetrics  dm;
 
     private ImageLoaderInterface imageLoader;
 
@@ -89,7 +89,8 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
         indicatorImages = new ArrayList<>();
 
         dm = context.getResources().getDisplayMetrics();
-        indicatorSize = dm.widthPixels / 80;
+        //控制小圆点大小
+        indicatorSize = dm.widthPixels / 50;
         initView(context, attrs);
     }
 
@@ -193,8 +194,11 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
             ImageView imageView = new ImageView(mContext);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mIndicatorWidth, mIndicatorHeight);
-            params.leftMargin = mIndicatorMargin;
-            params.rightMargin = mIndicatorMargin;
+            //设置轮播图左右间距
+           /* params.leftMargin = mIndicatorMargin;
+            params.rightMargin = mIndicatorMargin;*/
+            params.leftMargin = indicatorSize;
+            params.rightMargin = indicatorSize;
             if (i == 0) {
                 imageView.setImageResource(mIndicatorSelectedResId);
             } else {
@@ -240,7 +244,7 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
                 imageView = new ImageView(mContext);
             }
 
-            ((ImageView)imageView).setScaleType(ImageView.ScaleType.CENTER_CROP);
+            ((ImageView) imageView).setScaleType(ImageView.ScaleType.CENTER_CROP);
             Object url = null;
             // 无限轮播实现原理
             if (i == 0) {
@@ -288,7 +292,6 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
 
     /**
      * 返回真实的位置
-     *
      * @param position
      * @return 下标从0开始
      */
@@ -302,7 +305,7 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if  (isAutoPlay) {
+        if (isAutoPlay) {
             int action = ev.getAction();
             if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
                     || action == MotionEvent.ACTION_OUTSIDE) {
@@ -342,7 +345,7 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View)object);
+            container.removeView((View) object);
         }
     }
 
@@ -362,8 +365,10 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
         indicatorImages.get((position - 1 + count) % count).setImageResource(mIndicatorSelectedResId);
         lastPosition = position;
 
-        if (position == 0) position = count;
-        if (position > count) position = 1;
+        if (position == 0)
+            position = count;
+        if (position > count)
+            position = 1;
         bannerTitle.setText(titles.get(position - 1));
     }
 

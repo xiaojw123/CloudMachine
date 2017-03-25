@@ -86,8 +86,8 @@
 
     <!-- main -->
     <color name="main_bar_bg">#f9fcfe</color>  
-    <color name="main_bar_text_nm">#888888</color>  
-    <color name="main_bar_text_dw">#29a1f7</color> 
+    <color name="main_bar_text_nm">#888888</color>
+    <color name="main_bar_text_dw">#29a1f7</color>
      <!-- main1 -->
     <color name="main1_search_text">#929292</color>  
     <color name="main1_list_workStatus">#45b035</color>  

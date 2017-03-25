@@ -1,4 +1,4 @@
-package com.cloudmachine.ui.widget.Banner;
+package com.cloudmachine.utils.Banner;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

@@ -132,7 +132,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		main_guide_image.setOnClickListener(this);
 		
 		question_text = (RadiusButtonView) findViewById(R.id.question_text); // 问卷
-		sign_text = (RadiusButtonView) findViewById(R.id.sign_text); // 签到
+		//sign_text = (RadiusButtonView) findViewById(R.id.sign_text); // 签到
 		linearLayouts[0] = findViewById(R.id.tab_homepage_layout);//主页
 		linearLayouts[1] = findViewById(R.id.tab_device_layout);//设备
 		linearLayouts[2] = findViewById(R.id.tab_question_layout);//提问
@@ -359,13 +359,13 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				signBetweenTime = 1;
 			}
 			if (signBetweenTime != 0) {
-				sign_text.setVisibility(View.VISIBLE);
+				//sign_text.setVisibility(View.VISIBLE);
 			} else {
-				sign_text.setVisibility(View.GONE);  
+				//sign_text.setVisibility(View.GONE);
 			}
 			break;
 		case Constants.HANDLER_INTEGRAL_FAIL:
-			sign_text.setVisibility(View.GONE); 
+			//sign_text.setVisibility(View.GONE);
 			break;
 		case Constants.HANDLER_GET_REPAIRHISTORY_SUCCESS:		 									//获取到维修历史成功
 //			if(null != msg.obj){
@@ -462,9 +462,9 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 	public void setSignBetweenTime(int time) {
 		signBetweenTime = time;
 		if (signBetweenTime != 0) {
-			sign_text.setVisibility(View.VISIBLE);
+			//sign_text.setVisibility(View.VISIBLE);
 		} else {
-			sign_text.setVisibility(View.GONE);
+			//sign_text.setVisibility(View.GONE);
 		}
 	}
 
@@ -482,13 +482,13 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				if (i == n) {
 					imageViews[i].setSelected(true);
 					linearLayouts[i].setSelected(false);
-					textViews[i].setTextColor(getResources().getColor(
-							R.color.main_bar_text_dw));
+					/*textViews[i].setTextColor(getResources().getColor(
+							R.color.main_bar_text_dw));*/
 				} else {
 					imageViews[i].setSelected(false);
 					linearLayouts[i].setSelected(false);
-					textViews[i].setTextColor(getResources().getColor(
-							R.color.main_bar_text_nm));
+					/*textViews[i].setTextColor(getResources().getColor(
+							R.color.main_bar_text_nm));*/
 				}
 			}
 			Fragment to = mFragments[n];

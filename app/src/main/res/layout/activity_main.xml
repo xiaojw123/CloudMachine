@@ -21,7 +21,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             >
-
             <ImageView
                 android:id="@+id/tab_homepage_image"
                 android:layout_width="@dimen/main_bar_image_width_1"
@@ -36,13 +35,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="4dp"
                 android:layout_marginBottom="@dimen/main_bar_image_padding"
                 android:text="首页"
-                android:textColor="@color/main_bar_text_dw"
+                android:textColor="#8A8A8A"
                 android:textSize="@dimen/main_bar_text_size" 
                 android:layout_alignLeft="@id/tab_homepage_image"
                 />
+
         </RelativeLayout>
 
         <LinearLayout
@@ -76,6 +76,7 @@
                 </RelativeLayout>
 
                 <ImageView
+                    android:visibility="gone"
                     android:id="@+id/tips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -117,13 +118,18 @@
 
                 <ImageView
                     android:id="@+id/tab_question_iamge"
-                    style="@style/main_bar_image"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/main_bar_image_padding"
+                    android:layout_marginBottom="@dimen/main_bar_image_padding"
+                    android:layout_alignParentTop="true"
                     android:background="@drawable/bg_btn_main_tab_four" />
 
                 <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
                     android:id="@+id/tab_question_text"
-                    android:text="我要提问"
-                        style="@style/main_bar_text"/>
+                    android:text=""/>
             </RelativeLayout>
 
             <com.cloudmachine.utils.widgets.RadiusButtonView
@@ -161,7 +167,9 @@
             <TextView
                 android:id="@+id/tab_repair_text"
                 android:text="@string/main_bar_text3"
-                style="@style/main_bar_text"/>
+                style="@style/main_bar_text"
+                android:layout_centerInParent="true"
+                />
         </RelativeLayout>
 
         <RelativeLayout
@@ -175,11 +183,12 @@
             <ImageView
                 android:id="@+id/tab_personal_iamge"
                 style="@style/main_bar_image"
-                android:background="@drawable/bg_btn_main_tab_three" />
+                android:background="@drawable/bg_btn_main_tab_five" />
 
             <TextView
                 android:id="@+id/tab_personal_text"
                 android:text="我的"
+                android:layout_centerInParent="true"
                 style="@style/main_bar_text"/>
         </RelativeLayout>
     </LinearLayout>

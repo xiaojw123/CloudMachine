@@ -3,11 +3,10 @@ package com.cloudmachine.api;
 
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.struc.McDeviceInfo;
-import com.cloudmachine.ui.bean.LatestDailyEntity;
+import com.cloudmachine.struc.LatestDailyEntity;
 
 import java.util.List;
 
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;

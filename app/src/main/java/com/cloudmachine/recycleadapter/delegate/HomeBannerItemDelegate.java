@@ -1,12 +1,12 @@
-package com.cloudmachine.ui.delegate;
+package com.cloudmachine.recycleadapter.delegate;
 
 import android.content.Context;
 
 import com.cloudmachine.R;
 import com.cloudmachine.loader.GlideImageLoader;
-import com.cloudmachine.ui.bean.HomeBannerBean;
-import com.cloudmachine.ui.itemtype.HomeTypeItem;
-import com.cloudmachine.ui.widget.Banner.Banner;
+import com.cloudmachine.struc.HomeBannerBean;
+import com.cloudmachine.itemtype.HomeTypeItem;
+import com.cloudmachine.utils.Banner.Banner;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 

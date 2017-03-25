@@ -3,7 +3,7 @@ package com.cloudmachine.ui.homepage.model;
 import com.cloudmachine.api.Api;
 import com.cloudmachine.api.HostType;
 import com.cloudmachine.base.baserx.RxSchedulers;
-import com.cloudmachine.ui.bean.LatestDailyEntity;
+import com.cloudmachine.struc.LatestDailyEntity;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 
 import rx.Observable;

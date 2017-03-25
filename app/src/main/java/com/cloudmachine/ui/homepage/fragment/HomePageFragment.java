@@ -6,13 +6,13 @@ import android.support.v7.widget.RecyclerView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseFragment;
-import com.cloudmachine.ui.adapter.HomePageAdapter;
-import com.cloudmachine.ui.bean.HomeBannerBean;
-import com.cloudmachine.ui.bean.LatestDailyEntity;
+import com.cloudmachine.recycleadapter.HomePageAdapter;
+import com.cloudmachine.struc.HomeBannerBean;
+import com.cloudmachine.struc.LatestDailyEntity;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 import com.cloudmachine.ui.homepage.model.HomePageModel;
 import com.cloudmachine.ui.homepage.presenter.HomePagePresenter;
-import com.cloudmachine.ui.itemtype.HomeTypeItem;
+import com.cloudmachine.itemtype.HomeTypeItem;
 
 import java.util.ArrayList;
 import java.util.List;

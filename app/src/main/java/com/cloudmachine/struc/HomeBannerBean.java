@@ -1,6 +1,6 @@
-package com.cloudmachine.ui.bean;
+package com.cloudmachine.struc;
 
-import com.cloudmachine.ui.itemtype.HomeTypeItem;
+import com.cloudmachine.itemtype.HomeTypeItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;

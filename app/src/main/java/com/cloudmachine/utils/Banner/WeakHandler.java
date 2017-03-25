@@ -1,4 +1,4 @@
-package com.cloudmachine.ui.widget.Banner;
+package com.cloudmachine.utils.Banner;
 
 
 import android.os.Handler;
