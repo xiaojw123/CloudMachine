@@ -1,4 +1,4 @@
-package com.cloudmachine.activities;
+package com.cloudmachine.ui.login.acticity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudmachine.R;
+import com.cloudmachine.activities.FindPasswordActivity;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.autolayout.widgets.CircleTextImageView;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
@@ -26,6 +27,9 @@ import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.LoginAsync;
 import com.cloudmachine.struc.Member;
+import com.cloudmachine.ui.login.contract.LoginContract;
+import com.cloudmachine.ui.login.model.LoginModel;
+import com.cloudmachine.ui.login.presenter.LoginPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.UMengKey;
@@ -45,7 +49,7 @@ import java.util.Set;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
-public class LoginActivity extends BaseAutoLayoutActivity implements OnClickListener, Callback {
+public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginModel> implements OnClickListener, Callback ,LoginContract.View{
 
     private static final int MSG_SET_ALIAS = 1001;
 
@@ -75,7 +79,7 @@ public class LoginActivity extends BaseAutoLayoutActivity implements OnClickList
 
     @Override
     public void initPresenter() {
-
+        mPresenter.setVM(this,mModel);
     }
 
 
@@ -109,6 +113,8 @@ public class LoginActivity extends BaseAutoLayoutActivity implements OnClickList
 
     void initView() {
         TextView weixinLogin = (TextView) findViewById(R.id.weixin_login);
+        RelativeLayout wechatLogin = (RelativeLayout) findViewById(R.id.rl_weixin_login);
+        wechatLogin.setOnClickListener(this);
         weixinLogin.setOnClickListener(this);
         userImage = (CircleTextImageView) findViewById(R.id.user_image);
         forget_pw_tv = (TextView) findViewById(R.id.forget_pw_tv);
@@ -215,6 +221,9 @@ public class LoginActivity extends BaseAutoLayoutActivity implements OnClickList
                 switchPwd(isExpress);
                 break;
             case R.id.weixin_login:
+                loginToWeiXin();
+                break;
+            case R.id.rl_weixin_login:
                 loginToWeiXin();
                 break;
             default:

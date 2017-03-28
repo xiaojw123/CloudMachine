@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.personal.fragment;
 
+import com.cloudmachine.R;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.ui.personal.contract.PersonalContract;
 import com.cloudmachine.ui.personal.model.PersonalModel;
@@ -15,7 +16,9 @@ import com.cloudmachine.ui.personal.presenter.PersonalPresenter;
  * 修改备注：
  */
 
-public class PersonalFragment extends BaseFragment<PersonalPresenter,PersonalModel> implements PersonalContract.View{
+public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalModel> implements PersonalContract.View {
+
+
     @Override
     protected void initView() {
 
@@ -28,6 +31,6 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter,PersonalMod
 
     @Override
     protected int getLayoutResource() {
-        return 0;
+        return R.layout.activity_personal;
     }
 }

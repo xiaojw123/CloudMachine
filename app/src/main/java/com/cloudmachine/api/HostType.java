@@ -33,4 +33,9 @@ public class HostType {
      */
     public static final int ZHIHU_HOST = 2;
 
+    /**
+     * 郭帅电脑Host地址
+     */
+    public static final int GUOSHUAI_HOST = 3;
+
 }

@@ -101,6 +101,26 @@
     <LinearLayout
         style="@style/line_layout"
         android:layout_marginLeft="@dimen/public_layout_padding_left" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_input_height"
+         >
+
+        <TextView
+            style="@style/register_item_left_text"
+            android:text="邀请码" />
+
+        <com.cloudmachine.utils.widgets.ClearEditTextView
+            android:id="@+id/invitation_code"
+            style="@style/register_clear_edit_text"
+            android:hint="如有邀请码，请输入" />
+    </LinearLayout>
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/public_layout_padding_left" />
+
 <LinearLayout 
     android:id="@+id/pwd_layout"
     android:layout_width="match_parent"

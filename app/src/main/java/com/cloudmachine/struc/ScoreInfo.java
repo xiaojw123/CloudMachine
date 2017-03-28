@@ -34,4 +34,15 @@ public class ScoreInfo {
 		public void setServerTime(String server_TIME) {
 			this.server_TIME = server_TIME;
 		}
+
+
+	@Override
+	public String toString() {
+		return "ScoreInfo{" +
+				"update_DATE='" + update_DATE + '\'' +
+				", server_TIME='" + server_TIME + '\'' +
+				", point_AVAILABLE=" + point_AVAILABLE +
+				", point=" + point +
+				'}';
+	}
 }

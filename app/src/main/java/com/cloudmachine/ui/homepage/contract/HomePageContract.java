@@ -3,7 +3,10 @@ package com.cloudmachine.ui.homepage.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
+import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.struc.LatestDailyEntity;
+
+import java.util.ArrayList;
 
 import rx.Observable;
 
@@ -21,6 +24,8 @@ public interface HomePageContract {
 
     interface Model extends BaseModel {
         Observable<LatestDailyEntity> getLatestDaily();
+
+        Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo();
     }
 
     interface View extends BaseView {
@@ -28,6 +33,8 @@ public interface HomePageContract {
     }
 
     abstract static class Presenter extends BasePresenter<View, Model> {
-       public abstract void getLatestDaily();
+        public abstract void getLatestDaily();
+
+        public abstract void getHomeBannerInfo();
     }
 }

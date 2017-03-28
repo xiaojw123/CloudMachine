@@ -1,6 +1,4 @@
-package com.cloudmachine.struc;
-
-import com.cloudmachine.itemtype.HomeTypeItem;
+package com.cloudmachine.recyclerbean;
 
 import java.io.Serializable;
 
@@ -14,5 +12,5 @@ import java.io.Serializable;
  * 修改备注：
  */
 
-public class HomeLocalBean implements HomeTypeItem,Serializable{
+public class HomeLocalBean implements HomePageType,Serializable{
 }

@@ -4,13 +4,11 @@ import android.content.Context;
 
 import com.cloudmachine.R;
 import com.cloudmachine.loader.GlideImageLoader;
-import com.cloudmachine.struc.HomeBannerBean;
-import com.cloudmachine.itemtype.HomeTypeItem;
+import com.cloudmachine.recyclerbean.HomeBannerTransfer;
+import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.utils.Banner.Banner;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-
-import java.util.List;
 
 /**
  * 项目名称：CloudMachine
@@ -22,39 +20,36 @@ import java.util.List;
  * 修改备注：
  */
 
-public class HomeBannerItemDelegate implements ItemViewDelegate<HomeTypeItem>, Banner.OnBannerClickListener{
+public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, Banner.OnBannerClickListener{
 
-    private static final String TAG = "HomeBannerItemDelegate";
-    private Context       mContext;
-    private List<Integer> mIds;
+    private static final String TAG = "HomeHeaderItemDelegate";
 
-    @Override
-    public void OnBannerClick(int position) {
-
-    }
+    private Context mContext;
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.home_banner;
+        return R.layout.banner;
     }
 
     @Override
-    public boolean isForViewType(HomeTypeItem item, int position) {
-        return item instanceof HomeBannerBean;
+    public boolean isForViewType(HomePageType item, int position) {
+        return item instanceof HomeBannerTransfer;
     }
 
     @Override
-    public void convert(ViewHolder holder, HomeTypeItem homeTypeItem, int position) {
+    public void convert(ViewHolder holder, HomePageType homeTypeItem, int position) {
         mContext = holder.getConvertView().getContext();
         Banner banner = holder.getView(R.id.banner);
-        HomeBannerBean item = (HomeBannerBean) homeTypeItem;
-        mIds = item.getIds();
-        banner.setImages(item.getImages())
-                .setBannerTitles(item.getTitles())
+        HomeBannerTransfer homeBannerTransfer = (HomeBannerTransfer) homeTypeItem;
+        banner.setImages(homeBannerTransfer.images)
+               /* .setBannerTitles(homeBannerTransfer.titles)*/
                 .setImageLoader(GlideImageLoader.getInstance())
                 .setOnBannerClickListener(this)
                 .start();
     }
 
-
+    @Override
+    public void OnBannerClick(int position) {
+        //对banner点击进行链接跳转
+    }
 }

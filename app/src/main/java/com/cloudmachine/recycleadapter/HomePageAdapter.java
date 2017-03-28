@@ -3,8 +3,13 @@ package com.cloudmachine.recycleadapter;
 import android.content.Context;
 
 import com.cloudmachine.recycleadapter.delegate.HomeBannerItemDelegate;
-import com.cloudmachine.itemtype.HomeTypeItem;
+import com.cloudmachine.recycleadapter.delegate.HomeDividerDelegate;
+import com.cloudmachine.recycleadapter.delegate.HomeIssueDelegate;
+import com.cloudmachine.recycleadapter.delegate.HomeIssueDetailDelegate;
+import com.cloudmachine.recycleadapter.delegate.HomeLoadMoreDelegate;
 import com.cloudmachine.recycleadapter.delegate.HomeLocalDelegate;
+import com.cloudmachine.recycleadapter.delegate.HomeNewsDelegate;
+import com.cloudmachine.recyclerbean.HomePageType;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
@@ -13,20 +18,23 @@ import java.util.List;
  * 项目名称：CloudMachine
  * 类描述：
  * 创建人：shixionglu
- * 创建时间：2017/3/20 下午3:28
+ * 创建时间：2017/3/26 下午1:25
  * 修改人：shixionglu
- * 修改时间：2017/3/20 下午3:28
+ * 修改时间：2017/3/26 下午1:25
  * 修改备注：
  */
 
-public class HomePageAdapter extends MultiItemTypeAdapter<HomeTypeItem> {
+public class HomePageAdapter extends MultiItemTypeAdapter<HomePageType>{
 
-    public HomePageAdapter(Context context, List<HomeTypeItem> datas) {
+    public HomePageAdapter(Context context, List<HomePageType> datas) {
         super(context, datas);
-        //轮播
-        addItemViewDelegate(new HomeBannerItemDelegate());
-        //商城，保险，问答(本地)
-        addItemViewDelegate(new HomeLocalDelegate());
 
+        addItemViewDelegate(new HomeBannerItemDelegate());
+        addItemViewDelegate(new HomeLocalDelegate());
+        addItemViewDelegate(new HomeDividerDelegate());
+        addItemViewDelegate(new HomeNewsDelegate());
+        addItemViewDelegate(new HomeIssueDelegate());
+        addItemViewDelegate(new HomeIssueDetailDelegate());
+        addItemViewDelegate(new HomeLoadMoreDelegate());
     }
 }

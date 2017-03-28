@@ -180,10 +180,39 @@
         android:id="@+id/weixin_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="微信登录"
+        android:text="或以下方式登录"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="60dp"
+        android:textSize="12sp"
+        android:layout_marginTop="80dp"
         />
 
+    <RelativeLayout
+        android:layout_marginTop="18dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/rl_weixin_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_wechat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/weichat_login"
+            android:layout_centerHorizontal="true"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_wechat"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="14dp"
+            android:text="微信登录"
+            android:textColor="#999999"
+            android:textSize="14sp"
+            />
+
+
+    </RelativeLayout>
 
 </LinearLayout>

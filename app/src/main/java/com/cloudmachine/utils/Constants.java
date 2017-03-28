@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.amap.api.maps2d.model.LatLng;
 import com.cloudmachine.R;
-import com.cloudmachine.activities.LoginActivity;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.main.photo.GalleryActivity;

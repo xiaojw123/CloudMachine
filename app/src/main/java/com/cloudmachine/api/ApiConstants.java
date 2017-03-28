@@ -14,6 +14,7 @@ public class ApiConstants {
 
     public static final String CLOUDM_HOST = "http://api.test.cloudm.com/";
     public static final String ZHIHU_HOST = "http://news-at.zhihu.com/api/4/";
+    public static final String GUOSHUAI_HOST = "http://192.168.1.19:8090/cloudm3/";
 
     /**
      * 获取对应的host
@@ -35,6 +36,9 @@ public class ApiConstants {
                 break;*/
             case HostType.ZHIHU_HOST:
                 host = ZHIHU_HOST;
+                break;
+            case HostType.GUOSHUAI_HOST:
+                host = GUOSHUAI_HOST;
                 break;
             default:
                 host = "";

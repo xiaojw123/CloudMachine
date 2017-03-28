@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseActivity;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.widgets.TitleView;
 

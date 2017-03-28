@@ -19,6 +19,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.base.BaseActivity;
 import com.cloudmachine.net.task.CheckCodeAsync;
 import com.cloudmachine.net.task.RegisterAsync;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.widgets.AppMsg;

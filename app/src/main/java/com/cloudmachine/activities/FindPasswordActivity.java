@@ -56,6 +56,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 	
 	private View left_layout,validate_layout,
 	pwd_layout,pwd_new_layout,agreement_layout;
+	private ClearEditTextView cet_invitationCode;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,8 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 	}
 
 	private void initView() {
+
+		cet_invitationCode = (ClearEditTextView) findViewById(R.id.invitation_code);
 		agreement_layout = findViewById(R.id.agreement_layout);
 		left_layout = findViewById(R.id.left_layout);
 		left_layout.setOnClickListener(this);
@@ -101,13 +104,14 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 			pwd_layout.setVisibility(View.GONE);
 			pwd_new_layout.setVisibility(View.VISIBLE);
 			agreement_layout.setVisibility(View.GONE);
-			
+			cet_invitationCode.setVisibility(View.GONE);
 			break;
 		case 2:
 			title_text.setText("修改密码");
 			pwd_layout.setVisibility(View.GONE);
 			pwd_new_layout.setVisibility(View.VISIBLE);
 			agreement_layout.setVisibility(View.GONE);
+			cet_invitationCode.setVisibility(View.GONE);
 			break;
 		case 3:
 			MobclickAgent.onPageStart(UMengKey.time_register);
@@ -115,6 +119,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 			pwd_layout.setVisibility(View.VISIBLE);
 			pwd_new_layout.setVisibility(View.GONE);
 			agreement_layout.setVisibility(View.VISIBLE);
+			cet_invitationCode.setVisibility(View.VISIBLE);
 			break;
 			default:
 				title_text.setText("新用户注册");

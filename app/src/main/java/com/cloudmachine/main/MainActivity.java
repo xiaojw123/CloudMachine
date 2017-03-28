@@ -28,14 +28,9 @@ import android.widget.Toast;
 import cn.jpush.android.api.JPushInterface;
 
 import com.cloudm.autolayout.AutoLayoutFragmentActivity;
-import com.cloudmachine.Manifest;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.BeginnerGuideActivity;
-import com.cloudmachine.activities.LoginActivity;
-import com.cloudmachine.activities.Main1FM;
-import com.cloudmachine.activities.MessageActivity;
-import com.cloudmachine.activities.RepairActivity;
-import com.cloudmachine.activities.UpdateInfoActivity;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.task.AllMessagesCountAsync;
 import com.cloudmachine.net.task.GetVersionAsync;
@@ -61,6 +56,7 @@ import com.umeng.analytics.MobclickAgent;
 
 public class MainActivity extends AutoLayoutFragmentActivity implements OnClickListener,
 		Callback {
+
 	public static boolean isForeground = false;
 	private MessageReceiver mMessageReceiver;
 	public static final String MESSAGE_RECEIVED_ACTION = "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
@@ -77,11 +73,9 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 	private OnActivityBack mListViewListener;
 	private ImageView tips;
 	// private List<News> displaylist = new ArrayList<News>();
-	private Fragment mFragments[] = new Fragment[5]; // 存储页面的数组
-	private boolean isInitFragment[] = new boolean[5];
+	private Fragment mFragments[] = new Fragment[4]; // 存储页面的数组
+	private boolean isInitFragment[] = new boolean[5];//是否被初始化
 	private Fragment mContentFragment; // 当前fragment
-	private View three_r_layout; // 并未使用
-	private View four_r_layout; // 并未使用
 	private int signBetweenTime; // 签到的时间间隔
 	private RadiusButtonView sign_text, question_text;
 	private int currentFragment; // 当前Fragment的索引
@@ -155,7 +149,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		linearLayouts[2].setOnClickListener(this);
 		linearLayouts[3].setOnClickListener(this);
 		linearLayouts[4].setOnClickListener(this);
-		three_r_layout = findViewById(R.id.three_r_layout); // 内部布局（去掉签到标签）
+		//three_r_layout = findViewById(R.id.three_r_layout); // 内部布局（去掉签到标签）
 	}
 
 	//新手引导图层
@@ -188,7 +182,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				Constants.toLoginActivity(this, 2);
 				return;
 			} else {
-				switchContent(2);
+				//switchContent(2);
 			}
 			break;
 		case R.id.tab_repair_layout: // 报修页面布局
@@ -196,7 +190,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				Constants.toLoginActivity(this, 2);
 				return;
 			} else {
-				switchContent(3);
+				switchContent(2);
 			}
 			break;
 			case R.id.tab_personal_layout:
@@ -204,7 +198,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 					Constants.toLoginActivity(this, 2);
 					return;
 				} else {
-					switchContent(4);
+					switchContent(3);
 				}
 				break;
 		case R.id.main_guide_image:
@@ -266,6 +260,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		long time = VerisonCheckSP.getTime(this);
 		if (time != 0
 				&& System.currentTimeMillis() - time < 1000 * 60 * 60 * 24) {
+
 		} else {
 			new GetVersionAsync(mContext, mHandler).execute();
 		}
@@ -334,14 +329,17 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		case Constants.HANDLER_VERSIONDOWNLOAD:
 			Constants.versionDownload(MainActivity.this, (String) msg.obj);
 			break;
+		//消息页面小圆点展示
 		case Constants.HANDLER_GETALLMESSAGECOUNT_SUCCESS:
 		case Constants.HANDLER_GETALLMESSAGECOUNT_FAIL:
 			Constants.showTips(tips, 0);
 			// tips.setText(((List<MessageBO>)msg.obj).size()+"");
 			break;
+
+		//积分
 		case Constants.HANDLER_INTEGRAL_SUCCESS:
 			ScoreInfo scoreInfo = (ScoreInfo) msg.obj;
-			signBetweenTime = 0;
+			signBetweenTime = 0;//签到间隔时间
 			if (null != scoreInfo
 					&& !TextUtils.isEmpty(scoreInfo.getServerTime())
 					&& null != MemeberKeeper.getOauth(mContext)) {
@@ -415,9 +413,9 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		mFragments[3] = new RepairActivity();*/
 		mFragments[0] = new HomePageFragment();
 		mFragments[1] = new DeviceFragment();
-		mFragments[2] = new QuestionFragment();
-		mFragments[3] = new RepairFragment();
-		mFragments[4] = new PersonalFragment();
+		//mFragments[2] = new QuestionFragment();
+		mFragments[2] = new RepairFragment();
+		mFragments[3] = new PersonalFragment();
 
 		mContentFragment = null;
 		// mFragments[0].setArguments(b);

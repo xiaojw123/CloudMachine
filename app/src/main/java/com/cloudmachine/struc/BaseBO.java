@@ -48,7 +48,14 @@ public class BaseBO<T> implements Serializable {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "BaseBO{" +
+				"ok=" + ok +
+				", code=" + code +
+				", message='" + message + '\'' +
+				", result=" + result +
+				'}';
+	}
 }

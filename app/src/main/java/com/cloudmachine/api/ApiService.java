@@ -2,9 +2,12 @@ package com.cloudmachine.api;
 
 
 import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.struc.McDeviceInfo;
+import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.struc.LatestDailyEntity;
+import com.cloudmachine.struc.McDeviceInfo;
+import com.cloudmachine.struc.ScoreInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.RequestBody;
@@ -54,4 +57,23 @@ public interface ApiService {
     @POST("kindEditorUpload")
     Observable<BaseRespose<String>> upLoadPhoto(@Part("file\"; filename=\"avatar.png\"") RequestBody file);
 
+    /**
+     *拿到用户积分信息
+     * @param memberId
+     * @return
+     */
+    @GET("member/userScoreInfo")
+    Observable<BaseRespose<ScoreInfo>> getUserScoreInfo(@Query("memberId") String memberId);
+
+    /**
+     * 拿到用户签到信息
+     * @param memberId
+     * @return
+     */
+    @GET("member/insertSignPoint")
+    Observable<BaseRespose<ScoreInfo>>getUserInsertSignInfo(@Query("memberId") String memberId);
+
+    @GET("ads/getAdvertisements")
+    Observable<BaseRespose<ArrayList<HomeBannerBean>>> GetHomeBannerInfo(@Query("adsType") int adsType);
 }
+

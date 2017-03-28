@@ -1,7 +1,5 @@
 package com.cloudmachine.net;
 
-import org.json.JSONObject;
-
 import android.os.AsyncTask;
 
 import com.cloudmachine.R;
@@ -79,6 +77,7 @@ public class ATask extends AsyncTask<String, Integer, String>{
 //			JSONObject json = new JSONObject(result);
 			Gson gson = new Gson();
 			BaseBO bbResult = gson.fromJson(result, BaseBO.class);
+			//Constants.MyLog("拿到请求返回值"+bbResult.toString());
 			message = bbResult.getMessage();
 			codeLog = bbResult.getCode();
 			if( codeLog == SUCCESS /*&& bbResult.getResult()!=null*/){

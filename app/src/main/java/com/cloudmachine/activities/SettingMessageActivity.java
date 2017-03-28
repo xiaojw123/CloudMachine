@@ -16,6 +16,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.base.BaseActivity;
 import com.cloudmachine.net.task.UpdateMemberInfoAsync;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.widgets.TitleView;
