@@ -4,7 +4,8 @@ import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
 import com.cloudmachine.recyclerbean.HomeBannerBean;
-import com.cloudmachine.struc.LatestDailyEntity;
+import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
+import com.cloudmachine.recyclerbean.HomeNewsBean;
 
 import java.util.ArrayList;
 
@@ -23,18 +24,30 @@ import rx.Observable;
 public interface HomePageContract {
 
     interface Model extends BaseModel {
-        Observable<LatestDailyEntity> getLatestDaily();
 
         Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo();
+
+        Observable<ArrayList<HomeNewsBean>> getHomeMidAdvertisement();
+
+        Observable<HomeIssueDetailBean> getHotQuestion();
     }
 
     interface View extends BaseView {
-        <T> void refreshHomeList(T t);
+
+        void returnHomeBannerInfo(ArrayList<HomeBannerBean> homeBannerBeen);
+
+        void returnHomeMidAdvertisement(ArrayList<HomeNewsBean> homeNewsBeen);
+
+        void returnHotQuestion(HomeIssueDetailBean homeIssueDetailBean);
     }
 
     abstract static class Presenter extends BasePresenter<View, Model> {
-        public abstract void getLatestDaily();
+
 
         public abstract void getHomeBannerInfo();
+
+        public abstract void getHomeMidAdvertisement();
+
+        public abstract void getHotQuestion();
     }
 }

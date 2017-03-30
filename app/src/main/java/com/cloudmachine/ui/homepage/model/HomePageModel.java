@@ -3,9 +3,9 @@ package com.cloudmachine.ui.homepage.model;
 import com.cloudmachine.api.Api;
 import com.cloudmachine.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.recyclerbean.HomeBannerBean;
-import com.cloudmachine.struc.LatestDailyEntity;
+import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
+import com.cloudmachine.recyclerbean.HomeNewsBean;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 
 import java.util.ArrayList;
@@ -24,13 +24,6 @@ import rx.Observable;
 
 public class HomePageModel implements HomePageContract.Model{
 
-
-    @Override
-    public Observable<LatestDailyEntity> getLatestDaily() {
-        return Api.getDefault(HostType.ZHIHU_HOST).getLatestDaily()
-                .compose(RxSchedulers.<LatestDailyEntity>io_main());
-    }
-
     /**
      * 获取首页轮播条信息
      * @return
@@ -39,5 +32,21 @@ public class HomePageModel implements HomePageContract.Model{
     public Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo() {
         return Api.getDefault(HostType.GUOSHUAI_HOST).GetHomeBannerInfo(1)
                 .compose(RxHelper.<ArrayList<HomeBannerBean>>handleResult());
+    }
+
+    /**
+     * 获取中间广告位信息
+     * @return
+     */
+    @Override
+    public Observable<ArrayList<HomeNewsBean>> getHomeMidAdvertisement() {
+        return Api.getDefault(HostType.GUOSHUAI_HOST).GetHomeMidAdvertisement(2)
+                .compose(RxHelper.<ArrayList<HomeNewsBean>>handleResult());
+    }
+
+    @Override
+    public Observable<HomeIssueDetailBean> getHotQuestion() {
+        return Api.getDefault(HostType.CAITINGTING_HOST).getHotQuestion()
+                .compose(RxHelper.<HomeIssueDetailBean>handleResult());
     }
 }

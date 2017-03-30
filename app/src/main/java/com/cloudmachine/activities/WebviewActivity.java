@@ -59,16 +59,15 @@ public class WebviewActivity extends BaseAutoLayoutActivity implements
 	private void getIntentData(){
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-        if(bundle != null){
-        	try{
-        		URLString = bundle.getString(Constants.P_WebView_Url);
-        		title = bundle.getString(Constants.P_WebView_Title);
-        	}catch(Exception e){
-        		Constants.MyLog(e.getMessage());
-        	}
-        	
-        }
-    }
+		if (bundle != null) {
+			try {
+				URLString = bundle.getString(Constants.P_WebView_Url);
+				title = bundle.getString(Constants.P_WebView_Title);
+			} catch (Exception e) {
+				Constants.MyLog(e.getMessage());
+			}
+		}
+	}
 	private void initTitle(){
 		title_layout_about = (TitleView)findViewById(R.id.title_layout_about);
 		//title_layout_about.setTitle("我要云盒子");

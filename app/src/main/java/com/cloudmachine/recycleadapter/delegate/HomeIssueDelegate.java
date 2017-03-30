@@ -4,8 +4,10 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.cloudmachine.R;
+import com.cloudmachine.base.baserx.RxBus;
 import com.cloudmachine.recyclerbean.HomeHotIssueBean;
 import com.cloudmachine.recyclerbean.HomePageType;
+import com.cloudmachine.utils.Constants;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -37,7 +39,7 @@ public class HomeIssueDelegate implements ItemViewDelegate<HomePageType>{
         rlRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                RxBus.getInstance().post(Constants.GET_HOTISSUE,"");
             }
         });
     }

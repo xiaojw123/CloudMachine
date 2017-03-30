@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 
 import com.cloudmachine.activities.WanaCloudBox;
+import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
 import com.jsbridge.core.JsCallback;
 import com.jsbridge.module.IModule;
 
@@ -49,6 +50,21 @@ public class UIInteractiveModel implements IModule {
                 case "hide":
                     wanaCloudBoxActivity.showBackBtn("hide");
                     break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void backPage(AppCompatActivity activity, WebView webView, JSONObject params, final JsCallback callback) {
+        try {
+            String action = params.getString("action");
+            InsuranceActivity insuranceActivity = (InsuranceActivity) activity;
+            switch (action) {
+                case "back":
+                    insuranceActivity.backPage("back");
+                    break;
+
             }
         } catch (Exception e) {
             e.printStackTrace();

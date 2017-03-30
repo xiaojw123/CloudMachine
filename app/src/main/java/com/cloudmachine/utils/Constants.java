@@ -487,6 +487,8 @@ public class Constants {
 
     public static final int              CLICK_POSITION = HANDLER_GET_REPAIRHISTORY_FAILD;
     public static final java.lang.String APP_ID         = "wxfb6afbcc23f867df";
+
+    public static final String GET_HOTISSUE = "getHotIssue";
     /**
      * The constant DEBUG_TAG.
      */
@@ -783,7 +785,9 @@ public class Constants {
             betweenTime = date.getTime() - dateBegin.getTime();
             betweenTime = betweenTime / 1000 / 60 / 60 / 24;
         } catch (Exception e) {
+            Constants.MyLog(e.toString()+"打印到的错误信息");
             return -1;
+
         }
         return (int) betweenTime;
     }

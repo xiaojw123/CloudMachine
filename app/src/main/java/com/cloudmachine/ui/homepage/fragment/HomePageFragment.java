@@ -9,12 +9,15 @@ import android.widget.ImageView;
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.recycleadapter.HomePageAdapter;
+import com.cloudmachine.recyclerbean.HomeBannerBean;
+import com.cloudmachine.recyclerbean.HomeBannerTransfer;
 import com.cloudmachine.recyclerbean.HomeDiliverBean;
 import com.cloudmachine.recyclerbean.HomeHotIssueBean;
 import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
 import com.cloudmachine.recyclerbean.HomeLoadMoreBean;
 import com.cloudmachine.recyclerbean.HomeLocalBean;
 import com.cloudmachine.recyclerbean.HomeNewsBean;
+import com.cloudmachine.recyclerbean.HomeNewsTransfer;
 import com.cloudmachine.recyclerbean.HomePageBean;
 import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.ui.homepage.activity.MessageActivity;
@@ -37,40 +40,67 @@ import rx.functions.Action1;
  * 修改备注：
  */
 
-public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageModel> implements HomePageContract.View, View.OnClickListener {
+public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageModel> implements HomePageContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView       mRecyclerView;
-    private HomePageAdapter    homePageAdapter;
-    private ArrayList<HomePageType> homePageList;
-    private HomePageBean homePageBean;
-    private ImageView ivMessage;
+    private SwipeRefreshLayout        mSwipeRefreshLayout;
+    private RecyclerView              mRecyclerView;
+    private HomePageAdapter           homePageAdapter;
+    private ArrayList<HomePageType>   homePageList;
+    private HomePageBean              homePageBean;
+    private ImageView                 ivMessage;
+    private ArrayList<HomeBannerBean> homeBannerList;
+    private ArrayList<HomeNewsBean>   homeNewsList;
+    private boolean                   getBannerInfo;
+    private boolean                   getMidNewsInfo;
+    private boolean                   getHotIssueInfo;
+    private boolean                   isRefresh;
+    private boolean                   refreshHotIssueOnly;//热门问题换一换
+    private boolean                   isfirstLoadHotIssue = true;//是否第一次加载热门问题
+    private HomeIssueDetailBean       mHomeIssueDetailBean;
 
 
     @Override
     protected void initView() {
-        ivMessage = (ImageView) viewParent.findViewById(R.id.iv_message);
-        ivMessage.setOnClickListener(this);
-        mRxManager.on("localrefresh", new Action1<String>() {
-            @Override
-            public void call(String s) {
-                Constants.MyLog("拿到刷新事件");
-            }
-        });
-        homePageList = new ArrayList<>();
-        homePageAdapter = new HomePageAdapter(getActivity(), homePageList);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) viewParent.findViewById(R.id.swipe_layout);
-        mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recyclerView);
+
+        initFindViews();
+        initListeners();
+        initDatas();
         //设置布局的排列方式
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(homePageAdapter);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        getData();
+        mPresenter.getHomeBannerInfo();
+        mPresenter.getHomeMidAdvertisement();
+        mPresenter.getHotQuestion();
+
+        mRxManager.on(Constants.GET_HOTISSUE, new Action1<Object>() {
             @Override
-            public void onRefresh() {
-                getData();
+            public void call(Object o) {
+                refreshHotIssueOnly();
             }
         });
+
+    }
+
+    //热门问题换一换
+    private void refreshHotIssueOnly() {
+        refreshHotIssueOnly = true;
+        mPresenter.getHotQuestion();
+    }
+
+
+    private void initDatas() {
+
+        homePageList = new ArrayList<>();
+        homeBannerList = new ArrayList<>();
+        homeNewsList = new ArrayList<>();
+        homePageAdapter = new HomePageAdapter(getActivity(), homePageList);
+    }
+
+    private void initListeners() {
+        ivMessage.setOnClickListener(this);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -82,22 +112,32 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        getData();
+
+    }
+
+    private void initFindViews() {
+        ivMessage = (ImageView) viewParent.findViewById(R.id.iv_message);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) viewParent.findViewById(R.id.swipe_layout);
+        mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recyclerView);
     }
 
     private void getData() {
         homePageList.clear();
-        //mPresenter.getLatestDaily();
-        mPresenter.getHomeBannerInfo();
+        //本地信息类（商城，车险，问答，报修，签到）
         homePageList.add(new HomeLocalBean());
+        //分割线
         homePageList.add(new HomeDiliverBean());
-        homePageList.add(new HomeNewsBean());
+        //分割线
         homePageList.add(new HomeDiliverBean());
+        //热门问题标题头（换一换）
         homePageList.add(new HomeHotIssueBean());
-        homePageList.add(new HomeIssueDetailBean());
+        //热门问题内容
+        //homePageList.add(new HomeIssueDetailBean());
+        //分割线
         homePageList.add(new HomeDiliverBean());
+        //查看更多信息页面
         homePageList.add(new HomeLoadMoreBean());
-
+        //刷新recyclerview
         homePageAdapter.notifyDataSetChanged();
 
     }
@@ -113,9 +153,70 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
         return R.layout.fragment_homepage;
     }
 
-    @Override
-    public <T> void refreshHomeList(T t) {
 
+    //拿到轮播信息成功
+    @Override
+    public void returnHomeBannerInfo(ArrayList<HomeBannerBean> homeBannerBeen) {
+        homeBannerList.clear();
+        homeBannerList.addAll(homeBannerBeen);
+        getBannerInfo = true;
+        homePageList.add(0, new HomeBannerTransfer(homeBannerList));
+        finishRefresh();
+        homePageAdapter.notifyDataSetChanged();
+    }
+
+    //拿到中间广告位信息成功
+    @Override
+    public void returnHomeMidAdvertisement(ArrayList<HomeNewsBean> homeNewsBeen) {
+        homeNewsList.clear();
+        homeNewsList.addAll(homeNewsBeen);
+        getMidNewsInfo = true;
+        if (homeNewsList != null && homeNewsList.size() > 0) {
+            if (homeBannerList != null && homeBannerList.size() > 0) {
+                homePageList.add(3, new HomeNewsTransfer(homeNewsList));
+            } else {
+                homePageList.add(2, new HomeNewsTransfer(homeNewsList));
+            }
+        }
+        finishRefresh();
+        homePageAdapter.notifyDataSetChanged();
+
+    }
+
+    //获取热门问题成功过
+    @Override
+    public void returnHotQuestion(HomeIssueDetailBean homeIssueDetailBean) {
+        //Constants.MyLog(homeIssueDetailBean.toString());
+        mHomeIssueDetailBean = homeIssueDetailBean;
+        getHotIssueInfo = true;
+
+        if (isfirstLoadHotIssue) {
+            //热门问题加载插入位置
+            if (homeBannerList.size() > 0 && homeNewsList.size() > 0) {
+                homePageList.add(6, mHomeIssueDetailBean);
+            } else if (homeBannerList.size() <= 0 && homeNewsList.size() <= 0) {
+                homePageList.add(4, mHomeIssueDetailBean);
+            } else {
+                homePageList.add(5, mHomeIssueDetailBean);
+            }
+            isfirstLoadHotIssue = false;
+        }
+
+        finishRefresh();
+
+        //是否只刷新热门问题
+        if (refreshHotIssueOnly) {
+            if (homeBannerList.size() > 0 && homeNewsList.size() > 0) {
+                homePageList.set(6, mHomeIssueDetailBean);
+            } else if (homeBannerList.size() <= 0 && homeNewsList.size() <= 0) {
+                homePageList.set(4, mHomeIssueDetailBean);
+            } else {
+                homePageList.set(5, mHomeIssueDetailBean);
+            }
+            refreshHotIssueOnly = false;
+        }
+
+        homePageAdapter.notifyDataSetChanged();
 
     }
 
@@ -124,9 +225,35 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_message:
-                Constants.MyLog("页面跳转");
-                Constants.toActivity(getActivity(), MessageActivity.class,null,false);
+                Constants.toActivity(getActivity(), MessageActivity.class, null, false);
                 break;
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        refreshData();
+    }
+
+    private void refreshData() {
+        getBannerInfo = false;
+        getMidNewsInfo = false;
+        getHotIssueInfo = false;
+        isRefresh = true;
+        mPresenter.getHomeBannerInfo();
+        mPresenter.getHomeMidAdvertisement();
+    }
+
+    //查看是否为刷新
+    public void finishRefresh() {
+
+        if (getMidNewsInfo && getBannerInfo && getHotIssueInfo && isRefresh && !refreshHotIssueOnly) {
+            mRecyclerView.scrollToPosition(0);
+            mSwipeRefreshLayout.setRefreshing(false);
+            getData();
+            homePageList.add(0, new HomeBannerTransfer(homeBannerList));
+            homePageList.add(3, new HomeNewsTransfer(homeNewsList));
+            homePageList.add(6, mHomeIssueDetailBean);
         }
     }
 }

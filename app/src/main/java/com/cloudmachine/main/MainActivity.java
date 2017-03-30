@@ -43,7 +43,7 @@ import com.cloudmachine.struc.VersionInfo;
 import com.cloudmachine.ui.device.fragment.DeviceFragment;
 import com.cloudmachine.ui.homepage.fragment.HomePageFragment;
 import com.cloudmachine.ui.personal.fragment.PersonalFragment;
-import com.cloudmachine.ui.question.fragment.QuestionFragment;
+import com.cloudmachine.ui.question.activity.QuestionActivity;
 import com.cloudmachine.ui.repair.fragment.RepairFragment;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
@@ -183,6 +183,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				return;
 			} else {
 				//switchContent(2);
+				Constants.toActivity(this, QuestionActivity.class,null,false);
 			}
 			break;
 		case R.id.tab_repair_layout: // 报修页面布局

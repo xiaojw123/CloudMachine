@@ -1,6 +1,7 @@
 package com.cloudmachine.recycleadapter.delegate;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import com.cloudmachine.recyclerbean.HomeLocalBean;
 import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -70,7 +72,8 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llInsurance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, InsuranceActivity.class);
+                context.startActivity(intent);
             }
         });
         //问答点击事件
@@ -94,7 +97,7 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (signBetweenTime == 0) {
+                if (signBetweenTime != 0) {
                     rxManager.add(Api.getDefault(HostType.CLOUDM_HOST)
                             .getUserInsertSignInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
                     .compose(RxHelper.<ScoreInfo>handleResult())
@@ -144,15 +147,16 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
                                     Constants.changeDateFormat(oldTime,
                                             Constants.DateFormat2, Constants.DateFormat1),
                                     Constants.DateFormat1);
+                            if (oldTime == null) {
+                                signBetweenTime = 1;
+                            }
                         } else {
                             signBetweenTime = 1;
                         }
                         if (signBetweenTime != 0) {
                             signText.setText("签到");
-                            Constants.MyLog("未签到");
                         } else {
                             signText.setText("已签到");
-                            Constants.MyLog("已签到");
                         }
                     }
                     @Override

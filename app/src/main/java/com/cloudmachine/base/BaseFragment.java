@@ -12,6 +12,8 @@ import com.cloudmachine.utils.LoadingDialog;
 import com.cloudmachine.utils.TUtil;
 import com.cloudmachine.utils.UMListUtil;
 
+import butterknife.ButterKnife;
+
 /**
  * 项目名称：CloudMachine
  * 类描述：Fragment基类的封装
@@ -42,6 +44,7 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
             }
         } else {
             viewParent = inflater.inflate(getLayoutResource(), null);
+            ButterKnife.bind(this, viewParent);
             mRxManager = new RxManager();
             mPresenter = TUtil.getT(this, 0);
             mModel = TUtil.getT(this, 1);

@@ -40,4 +40,15 @@ public class HomeBannerTransfer implements HomePageType ,Serializable{
             ids.add(bannerBean.id);
         }
     }
+
+    @Override
+    public String toString() {
+        return "HomeBannerTransfer{" +
+                "bannerStories=" + bannerStories +
+                ", images=" + images +
+                ", titles=" + titles +
+                ", ids=" + ids +
+                ", jumpLinks=" + jumpLinks +
+                '}';
+    }
 }

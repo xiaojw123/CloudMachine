@@ -3,6 +3,8 @@ package com.cloudmachine.api;
 
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.recyclerbean.HomeBannerBean;
+import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
+import com.cloudmachine.recyclerbean.HomeNewsBean;
 import com.cloudmachine.struc.LatestDailyEntity;
 import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.ScoreInfo;
@@ -73,7 +75,27 @@ public interface ApiService {
     @GET("member/insertSignPoint")
     Observable<BaseRespose<ScoreInfo>>getUserInsertSignInfo(@Query("memberId") String memberId);
 
+    /**
+     * 获得轮播图
+     * @param adsType
+     * @return
+     */
     @GET("ads/getAdvertisements")
     Observable<BaseRespose<ArrayList<HomeBannerBean>>> GetHomeBannerInfo(@Query("adsType") int adsType);
+
+    /**
+     * 获取中间广告位信息
+     * @param adsType
+     * @return
+     */
+    @GET("ads/getAdvertisements")
+    Observable<BaseRespose<ArrayList<HomeNewsBean>>> GetHomeMidAdvertisement(@Query("adsType") int adsType);
+
+    /**
+     * 获取热门问题
+     * @return
+     */
+    @GET("device/getHotQuestion")
+    Observable<BaseRespose<HomeIssueDetailBean>> getHotQuestion();
 }
 

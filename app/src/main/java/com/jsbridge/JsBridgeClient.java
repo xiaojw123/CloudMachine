@@ -25,9 +25,10 @@ public class JsBridgeClient {
      */
     public static void registerNativeMethod() {
         // 注册大model。model
-//        jsBridgeManager.registerMethod("goNative", GoNativeModule.class, "goNative");
-        jsBridgeManager.registerMethod("showBuyBtn", UIInteractiveModel.class,"showBuyBtn");
-        jsBridgeManager.registerMethod("showBackBtn", UIInteractiveModel.class,"showBackBtn");
-        jsBridgeManager.registerMethod("deliverProId", DeliverMethodModel.class,"deliverProId");
+        //        jsBridgeManager.registerMethod("goNative", GoNativeModule.class, "goNative");
+        jsBridgeManager.registerMethod("showBuyBtn", UIInteractiveModel.class, "showBuyBtn");
+        jsBridgeManager.registerMethod("showBackBtn", UIInteractiveModel.class, "showBackBtn");
+        jsBridgeManager.registerMethod("deliverProId", DeliverMethodModel.class, "deliverProId");
+        jsBridgeManager.registerMethod("backPage", UIInteractiveModel.class, "backPage");
     }
 }

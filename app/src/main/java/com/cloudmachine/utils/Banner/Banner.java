@@ -369,6 +369,7 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
             position = count;
         if (position > count)
             position = 1;
+        //是否轮播图展示标题
         bannerTitle.setText(titles.get(position - 1));
     }
 
