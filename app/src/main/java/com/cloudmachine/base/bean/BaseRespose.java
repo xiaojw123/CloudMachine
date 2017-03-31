@@ -14,6 +14,10 @@ public class BaseRespose<T> implements Serializable {
 
     public T result;
 
+    public PageBean page;
+
+
+
     public boolean success() {
         return 800 == code;
     }

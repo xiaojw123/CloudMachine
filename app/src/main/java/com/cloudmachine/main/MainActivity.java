@@ -1,7 +1,5 @@
 package com.cloudmachine.main;
 
-import java.util.ArrayList;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -25,12 +23,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import cn.jpush.android.api.JPushInterface;
 
 import com.cloudm.autolayout.AutoLayoutFragmentActivity;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.BeginnerGuideActivity;
-import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.task.AllMessagesCountAsync;
 import com.cloudmachine.net.task.GetVersionAsync;
@@ -42,7 +38,8 @@ import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.struc.VersionInfo;
 import com.cloudmachine.ui.device.fragment.DeviceFragment;
 import com.cloudmachine.ui.homepage.fragment.HomePageFragment;
-import com.cloudmachine.ui.personal.fragment.PersonalFragment;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
+import com.cloudmachine.ui.personal.fragment.UpdateInfoActivity;
 import com.cloudmachine.ui.question.activity.QuestionActivity;
 import com.cloudmachine.ui.repair.fragment.RepairFragment;
 import com.cloudmachine.utils.Constants;
@@ -53,6 +50,10 @@ import com.cloudmachine.utils.VerisonCheckSP;
 import com.cloudmachine.utils.widgets.RadiusButtonView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.ArrayList;
+
+import cn.jpush.android.api.JPushInterface;
 
 public class MainActivity extends AutoLayoutFragmentActivity implements OnClickListener,
 		Callback {
@@ -191,7 +192,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				Constants.toLoginActivity(this, 2);
 				return;
 			} else {
-				switchContent(2);
+				switchContent(3);
 			}
 			break;
 			case R.id.tab_personal_layout:
@@ -199,7 +200,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 					Constants.toLoginActivity(this, 2);
 					return;
 				} else {
-					switchContent(3);
+					switchContent(4);
 				}
 				break;
 		case R.id.main_guide_image:
@@ -416,7 +417,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		mFragments[1] = new DeviceFragment();
 		//mFragments[2] = new QuestionFragment();
 		mFragments[2] = new RepairFragment();
-		mFragments[3] = new PersonalFragment();
+		mFragments[3] = new UpdateInfoActivity();
 
 		mContentFragment = null;
 		// mFragments[0].setArguments(b);

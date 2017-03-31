@@ -238,7 +238,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateUnchanged"/>
         <activity
-            android:name=".activities.UpdateInfoActivity"
+            android:name=".ui.personal.fragment.UpdateInfoActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateUnchanged"/>
@@ -537,6 +537,12 @@
 
         <activity
             android:name=".ui.homepage.activity.InsuranceActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".ui.homepage.activity.MasterDailyActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>

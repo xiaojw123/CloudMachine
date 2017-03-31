@@ -177,7 +177,7 @@ public class WanaCloudBox extends BaseAutoLayoutActivity implements View.OnClick
                 finish();
                 break;
             case R.id.iv_sharebox:
-                ShareDialog shareDialog = new ShareDialog(WanaCloudBox.this, null, "智能云盒子", "让您的设备与您共享云端服务", null);
+                ShareDialog shareDialog = new ShareDialog(WanaCloudBox.this, null, "智能云盒子", "让您的设备与您共享云端服务", -1);
                 shareDialog.show();
                 break;
         }

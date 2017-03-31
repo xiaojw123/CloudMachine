@@ -97,5 +97,18 @@ public interface ApiService {
      */
     @GET("device/getHotQuestion")
     Observable<BaseRespose<HomeIssueDetailBean>> getHotQuestion();
+
+    /**
+     * 获取大师日报列表
+     * @param artType
+     * @param page
+     * @param size
+     * @return
+     */
+    @GET("art/getArticles")
+    Observable<BaseRespose> getMasterDaily(@Query("artType") int artType, @Query("page") int page, @Query("size") int size);
+
+
+
 }
 

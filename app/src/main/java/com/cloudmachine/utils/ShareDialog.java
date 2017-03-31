@@ -38,14 +38,16 @@ public class ShareDialog extends Dialog {
     private String title;
     private String description;
     private String url;
+    private int imageSource = -1;
+    private Bitmap mThumb;
 
-    public ShareDialog(Context context,String webpageUrl,String msgTitle,String msgDesc,Bitmap msgBitmap) {
+    public ShareDialog(Context context,String webpageUrl,String msgTitle,String msgDesc,int resource) {
         super(context, R.style.ShareDialog);
 
         this.webpageUrl = webpageUrl;
         this.msgTitle = msgTitle;
         this.msgDesc = msgDesc;
-        this.msgBitmap = msgBitmap;
+        this.imageSource = resource;
         this.mContext = context;
 
         view = getLayoutInflater().inflate(R.layout.widget_dialog_share, null);
@@ -86,9 +88,7 @@ public class ShareDialog extends Dialog {
         ivSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sessionTitle = "云机械";
-                sessionDescription = "我的工程机械设备都在云机械APP，你的设备在哪里，赶紧加入吧！";
-                sessionUrl = "http://www.cloudm.com/yjx";
+
                 if (null != webpageUrl) {
                     sessionUrl = webpageUrl;
                 }
@@ -98,7 +98,12 @@ public class ShareDialog extends Dialog {
                 if (null != msgDesc) {
                     sessionDescription = msgDesc;
                 }
-                sessionThumb = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.corner);
+                if (imageSource != -1) {
+                    sessionThumb = BitmapFactory.decodeResource(mContext.getResources(), imageSource);
+                } else {
+                    sessionThumb = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.corner);
+                }
+
                 result = weChatShareUtil.shareUrl(sessionUrl, sessionTitle, null, sessionDescription, SendMessageToWX.Req.WXSceneSession);
                 if (!result) {
                     Toast.makeText(mContext, "没有检测到微信", Toast.LENGTH_SHORT).show();
@@ -111,13 +116,8 @@ public class ShareDialog extends Dialog {
         ivTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Lg.jsBridge.v("分享到朋友圈圈:"+webpageUrl+","+msgTitle+","+msgDesc);
-                share(webpageUrl,msgTitle,msgDesc,SendMessageToWX.Req.WXSceneTimeline,msgBitmap);*/
+
                 if (weChatShareUtil.isSupportWX()) {
-                    title = "我的工程机械设备都在云机械APP，你的设备在哪里，赶紧加入吧！";
-                    description = "我的工程机械设备都在云机械APP，你的设备在哪里，赶紧加入吧！";
-                    url = "http://www.cloudm.com/yjx";
-                    Bitmap thumb = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.corner);
                     if (null != webpageUrl) {
                         url = webpageUrl;
                     }
@@ -127,8 +127,12 @@ public class ShareDialog extends Dialog {
                     if (null != msgDesc) {
                         description = msgDesc;
                     }
-                   // Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-                    result = weChatShareUtil.shareUrl(url, title, thumb, description, SendMessageToWX.Req.WXSceneTimeline);
+                    if (imageSource != -1) {
+                        mThumb = BitmapFactory.decodeResource(mContext.getResources(), imageSource);
+                    } else {
+                        mThumb = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.corner);
+                    }
+                    result = weChatShareUtil.shareUrl(url, title, mThumb, description, SendMessageToWX.Req.WXSceneTimeline);
                 } else {
                     Toast.makeText(mContext, "手机上微信版本不支持分享到朋友圈", Toast.LENGTH_SHORT).show();
                 }

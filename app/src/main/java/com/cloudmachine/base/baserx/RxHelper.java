@@ -48,6 +48,33 @@ public class RxHelper {
 
     }
 
+
+    /**
+     * 对带分页信息的服务器返回数据进行预处理
+     * @param <T>
+     * @return
+     */
+    public static <T> Observable.Transformer<BaseRespose<T>, BaseRespose<T>> handleBaseResult() {
+        return new Observable.Transformer<BaseRespose<T>, BaseRespose<T>>() {
+            @Override
+            public Observable<BaseRespose<T>> call(Observable<BaseRespose<T>> baseResposeObservable) {
+                return baseResposeObservable.flatMap(new Func1<BaseRespose<T>, Observable<BaseRespose<T>>>() {
+                    @Override
+                    public Observable<BaseRespose<T>> call(BaseRespose<T> tBaseRespose) {
+                        if (tBaseRespose.success()) {
+                            return createData(tBaseRespose);
+                        } else {
+                            return Observable.error(new ServerException(tBaseRespose.getMessage()));
+                        }
+                    }
+                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+
+
+
     /**
      * 创建成功的数据
      *
@@ -68,6 +95,21 @@ public class RxHelper {
             }
         });
 
+    }
+
+
+    private static <T> Observable<T> createBaseData(final T data) {
+        return Observable.create(new Observable.OnSubscribe<T>() {
+            @Override
+            public void call(Subscriber<? super T> subscriber) {
+                try {
+                    subscriber.onNext(data);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
     }
 
 

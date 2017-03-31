@@ -24,6 +24,8 @@ import com.cloudmachine.utils.MemeberKeeper;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import rx.Subscription;
+
 import static com.cloudmachine.R.id.sign_text;
 
 /**
@@ -58,7 +60,8 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         context = holder.getConvertView().getContext();
         signText = (TextView) holder.getView(sign_text);
         rxManager = new RxManager();
-        checkSignInfo();
+        // TODO: 2017/3/30 暂时注释掉
+       // checkSignInfo();
         LinearLayout llShoppingCenter = (LinearLayout) holder.getView(R.id.ll_shoppingcenter);
         //商城点击事件
         llShoppingCenter.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +129,7 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
 
     private void checkSignInfo() {
 
-        rxManager.add(Api.getDefault(HostType.CLOUDM_HOST)
+        Subscription subscribe = Api.getDefault(HostType.CLOUDM_HOST)
                 .getUserScoreInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
                 .compose(RxHelper.<ScoreInfo>handleResult())
                 .subscribe(new RxSubscriber<ScoreInfo>(context, false) {
@@ -159,11 +162,13 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
                             signText.setText("已签到");
                         }
                     }
+
                     @Override
                     protected void _onError(String message) {
 
                     }
-                }));
+                });
+        subscribe.unsubscribe();
     }
 
 }

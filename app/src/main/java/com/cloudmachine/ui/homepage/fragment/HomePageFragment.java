@@ -236,18 +236,21 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     }
 
     private void refreshData() {
+        Constants.MyLog("刷新方法调用了");
         getBannerInfo = false;
         getMidNewsInfo = false;
         getHotIssueInfo = false;
         isRefresh = true;
         mPresenter.getHomeBannerInfo();
         mPresenter.getHomeMidAdvertisement();
+        mPresenter.getHotQuestion();
     }
 
     //查看是否为刷新
     public void finishRefresh() {
 
         if (getMidNewsInfo && getBannerInfo && getHotIssueInfo && isRefresh && !refreshHotIssueOnly) {
+            Constants.MyLog("进入刷新方法");
             mRecyclerView.scrollToPosition(0);
             mSwipeRefreshLayout.setRefreshing(false);
             getData();

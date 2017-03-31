@@ -1,4 +1,4 @@
-package com.cloudmachine.activities;
+package com.cloudmachine.ui.personal.fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -20,14 +20,11 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
@@ -41,7 +38,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.activities.AboutCloudActivity;
+import com.cloudmachine.activities.EditPersonalActivity;
+import com.cloudmachine.activities.PermissionsActivity;
+import com.cloudmachine.activities.QrCodeActivity;
+import com.cloudmachine.activities.SuggestBackActivity;
+import com.cloudmachine.activities.UpdatePwdActivity;
+import com.cloudmachine.activities.ViewCouponActivity;
 import com.cloudmachine.autolayout.widgets.TitleView;
+import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.GetMemberInfoAsync;
@@ -50,6 +55,9 @@ import com.cloudmachine.net.task.ScoreInfoAsync;
 import com.cloudmachine.net.task.UpdateMemberInfoAsync;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.ui.personal.contract.PersonalContract;
+import com.cloudmachine.ui.personal.model.PersonalModel;
+import com.cloudmachine.ui.personal.presenter.PersonalPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileStorage;
 import com.cloudmachine.utils.FileUtils;
@@ -79,7 +87,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * 个人信息页面
  */
-public class UpdateInfoActivity extends Fragment implements OnClickListener, Callback {
+public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, PersonalModel> implements OnClickListener, Callback ,PersonalContract.View{
 
     private Context mContext;
     private Handler mHandler;
@@ -126,7 +134,7 @@ public class UpdateInfoActivity extends Fragment implements OnClickListener, Cal
     private ScrollView       scrollView;
     private boolean isIntegralAgain = true;
 
-    private View            viewParent;
+   // private View            viewParent;
     private RelativeLayout  mAboutAndHelp;
     private RelativeLayout  mShareAPP;
     private WeChatShareUtil weChatShareUtil;
@@ -143,8 +151,11 @@ public class UpdateInfoActivity extends Fragment implements OnClickListener, Cal
     private static final int REQUEST_PERMISSION = 4;  //权限请求
     private boolean isClickCamera;
     private String imagePath;
+    private String sessionTitle = "云机械";
+    private String sessionDescription = "我的工程机械设备都在云机械APP，你的设备在哪里，赶紧加入吧！";
+    private String sessionUrl = "http://www.cloudm.com/yjx";
 
-    @Override
+  /*  @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (null != viewParent) {
@@ -159,6 +170,23 @@ public class UpdateInfoActivity extends Fragment implements OnClickListener, Cal
         }
         weChatShareUtil = WeChatShareUtil.getInstance(getContext());
         return viewParent;
+    }*/
+
+    @Override
+    protected void initView() {
+        init();
+        initRootView();// 控件初始化
+        weChatShareUtil = WeChatShareUtil.getInstance(getContext());
+    }
+
+    @Override
+    protected void initPresenter() {
+        mPresenter.setVM(this,mModel);
+    }
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_personal;
     }
 
     private void init() {
@@ -727,7 +755,7 @@ public class UpdateInfoActivity extends Fragment implements OnClickListener, Cal
                 Constants.toActivity(getActivity(), AboutCloudActivity.class, null);
                 break;
             case R.id.share_app://分享APP
-                ShareDialog shareDialog = new ShareDialog(this.getContext(), "", "", "", null);
+                ShareDialog shareDialog = new ShareDialog(this.getContext(), sessionUrl, sessionTitle, sessionDescription, -1);
                 shareDialog.show();
                 MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
                 break;
