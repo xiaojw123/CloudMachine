@@ -479,8 +479,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Constants.MyLog("调用了一次");
-		Constants.MyLog("进来了");
 		Constants.MyLog("requestCode"+requestCode);
 		Constants.MyLog("resultCode"+resultCode);
 		super.onActivityResult(requestCode, resultCode, data);

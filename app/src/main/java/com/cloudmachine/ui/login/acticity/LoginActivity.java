@@ -74,7 +74,17 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
         setContentView(R.layout.activity_log);
         mHandler = new Handler(this);
         this.mContext = this;
+        getIntentData();
         initView();
+    }
+
+    private void getIntentData() {
+
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+          flag = bundle.getInt("flag");
+        }
     }
 
     @Override
@@ -275,10 +285,10 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 MemeberKeeper.saveOAuth(member, LoginActivity.this);
                 MyApplication.getInstance().setLogin(true);
                 MyApplication.getInstance().setFlag(true);
-                if (flag == 1) {
+                if (flag == 2) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
-                } else if (flag == 2) {
+                } else if (flag == 1) {
                 }
                 LoginActivity.this.finish();
                 Constants.isMcLogin = true;

@@ -1,6 +1,7 @@
 package com.cloudmachine.base.baserx;
 
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.LogUtils;
 
 import rx.Observable;
@@ -61,7 +62,7 @@ public class RxHelper {
                 return baseResposeObservable.flatMap(new Func1<BaseRespose<T>, Observable<BaseRespose<T>>>() {
                     @Override
                     public Observable<BaseRespose<T>> call(BaseRespose<T> tBaseRespose) {
-                        if (tBaseRespose.success()) {
+                        if (tBaseRespose.code == 800) {
                             return createData(tBaseRespose);
                         } else {
                             return Observable.error(new ServerException(tBaseRespose.getMessage()));

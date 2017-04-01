@@ -5,6 +5,7 @@ import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
 import com.cloudmachine.recyclerbean.HomeNewsBean;
+import com.cloudmachine.recyclerbean.MasterDailyBean;
 import com.cloudmachine.struc.LatestDailyEntity;
 import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.ScoreInfo;
@@ -106,9 +107,16 @@ public interface ApiService {
      * @return
      */
     @GET("art/getArticles")
-    Observable<BaseRespose> getMasterDaily(@Query("artType") int artType, @Query("page") int page, @Query("size") int size);
+    Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(@Query("artType") int artType, @Query("page") int page, @Query("size") int size);
 
-
+    /**
+     * 微信登录验证（是否绑定了云机械的账户）
+     * @param unionId
+     * @param openId
+     * @return
+     */
+    @GET("member/wxLogin")
+    Observable<BaseRespose> wxLogin(@Query("unionId") String unionId, @Query("openID") String openId, @Query("nickName") String nickName, @Query("headLogo") String headLogo);
 
 }
 

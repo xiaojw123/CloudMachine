@@ -81,6 +81,23 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
             }
         });
 
+        mRxManager.on(Constants.REFRESH_SIGN_STATE, new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                //仅刷新签到状态
+                refreshSignStateOnly();
+            }
+        });
+    }
+
+    private void refreshSignStateOnly() {
+
+       /* if (homeBannerList != null && homeBannerList.size() > 0) {
+            homePageList.set(1, new HomeLocalBean());
+        } else {
+            homePageList.set(0, new HomeLocalBean());
+        }*/
+        homePageAdapter.notifyDataSetChanged();
     }
 
     //热门问题换一换

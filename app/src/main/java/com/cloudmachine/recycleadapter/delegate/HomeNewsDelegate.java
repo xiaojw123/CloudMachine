@@ -16,6 +16,7 @@ import com.cloudmachine.activities.WanaCloudBox;
 import com.cloudmachine.activities.WebviewActivity;
 import com.cloudmachine.recyclerbean.HomeNewsTransfer;
 import com.cloudmachine.recyclerbean.HomePageType;
+import com.cloudmachine.ui.homepage.activity.MasterDailyActivity;
 import com.cloudmachine.utils.Constants;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -115,7 +116,8 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
                 break;
             case R.id.rl_master_news:
                 //大师日报点击跳转
-                //Intent masterIntent = new Intent(mContext,)
+                Intent masterIntent = new Intent(mContext, MasterDailyActivity.class);
+                mContext.startActivity(masterIntent);
                 break;
             case R.id.rl_wana_box:
                 Intent wanaBoxIntent = new Intent(mContext, WanaCloudBox.class);

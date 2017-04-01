@@ -26,4 +26,15 @@ public class PageBean {
 
     //当前页数量
     public int numberOfElements;
+
+    @Override
+    public String toString() {
+        return "PageBean{" +
+                "totalElements=" + totalElements +
+                ", totalPages=" + totalPages +
+                ", last=" + last +
+                ", first=" + first +
+                ", numberOfElements=" + numberOfElements +
+                '}';
+    }
 }

@@ -489,6 +489,7 @@ public class Constants {
     public static final java.lang.String APP_ID         = "wxfb6afbcc23f867df";
 
     public static final String GET_HOTISSUE = "getHotIssue";
+    public static final String REFRESH_SIGN_STATE = "refreshSignState";
     /**
      * The constant DEBUG_TAG.
      */

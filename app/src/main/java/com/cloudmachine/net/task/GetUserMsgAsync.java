@@ -75,10 +75,15 @@ public class GetUserMsgAsync extends ATask {
             String nickname = jsonObject.getString("nickname");
             int sex = Integer.parseInt(jsonObject.get("sex").toString());
             String headimgurl = jsonObject.getString("headimgurl");
+            String unionid = jsonObject.getString("unionid");
+            String openid = jsonObject.getString("openid");
+
             msg.what = Constants.HANDLER_GETUSERMSG_SUCCESS;
             Bundle bundle = new Bundle();
             bundle.putString("nickname", nickname);
             bundle.putString("headimgurl", headimgurl);
+            bundle.putString("unionid", unionid);
+            bundle.putString("openid",openid);
             bundle.putInt("sex", sex);
             msg.setData(bundle);
             handler.sendMessage(msg);

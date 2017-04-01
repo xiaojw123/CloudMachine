@@ -2,6 +2,7 @@ package com.cloudmachine.wxapi;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,9 +10,17 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.HostType;
+import com.cloudmachine.base.baserx.RxManager;
+import com.cloudmachine.base.baserx.RxSchedulers;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.net.task.GetAccessTokenAsync;
 import com.cloudmachine.net.task.GetUserMsgAsync;
+import com.cloudmachine.ui.login.acticity.VerifyPhoneNumActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.WeChatShareUtil;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
@@ -24,16 +33,20 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
 
     private IWXAPI api;
     private static final String APP_SECRET = "3c69a7395f5e54009accf1e1194d553c";
-    private Handler mHandler;
+    private Handler   mHandler;
+    public  RxManager mRxManager;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRxManager = new RxManager();
         mHandler = new Handler(this);
+        mContext = this;
         api = WXAPIFactory.createWXAPI(this, WeChatShareUtil.APP_ID, false);
         api.handleIntent(getIntent(), this);
         //是否调用finish（）方法
-        finish();
+       // finish();
     }
 
     @Override
@@ -118,14 +131,49 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
                 String nickname = bundle.getString("nickname");
                 String headimgurl = bundle.getString("headimgurl");
                 int sex = bundle.getInt("sex");
+                String unionid = bundle.getString("unionid");
+                String openId = bundle.getString("openid");
                 //是否请求服务器
+                switchWXLogin(unionid,openId,nickname,headimgurl);
                 break;
         }
         return false;
     }
 
+    private void switchWXLogin(String unionid, String openId, String nickname, String headimgurl) {
+
+        mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
+                .wxLogin(unionid,openId,nickname,headimgurl)
+        .compose(RxSchedulers.<BaseRespose>io_main())
+        .subscribe(new RxSubscriber<BaseRespose>(mContext,false) {
+            @Override
+            protected void _onNext(BaseRespose baseRespose) {
+                if (baseRespose.code == 16305) {
+                    Constants.toActivity(WXEntryActivity.this, VerifyPhoneNumActivity.class,null,true);
+
+                } else if (baseRespose.code == 800) {
+
+                } else {
+                    ToastUtils.error(baseRespose.message,true);
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+    }
+
+
     //获取用户信息
     private void getUserMsg(String access_token, String openid) {
         new GetUserMsgAsync(this,mHandler,access_token,openid).execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+       // mRxManager.clear();
     }
 }

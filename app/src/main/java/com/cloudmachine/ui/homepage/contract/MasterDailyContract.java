@@ -4,6 +4,9 @@ import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.recyclerbean.MasterDailyBean;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -20,14 +23,18 @@ import rx.Observable;
 public interface MasterDailyContract {
 
     interface Model extends BaseModel {
-        Observable<BaseRespose> getMasterDaily(int page, int size);
+
+        Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(int page, int size);
     }
 
     interface View extends BaseView {
+
+        void returnMasterDailyInfo(BaseRespose<List<MasterDailyBean>> masterDailyBeanBaseResposeList);
     }
 
     abstract static class Presenter extends BasePresenter<View, Model> {
 
+        public abstract void getMasterDailyInfo(int page,int size);
     }
 
 }

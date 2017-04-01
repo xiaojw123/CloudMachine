@@ -57,6 +57,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 	private View left_layout,validate_layout,
 	pwd_layout,pwd_new_layout,agreement_layout;
 	private ClearEditTextView cet_invitationCode;
+	private String inviteCode = "-1";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -210,7 +211,13 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 			}else if(pwdStr.length()<6){
 				Constants.ToastAction("新密码长度必须大于6位");
 			}else{
-				new RegisterNewAsync(phone, Utils.getPwdStr(pwdStr), code, mContext, mHandler).execute();
+				//在这里判断是否有邀请码
+				if (!TextUtils.isEmpty(cet_invitationCode.getText().toString().trim())) {
+					inviteCode = cet_invitationCode.getText().toString().trim();
+				} else {
+					inviteCode = "-1";
+				}
+				new RegisterNewAsync(phone, Utils.getPwdStr(pwdStr), code, mContext, mHandler,inviteCode).execute();
 			}
 		}else{
 			if(TextUtils.isEmpty(phone)){

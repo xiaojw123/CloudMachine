@@ -1,11 +1,5 @@
 package com.cloudmachine.net.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -18,19 +12,27 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.URLs;
 import com.google.gson.Gson;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class RegisterNewAsync extends ATask {
 
 	private Handler handler;
 	private String mobile;
 	private String pwd;
 	private String code;
+	private String inviteCode;
 	
 	
-	public RegisterNewAsync(String mobile,String pwd,String code,Context context,Handler handler){
+	public RegisterNewAsync(String mobile,String pwd,String code,Context context,Handler handler,String inviteCode){
 		this.handler = handler;
 		this.mobile = mobile;
 		this.pwd = pwd;
 		this.code = code;
+		this.inviteCode = inviteCode;
 	}
 	
 
@@ -41,6 +43,11 @@ public class RegisterNewAsync extends ATask {
 		list.add(new BasicNameValuePair("mobile", mobile));
 		list.add(new BasicNameValuePair("pwd", pwd));
     	list.add(new BasicNameValuePair("code", code));
+		if (inviteCode.equals("-1")) {
+
+		} else {
+			list.add(new BasicNameValuePair("inviteCode", inviteCode));
+		}
 		String result = null;
 		try {
 			result = httpRequest.post(URLs.REGISTNEW_URL, list);

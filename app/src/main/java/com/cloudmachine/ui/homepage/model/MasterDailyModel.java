@@ -1,7 +1,13 @@
 package com.cloudmachine.ui.homepage.model;
 
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.HostType;
+import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.recyclerbean.MasterDailyBean;
 import com.cloudmachine.ui.homepage.contract.MasterDailyContract;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -17,7 +23,8 @@ import rx.Observable;
 
 public class MasterDailyModel implements MasterDailyContract.Model{
     @Override
-    public Observable<BaseRespose> getMasterDaily(int page, int size) {
-        return null;
+    public Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(int page, int size) {
+        return Api.getDefault(HostType.GUOSHUAI_HOST).getMasterDaily(5, page, size)
+                .compose(RxHelper.<List<MasterDailyBean>>handleBaseResult());
     }
 }

@@ -51,7 +51,9 @@ public class RxManager {
      * 单个presenter生命周期结束，取消订阅和所有rxbus观察
      */
     public void clear() {
-        mCompositeSubscription.unsubscribe();// 取消所有订阅
+        if (mCompositeSubscription != null) {
+            mCompositeSubscription.unsubscribe();// 取消所有订阅
+        }
         for (Map.Entry<String, Observable<?>> entry : mObservables.entrySet()) {
             mRxBus.unregister(entry.getKey(), entry.getValue());// 移除rxbus观察
         }

@@ -1,15 +1,18 @@
 package com.cloudmachine.ui.homepage.activity;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.recyclerbean.MasterDailyBean;
 import com.cloudmachine.ui.homepage.contract.MasterDailyContract;
 import com.cloudmachine.ui.homepage.model.MasterDailyModel;
 import com.cloudmachine.ui.homepage.presenter.MasterDailyPresenter;
+import com.cloudmachine.utils.Constants;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,21 +33,27 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
     TitleView mTitleLayout;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master_daily);
         ButterKnife.bind(this);
-
         initView();
     }
 
     private void initView() {
 
         mTitleLayout.setTitle("大师日报");
+        mPresenter.getMasterDailyInfo(1,20);
     }
 
     @Override
     public void initPresenter() {
         mPresenter.setVM(this, mModel);
+    }
+
+
+    @Override
+    public void returnMasterDailyInfo(BaseRespose<List<MasterDailyBean>> masterDailyBeanBaseResposeList) {
+        Constants.MyLog("走到这里");
     }
 }

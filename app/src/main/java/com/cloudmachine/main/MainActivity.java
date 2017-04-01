@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,15 +68,15 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 
 	private Handler mHandler;
 	private Context mContext;
-	private View[] linearLayouts = new View[5];
-	private ImageView[] imageViews = new ImageView[5];
-	private TextView[] textViews = new TextView[5];
+	private View[] linearLayouts = new View[4];
+	private ImageView[] imageViews = new ImageView[4];
+	private TextView[] textViews = new TextView[4];
 	private String catId;
 	private OnActivityBack mListViewListener;
 	private ImageView tips;
 	// private List<News> displaylist = new ArrayList<News>();
 	private Fragment mFragments[] = new Fragment[4]; // 存储页面的数组
-	private boolean isInitFragment[] = new boolean[5];//是否被初始化
+	private boolean isInitFragment[] = new boolean[4];//是否被初始化
 	private Fragment mContentFragment; // 当前fragment
 	private int signBetweenTime; // 签到的时间间隔
 	private RadiusButtonView sign_text, question_text;
@@ -84,7 +85,10 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 	private ImageView main_guide_image;//新手引导图标
 	private View g_layout;//新手引导半透明背景
 	public static ArrayList<McDeviceInfo> deviceMacList = new ArrayList<>();
-	
+	private RelativeLayout mRlQuestionLayout;
+	private ImageView mIvQuestionImage;
+	private TextView mTvQuestionText;
+
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@SuppressLint("ResourceAsColor")
@@ -130,26 +134,30 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		//sign_text = (RadiusButtonView) findViewById(R.id.sign_text); // 签到
 		linearLayouts[0] = findViewById(R.id.tab_homepage_layout);//主页
 		linearLayouts[1] = findViewById(R.id.tab_device_layout);//设备
-		linearLayouts[2] = findViewById(R.id.tab_question_layout);//提问
-		linearLayouts[3] = findViewById(R.id.tab_repair_layout); // 报修页面布局
-		linearLayouts[4] = findViewById(R.id.tab_personal_layout); //我的页面
+		//linearLayouts[2] = findViewById(R.id.tab_question_layout);//提问
+		mRlQuestionLayout = (RelativeLayout) findViewById(R.id.tab_question_layout);
+		linearLayouts[2] = findViewById(R.id.tab_repair_layout); // 报修页面布局
+		linearLayouts[3] = findViewById(R.id.tab_personal_layout); //我的页面
 		imageViews[0] = (ImageView) findViewById(R.id.tab_homepage_image);
 		imageViews[1] = (ImageView) findViewById(R.id.tab_device_image);
-		imageViews[2] = (ImageView) findViewById(R.id.tab_question_iamge);
-		imageViews[3] = (ImageView) findViewById(R.id.tab_repair_iamge); // 报修图片
-		imageViews[4] = (ImageView) findViewById(R.id.tab_personal_iamge);
+		//imageViews[2] = (ImageView) findViewById(R.id.tab_question_iamge);
+		mIvQuestionImage = (ImageView) findViewById(R.id.tab_question_iamge);
+		imageViews[2] = (ImageView) findViewById(R.id.tab_repair_iamge); // 报修图片
+		imageViews[3] = (ImageView) findViewById(R.id.tab_personal_iamge);
 		textViews[0] = (TextView) findViewById(R.id.tab_homepage_text);
 		textViews[1] = (TextView) findViewById(R.id.tab_device_text);
-		textViews[2] = (TextView) findViewById(R.id.tab_question_text);
-		textViews[3] = (TextView) findViewById(R.id.tab_repair_text);
-		textViews[4] = (TextView) findViewById(R.id.tab_personal_text);
+		//textViews[2] = (TextView) findViewById(R.id.tab_question_text);
+		mTvQuestionText = (TextView) findViewById(R.id.tab_question_text);
+		textViews[2] = (TextView) findViewById(R.id.tab_repair_text);
+		textViews[3] = (TextView) findViewById(R.id.tab_personal_text);
 		tips = (ImageView) findViewById(R.id.tips); // 小圆点
 		tips.setVisibility(View.GONE);
 		linearLayouts[0].setOnClickListener(this);
 		linearLayouts[1].setOnClickListener(this);
+		//linearLayouts[2].setOnClickListener(this);
+		mRlQuestionLayout.setOnClickListener(this);
 		linearLayouts[2].setOnClickListener(this);
 		linearLayouts[3].setOnClickListener(this);
-		linearLayouts[4].setOnClickListener(this);
 		//three_r_layout = findViewById(R.id.three_r_layout); // 内部布局（去掉签到标签）
 	}
 
@@ -192,7 +200,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				Constants.toLoginActivity(this, 2);
 				return;
 			} else {
-				switchContent(3);
+				switchContent(2);
 			}
 			break;
 			case R.id.tab_personal_layout:
@@ -200,7 +208,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 					Constants.toLoginActivity(this, 2);
 					return;
 				} else {
-					switchContent(4);
+					switchContent(3);
 				}
 				break;
 		case R.id.main_guide_image:
@@ -471,6 +479,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 	private void switchContent(int n) {
 		if(n<isInitFragment.length)
 			isInitFragment[n] = true;
+		//签名逻辑
 		if(currentFragment == 2){
 			setSignBetweenTime(0);
 		}
@@ -556,7 +565,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 	}
 
 	@TargetApi(19)
-	private void setTranslucentStatus(boolean on) {
+	private void setTranslucentStatus(boolean on){
 		Window win = getWindow();
 		WindowManager.LayoutParams winParams = win.getAttributes();
 		final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;

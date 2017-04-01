@@ -2,6 +2,7 @@ package com.cloudmachine.recycleadapter.delegate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.cloudmachine.R;
 import com.cloudmachine.api.Api;
 import com.cloudmachine.api.HostType;
+import com.cloudmachine.base.baserx.RxBus;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.base.baserx.RxSubscriber;
@@ -19,6 +21,7 @@ import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -27,6 +30,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import rx.Subscription;
 
 import static com.cloudmachine.R.id.sign_text;
+import static com.cloudmachine.app.MyApplication.mContext;
 
 /**
  * 项目名称：CloudMachine
@@ -100,6 +104,7 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                checkSignInfo();
                 if (signBetweenTime != 0) {
                     rxManager.add(Api.getDefault(HostType.CLOUDM_HOST)
                             .getUserInsertSignInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
@@ -115,6 +120,7 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
                                                     String.valueOf(mb.getId()),
                                             scoreInfo.getServerTime());
                                 }
+                                RxBus.getInstance().post(Constants.REFRESH_SIGN_STATE,"");
                             }
                         }
                         @Override
@@ -128,47 +134,56 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
     }
 
     private void checkSignInfo() {
-
-        Subscription subscribe = Api.getDefault(HostType.CLOUDM_HOST)
-                .getUserScoreInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
-                .compose(RxHelper.<ScoreInfo>handleResult())
-                .subscribe(new RxSubscriber<ScoreInfo>(context, false) {
-                    @Override
-                    protected void _onNext(ScoreInfo scoreInfo) {
-                        if (null != scoreInfo
-                                && !TextUtils.isEmpty(scoreInfo.getServerTime())
-                                && null != MemeberKeeper.getOauth(context)) {
-                            //上一次签到的时间
-                            String oldTime = MySharedPreferences
-                                    .getSharedPString(MySharedPreferences.key_score_update_time
-                                            + String.valueOf(MemeberKeeper.getOauth(
-                                            context).getId()));
-                            //签到时间间隔
-                            signBetweenTime = Constants.getDateDays(Constants
-                                            .changeDateFormat(scoreInfo.getServerTime(),
-                                                    Constants.DateFormat2, Constants.DateFormat1),
-                                    Constants.changeDateFormat(oldTime,
-                                            Constants.DateFormat2, Constants.DateFormat1),
-                                    Constants.DateFormat1);
-                            if (oldTime == null) {
+        if (MemeberKeeper.getOauth(mContext) == null) {
+            Intent intent = new Intent(mContext, LoginActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("flag",2);
+            intent.putExtras(bundle);
+            mContext.startActivity(intent);
+        } else {
+            Subscription subscribe = Api.getDefault(HostType.CLOUDM_HOST)
+                    .getUserScoreInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
+                    .compose(RxHelper.<ScoreInfo>handleResult())
+                    .subscribe(new RxSubscriber<ScoreInfo>(context, false) {
+                        @Override
+                        protected void _onNext(ScoreInfo scoreInfo) {
+                            if (null != scoreInfo
+                                    && !TextUtils.isEmpty(scoreInfo.getServerTime())
+                                    && null != MemeberKeeper.getOauth(context)) {
+                                //上一次签到的时间
+                                String oldTime = MySharedPreferences
+                                        .getSharedPString(MySharedPreferences.key_score_update_time
+                                                + String.valueOf(MemeberKeeper.getOauth(
+                                                context).getId()));
+                                //签到时间间隔
+                                signBetweenTime = Constants.getDateDays(Constants
+                                                .changeDateFormat(scoreInfo.getServerTime(),
+                                                        Constants.DateFormat2, Constants.DateFormat1),
+                                        Constants.changeDateFormat(oldTime,
+                                                Constants.DateFormat2, Constants.DateFormat1),
+                                        Constants.DateFormat1);
+                                if (oldTime == null) {
+                                    signBetweenTime = 1;
+                                }
+                            } else {
                                 signBetweenTime = 1;
                             }
-                        } else {
-                            signBetweenTime = 1;
-                        }
-                        if (signBetweenTime != 0) {
-                            signText.setText("签到");
-                        } else {
-                            signText.setText("已签到");
-                        }
-                    }
+                            if (signBetweenTime != 0) {
+                                signText.setText("签到");
+                            } else {
+                                signText.setText("已签到");
+                            }
 
-                    @Override
-                    protected void _onError(String message) {
+                        }
 
-                    }
-                });
-        subscribe.unsubscribe();
+                        @Override
+                        protected void _onError(String message) {
+
+                        }
+                    });
+            subscribe.unsubscribe();
+        }
+
     }
 
 }
