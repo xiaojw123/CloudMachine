@@ -13,6 +13,7 @@ import com.cloudmachine.utils.TUtil;
 import com.cloudmachine.utils.UMListUtil;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * 项目名称：CloudMachine
@@ -31,6 +32,7 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
     public  E         mModel;
     public  RxManager mRxManager;
     public View      viewParent;
+    private Unbinder mUnbinder;
 
     @Nullable
     @Override
@@ -44,7 +46,7 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
             }
         } else {
             viewParent = inflater.inflate(getLayoutResource(), null);
-            ButterKnife.bind(this, viewParent);
+            mUnbinder = ButterKnife.bind(this, viewParent);
             mRxManager = new RxManager();
             mPresenter = TUtil.getT(this, 0);
             mModel = TUtil.getT(this, 1);
@@ -80,6 +82,7 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mUnbinder.unbind();
         UMListUtil.getUMListUtil().removeList(this.getClass().getSimpleName());
         if (mPresenter != null)
             mPresenter.onDestroy();

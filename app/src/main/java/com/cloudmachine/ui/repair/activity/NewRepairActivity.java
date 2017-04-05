@@ -51,6 +51,7 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileUtils;
 import com.cloudmachine.utils.PictureUtil;
 import com.cloudmachine.utils.ResV;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.utils.photo.util.PublicWay;
@@ -123,6 +124,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 	private PhotoAdapter photoAdapter;
 	private ArrayList<String> selectedPhotos = new ArrayList<>();
 	List<String> photos = null;
+	private ArrayList<String> selectPhotos;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -210,10 +212,11 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
 	private void initNewReapirView() {
 
+		selectPhotos = new ArrayList<>();
 		//初始化动态recyclerview
 		mRecyclerView = (RecyclerView) findViewById(recycler_view);
 		photoAdapter = new PhotoAdapter(this, selectedPhotos);
-		mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, OrientationHelper.VERTICAL));
+		mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL));
 		mRecyclerView.setAdapter(photoAdapter);
 		mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this,
 				new RecyclerItemClickListener.OnItemClickListener() {
@@ -305,6 +308,17 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 						newRepairInfo.setVworkaddress(vworkaddress);
 						newRepairInfo.setProvince(province);
 						newRepairInfo.setDeviceId(deviceId);
+
+						StringBuffer sb = new StringBuffer();
+						for (int i =0;i<selectPhotos.size();i++) {
+							if (i < selectPhotos.size() - 1) {
+								sb.append(selectPhotos.get(i)).append(",");
+							}
+							if (i == selectPhotos.size() - 1) {
+								sb.append(selectPhotos.get(i));
+							}
+						}
+						newRepairInfo.setLogo_address(sb.toString());
 						if(TextUtils.isEmpty(vmacopname)){
 							Constants.MyToast("联系人不能为空！");
 						}else if(TextUtils.isEmpty(vmacoptel)){
@@ -470,6 +484,9 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 			case Constants.HANDLER_UPLOAD_SUCCESS:
 				String url = (String) msg.obj;
 				Constants.MyLog("拿到的图片链接"+url);
+				ToastUtils.success("上传照片成功",true);
+				//向集合添加选中的url
+				selectPhotos.add(url);
 				break;
 		default:
 			break;
@@ -505,7 +522,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
 					for (int i =0;i<photos.size();i++ ) {
 						String fileName = String.valueOf(System.currentTimeMillis());
-						Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(0));
+						Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(i));
 						String filename = FileUtils.saveBitmap(smallBitmap, fileName);
 						UploadPhotoUtils.getInstance(this).upLoadFile(filename, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
 					}

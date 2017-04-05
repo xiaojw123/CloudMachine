@@ -49,6 +49,7 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
     private Context         mContext;
     private JsBridgeManager jsBridgeManager;
     private String URLString = "http://h5.test.cloudm.com/Insurance";
+    /*http://h5.test.cloudm.com/Insurance*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +102,12 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
             public void onClick(View v) {
                 String call = "javascript:prev()";
                 mMWebview.loadUrl(call);
+               /* if (mMWebview.canGoBack()) {
+                    mMWebview.goBack();
+                } else {
+                    finish();
+                }*/
+
             }
         });
     }

@@ -1,8 +1,6 @@
 package com.cloudmachine.base.baserx;
 
 import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.LogUtils;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -24,7 +22,7 @@ import rx.schedulers.Schedulers;
 
 public class RxHelper {
     /**
-     * 对服务器返回数据进行预处理
+     * 对服务器返回数据进行预处理(正常情况只需要result)
      *
      * @param <T>
      * @return
@@ -36,7 +34,7 @@ public class RxHelper {
                 return tObservable.flatMap(new Func1<BaseRespose<T>, Observable<T>>() {
                     @Override
                     public Observable<T> call(BaseRespose<T> result) {
-                        LogUtils.logd("result from api : " + result);
+                       // LogUtils.logd("result from api : " + result);
                         if (result.success()) {
                             return createData(result.result);
                         } else {
@@ -51,7 +49,7 @@ public class RxHelper {
 
 
     /**
-     * 对带分页信息的服务器返回数据进行预处理
+     * 对带分页信息的服务器返回数据进行预处理（拿到大父类）
      * @param <T>
      * @return
      */
@@ -73,8 +71,27 @@ public class RxHelper {
         };
     }
 
-
-
+    /**
+     * 对结果类型的数据进行预处理(只需要拿到message信息的)
+     * @return
+     */
+    public static Observable.Transformer<BaseRespose, String> handleBooleanResult() {
+        return new Observable.Transformer<BaseRespose, String>() {
+            @Override
+            public Observable<String> call(Observable<BaseRespose> baseResposeObservable) {
+                return baseResposeObservable.flatMap(new Func1<BaseRespose, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(BaseRespose baseRespose) {
+                        if (baseRespose.code == 800) {
+                            return createData(baseRespose.message);
+                        } else {
+                            return Observable.error(new ServerException(baseRespose.message));
+                        }
+                    }
+                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
 
     /**
      * 创建成功的数据

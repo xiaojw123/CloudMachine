@@ -165,8 +165,7 @@ public class MyApplication extends Application {
         //初始化Glide
         Glide.get(this).register(GlideUrl.class,
                 InputStream.class,
-                new OkHttpUrlLoader.Factory(/*OkHttpClientFactory.getDefaultOkClient())*/
-                new Api(HostType.CLOUDM_HOST).okHttpClient));
+                new OkHttpUrlLoader.Factory(new Api(HostType.CLOUDM_HOST).okHttpClient));
         //初始化logger
         LogUtils.logInit(/*BuildConfig.LOG_DEBUG*/true);
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志

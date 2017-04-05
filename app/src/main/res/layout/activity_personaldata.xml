@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="#f6f6f9"
+    >
+
+    <com.cloudmachine.autolayout.widgets.TitleView
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.cloudmachine.autolayout.widgets.TitleView>
+
+    <RelativeLayout
+        android:id="@+id/ll_head_logo"
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:background="#ffffff"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/head_iamge"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/arrow_next"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/master_news"
+            app:civ_border_color="#FFFFFF"
+            app:civ_border_width="1dp"
+            />
+
+        <ImageView
+            android:id="@+id/arrow_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_next"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:text="头像"
+            android:textColor="#000000"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/public_layout_padding_left"
+        />
+
+    <RelativeLayout
+        android:id="@+id/phoneLayout"
+        style="@style/layout_item"
+        >
+
+        <TextView
+            android:id="@+id/f11"
+            style="@style/personal_left_text"
+            android:text="账号"
+            />
+
+        <TextView
+            android:id="@+id/edit_textPhone"
+            style="@style/personal_edit_text"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/public_layout_padding_left"
+            android:background="@null"
+            android:text=""
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/public_layout_padding_left"
+        />
+
+    <RelativeLayout
+        android:id="@+id/nickLayout"
+        style="@style/layout_item"
+        >
+
+        <TextView
+            android:id="@+id/f5"
+            style="@style/personal_left_text"
+            android:text="昵称"
+            />
+
+        <TextView
+            android:id="@+id/nickname"
+            style="@style/personal_edit_text"
+            android:layout_marginRight="@dimen/public_layout_padding_left"
+            android:layout_toLeftOf="@+id/arrowTip1"
+            android:background="@null"
+            android:text=""
+            />
+
+        <ImageView
+            android:id="@+id/arrowTip1"
+            style="@style/personal_arrow_image"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/common_left_gap"
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/my_pwd"
+        style="@style/layout_item">
+
+        <TextView
+            style="@style/personal_left_text"
+            android:text="修改密码"
+            />
+
+        <ImageView
+            style="@style/personal_arrow_image"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/common_left_gap"
+        />
+
+</LinearLayout>

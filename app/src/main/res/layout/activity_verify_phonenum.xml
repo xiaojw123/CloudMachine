@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="获取验证码"
-                android:textColor="@drawable/bg_text_validate"
+                android:textColor="#444444"
                 android:textSize="@dimen/public_textsize1"/>
         </RelativeLayout>
 
@@ -121,6 +121,7 @@
         android:layout_marginLeft="@dimen/public_layout_padding_left"/>
 
     <LinearLayout
+        android:id="@+id/ll_invitation"
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_input_height"
         >
@@ -140,7 +141,7 @@
         android:layout_marginLeft="@dimen/public_layout_padding_left"/>
 
     <LinearLayout
-
+        android:id="@+id/ll_password"
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_input_height" >
 

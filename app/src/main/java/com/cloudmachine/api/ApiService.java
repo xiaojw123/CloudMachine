@@ -2,12 +2,14 @@ package com.cloudmachine.api;
 
 
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.recyclerbean.CheckNumBean;
 import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
 import com.cloudmachine.recyclerbean.HomeNewsBean;
 import com.cloudmachine.recyclerbean.MasterDailyBean;
 import com.cloudmachine.struc.LatestDailyEntity;
 import com.cloudmachine.struc.McDeviceInfo;
+import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
 
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public interface ApiService {
     Observable<BaseRespose<String>> upLoadPhoto(@Part("file\"; filename=\"avatar.png\"") RequestBody file);
 
     /**
-     *拿到用户积分信息
+     * 拿到用户积分信息
      * @param memberId
      * @return
      */
@@ -74,7 +76,7 @@ public interface ApiService {
      * @return
      */
     @GET("member/insertSignPoint")
-    Observable<BaseRespose<ScoreInfo>>getUserInsertSignInfo(@Query("memberId") String memberId);
+    Observable<BaseRespose<ScoreInfo>> getUserInsertSignInfo(@Query("memberId") String memberId);
 
     /**
      * 获得轮播图
@@ -116,7 +118,57 @@ public interface ApiService {
      * @return
      */
     @GET("member/wxLogin")
-    Observable<BaseRespose> wxLogin(@Query("unionId") String unionId, @Query("openID") String openId, @Query("nickName") String nickName, @Query("headLogo") String headLogo);
+    Observable<BaseRespose> wxLogin(@Query("unionId") String unionId, @Query("openId") String openId, @Query("nickName") String nickName, @Query("headLogo") String headLogo);
+
+    /**
+     * 微信绑定手机号
+     * @param mobile
+     * @param type
+     * @return
+     */
+    @GET("member/getCode")
+    Observable<BaseRespose> wxBindMobile(@Query("mobile") long mobile, @Query("type") long type);
+
+    /**
+     * 检测该手机账号是否注册了云机械账户
+     * @param mobile
+     * @return
+     */
+    @GET("member/checkNum")
+    Observable<BaseRespose<CheckNumBean>> checkNum(@Query("mobile") long mobile);
+
+
+    /**
+     * 微信登录绑定手机号
+     * @param unionId
+     * @param openId
+     * @param account
+     * @param code
+     * @param inviteCode
+     * @param pwd
+     * @param nickname
+     * @param headLogo
+     * @param type
+     * @return
+     */
+    @GET("member/wxBin")
+    Observable<BaseRespose<Member>> wxBind(@Query("unionId") String unionId,
+                                           @Query("openId") String openId,
+                                           @Query("account") String account,
+                                           @Query("code") String code,
+                                           @Query("inviteCode") String inviteCode,
+                                           @Query("pwd") String pwd,
+                                           @Query("nickname") String nickname,
+                                           @Query("headLogo") String headLogo,
+                                           @Query("type") Integer type);
+
+    /**
+     * 根据id获取到用户信息
+     * @param memberId
+     * @return
+     */
+    @GET("member/getMemberInfoById")
+    Observable<BaseRespose<Member>> getMemberInfoById(@Query("memberId") Long memberId);
 
 }
 

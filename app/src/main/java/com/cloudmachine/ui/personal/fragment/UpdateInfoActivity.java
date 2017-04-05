@@ -134,7 +134,6 @@ public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, Personal
     private ScrollView       scrollView;
     private boolean isIntegralAgain = true;
 
-   // private View            viewParent;
     private RelativeLayout  mAboutAndHelp;
     private RelativeLayout  mShareAPP;
     private WeChatShareUtil weChatShareUtil;
@@ -154,23 +153,6 @@ public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, Personal
     private String sessionTitle = "云机械";
     private String sessionDescription = "我的工程机械设备都在云机械APP，你的设备在哪里，赶紧加入吧！";
     private String sessionUrl = "http://www.cloudm.com/yjx";
-
-  /*  @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (null != viewParent) {
-            ViewGroup parent = (ViewGroup) viewParent.getParent();
-            if (null != parent) {
-                parent.removeView(viewParent);
-            }
-        } else {
-            viewParent = inflater.inflate(R.layout.activity_personal, null);
-            init();
-            initRootView();// 控件初始化
-        }
-        weChatShareUtil = WeChatShareUtil.getInstance(getContext());
-        return viewParent;
-    }*/
 
     @Override
     protected void initView() {
@@ -344,7 +326,6 @@ public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, Personal
                 signBetweenTime = bundle.getInt(Constants.P_SignBetweenTime);
                 infoType = bundle.getInt(Constants.P_MERMBERTYPE);
                 infoMemberId = bundle.getInt(Constants.P_MERMBERID);
-                //        		deviceId = 100;
             } catch (Exception e) {
                 Constants.MyLog(e.getMessage());
             }
@@ -352,7 +333,7 @@ public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, Personal
         }
     }
 
-    public void showDialogCard(View v) {
+    /*public void showDialogCard(View v) {
 
         imgsign = 1;
         new AlertDialog.Builder(getActivity())
@@ -363,8 +344,8 @@ public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, Personal
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                /*startActivityForResult(PhotosGallery.gotoPhotosGallery(),
-                                        IMAGE_REQUEST_CODE);*/
+                                *//*startActivityForResult(PhotosGallery.gotoPhotosGallery(),
+                                        IMAGE_REQUEST_CODE);*//*
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
                                         startPermissionsActivity();
@@ -401,7 +382,7 @@ public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, Personal
                     }
                 }).show();
 
-    }
+    }*/
 
 
     public void showDialog(View v) {
@@ -776,12 +757,6 @@ public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, Personal
                 if (!TextUtils.isEmpty(member.getNickname())) {
                     textView5.setText(member.getNickname());
                 }
-			/*if (!TextUtils.isEmpty(member.getName())) {
-				textView1.setText(member.getName());
-			}
-			if (!TextUtils.isEmpty(member.getIdCard())) {
-				textView2.setText(member.getIdCard());
-			}*/
                 if (member.getMobile() != null && !"".equals(member.getMobile())) {
                     textView4.setText(member.getMobile());
                 }

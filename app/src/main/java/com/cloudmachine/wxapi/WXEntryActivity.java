@@ -36,6 +36,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
     private Handler   mHandler;
     public  RxManager mRxManager;
     private Context mContext;
+    private String mNickname;
+    private String mHeadimgurl;
+    private int mSex;
+    private String mUnionid;
+    private String mOpenId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,13 +133,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
                 }
                 break;
             case Constants.HANDLER_GETUSERMSG_SUCCESS:
-                String nickname = bundle.getString("nickname");
-                String headimgurl = bundle.getString("headimgurl");
-                int sex = bundle.getInt("sex");
-                String unionid = bundle.getString("unionid");
-                String openId = bundle.getString("openid");
+                mNickname = bundle.getString("nickname");
+                mHeadimgurl = bundle.getString("headimgurl");
+                mSex = bundle.getInt("sex");
+                mUnionid = bundle.getString("unionid");
+                mOpenId = bundle.getString("openid");
                 //是否请求服务器
-                switchWXLogin(unionid,openId,nickname,headimgurl);
+                switchWXLogin(mUnionid, mOpenId, mNickname, mHeadimgurl);
                 break;
         }
         return false;
@@ -149,6 +154,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
             @Override
             protected void _onNext(BaseRespose baseRespose) {
                 if (baseRespose.code == 16305) {
+                    Bundle b = new Bundle();
+                    b.putString("nickname", mNickname);
+                    b.putString("unionid", mUnionid);
+                    b.putString("openid", mOpenId);
+                    b.putString("headimgurl", mHeadimgurl);
+                    b.putInt("sex",mSex);
                     Constants.toActivity(WXEntryActivity.this, VerifyPhoneNumActivity.class,null,true);
 
                 } else if (baseRespose.code == 800) {
