@@ -30,11 +30,15 @@ public interface MasterDailyContract {
     interface View extends BaseView {
 
         void returnMasterDailyInfo(BaseRespose<List<MasterDailyBean>> masterDailyBeanBaseResposeList);
+
+        void returnLoadMoreDailyInfo(BaseRespose<List<MasterDailyBean>> masterDailyBeanBaseResposeList);
     }
 
     abstract static class Presenter extends BasePresenter<View, Model> {
 
         public abstract void getMasterDailyInfo(int page,int size);
+
+        public abstract void loadMoreDailyInfo(int page ,int size);
     }
 
 }

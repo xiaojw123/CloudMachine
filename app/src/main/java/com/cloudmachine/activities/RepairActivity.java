@@ -175,14 +175,6 @@ public class RepairActivity extends Fragment implements Callback,
                     ArrayList<FinishBean> finish = repairListInfo.getFinish();
                     ArrayList<UnfinishedBean> unfinished = repairListInfo
                             .getUnfinished();
-                /*int finishLen = finish.size();
-				for(int f=0; f<finishLen; f++){
-					finishBeans.add(finish.get(finishLen-1-f));
-				}
-				int ufinishLen = unfinished.size();
-				for(int uf=0; uf<ufinishLen; uf++){
-					unfinishedBeans.add(unfinished.get(ufinishLen-1-uf));
-				}*/
                     if (null != finish) {
                         finishBeans.addAll(finish);
                     }

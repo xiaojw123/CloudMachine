@@ -24,7 +24,7 @@ public class VerifyPhoneNumModel implements VerifyPhoneNumContract.Model {
 
     @Override
     public Observable<BaseRespose> wxBindMobile(long mobile, long type) {
-        return Api.getDefault(HostType.CAITINGTING_HOST).wxBindMobile(mobile,type);
+        return Api.getDefault(HostType.CAITINGTING_HOST).wxBindMobile(mobile, type);
     }
 
     @Override
@@ -35,11 +35,26 @@ public class VerifyPhoneNumModel implements VerifyPhoneNumContract.Model {
     }
 
     @Override
-    public Observable<Member> bindWx(String unionId, String openId, String account,
-                                     String code, String inviteCode, String pwd,
-                                     String nickname, String headLogo, Integer type) {
-        return Api.getDefault(HostType.CAITINGTING_HOST).wxBind(unionId,openId,account,code,inviteCode
-        ,pwd,nickname,headLogo,type)
+    public Observable<Member> wxBind(String unionId,
+                                     String openId,
+                                     String account,
+                                     String code,
+                                     String inviteCode,
+                                     String pwd,
+                                     String nickname,
+                                     String headLogo,
+                                     Integer type) {
+        return Api.getDefault(HostType.CAITINGTING_HOST).wxBind(unionId,
+                openId,
+                account,
+                code,
+                inviteCode,
+                pwd,
+                nickname,
+                headLogo,
+                type)
                 .compose(RxHelper.<Member>handleResult());
     }
+
+
 }

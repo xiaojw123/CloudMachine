@@ -17,6 +17,10 @@ public class ApiConstants {
     public static final String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3-web/";
     public static final String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3-web/";
 
+
+
+    /*"http://api.test.cloudm.com/"*/
+
     /**
      * 获取对应的host
      *

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="161dp"
+        android:layout_height="88dp"
+        android:background="@drawable/valid_coupon"
+        >
+
+        <RelativeLayout
+            android:layout_width="143dp"
+            android:layout_height="75dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/validcoupon_shape"
+            >
+
+            <LinearLayout
+                android:id="@+id/ll1"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="¥"
+                    android:textColor="#f57b29"
+                    android:textSize="10sp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="6dp"
+                    android:text="100"
+                    android:textColor="#f57b29"
+                    android:textSize="14sp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_use_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="9dp"
+                    android:text="维修保养券"
+                    android:textColor="#f98d48"
+                    android:textSize="10sp"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/v1"
+                android:layout_width="107dp"
+                android:layout_height="2dp"
+                android:layout_below="@id/ll1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="6dp"
+                android:background="#f9b976"/>
+
+            <LinearLayout
+                android:layout_below="@id/v1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="vertical"
+                android:layout_centerHorizontal="true"
+                >
+
+                <TextView
+                    android:id="@+id/limitInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="满100元可用,仅耗件可用"
+                    android:textColor="#f98d48"
+                    android:textSize="10sp"/>
+
+                <TextView
+                    android:id="@+id/tv_valid_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="3dp"
+                    android:text="有效期: 2017.10.15至2018.10.21"
+                    android:textColor="#f98d48"
+                    android:textSize="8sp"
+                    />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_used"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/used"
+            />
+
+        <ImageView
+            android:id="@+id/iv_expried"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/expired"
+            android:visibility="gone"
+            />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

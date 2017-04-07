@@ -7,6 +7,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,8 @@ import android.widget.ListView;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.GetCouponAdapter;
 import com.cloudmachine.net.task.GetCouponAsync;
+import com.cloudmachine.recycleadapter.ValidCouponAdapter;
+import com.cloudmachine.recycleadapter.decoration.GridSpacingItemDecoration;
 import com.cloudmachine.struc.CouponInfo;
 import com.cloudmachine.utils.Constants;
 
@@ -38,6 +43,8 @@ public class AvailableCouponsFragment extends Fragment implements Handler.Callba
     private ListView lvAvavilableCoupon;
     private ArrayList<CouponInfo> dataList;
     private GetCouponAdapter getCouponAdapter;
+    private RecyclerView mRecyclerView;
+    private ValidCouponAdapter mValidCouponAdapter;
 
 
     @Nullable
@@ -57,28 +64,31 @@ public class AvailableCouponsFragment extends Fragment implements Handler.Callba
             initView();
 
         }
-        //MobclickAgent.onEvent(getActivity(),UMengKey.time_machine_list);
 
         return viewParent;
     }
 
     private void initView() {
-        ViewCouponActivity viewCouponActivity = (ViewCouponActivity) getActivity();
-        lvAvavilableCoupon = (ListView) viewParent.findViewById(R.id.lv_available_coupon);
-        new GetCouponAsync(mHandler, "0", null, viewCouponActivity).execute();
         dataList = new ArrayList<>();
-        getCouponAdapter = new GetCouponAdapter(mContext, dataList,0);
-        lvAvavilableCoupon.setAdapter(getCouponAdapter);
+        ViewCouponActivity viewCouponActivity = (ViewCouponActivity) getActivity();
+        new GetCouponAsync(mHandler, "0", null, viewCouponActivity).execute();
+        mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, getActivity().getResources().getDimensionPixelSize(R.dimen.padding_middle), true));
+        mRecyclerView.setHasFixedSize(true);
+        mValidCouponAdapter = new ValidCouponAdapter(dataList, getActivity());
+        mRecyclerView.setAdapter(mValidCouponAdapter);
     }
 
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case Constants.HANDLER_GETCOUPONS_SUCCESS:
+                dataList.clear();
                 ArrayList<CouponInfo> data = (ArrayList<CouponInfo>) msg.obj;
                 if (null != data) {
                     dataList.addAll(data);
-                    getCouponAdapter.notifyDataSetChanged();
+                    mValidCouponAdapter.notifyDataSetChanged();
                 }
                 break;
             case Constants.HANDLER_GETCOUPONS_FAILD:

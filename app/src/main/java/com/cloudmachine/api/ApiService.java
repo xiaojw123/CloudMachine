@@ -63,14 +63,6 @@ public interface ApiService {
     Observable<BaseRespose<String>> upLoadPhoto(@Part("file\"; filename=\"avatar.png\"") RequestBody file);
 
     /**
-     * 拿到用户积分信息
-     * @param memberId
-     * @return
-     */
-    @GET("member/userScoreInfo")
-    Observable<BaseRespose<ScoreInfo>> getUserScoreInfo(@Query("memberId") String memberId);
-
-    /**
      * 拿到用户签到信息
      * @param memberId
      * @return
@@ -151,7 +143,7 @@ public interface ApiService {
      * @param type
      * @return
      */
-    @GET("member/wxBin")
+    @GET("member/wxBind")
     Observable<BaseRespose<Member>> wxBind(@Query("unionId") String unionId,
                                            @Query("openId") String openId,
                                            @Query("account") String account,
@@ -170,5 +162,38 @@ public interface ApiService {
     @GET("member/getMemberInfoById")
     Observable<BaseRespose<Member>> getMemberInfoById(@Query("memberId") Long memberId);
 
+    /**
+     * 获取用户积分
+     * @param memberId
+     * @return
+     */
+    @GET("member/userScoreInfo")
+    Observable<BaseRespose<ScoreInfo>> getUserScoreInfo(@Query("memberId") Long memberId);
+
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 拿到用户积分信息
+     * @param memberId
+     * @return
+     */
+   /* @GET("member/userScoreInfo")
+    Observable<BaseRespose<ScoreInfo>> getUserScoreInfo(@Query("memberId") String memberId);*/

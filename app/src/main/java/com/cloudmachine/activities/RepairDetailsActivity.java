@@ -40,6 +40,7 @@ import com.cloudmachine.struc.WeiXinEntityBean;
 import com.cloudmachine.struc.WorkDetailBean;
 import com.cloudmachine.struc.WorkSettleBean;
 import com.cloudmachine.struc.WorkcollarListBean;
+import com.cloudmachine.ui.repair.activity.ViewRepairActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.CustomListView;
 import com.rey.material.app.BottomSheetDialog;
@@ -100,6 +101,8 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
     private String sign1;
     private String sign;
     private static final int SDK_PAY_FLAG = 1;
+    private boolean hasCouponData = false;//是否获得优惠券数据
+    private int selectCouponCode = 0x001;
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -254,6 +257,7 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
                 ArrayList<CouponInfo> data = (ArrayList<CouponInfo>) msg.obj;
                 if (null != data && data.size() > 0) {
                     couponData.addAll(data);
+                    hasCouponData = true;
                     couponCount = couponData.size();
                     couponId = couponData.get(0).getId();
                     if (data.size() > 0) {
@@ -319,7 +323,12 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
                 mCbAliPay.setChecked(!mCbWeiXinPay.isChecked());
                 break;
             case R.id.rl_coupon:
-                showCounponDialog();
+                //showCounponDialog();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("couponData",couponData);
+                Constants.toActivityForR(RepairDetailsActivity.this
+                        , ViewRepairActivity.class
+                ,bundle,selectCouponCode);
                 break;
             case R.id.btn_topay:
                 if (!mCbAliPay.isChecked() && !mCbWeiXinPay.isChecked()) {
@@ -457,4 +466,14 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
         api.sendReq(payRequest);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == selectCouponCode) {
+            long couponId = data.getLongExtra("couponId", -1);
+            String amount = data.getStringExtra("amount");
+            tvCoupon.setText("-¥"+amount);
+            new PayPriceAsync(context, mHandler, orderNum, "302", String.valueOf(couponId)).execute();
+        }
+    }
 }

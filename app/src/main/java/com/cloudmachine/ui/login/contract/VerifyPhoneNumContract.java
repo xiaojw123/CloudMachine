@@ -26,8 +26,15 @@ public interface VerifyPhoneNumContract {
 
         Observable<CheckNumBean> checkNum(long mobile);
 
-        Observable<Member> bindWx(String unionId,String openId,String account,String code
-        ,String inviteCode,String pwd,String nickname,String headLogo,Integer type);
+        Observable<Member> wxBind(String unionId,
+                                  String openId,
+                                  String account,
+                                  String code,
+                                  String inviteCode,
+                                  String pwd,
+                                  String nickname,
+                                  String headLogo,
+                                  Integer type);
     }
 
     interface View extends BaseView {
@@ -44,8 +51,15 @@ public interface VerifyPhoneNumContract {
 
         public abstract void checkNum(long mobile);
 
-        public abstract void bindWx(String unionId, String openId, String account,
-                                    String code, String inviteCode, String pwd,
-                                    String nickname, String headLogo, Integer type);
+        public abstract void wxBind(String unionId,
+                                    String openId,
+                                    String account,
+                                    String code,
+                                    String inviteCode,
+                                    String pwd,
+                                    String nickname,
+                                    String headLogo,
+                                    Integer type);
+
     }
 }

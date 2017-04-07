@@ -35,7 +35,7 @@ public class CouponInfo implements Serializable {
     private String     createTime;
     private String     creator;
     private String     limitInfo;
-    private int        cStatus;
+    private int        cStatus;//0,可用  1，已使用  2，已过期
     private BigDecimal amount;
     private long       userId;
     private long       couponId;

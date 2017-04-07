@@ -12,14 +12,18 @@ import android.widget.Toast;
 
 import com.cloudmachine.api.Api;
 import com.cloudmachine.api.HostType;
+import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.GetAccessTokenAsync;
 import com.cloudmachine.net.task.GetUserMsgAsync;
+import com.cloudmachine.struc.Member;
 import com.cloudmachine.ui.login.acticity.VerifyPhoneNumActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.WeChatShareUtil;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -28,11 +32,18 @@ import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
+
+import java.util.Set;
+
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Handler.Callback{
 
     private IWXAPI api;
     private static final String APP_SECRET = "3c69a7395f5e54009accf1e1194d553c";
+    private static final int MSG_SET_ALIAS = 1001;
     private Handler   mHandler;
     public  RxManager mRxManager;
     private Context mContext;
@@ -141,6 +152,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
                 //是否请求服务器
                 switchWXLogin(mUnionid, mOpenId, mNickname, mHeadimgurl);
                 break;
+            case MSG_SET_ALIAS:
+                JPushInterface.setAliasAndTags(getApplicationContext(), (String) message.obj, null, mAliasCallback);
+                break;
         }
         return false;
     }
@@ -163,7 +177,19 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
                     Constants.toActivity(WXEntryActivity.this, VerifyPhoneNumActivity.class,null,true);
 
                 } else if (baseRespose.code == 800) {
+                    Member member = (Member) baseRespose.result;
+                    MemeberKeeper.saveOAuth(member, WXEntryActivity.this);
+                    MyApplication.getInstance().setLogin(true);
+                    MyApplication.getInstance().setFlag(true);
 
+                    Intent intent = new Intent(WXEntryActivity.this, MainActivity.class);
+                    startActivity(intent);
+
+                    WXEntryActivity.this.finish();
+                    Constants.isMcLogin = true;
+                    //调用JPush API设置Alias
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
+                    MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
                 } else {
                     ToastUtils.error(baseRespose.message,true);
                 }
@@ -187,4 +213,35 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
         super.onDestroy();
        // mRxManager.clear();
     }
+
+
+    private final TagAliasCallback mAliasCallback = new TagAliasCallback() {
+
+        @Override
+        public void gotResult(int code, String alias, Set<String> tags) {
+            String logs;
+            switch (code) {
+                case 0:
+                    logs = "Set tag and alias success";
+                    break;
+
+                case 6002:
+                    logs = "Failed to set alias and tags due to timeout. Try again after 60s.";
+                    //                Log.i(TAG, logs);
+                    //                if (ExampleUtil.isConnected(getApplicationContext())) {
+                    //                	mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_ALIAS, alias), 1000 * 60);
+                    //                } else {
+                    //                	Log.i(TAG, "No network");
+                    //                }
+                    break;
+
+                default:
+                    //                logs = "Failed with errorCode = " + code;
+                    //                Log.e(TAG, logs);
+            }
+
+            //            ExampleUtil.showToast(logs, getApplicationContext());
+        }
+
+    };
 }

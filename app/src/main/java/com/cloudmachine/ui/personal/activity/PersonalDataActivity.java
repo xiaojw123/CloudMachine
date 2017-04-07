@@ -18,23 +18,31 @@ import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cloudmachine.R;
+import com.cloudmachine.activities.EditPersonalActivity;
 import com.cloudmachine.activities.PermissionsActivity;
+import com.cloudmachine.activities.UpdatePwdActivity;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.UpdateMemberInfoAsync;
+import com.cloudmachine.struc.Member;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileStorage;
 import com.cloudmachine.utils.FileUtils;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.PhotosGallery;
 import com.cloudmachine.utils.UIHelper;
+import com.cloudmachine.utils.UMengKey;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -96,6 +104,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
     private static final int REQUEST_CAPTURE     = 0x002;  //拍照
     private static final int REQUEST_PICTURE_CUT = 0x003;  //剪裁图片
     private static final int REQUEST_PERMISSION  = 0x004;  //权限请求
+    private String mLogo;
+    private String mMobile;
+    private String mNickName;
 
 
     @Override
@@ -105,7 +116,20 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
         mContext = this;
         mHandler = new Handler(this);
         ButterKnife.bind(this);
+        getIntentData();
         initView();
+    }
+
+    private void getIntentData() {
+
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        Member memberInfo = (Member) bundle.getSerializable("memberInfo");
+        if (memberInfo != null) {
+            mLogo = memberInfo.getLogo();
+            mMobile = memberInfo.getMobile();
+            mNickName = memberInfo.getNickname();
+        }
     }
 
     private void initView() {
@@ -113,6 +137,24 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
         initPermissionChecker();
         initTitleLayout();
         initListener();
+        initData();
+    }
+
+    private void initData() {
+
+        if (!TextUtils.isEmpty(mLogo)) {
+            Glide.with(mContext).load(mLogo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .crossFade()
+                    .into(mHeadIamge);
+        }
+        if (!TextUtils.isEmpty(mMobile)) {
+            mEditTextPhone.setText(mMobile);
+        }
+        if (!TextUtils.isEmpty(mNickName)) {
+            mNickname.setText(mNickName);
+        }
     }
 
     private void initPermissionChecker() {
@@ -123,6 +165,8 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
     private void initListener() {
 
         mLlHeadLogo.setOnClickListener(this);
+        mNickLayout.setOnClickListener(this);
+        mMyPwd.setOnClickListener(this);
     }
 
     private void initTitleLayout() {
@@ -146,6 +190,16 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
         switch (v.getId()) {
             case R.id.ll_head_logo:
                 showImageDialog();
+                break;
+            case R.id.nickLayout:
+                Bundle bundle = new Bundle();
+                bundle.putInt("sign", 1);
+                bundle.putString("info", mNickName);
+                Constants.toActivity(PersonalDataActivity.this, EditPersonalActivity.class, bundle);
+                break;
+            case R.id.my_pwd:
+                MobclickAgent.onEvent(mContext, UMengKey.count_changepassword);
+                Constants.toActivity(PersonalDataActivity.this, UpdatePwdActivity.class, null);
                 break;
         }
     }

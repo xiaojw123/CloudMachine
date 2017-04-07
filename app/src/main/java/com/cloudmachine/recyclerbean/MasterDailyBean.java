@@ -12,7 +12,7 @@ import java.io.Serializable;
  * 修改备注：
  */
 
-public class MasterDailyBean implements Serializable{
+public class MasterDailyBean implements Serializable,MasterDailyType{
 
     public int id;
     //标题

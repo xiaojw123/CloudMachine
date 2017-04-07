@@ -36,4 +36,19 @@ public class MasterDailyPresenter extends MasterDailyContract.Presenter {
 
 
     }
+
+    @Override
+    public void loadMoreDailyInfo(int page, int size) {
+        mRxManage.add(mModel.getMasterDaily(page,size).subscribe(new RxSubscriber<BaseRespose<List<MasterDailyBean>>>(mContext,false) {
+            @Override
+            protected void _onNext(BaseRespose<List<MasterDailyBean>> listBaseRespose) {
+                mView.returnLoadMoreDailyInfo(listBaseRespose);
+            }
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.error(message,true);
+            }
+        }));
+    }
 }

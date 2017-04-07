@@ -40,6 +40,7 @@ import com.cloudmachine.struc.VersionInfo;
 import com.cloudmachine.ui.device.fragment.DeviceFragment;
 import com.cloudmachine.ui.homepage.fragment.HomePageFragment;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
+import com.cloudmachine.ui.personal.fragment.PersonalFragment;
 import com.cloudmachine.ui.personal.fragment.UpdateInfoActivity;
 import com.cloudmachine.ui.question.activity.QuestionActivity;
 import com.cloudmachine.ui.repair.fragment.RepairFragment;
@@ -423,9 +424,8 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		mFragments[3] = new RepairActivity();*/
 		mFragments[0] = new HomePageFragment();
 		mFragments[1] = new DeviceFragment();
-		//mFragments[2] = new QuestionFragment();
 		mFragments[2] = new RepairFragment();
-		mFragments[3] = new UpdateInfoActivity();
+		mFragments[3] = new PersonalFragment();
 
 		mContentFragment = null;
 		// mFragments[0].setArguments(b);

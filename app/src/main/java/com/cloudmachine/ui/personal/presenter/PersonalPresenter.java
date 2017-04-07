@@ -1,6 +1,10 @@
 package com.cloudmachine.ui.personal.presenter;
 
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.struc.Member;
+import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.ui.personal.contract.PersonalContract;
+import com.cloudmachine.utils.ToastUtils;
 
 /**
  * 项目名称：CloudMachine
@@ -14,4 +18,35 @@ import com.cloudmachine.ui.personal.contract.PersonalContract;
 
 public class PersonalPresenter extends PersonalContract.Presenter {
 
+    @Override
+    public void getMemberInfoById(long memberId) {
+        mRxManage.add(mModel.getMemberInfoById(memberId)
+        .subscribe(new RxSubscriber<Member>(mContext,false) {
+            @Override
+            protected void _onNext(Member member) {
+                mView.returnMemberInfo(member);
+            }
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.error(message,true);
+            }
+        }));
+    }
+
+    @Override
+    public void getUserScoreInfo(Long memberId) {
+        mRxManage.add(mModel.getUserScoreInfo(memberId)
+        .subscribe(new RxSubscriber<ScoreInfo>(mContext,false) {
+            @Override
+            protected void _onNext(ScoreInfo scoreInfo) {
+                mView.returnUserScoreInfo(scoreInfo);
+            }
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.error(message,true);
+            }
+        }));
+    }
 }

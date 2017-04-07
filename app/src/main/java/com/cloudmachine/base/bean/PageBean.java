@@ -13,7 +13,7 @@ package com.cloudmachine.base.bean;
 public class PageBean {
 
     //消息总条数
-    public int totalElements = 5;
+    public int totalElements ;
 
     //总页数
     public int totalPages;

@@ -7,21 +7,14 @@
     <com.cloudmachine.autolayout.widgets.TitleView
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </com.cloudmachine.autolayout.widgets.TitleView>
+        android:layout_height="wrap_content"
+        ></com.cloudmachine.autolayout.widgets.TitleView>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_layout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v7.widget.RecyclerView>
 
 
 </LinearLayout>

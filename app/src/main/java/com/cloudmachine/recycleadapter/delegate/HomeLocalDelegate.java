@@ -142,7 +142,7 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
             mContext.startActivity(intent);
         } else {
             Subscription subscribe = Api.getDefault(HostType.CLOUDM_HOST)
-                    .getUserScoreInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
+                    .getUserScoreInfo(MemeberKeeper.getOauth(context).getId())
                     .compose(RxHelper.<ScoreInfo>handleResult())
                     .subscribe(new RxSubscriber<ScoreInfo>(context, false) {
                         @Override

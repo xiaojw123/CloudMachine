@@ -3,6 +3,10 @@ package com.cloudmachine.ui.personal.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
+import com.cloudmachine.struc.Member;
+import com.cloudmachine.struc.ScoreInfo;
+
+import rx.Observable;
 
 /**
  * 项目名称：CloudMachine
@@ -17,13 +21,22 @@ import com.cloudmachine.base.BaseView;
 public interface PersonalContract {
 
     interface Model extends BaseModel {
+
+        Observable<Member> getMemberInfoById(long memberId);
+
+        Observable<ScoreInfo> getUserScoreInfo(Long memberId);
     }
 
     interface View extends BaseView {
+        void returnMemberInfo(Member member);
 
+        void returnUserScoreInfo(ScoreInfo scoreInfo);
     }
 
-    abstract static class Presenter extends BasePresenter {
+    abstract static class Presenter extends BasePresenter<View,Model> {
+        public abstract void getMemberInfoById(long memberId);
+
+        public abstract void getUserScoreInfo(Long memberId);
     }
 
 }

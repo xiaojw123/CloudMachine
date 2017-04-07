@@ -408,6 +408,7 @@
 	<dimen name="public_height_100">100px</dimen>
 	<dimen name="public_left_margin_42">42px</dimen>
 	<dimen name="public_width">140px</dimen>
+	<dimen name="padding_middle">16dp</dimen>
 
 
 </resources>

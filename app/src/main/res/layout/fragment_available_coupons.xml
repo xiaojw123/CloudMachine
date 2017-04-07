@@ -4,12 +4,18 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <ListView
+    <!--<ListView
         android:divider="@null"
         android:listSelector="@android:color/transparent"
         android:id="@+id/lv_available_coupon"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </ListView>
+    </ListView>-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

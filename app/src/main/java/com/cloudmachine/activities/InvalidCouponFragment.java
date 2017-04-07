@@ -7,6 +7,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +17,10 @@ import android.widget.ListView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.GetCouponAdapter;
+import com.cloudmachine.listener.RecyclerItemClickListener;
 import com.cloudmachine.net.task.GetCouponAsync;
+import com.cloudmachine.recycleadapter.InvalidCouponAdapter;
+import com.cloudmachine.recycleadapter.decoration.GridSpacingItemDecoration;
 import com.cloudmachine.struc.CouponInfo;
 import com.cloudmachine.utils.Constants;
 
@@ -38,7 +44,9 @@ public class InvalidCouponFragment extends Fragment implements Handler.Callback{
     private ListView              lvInvaliCoupon;
     private ArrayList<CouponInfo> dataList;
     private GetCouponAdapter      getCouponAdapter;
-    private ListView lvInvaliCoupon1;
+    private ListView              lvInvaliCoupon1;
+    private RecyclerView          mRecyclerView;
+    private InvalidCouponAdapter  mInvalidCouponAdapter;
 
     @Nullable
     @Override
@@ -58,18 +66,27 @@ public class InvalidCouponFragment extends Fragment implements Handler.Callback{
             initView();
 
         }
-        //MobclickAgent.onEvent(getActivity(),UMengKey.time_machine_list);
 
         return viewParent;
     }
 
     private void initView() {
-        ViewCouponActivity viewCouponActivity = (ViewCouponActivity) getActivity();
-        lvInvaliCoupon = (ListView) viewParent.findViewById(R.id.lv_invali_coupon);
-        new GetCouponAsync(mHandler, "2", null, viewCouponActivity).execute();
         dataList = new ArrayList<>();
-        getCouponAdapter = new GetCouponAdapter(mContext, dataList,2);
-        lvInvaliCoupon.setAdapter(getCouponAdapter);
+        ViewCouponActivity viewCouponActivity = (ViewCouponActivity) getActivity();
+        mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, getActivity().getResources().getDimensionPixelSize(R.dimen.padding_middle), true));
+        mRecyclerView.setHasFixedSize(true);
+        mInvalidCouponAdapter = new InvalidCouponAdapter(dataList, getActivity());
+        mRecyclerView.setAdapter(mInvalidCouponAdapter);
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+        }));
+        new GetCouponAsync(mHandler, "2", null, viewCouponActivity).execute();
     }
 
     @Override
@@ -79,7 +96,7 @@ public class InvalidCouponFragment extends Fragment implements Handler.Callback{
                 ArrayList<CouponInfo> data = (ArrayList<CouponInfo>) msg.obj;
                 if (null != data) {
                     dataList.addAll(data);
-                    getCouponAdapter.notifyDataSetChanged();
+                    mInvalidCouponAdapter.notifyDataSetChanged();
                 }
                 break;
             case Constants.HANDLER_GETCOUPONS_FAILD:

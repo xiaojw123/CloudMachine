@@ -853,17 +853,10 @@ public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, Personal
 
     private void showPopMenu() {
         View view = View.inflate(getActivity().getApplicationContext(), R.layout.popup_menu, null);
-        //RelativeLayout rl_weixin = (RelativeLayout) view.findViewById(R.id.rl_weixin);
-        //RelativeLayout rl_weibo = (RelativeLayout) view.findViewById(R.id.rl_weibo);
-        //RelativeLayout rl_duanxin = (RelativeLayout) view.findViewById(R.id.rl_duanxin);
         Button bt_cancle = (Button) view.findViewById(R.id.bt_cancel);
         Button bt_exitLogin = (Button) view.findViewById(R.id.bt_exitLogin);
-        //rl_weixin.setOnClickListener(this);
-        //rl_weibo.setOnClickListener(this);
-        //rl_duanxin.setOnClickListener(this);
         bt_cancle.setOnClickListener(this);
         bt_exitLogin.setOnClickListener(this);
-
         view.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -894,4 +887,13 @@ public class UpdateInfoActivity extends BaseFragment<PersonalPresenter, Personal
     }
 
 
+    @Override
+    public void returnMemberInfo(Member member) {
+
+    }
+
+    @Override
+    public void returnUserScoreInfo(ScoreInfo scoreInfo) {
+
+    }
 }

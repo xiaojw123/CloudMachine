@@ -76,6 +76,7 @@
                             />
 
                         <TextView
+                            android:id="@+id/mobile"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -157,6 +158,50 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/public_layout_padding_left"
                         />
+
+                </RelativeLayout>
+                <LinearLayout
+                    style="@style/line_layout"
+                    android:layout_marginLeft="@dimen/public_layout_padding_left"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp"
+                    android:background="#f6f6f9"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/rl_myquestion"
+                    style="@style/layout_item"
+                    >
+
+                    <TextView
+                        style="@style/personal_left_text"
+                        android:text="我的提问"
+                        />
+
+                    <ImageView
+                        style="@style/personal_arrow_image"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    style="@style/line_layout"
+                    android:layout_marginLeft="@dimen/public_layout_padding_left"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/rl_insurance_consulting"
+                    style="@style/layout_item"
+                    >
+
+                    <TextView
+                        style="@style/personal_left_text"
+                        android:text="保险咨询"
+                        />
+
+                    <ImageView
+                        style="@style/personal_arrow_image"/>
 
                 </RelativeLayout>
 

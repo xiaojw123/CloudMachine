@@ -3,6 +3,8 @@ package com.cloudmachine.ui.login.acticity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -10,22 +12,34 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.HostType;
+import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.recyclerbean.CheckNumBean;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.ui.login.contract.VerifyPhoneNumContract;
 import com.cloudmachine.ui.login.model.VerifyPhoneNumModel;
 import com.cloudmachine.ui.login.presenter.VerifyPhoneNumPresenter;
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
+import com.umeng.analytics.MobclickAgent;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Func1;
@@ -41,7 +55,7 @@ import rx.functions.Func1;
  */
 
 public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNumPresenter, VerifyPhoneNumModel>
-        implements VerifyPhoneNumContract.View, View.OnClickListener {
+        implements VerifyPhoneNumContract.View, View.OnClickListener,Handler.Callback {
 
 
     @BindView(R.id.ll_back)
@@ -78,6 +92,9 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
     private String mPwd;
     private String mHeadimgurl;
     private RadiusButtonView mFindBtn;
+    private Handler mHandler;
+    private static final int MSG_SET_ALIAS = 1001;
+    private String mCode;
 
 
     @Override
@@ -87,13 +104,8 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
         ButterKnife.bind(this);
         getIntentData();
         initView();
-        initData();
     }
 
-    private void initData() {
-
-        mAccount = mPhoneString.getText().toString().trim();
-    }
 
     private void getIntentData() {
 
@@ -109,7 +121,8 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
     }
 
     private void initView() {
-
+        mHandler = new Handler(this);
+        mValidateLayout.setOnClickListener(this);
         switchLayout();
         mFindBtn = (RadiusButtonView) findViewById(R.id.find_btn);
         mFindBtn.setOnClickListener(new View.OnClickListener() {
@@ -118,9 +131,14 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                 if (TextUtils.isEmpty(mPhoneString.getText().toString().trim())) {
                     ToastUtils.info("手机号码不能为空", true);
                     return;
+                } else {
+                    mAccount = mPhoneString.getText().toString().trim();
                 }
                 if (TextUtils.isEmpty(mValidateCode.getText().toString().trim())) {
                     ToastUtils.info("验证码不能为空", true);
+                    return;
+                } else {
+                    mCode = mValidateCode.getText().toString().trim();
                 }
                 if (mobileType == 1) {
                     if (TextUtils.isEmpty(mPwdString.getText().toString().trim())) {
@@ -132,16 +150,39 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                     mPwd = null;
                 }
                 if (TextUtils.isEmpty(mInvitationCode.getText().toString().trim())) {
-                    mInvitationValue = mInvitationCode.getText().toString().trim();
-                } else {
                     mInvitationValue = null;
+                } else {
+                    mInvitationValue = mInvitationCode.getText().toString().trim();
                 }
+              /*  mPresenter.bindWx(mUnionid,mOpenid,mAccount
+                ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);*/
+                /*mPresenter.wxBind(mUnionid,mOpenid,mAccount
+                        ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);*/
+                mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
+                .wxBind(mUnionid,mOpenid,mAccount
+                        ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType)
+                .compose(RxHelper.<Member>handleResult())
+                .subscribe(new Subscriber<Member>() {
+                    @Override
+                    public void onCompleted() {
+                        Constants.MyLog("1111111");
+                    }
 
-                mPresenter.bindWx(mUnionid, mOpenid, mAccount, mInvitationValue,mPwd
-                        ,mNickname,mHeadimgurl,mHeadimgurl,mobileType);
+                    @Override
+                    public void onError(Throwable e) {
+                        Constants.MyLog("2222222");
+                        Constants.MyLog(e.toString());
+                    }
+
+                    @Override
+                    public void onNext(Member member) {
+                        Constants.MyLog("3333333");
+                    }
+                }));
+
             }
         });
-        mValidateLayout.setOnClickListener(this);
+
     }
 
     private void switchLayout() {
@@ -223,11 +264,25 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
         }
         //获取验证码
         mPresenter.wxBindMobile(Long.parseLong(mPhoneString.getText().toString().trim()), 3);
+
     }
 
     @Override
     public void returnBindWx(Member member) {
+        if (member != null) {
+            MemeberKeeper.saveOAuth(member, VerifyPhoneNumActivity.this);
+            MyApplication.getInstance().setLogin(true);
+            MyApplication.getInstance().setFlag(true);
 
+            Intent intent = new Intent(VerifyPhoneNumActivity.this, MainActivity.class);
+            startActivity(intent);
+
+            VerifyPhoneNumActivity.this.finish();
+            Constants.isMcLogin = true;
+            //调用JPush API设置Alias
+            mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
+            MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
+        }
     }
 
 
@@ -251,4 +306,44 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                 break;
         }
     }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        switch (msg.what) {
+            case MSG_SET_ALIAS:
+                JPushInterface.setAliasAndTags(getApplicationContext(), (String) msg.obj, null, mAliasCallback);
+                break;
+        }
+        return false;
+    }
+
+    private final TagAliasCallback mAliasCallback = new TagAliasCallback() {
+
+        @Override
+        public void gotResult(int code, String alias, Set<String> tags) {
+            String logs;
+            switch (code) {
+                case 0:
+                    logs = "Set tag and alias success";
+                    break;
+
+                case 6002:
+                    logs = "Failed to set alias and tags due to timeout. Try again after 60s.";
+                    //                Log.i(TAG, logs);
+                    //                if (ExampleUtil.isConnected(getApplicationContext())) {
+                    //                	mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_ALIAS, alias), 1000 * 60);
+                    //                } else {
+                    //                	Log.i(TAG, "No network");
+                    //                }
+                    break;
+
+                default:
+                    //                logs = "Failed with errorCode = " + code;
+                    //                Log.e(TAG, logs);
+            }
+
+            //            ExampleUtil.showToast(logs, getApplicationContext());
+        }
+
+    };
 }

@@ -1,36 +1,53 @@
 package com.cloudmachine.ui.personal.fragment;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cloudmachine.R;
+import com.cloudmachine.activities.AboutCloudActivity;
+import com.cloudmachine.activities.ViewCouponActivity;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseFragment;
+import com.cloudmachine.main.MainActivity;
+import com.cloudmachine.struc.Member;
+import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.ui.personal.activity.MyQRCodeActivity;
+import com.cloudmachine.ui.personal.activity.PersonalDataActivity;
 import com.cloudmachine.ui.personal.contract.PersonalContract;
 import com.cloudmachine.ui.personal.model.PersonalModel;
 import com.cloudmachine.ui.personal.presenter.PersonalPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
-import com.cloudmachine.utils.PermissionsChecker;
+import com.cloudmachine.utils.ShareDialog;
+import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.WeChatShareUtil;
-
-import java.io.File;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import cn.jpush.android.api.JPushInterface;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.cloudmachine.R.id.exitlayout;
 
 /**
  * 项目名称：CloudMachine
@@ -42,7 +59,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * 修改备注：
  */
 
-public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalModel> implements PersonalContract.View,Handler.Callback, View.OnClickListener {
+public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalModel> implements PersonalContract.View, Handler.Callback, View.OnClickListener {
 
 
     @BindView(R.id.title_layout)
@@ -66,29 +83,29 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     @BindView(R.id.exitlayout)
     LinearLayout    mExitlayout;    //退出登录
     Unbinder unbinder;
+    @BindView(R.id.mobile)
+    TextView       mMobile;
+    @BindView(R.id.rl_score)
+    RelativeLayout mRlScore;
+    @BindView(R.id.exitLogin)
+    Button         mExitLogin;
+    @BindView(R.id.scrollView)
+    ScrollView     mScrollView;
+    @BindView(R.id.rl_myquestion)
+    RelativeLayout mRlMyquestion;
+    @BindView(R.id.rl_insurance_consulting)
+    RelativeLayout mRlInsuranceConsulting;
 
 
     private Context         mContext;
     private Handler         mHandler;
     private WeChatShareUtil weChatShareUtil;//微信分享工具类
-    private int infoType;
-    private int infoMemberId;
-    private boolean isMyInfo;
-
-    //图片存储根目录
-    private static final String IMAGE_PATH = Environment
-            .getExternalStorageDirectory().toString()
-            + File.separator
-            + "cloudmachine" + File.separator + "images" + File.separator;
-    private PermissionsChecker mPermissionsChecker; // 权限检测器
-    //需要申请的权限数组
-    static final         String[] PERMISSIONS         = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA};
-    private static final int      REQUEST_PICK_IMAGE  = 1; //相册选取
-    private static final int      REQUEST_CAPTURE     = 2;  //拍照
-    private static final int      REQUEST_PICTURE_CUT = 3;  //剪裁图片
-    private static final int      REQUEST_PERMISSION  = 4;  //权限请求
+    private int             infoType;
+    private int             infoMemberId;
+    private long memberId = -1;
+    private boolean     isMyInfo;
+    private Member      mMember;
+    private PopupWindow mpopupWindow;
 
     //分享信息
     private String sessionTitle       = "云机械";
@@ -98,15 +115,34 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     @Override
     protected void initView() {
 
-        init();
         initRootView();// 控件初始化
         initListener();
+        initData();
         weChatShareUtil = WeChatShareUtil.getInstance(getContext());
+    }
+
+    private void initData() {
+
+        memberId = MemeberKeeper.getOauth(getActivity()).getId();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.getMemberInfoById(memberId);
     }
 
     private void initListener() {
 
         mLlPersonalInformation.setOnClickListener(this);
+        mRlQrCode.setOnClickListener(this);
+        mAboutAndHelp.setOnClickListener(this);
+        mShareApp.setOnClickListener(this);
+        mRlCoupon.setOnClickListener(this);
+        mExitlayout.setOnClickListener(this);
+        mRlMyquestion.setOnClickListener(this);
+        mRlInsuranceConsulting.setOnClickListener(this);
+
     }
 
     private void initRootView() {
@@ -147,10 +183,6 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
         }
     }
 
-    private void init() {
-
-        mPermissionsChecker = new PermissionsChecker(this.getContext());
-    }
 
     @Override
     protected void initPresenter() {
@@ -184,9 +216,112 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ll_personal_information:
-
+            case R.id.ll_personal_information://跳转到个人资料页面
+                if (mMember != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("memberInfo", mMember);
+                    Constants.toActivity(this.getActivity(), PersonalDataActivity.class, bundle, false);
+                }
+                break;
+            case R.id.rl_qr_code:
+                Constants.toActivity(getActivity(), MyQRCodeActivity.class, null, false);
+                break;
+            case R.id.rl_coupon:
+                //优惠券列表（待修改）
+                Constants.toActivity(getActivity(), ViewCouponActivity.class, null, false);
+                break;
+            case R.id.rl_score:
+                mPresenter.getUserScoreInfo(memberId);
+                break;
+            case R.id.about_and_help:
+                //关于与帮助页面
+                Constants.toActivity(getActivity(), AboutCloudActivity.class, null);
+                break;
+            case R.id.share_app:
+                ShareDialog shareDialog = new ShareDialog(this.getContext(), sessionUrl, sessionTitle, sessionDescription, -1);
+                shareDialog.show();
+                MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
+                break;
+            case exitlayout:
+                showPopMenu();
+                break;
+            case R.id.bt_cancel:
+                mpopupWindow.dismiss();
+                break;
+            case R.id.bt_exitLogin:
+                mpopupWindow.dismiss();
+                Constants.isMcLogin = true;
+                JPushInterface.setAliasAndTags(getActivity().getApplicationContext(), "", null, null);
+                MemeberKeeper.clearOauth(getActivity());
+                ((MainActivity) getActivity()).loginOut();
+                break;
+            case R.id.rl_myquestion:
+                break;
+            case R.id.rl_insurance_consulting:
                 break;
         }
     }
+
+    @Override
+    public void returnMemberInfo(Member member) {
+        this.mMember = member;
+        if (mMember != null) {
+            //序列化信息到本地
+            MemeberKeeper.saveOAuth(member, mContext);
+            String logo = mMember.getLogo();
+            Glide.with(mContext).load(logo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .crossFade()
+                    .into(mHeadIamge);
+            String name = mMember.getName();
+            mNickname.setText(name);
+            String mobile = mMember.getMobile();
+            mMobile.setText(mobile);
+        }
+    }
+
+    //拿到用户积分信息
+    @Override
+    public void returnUserScoreInfo(ScoreInfo scoreInfo) {
+        if (scoreInfo != null) {
+            mScoreText.setText(scoreInfo.getPoint());
+        }
+    }
+
+    private void showPopMenu() {
+        View view = View.inflate(getActivity().getApplicationContext(), R.layout.popup_menu, null);
+        Button bt_cancle = (Button) view.findViewById(R.id.bt_cancel);
+        Button bt_exitLogin = (Button) view.findViewById(R.id.bt_exitLogin);
+        bt_cancle.setOnClickListener(this);
+        bt_exitLogin.setOnClickListener(this);
+        view.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                mpopupWindow.dismiss();
+            }
+        });
+
+        view.startAnimation(AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_in));
+        LinearLayout ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
+        ll_popup.startAnimation(AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.push_bottom_in));
+
+        if (mpopupWindow == null) {
+            mpopupWindow = new PopupWindow(getActivity());
+            mpopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            mpopupWindow.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            mpopupWindow.setBackgroundDrawable(new BitmapDrawable());
+
+            mpopupWindow.setFocusable(true);
+            mpopupWindow.setOutsideTouchable(true);
+            mpopupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
+
+        mpopupWindow.setContentView(view);
+        mpopupWindow.showAtLocation(view, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        mpopupWindow.update();
+    }
+
 }

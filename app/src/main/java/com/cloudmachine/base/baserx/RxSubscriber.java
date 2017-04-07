@@ -93,7 +93,7 @@ public abstract class RxSubscriber<T> extends Subscriber<T> {
         }
         //其它
         else {
-            _onError("网络访问错误，请稍后再试");
+            _onError("网络访问错误，请稍后再试"+e.toString());
         }
     }
 

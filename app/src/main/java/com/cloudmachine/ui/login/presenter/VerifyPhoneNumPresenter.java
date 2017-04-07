@@ -24,7 +24,7 @@ public class VerifyPhoneNumPresenter extends VerifyPhoneNumContract.Presenter {
     public void wxBindMobile(long mobile, long type) {
         mRxManage.add(mModel.wxBindMobile(mobile, type)
                 .compose(RxHelper.handleBooleanResult())
-                .subscribe(new RxSubscriber<String>(mContext,false) {
+                .subscribe(new RxSubscriber<String>(mContext, false) {
                     @Override
                     protected void _onNext(String s) {
                         mView.returnWXBindMobile(s);
@@ -32,7 +32,7 @@ public class VerifyPhoneNumPresenter extends VerifyPhoneNumContract.Presenter {
 
                     @Override
                     protected void _onError(String message) {
-                        ToastUtils.error(message,true);
+                        ToastUtils.error(message, true);
                     }
                 })
         );
@@ -42,7 +42,7 @@ public class VerifyPhoneNumPresenter extends VerifyPhoneNumContract.Presenter {
     public void checkNum(long mobile) {
 
         mRxManage.add(mModel.checkNum(mobile)
-                .subscribe(new RxSubscriber<CheckNumBean>(mContext,false) {
+                .subscribe(new RxSubscriber<CheckNumBean>(mContext, false) {
                     @Override
                     protected void _onNext(CheckNumBean checkNumBean) {
                         mView.returnCheckNum(checkNumBean);
@@ -50,18 +50,23 @@ public class VerifyPhoneNumPresenter extends VerifyPhoneNumContract.Presenter {
 
                     @Override
                     protected void _onError(String message) {
-                        ToastUtils.error(message,true);
+                        ToastUtils.error(message, true);
                     }
                 })
         );
     }
 
     @Override
-    public void bindWx(String unionId, String openId, String account, String code,
-                       String inviteCode, String pwd, String nickname,
-                       String headLogo, Integer type) {
-        mRxManage.add(mModel.bindWx(unionId,openId,account,code,inviteCode,pwd,nickname,headLogo
-        ,type).subscribe(new RxSubscriber<Member>(mContext,false) {
+    public void wxBind(String unionId, String openId, String account, String code, String inviteCode, String pwd, String nickname, String headLogo, Integer type) {
+        mRxManage.add(mModel.wxBind(unionId,
+                openId,
+                account,
+                code,
+                inviteCode,
+                pwd,
+                nickname,
+                headLogo,
+                type).subscribe(new RxSubscriber<Member>(mContext, false) {
             @Override
             protected void _onNext(Member member) {
                 mView.returnBindWx(member);
@@ -69,7 +74,7 @@ public class VerifyPhoneNumPresenter extends VerifyPhoneNumContract.Presenter {
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.error(message,true);
+                ToastUtils.error(message, true);
             }
         }));
     }

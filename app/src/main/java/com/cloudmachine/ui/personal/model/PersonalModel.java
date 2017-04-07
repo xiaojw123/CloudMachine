@@ -1,6 +1,13 @@
 package com.cloudmachine.ui.personal.model;
 
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.HostType;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.struc.Member;
+import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.ui.personal.contract.PersonalContract;
+
+import rx.Observable;
 
 /**
  * 项目名称：CloudMachine
@@ -14,4 +21,16 @@ import com.cloudmachine.ui.personal.contract.PersonalContract;
 
 public class PersonalModel implements PersonalContract.Model{
 
+    @Override
+    public Observable<Member> getMemberInfoById(long memberId) {
+        return Api.getDefault(HostType.CLOUDM_HOST).getMemberInfoById(memberId)
+                .compose(RxHelper.<Member>handleResult());
+    }
+
+    @Override
+    public Observable<ScoreInfo> getUserScoreInfo(Long memberId) {
+        return Api.getDefault(HostType.CLOUDM_HOST)
+                .getUserScoreInfo(memberId)
+                .compose(RxHelper.<ScoreInfo>handleResult());
+    }
 }
