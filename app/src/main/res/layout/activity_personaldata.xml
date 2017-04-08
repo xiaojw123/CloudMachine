@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:cloudm="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
@@ -136,5 +137,26 @@
         style="@style/line_layout"
         android:layout_marginLeft="@dimen/common_left_gap"
         />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+        <com.cloudmachine.autolayout.widgets.RadiusButtonView
+            android:visibility="gone"
+            android:id="@+id/btn_synchronousWxData"
+            android:layout_width="@dimen/novice_guide_button_width"
+            android:layout_height="@dimen/novice_guide_button_height"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/novice_guide_button_marginBottom"
+            cloudm:rbtn_fillColor_dw="@color/public_b_20"
+            cloudm:rbtn_fillColor_nm="@color/public_blue_bg"
+            cloudm:rbtn_strokeColor="@color/public_blue_bg"
+            cloudm:rbtn_text="同步微信信息"
+            cloudm:rbtn_textColor="@color/public_white"
+            cloudm:rbtn_textSize="@dimen/about_button_textsize" />
+    </RelativeLayout>
 
 </LinearLayout>

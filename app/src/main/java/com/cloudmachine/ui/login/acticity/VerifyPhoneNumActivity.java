@@ -12,12 +12,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.recyclerbean.CheckNumBean;
 import com.cloudmachine.struc.Member;
@@ -39,7 +37,6 @@ import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Func1;
@@ -156,9 +153,11 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                 }
               /*  mPresenter.bindWx(mUnionid,mOpenid,mAccount
                 ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);*/
-                /*mPresenter.wxBind(mUnionid,mOpenid,mAccount
-                        ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);*/
-                mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
+
+                mPresenter.wxBind(mUnionid,mOpenid,mAccount
+                        ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);
+
+               /* mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
                 .wxBind(mUnionid,mOpenid,mAccount
                         ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType)
                 .compose(RxHelper.<Member>handleResult())
@@ -178,7 +177,7 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                     public void onNext(Member member) {
                         Constants.MyLog("3333333");
                     }
-                }));
+                }));*/
 
             }
         });
@@ -277,6 +276,8 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
             Intent intent = new Intent(VerifyPhoneNumActivity.this, MainActivity.class);
             startActivity(intent);
 
+            MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,1);
+
             VerifyPhoneNumActivity.this.finish();
             Constants.isMcLogin = true;
             //调用JPush API设置Alias
@@ -329,20 +330,14 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
                 case 6002:
                     logs = "Failed to set alias and tags due to timeout. Try again after 60s.";
-                    //                Log.i(TAG, logs);
-                    //                if (ExampleUtil.isConnected(getApplicationContext())) {
-                    //                	mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_ALIAS, alias), 1000 * 60);
-                    //                } else {
-                    //                	Log.i(TAG, "No network");
-                    //                }
+
                     break;
 
                 default:
-                    //                logs = "Failed with errorCode = " + code;
-                    //                Log.e(TAG, logs);
+
             }
 
-            //            ExampleUtil.showToast(logs, getApplicationContext());
+
         }
 
     };

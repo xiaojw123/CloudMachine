@@ -10,7 +10,9 @@ public class MySharedPreferences {
 	public static final String SHAREDPREFERENCES_NAME = "com_cloudmachine";
 	public static final String key_score_update_time = "key_score_update_time";
 	public static final String key_user_image_ = "key_user_image_";
-	
+	//登录方式 0 云机械方式登录 ，1 微信登录
+	public static final String key_login_type = "key_login_type";
+
 	public static void setSharedPBoolean(String key, boolean b) {
 		 SharedPreferences sp = MyApplication.mContext.getSharedPreferences(
 				 SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);

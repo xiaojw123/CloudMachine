@@ -111,6 +111,8 @@ dependencies {
     compile 'com.google.zxing:core:3.2.1'
     compile 'cn.bingoogolapple:bga-qrcodecore:1.1.7@aar'
     compile 'cn.bingoogolapple:bga-zxing:1.1.7@aar'
+    //压缩图片轻量级框架
+    compile 'id.zelory:compressor:1.0.4'
 }
 
 repositories {

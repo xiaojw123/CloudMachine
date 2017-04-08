@@ -30,18 +30,26 @@ import com.cloudmachine.R;
 import com.cloudmachine.activities.EditPersonalActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.UpdatePwdActivity;
+import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.UpdateMemberInfoAsync;
 import com.cloudmachine.struc.Member;
+import com.cloudmachine.ui.personal.contract.PersonalDataContract;
+import com.cloudmachine.ui.personal.model.PersonalDataModel;
+import com.cloudmachine.ui.personal.presenter.PersonalDataPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileStorage;
 import com.cloudmachine.utils.FileUtils;
+import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.PhotosGallery;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UIHelper;
 import com.cloudmachine.utils.UMengKey;
+import com.cloudmachine.utils.UploadPhotoUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
@@ -53,6 +61,10 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.cloudmachine.utils.Constants.IMAGE_PATH;
 
@@ -66,7 +78,8 @@ import static com.cloudmachine.utils.Constants.IMAGE_PATH;
  * 修改备注：
  */
 
-public class PersonalDataActivity extends BaseAutoLayoutActivity implements View.OnClickListener,Handler.Callback {
+public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPresenter,PersonalDataModel> implements
+        View.OnClickListener, Handler.Callback,PersonalDataContract.View {
 
     @BindView(R.id.title_layout)
     TitleView       mTitleLayout;
@@ -97,16 +110,21 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
     private boolean isClickCamera;
     private boolean isUpdateImage;
     private String uploadResult = "";
-    private Handler mHandler;
-    private Context mContext;
+    private Handler            mHandler;
+    private Context            mContext;
     private PermissionsChecker mPermissionsChecker; // 权限检测器
     private static final int REQUEST_PICK_IMAGE  = 0x001; //相册选取
     private static final int REQUEST_CAPTURE     = 0x002;  //拍照
     private static final int REQUEST_PICTURE_CUT = 0x003;  //剪裁图片
     private static final int REQUEST_PERMISSION  = 0x004;  //权限请求
-    private String mLogo;
-    private String mMobile;
-    private String mNickName;
+    private String           mLogo;
+    private String           mMobile;
+    private String           mNickName;
+    private long             mLoginType;
+    private RadiusButtonView mBtnSynchronousWxData;
+    private String mWecharNickname;
+    private String mWecharLogo;
+    private Long mMemberId;
 
 
     @Override
@@ -129,11 +147,21 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
             mLogo = memberInfo.getLogo();
             mMobile = memberInfo.getMobile();
             mNickName = memberInfo.getNickname();
+            mWecharNickname = memberInfo.getWecharNickname();
+            mWecharLogo = memberInfo.getWecharLogo();
         }
     }
 
     private void initView() {
-
+        mMemberId = MemeberKeeper.getOauth(this).getId();
+        mBtnSynchronousWxData = (RadiusButtonView) findViewById(R.id.btn_synchronousWxData);
+        mBtnSynchronousWxData.setOnClickListener(this);
+        mLoginType = MySharedPreferences.getSharedPInt(MySharedPreferences.key_login_type);
+        if (mLoginType == 0) {
+            mBtnSynchronousWxData.setVisibility(View.GONE);
+        } else {
+            mBtnSynchronousWxData.setVisibility(View.VISIBLE);
+        }
         initPermissionChecker();
         initTitleLayout();
         initListener();
@@ -147,6 +175,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .crossFade()
+                    .error(R.drawable.default_img)
                     .into(mHeadIamge);
         }
         if (!TextUtils.isEmpty(mMobile)) {
@@ -182,7 +211,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
 
     @Override
     public void initPresenter() {
-
+        mPresenter.setVM(this,mModel);
     }
 
     @Override
@@ -200,6 +229,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
             case R.id.my_pwd:
                 MobclickAgent.onEvent(mContext, UMengKey.count_changepassword);
                 Constants.toActivity(PersonalDataActivity.this, UpdatePwdActivity.class, null);
+                break;
+            case R.id.btn_synchronousWxData:
+
                 break;
         }
     }
@@ -224,6 +256,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
                             case 0:
                                 startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                         REQUEST_PICK_IMAGE);
+                                isClickCamera = false;
                                 break;
                             case 1:
                                 //检查权限(6.0以上做权限判断)
@@ -240,7 +273,12 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
                                 break;
                         }
                     }
-                });
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     private void startPermissionsActivity() {
@@ -285,7 +323,6 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
                 Bitmap bitmap = null;
                 try {
                     if (isClickCamera) {
-
                         bitmap = BitmapFactory.decodeStream(PersonalDataActivity.this.getContentResolver().openInputStream(imageUri));
                     } else {
                         bitmap = BitmapFactory.decodeFile(imagePath);
@@ -296,7 +333,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
                         mHeadIamge.setImageBitmap(bitmap);//展示到当前页面
                         imString = savePhotoToSDCard(bitmap);
                         isUpdateImage = true;
-                        new ImageUploadAsync(handler, imString, 1111).execute();
+                        compressPicture(imString);
+                        //new ImageUploadAsync(handler, imString, 1111).execute();
+                        //UploadPhotoUtils.getInstance(this).upLoadFile(imString, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
                     }
 
                 } catch (Exception e) {
@@ -317,6 +356,26 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
         }
         // super.onActivityResult(requestCode, resultCode, data);
     }
+
+    private void compressPicture(String imString) {
+        File file = new File(imString);
+        Compressor.getDefault(this)
+                .compressToFileAsObservable(file)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<File>() {
+                    @Override
+                    public void call(File file) {
+                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        ToastUtils.error(throwable.getMessage(),true);
+                    }
+                });
+    }
+
 
     /**
      * 从相册选择
@@ -416,7 +475,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
         FileOutputStream fileOutputStream = null;
         FileUtils.createDirFile(IMAGE_PATH);
 
-        String fileName = UUID.randomUUID().toString() + ".jpg";
+        String fileName = UUID.randomUUID().toString() + ".JPEG";
         String newFilePath = IMAGE_PATH + fileName;
         File file = FileUtils.createNewFile(newFilePath);
         if (file == null) {
@@ -466,7 +525,31 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity implements View
                 isUpdateImage = false;
                 Constants.MyToast((String) msg.obj);
                 break;
+            case Constants.HANDLER_UPLOAD_SUCCESS:
+                String url = (String) msg.obj;
+                Constants.MyLog("上传照片得到的图片地址"+url);
+                if (url != null) {
+                    mPresenter.modifyLogo(mMemberId,"logo",url);
+                }
+                break;
+            case Constants.HANDLER_UPLOAD_FAILD:
+                break;
         }
         return false;
+    }
+
+    @Override
+    public void returnModifyNickName() {
+        mNickname.setText(mWecharNickname);
+    }
+
+    @Override
+    public void returnModifyLogo() {
+        Glide.with(mContext).load(mWecharLogo)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .crossFade()
+                .error(R.drawable.default_img)
+                .into(mHeadIamge);
     }
 }

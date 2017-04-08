@@ -197,8 +197,8 @@ public class Banner extends FrameLayout implements ViewPager.OnPageChangeListene
             //设置轮播图左右间距
            /* params.leftMargin = mIndicatorMargin;
             params.rightMargin = mIndicatorMargin;*/
-            params.leftMargin = indicatorSize;
-            params.rightMargin = indicatorSize;
+            params.leftMargin = indicatorSize/2;
+            params.rightMargin = indicatorSize/2;
             if (i == 0) {
                 imageView.setImageResource(mIndicatorSelectedResId);
             } else {

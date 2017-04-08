@@ -111,8 +111,10 @@ public class UploadPhotoUtils {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                Constants.MyLog("到底有没有进来");
                 String result = response.body().string();
                 if (result != null) {
+                    Constants.MyLog(result.toString()+"2222222222");
                     Gson gson = new Gson();
                     UploadResult uploadResult = gson.fromJson(result,
                             UploadResult.class);
@@ -127,7 +129,49 @@ public class UploadPhotoUtils {
                         msg.what = Constants.HANDLER_UPLOAD_FAILD;
                         msg.obj = "图片上传失败";
                     }
-                    //mHandler.sendMessage(msg);
+                    mHandler.sendMessage(msg);
+                }
+            }
+        });
+
+    }
+
+
+    public void upLoadFile(File file, String uploadurl, final Handler mHandler) {
+        final Message msg = Message.obtain();
+       // File file = new File(filename);
+        MultipartBody.Builder mbody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        mbody.addFormDataPart("imgFile", file.getName(), RequestBody.create(MEDIA_TYPE_PNG, file));
+        RequestBody requestBody = mbody.build();
+        final Request request = new Request.Builder()
+                .url(uploadurl)
+                .post(requestBody)
+                .build();
+
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                if (result != null) {
+                    Gson gson = new Gson();
+                    UploadResult uploadResult = gson.fromJson(result,
+                            UploadResult.class);
+
+                    if (uploadResult.getError() == 0) {
+                        // 返回url
+                        url = uploadResult.getUrl();
+                        msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
+                        msg.obj = url;
+                    } else {
+                        msg.what = Constants.HANDLER_UPLOAD_FAILD;
+                        msg.obj = "图片上传失败";
+                    }
+                    mHandler.sendMessage(msg);
                 }
             }
         });

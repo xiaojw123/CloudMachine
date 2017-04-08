@@ -36,6 +36,74 @@ public class Member implements Serializable{
 	private int sex;
 	private String sexStr;
 
+	private String unionId;
+	private String openId;
+	private String invitecode;
+	private String inviteUserid;
+	private String wecharNickname;
+	private String wecharLogo;
+
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getUnionId() {
+		return unionId;
+	}
+
+	public void setUnionId(String unionId) {
+		this.unionId = unionId;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+
+	public String getInvitecode() {
+		return invitecode;
+	}
+
+	public void setInvitecode(String invitecode) {
+		this.invitecode = invitecode;
+	}
+
+	public String getInviteUserid() {
+		return inviteUserid;
+	}
+
+	public void setInviteUserid(String inviteUserid) {
+		this.inviteUserid = inviteUserid;
+	}
+
+	public String getWecharNickname() {
+		return wecharNickname;
+	}
+
+	public void setWecharNickname(String wecharNickname) {
+		this.wecharNickname = wecharNickname;
+	}
+
+	public String getWecharLogo() {
+		return wecharLogo;
+	}
+
+	public void setWecharLogo(String wecharLogo) {
+		this.wecharLogo = wecharLogo;
+	}
+
 	public String getIcphotoFont() {
 		return icphotoFont;
 	}
@@ -198,5 +266,39 @@ public class Member implements Serializable{
 	public int getReKgStatus(){
 		return this.reKgStatus;
 	}
-	
+
+
+	@Override
+	public String toString() {
+		return "Member{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", nickName='" + nickName + '\'' +
+				", email='" + email + '\'' +
+				", idCard='" + idCard + '\'' +
+				", mobile='" + mobile + '\'' +
+				", password='" + password + '\'' +
+				", role='" + role + '\'' +
+				", isValidate=" + isValidate +
+				", logo='" + logo + '\'' +
+				", isDeleted=" + isDeleted +
+				", reKgStatus=" + reKgStatus +
+				", icphotoFont='" + icphotoFont + '\'' +
+				", icphotoBack='" + icphotoBack + '\'' +
+				", sex=" + sex +
+				", sexStr='" + sexStr + '\'' +
+				", unionId='" + unionId + '\'' +
+				", openId='" + openId + '\'' +
+				", invitecode='" + invitecode + '\'' +
+				", inviteUserid='" + inviteUserid + '\'' +
+				", wecharNickname='" + wecharNickname + '\'' +
+				", wecharLogo='" + wecharLogo + '\'' +
+				", createTime='" + createTime + '\'' +
+				", updateTime='" + updateTime + '\'' +
+				", updater=" + updater +
+				", MailCode='" + MailCode + '\'' +
+				", roleName='" + roleName + '\'' +
+				", memberBasic=" + memberBasic +
+				'}';
+	}
 }

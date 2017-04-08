@@ -250,6 +250,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
             req.scope = "snsapi_userinfo";
             req.state = "wechat_sdk_demo_test_neng";
             mApi.sendReq(req);
+            finish();
         } else
             Toast.makeText(this, "用户未安装微信", Toast.LENGTH_SHORT).show();
     }
@@ -282,6 +283,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 disMiss();
                 Constants.isGetScore = true;
                 Member member = (Member) msg.obj;
+                Constants.MyLog("云机械登录获取到的账号信息"+member.toString());
                 MemeberKeeper.saveOAuth(member, LoginActivity.this);
                 MyApplication.getInstance().setLogin(true);
                 MyApplication.getInstance().setFlag(true);
@@ -290,6 +292,9 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                     startActivity(intent);
                 } else if (flag == 1) {
                 }
+
+                MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,0);
+
                 LoginActivity.this.finish();
                 Constants.isMcLogin = true;
                 //调用JPush API设置Alias

@@ -273,6 +273,7 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .crossFade()
+                    .error(R.drawable.default_img)
                     .into(mHeadIamge);
             String name = mMember.getName();
             mNickname.setText(name);

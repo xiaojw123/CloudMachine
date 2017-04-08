@@ -464,8 +464,11 @@
         <!--设置微信登录页面为透明-->
         <activity
             android:name=".wxapi.WXEntryActivity"
+            android:launchMode="singleInstance"
             android:exported="true"
+            android:windowSoftInputMode="adjustPan|adjustUnspecified|stateHidden"
             android:theme="@android:style/Theme.Translucent"
+            android:screenOrientation="portrait"
             />
         <activity
             android:name=".activities.UseHelpActivity"
@@ -575,7 +578,7 @@
             </intent-filter>
         </receiver>
 
-        <!--<provider
+        <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.cloudmachine.fileprovider"
             android:exported="false"
@@ -587,7 +590,7 @@
                 android:resource="@xml/file_paths"
                 tools:replace="name,resource"
                 />
-        </provider>-->
+        </provider>
 
         <!-- <activity
              android:name="activities.RepairBasicInfomationActivity"

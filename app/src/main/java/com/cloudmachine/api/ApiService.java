@@ -170,6 +170,18 @@ public interface ApiService {
     @GET("member/userScoreInfo")
     Observable<BaseRespose<ScoreInfo>> getUserScoreInfo(@Query("memberId") Long memberId);
 
+    /**
+     * 修改用户信息
+     * @param memberId
+     * @param key
+     * @param value
+     * @return
+     */
+    @GET("member/editInfoByKey")
+    Observable<BaseRespose> modifySignature(@Query("memberId") long memberId,
+                                            @Query("key") String key,
+                                            @Query("value") String value);
+
 }
 
 

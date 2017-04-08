@@ -49,13 +49,11 @@ OnClickListener {
 
 	@Override
 	protected void onResume() {
-		//MobclickAgent.onPageStart(UMengKey.time_profile_edit);
 		super.onResume();
 	}
 
 	@Override
 	protected void onPause() {
-		//MobclickAgent.onPageEnd(UMengKey.time_profile_edit);
 		super.onPause();
 	}
 
@@ -66,7 +64,6 @@ OnClickListener {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				finish();
 				if(!info.equals(Constants.toViewString(info_ed.getText().toString()))){
 					key="nickName";

@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.cloudmachine.api.Api;
 import com.cloudmachine.api.HostType;
-import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
@@ -20,10 +19,8 @@ import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.GetAccessTokenAsync;
 import com.cloudmachine.net.task.GetUserMsgAsync;
-import com.cloudmachine.struc.Member;
 import com.cloudmachine.ui.login.acticity.VerifyPhoneNumActivity;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.WeChatShareUtil;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -32,7 +29,6 @@ import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.Set;
 
@@ -81,7 +77,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
     @Override
     public void onResp(BaseResp baseResp) {
         String result;
+        Constants.MyLog("获取返货成功");
         switch (baseResp.errCode) {
+
             case BaseResp.ErrCode.ERR_OK:
                 result = "分享成功";
                 //发送成功
@@ -93,13 +91,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 result = null;
+                finish();
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 //发送被拒绝
                 result = "分享失败";
+                finish();
                 break;
             default:
                 result = "分享失败";
+                finish();
                 break;
         }
         if (result != null) {
@@ -114,13 +115,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
      */
     private void getAccess_token(String code) {
 
-        /*String path = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="
-                + Constants.APP_ID
-                + "&secret="
-                + APP_SECRET
-                + "&code="
-                + code
-                + "&grant_type=authorization_code";*/
         new GetAccessTokenAsync(this, mHandler, Constants.APP_ID, APP_SECRET,
                 code, "authorization_code").execute();
     }
@@ -150,7 +144,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
                 mUnionid = bundle.getString("unionid");
                 mOpenId = bundle.getString("openid");
                 //是否请求服务器
-                switchWXLogin(mUnionid, mOpenId, mNickname, mHeadimgurl);
+                switchWXLogin(mUnionid, mOpenId, mNickname, mHeadimgurl,mSex);
                 break;
             case MSG_SET_ALIAS:
                 JPushInterface.setAliasAndTags(getApplicationContext(), (String) message.obj, null, mAliasCallback);
@@ -159,7 +153,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
         return false;
     }
 
-    private void switchWXLogin(String unionid, String openId, String nickname, String headimgurl) {
+    private void switchWXLogin(final String unionid, final String openId, final String nickname, final String headimgurl, final int sex) {
 
         mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
                 .wxLogin(unionid,openId,nickname,headimgurl)
@@ -167,29 +161,40 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
         .subscribe(new RxSubscriber<BaseRespose>(mContext,false) {
             @Override
             protected void _onNext(BaseRespose baseRespose) {
+
+                Constants.MyLog("拿到的微信登录返回码"+baseRespose.code);
                 if (baseRespose.code == 16305) {
                     Bundle b = new Bundle();
-                    b.putString("nickname", mNickname);
-                    b.putString("unionid", mUnionid);
-                    b.putString("openid", mOpenId);
-                    b.putString("headimgurl", mHeadimgurl);
-                    b.putInt("sex",mSex);
-                    Constants.toActivity(WXEntryActivity.this, VerifyPhoneNumActivity.class,null,true);
-
+                    b.putString("nickname", nickname);
+                    b.putString("unionid", unionid);
+                    b.putString("openid", openId);
+                    b.putString("headimgurl", headimgurl);
+                    b.putInt("sex",sex);
+                    Constants.toActivity(WXEntryActivity.this, VerifyPhoneNumActivity.class,b,true);
                 } else if (baseRespose.code == 800) {
-                    Member member = (Member) baseRespose.result;
+                    Constants.MyLog("代付单立方米萨");
+                    Constants.MyLog(baseRespose.toString()+"服务器返回信息");
+
+
+                   /* Gson gson = new Gson();
+                    gson.fromJson(String.valueOf(baseRespose.result), Member.class);
+                    Constants.toActivity(WXEntryActivity.this, MainActivity.class,null,true);
+                    Constants.MyLog("进来了！！！！");*/
+
+                    /*Constants.MyLog(member.toString()+"用户信息打印");
                     MemeberKeeper.saveOAuth(member, WXEntryActivity.this);
                     MyApplication.getInstance().setLogin(true);
                     MyApplication.getInstance().setFlag(true);
-
                     Intent intent = new Intent(WXEntryActivity.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
+                    MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,1);*/
 
-                    WXEntryActivity.this.finish();
-                    Constants.isMcLogin = true;
+                   /* Constants.isMcLogin = true;
                     //调用JPush API设置Alias
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
-                    MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
+                    MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));*/
+
                 } else {
                     ToastUtils.error(baseRespose.message,true);
                 }
@@ -244,4 +249,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
         }
 
     };
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Constants.MyLog("执行了");
+        Constants.toActivity(WXEntryActivity.this, MainActivity.class,null,true);
+    }
 }
