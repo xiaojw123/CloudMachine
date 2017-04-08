@@ -237,7 +237,8 @@ public class Constants {
 
 
     public static final String URL_LOGOCLOUDM = "https://f1.cloudm.com/logocloudm.png";
-    public static final String URL_MAIN       = "http://api.test.cloudm.com";//"http://api.test.cloudm.com";//http://192.168.1.8:8083//http://192.168.1.13:8090/cloudm3
+    //修改全局ip地址
+    public static final String URL_MAIN       = "http://192.168.1.13:8083/";//"http://api.test.cloudm.com";//http://192.168.1.8:8083//http://192.168.1.13:8090/cloudm3
 
     public static final String URL_IMAGE_HOST            = URL_MAIN;// 文件上传地址
     public static final String URL_MyDevices             = URL_MAIN

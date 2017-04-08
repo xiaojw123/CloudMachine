@@ -23,6 +23,8 @@ import rx.subjects.Subject;
 public class RxBus {
     private static RxBus instance;
 
+
+    //单例
     public static synchronized RxBus getInstance() {
         if (null == instance) {
             instance = new RxBus();
@@ -33,6 +35,8 @@ public class RxBus {
     private RxBus() {
     }
 
+
+    //
     @SuppressWarnings("rawtypes")
     private ConcurrentHashMap<Object, List<Subject>> subjectMapper = new ConcurrentHashMap<Object, List<Subject>>();
 
@@ -62,9 +66,12 @@ public class RxBus {
      */
     @SuppressWarnings({"rawtypes"})
     public <T> Observable<T> register(@NonNull Object tag) {
+        //根据标签拿到事件源集合
         List<Subject> subjectList = subjectMapper.get(tag);
         if (null == subjectList) {
+            //如果为空创建集合
             subjectList = new ArrayList<Subject>();
+
             subjectMapper.put(tag, subjectList);
         }
         Subject<T, T> subject;

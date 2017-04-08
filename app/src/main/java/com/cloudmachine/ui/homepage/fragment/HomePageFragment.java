@@ -85,9 +85,17 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
             @Override
             public void call(Object o) {
                 //仅刷新签到状态
+                Constants.MyLog("接受到刷新请求");
                 refreshSignStateOnly();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //每当获取焦点时去判断刷新一下签到状态
+        //refreshSignStateOnly();
     }
 
     private void refreshSignStateOnly() {
