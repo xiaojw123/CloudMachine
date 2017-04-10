@@ -620,11 +620,11 @@ public class Constants {
 
 
     public static void MyLog(String msg) {
-        if (null != msg && URL_MAIN.indexOf("test") != -1) {
+       /* if (null != msg && URL_MAIN.indexOf("test") != -1) {
             Log.e("Test", msg);
-        }
-        // if(null != msg && URL_MAIN.indexOf("test")!=-1)
-        //Log.e("Test", msg);
+        }*/
+         if(null != msg )
+            Log.e("Test", msg);
     }
 
     public static void ToastAction(String msg) {
