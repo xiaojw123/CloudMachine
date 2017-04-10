@@ -7,8 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -24,6 +22,8 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.ui.question.contract.QuestionContract;
 import com.cloudmachine.ui.question.model.QuestionModel;
 import com.cloudmachine.ui.question.presenter.QuestionPresenter;
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,11 +49,22 @@ public class QuestionActivity extends BaseAutoLayoutActivity<QuestionPresenter, 
     private String URLString = "http://h5.test.cloudm.com/n/ask_qsubmit?";
     private long mMyid;
 
-    @Override
+   /* @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
         setContentView(R.layout.activity_question);
         ButterKnife.bind(this);
+        getIntentData();
+        initView();
+        initWebView();
+    }*/
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_question);
+        ButterKnife.bind(this);
+        getIntentData();
         initView();
         initWebView();
     }
@@ -61,15 +72,20 @@ public class QuestionActivity extends BaseAutoLayoutActivity<QuestionPresenter, 
     private void initView() {
 
         this.mContext = this;
-        getIntentData();
-
+        if (MemeberKeeper.getOauth(this).getWjdsId() != null) {
+            mMyid = MemeberKeeper.getOauth(mContext).getWjdsId();
+            Constants.MyLog("传到跳转页面的id"+mMyid);
+            Constants.MyLog("主键id" + MemeberKeeper.getOauth(this).getId());
+        }
     }
 
     private void getIntentData() {
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-        mMyid = bundle.getLong("myid");
+        if (MemeberKeeper.getOauth(this).getWjdsId() != null) {
+            mMyid = MemeberKeeper.getOauth(this).getWjdsId();
+        }
     }
 
     @Override

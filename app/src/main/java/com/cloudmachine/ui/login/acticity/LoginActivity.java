@@ -303,8 +303,6 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 }
 
                 MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,0);
-
-                LoginActivity.this.finish();
                 Constants.isMcLogin = true;
                 //调用JPush API设置Alias
                 mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
@@ -334,10 +332,15 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 Long status = userInfo.userinfo.status;
                 Constants.MyLog("拿到状态@@@@@@@@@@@@@@@@@@@@@@"+status);
                 Long role_id = userInfo.userinfo.role_id;
+                Constants.MyLog("拿到id@@@@@@@@@@@@@@@@@@@@@@@@"+wjdsId);
                 mMember.setWjdsId(wjdsId);
                 mMember.setWjdsStatus(status);
                 mMember.setWjdsRole_id(role_id);
                 MemeberKeeper.saveOAuth(mMember,mContext);
+                //Constants.MyLog("拿到本页面的挖机id"+MemeberKeeper.getOauth(LoginActivity.this).getWjdsId());
+
+
+                LoginActivity.this.finish();
             }
 
             @Override
