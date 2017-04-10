@@ -49,16 +49,6 @@ public class QuestionActivity extends BaseAutoLayoutActivity<QuestionPresenter, 
     private String URLString = "http://h5.test.cloudm.com/n/ask_qsubmit?";
     private long mMyid;
 
-   /* @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        setContentView(R.layout.activity_question);
-        ButterKnife.bind(this);
-        getIntentData();
-        initView();
-        initWebView();
-    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
