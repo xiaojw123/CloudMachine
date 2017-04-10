@@ -223,7 +223,6 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 			Constants.toActivity(this, BeginnerGuideActivity.class,
 					null);
 			break;
-		//主页面测试
 		}
 
 	}

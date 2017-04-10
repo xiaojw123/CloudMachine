@@ -21,7 +21,7 @@ public class HostType {
     /**
      * 多少种Host类型
      */
-    public static final int TYPE_COUNT = 5;
+    public static final int TYPE_COUNT = 6;
 
     /**
      * 云机械的Host
@@ -47,5 +47,10 @@ public class HostType {
      * 谢鑫电脑Host地址
      */
     public static final int XIEXIN_HOSR = 5;
+
+    /**
+     * 李兆华电脑Host地址
+     */
+    public static final int LIZHAOHUA_HOST = 6;
 
 }

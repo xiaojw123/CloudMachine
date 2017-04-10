@@ -100,6 +100,7 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
                 refreshSignStateOnly();
             }
         });
+
     }
 
     @Override
@@ -349,3 +350,7 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
                 });
     }
 }
+
+
+
+

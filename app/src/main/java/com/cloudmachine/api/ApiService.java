@@ -191,6 +191,18 @@ public interface ApiService {
     @GET("excamaster/yjxapi/yjxuser")
     Observable<BaseRespose<UserInfo>> excamMaster(@Query("yjxid") Long yjxid);
 
+    /**
+     * 测试李兆华test请求
+     * @param sysCode
+     * @param sysName
+     * @param sysDes
+     * @param idxShow
+     * @return
+     */
+    @POST("admin/sysdef/add")
+    Observable<BaseRespose> test(@Query("sysCode") String sysCode
+            , @Query("sysName") String sysName, @Query("sysDes") String sysDes, @Query("idxShow") String idxShow);
+
 }
 
 
