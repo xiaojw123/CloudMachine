@@ -1,8 +1,6 @@
 package com.cloudmachine.base.baserx;
 
 import android.support.annotation.NonNull;
-
-
 import com.cloudmachine.utils.Constants;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +34,7 @@ public class RxBus {
     }
 
 
-    //
+
     @SuppressWarnings("rawtypes")
     private ConcurrentHashMap<Object, List<Subject>> subjectMapper = new ConcurrentHashMap<Object, List<Subject>>();
 

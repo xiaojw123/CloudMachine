@@ -19,14 +19,19 @@ import android.widget.Toast;
 
 import com.cloudmachine.R;
 import com.cloudmachine.activities.FindPasswordActivity;
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.HostType;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.autolayout.widgets.CircleTextImageView;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.LoginAsync;
 import com.cloudmachine.struc.Member;
+import com.cloudmachine.struc.UserInfo;
 import com.cloudmachine.ui.login.contract.LoginContract;
 import com.cloudmachine.ui.login.model.LoginModel;
 import com.cloudmachine.ui.login.presenter.LoginPresenter;
@@ -67,6 +72,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
     //是否是明文显示 默认为密文
     private boolean isExpress = false;
     private ImageView mIvVisible,mIvUnVisible;
+    private Member    mMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -282,9 +288,12 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
             case Constants.HANDLER_LOGIN_SUCCESS:
                 disMiss();
                 Constants.isGetScore = true;
-                Member member = (Member) msg.obj;
-                Constants.MyLog("云机械登录获取到的账号信息"+member.toString());
-                MemeberKeeper.saveOAuth(member, LoginActivity.this);
+                mMember = (Member) msg.obj;
+                if (mMember != null) {
+                    excamMaster(mMember.getId());
+                }
+                Constants.MyLog("云机械登录获取到的账号信息"+ mMember.toString());
+                MemeberKeeper.saveOAuth(mMember, LoginActivity.this);
                 MyApplication.getInstance().setLogin(true);
                 MyApplication.getInstance().setFlag(true);
                 if (flag == 2) {
@@ -294,12 +303,10 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 }
 
                 MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,0);
-
-                LoginActivity.this.finish();
                 Constants.isMcLogin = true;
                 //调用JPush API设置Alias
-                mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
-                MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
+                mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
+                MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));
                 break;
             case Constants.HANDLER_LOGIN_FAIL:
                 disMiss();
@@ -311,6 +318,36 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 break;
         }
         return false;
+    }
+
+    private void excamMaster(Long id) {
+
+        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(id)
+        .compose(RxHelper.<UserInfo>handleResult())
+        .subscribe(new RxSubscriber<UserInfo>(mContext,false) {
+            @Override
+            protected void _onNext(UserInfo userInfo) {
+                Constants.MyLog("进来#################");
+                Long wjdsId = userInfo.userinfo.id;
+                Long status = userInfo.userinfo.status;
+                Constants.MyLog("拿到状态@@@@@@@@@@@@@@@@@@@@@@"+status);
+                Long role_id = userInfo.userinfo.role_id;
+                Constants.MyLog("拿到id@@@@@@@@@@@@@@@@@@@@@@@@"+wjdsId);
+                mMember.setWjdsId(wjdsId);
+                mMember.setWjdsStatus(status);
+                mMember.setWjdsRole_id(role_id);
+                MemeberKeeper.saveOAuth(mMember,mContext);
+                //Constants.MyLog("拿到本页面的挖机id"+MemeberKeeper.getOauth(LoginActivity.this).getWjdsId());
+
+
+                LoginActivity.this.finish();
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
     }
 
     private final TagAliasCallback mAliasCallback = new TagAliasCallback() {

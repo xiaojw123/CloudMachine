@@ -18,6 +18,7 @@ public class BaseRespose<T> implements Serializable {
 
 
 
+
     public boolean success() {
         return 800 == code;
     }

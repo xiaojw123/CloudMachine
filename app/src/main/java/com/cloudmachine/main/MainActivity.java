@@ -41,7 +41,6 @@ import com.cloudmachine.ui.device.fragment.DeviceFragment;
 import com.cloudmachine.ui.homepage.fragment.HomePageFragment;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.personal.fragment.PersonalFragment;
-import com.cloudmachine.ui.personal.fragment.UpdateInfoActivity;
 import com.cloudmachine.ui.question.activity.QuestionActivity;
 import com.cloudmachine.ui.repair.fragment.RepairFragment;
 import com.cloudmachine.utils.Constants;
@@ -193,7 +192,15 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				return;
 			} else {
 				//switchContent(2);
-				Constants.toActivity(this, QuestionActivity.class,null,false);
+				if (MemeberKeeper.getOauth(this).getWjdsStatus() != null && MemeberKeeper.getOauth(this).getWjdsStatus() != 2) {
+					Constants.MyLog("拿到的挖机大师id为"+MemeberKeeper.getOauth(MainActivity.this).getWjdsStatus());
+					Bundle bundle = new Bundle();
+					bundle.putLong("myid",MemeberKeeper.getOauth(this).getWjdsId());
+					Constants.toActivity(this, QuestionActivity.class,bundle,false);
+				} else {
+					ToastUtils.info("您的角色为技师，不能提问哦~",true);
+				}
+
 			}
 			break;
 		case R.id.tab_repair_layout: // 报修页面布局
@@ -233,7 +240,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				&& event.getAction() == KeyEvent.ACTION_DOWN) {
 			if ((System.currentTimeMillis() - ExitTime) > 2000) {
 				Toast.makeText(getApplicationContext(),
-						ResV.getString(R.string.main_activity_exit), 3).show();
+						ResV.getString(R.string.main_activity_exit), Toast.LENGTH_SHORT).show();
 				ExitTime = System.currentTimeMillis();
 			} else {
 				clearCache();
@@ -480,9 +487,9 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		if(n<isInitFragment.length)
 			isInitFragment[n] = true;
 		//签名逻辑
-		if(currentFragment == 2){
+		/*if(currentFragment == 2){
 			setSignBetweenTime(0);
-		}
+		}*/
 		currentFragment = n; // 赋值索引
 		int len = mFragments.length;
 		if (n < len && n >= 0) {
@@ -530,6 +537,10 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 //						new AllRepairHistoryAsync(mContext, mHandler).execute();
 //					}
 //				}
+				if (n == 0) {
+					to.onResume();
+				}
+
 			}
 
 		}

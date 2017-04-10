@@ -20,6 +20,7 @@ public class HomeNewsTransfer implements HomePageType, Serializable {
     public ArrayList<String> adsDescription;
     public ArrayList<String> picUrl;
     public ArrayList<String> picAddress;
+    public ArrayList<Integer> adsMidSort;
 
     public HomeNewsTransfer(ArrayList<HomeNewsBean> homeNewsBean) {
         this.homeNewsBeans = homeNewsBean;
@@ -32,6 +33,7 @@ public class HomeNewsTransfer implements HomePageType, Serializable {
         adsDescription = new ArrayList<>();
         picUrl = new ArrayList<>();
         picAddress = new ArrayList<>();
+        adsMidSort = new ArrayList<>();
 
         /*for (int i=1;i<=homeNewsBean.size();i++) {
             adsTitle.add(homeNewsBean.get(i).adsTitle);
@@ -44,6 +46,7 @@ public class HomeNewsTransfer implements HomePageType, Serializable {
             adsDescription.add(homeNewsBean.adsDescription);
             picUrl.add(homeNewsBean.picUrl);
             picAddress.add(homeNewsBean.picAddress);
+            adsMidSort.add(homeNewsBean.adsMidSort);
         }
     }
 

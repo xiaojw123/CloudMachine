@@ -21,6 +21,8 @@ import com.cloudmachine.utils.Constants;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * 项目名称：CloudMachine
  * 类描述：
@@ -41,11 +43,11 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
     private RelativeLayout mRlMasterNews;
     private TextView mTvMasterNews;
     private TextView mTvMasterNewsDesc;
-    private ImageView mIvMasterPic;
+    private CircleImageView mIvMasterPic;
     private RelativeLayout mRlWanaBox;
     private TextView mTvWanaBox;
     private TextView mTvWanaBoxDesc;
-    private ImageView mIvWanaBox;
+    private CircleImageView mIvWanaBox;
 
     @Override
     public int getItemViewLayoutId() {
@@ -73,7 +75,21 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
         mRlWanaBox.setOnClickListener(this);
         mTvWanaBox = (TextView) holder.getView(R.id.tv_wana_box);
         mTvWanaBoxDesc = (TextView) holder.getView(R.id.tv_wana_box_desc);
-        mIvWanaBox = (ImageView) holder.getView(R.id.iv_wanabox);
+        mIvWanaBox = (CircleImageView) holder.getView(R.id.iv_wanabox);
+        for (int i = 0;i<mHomeNewsTransfer.picAddress.size();i++) {
+
+            if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i) == 3) {
+
+                mTvMasterNews.setText(mHomeNewsTransfer.adsTitle.get(i));
+                mTvMasterNewsDesc.setText(mHomeNewsTransfer.adsDescription.get(i));
+                Glide.with(mContext).load(mHomeNewsTransfer.picAddress.get(i))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop()
+                        .crossFade()
+                        .error(R.drawable.wana_box)
+                        .into(mIvWanaBox);
+            }
+        }
     }
 
     private void initTop(ViewHolder holder) {
@@ -85,7 +101,22 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
         //大师日报描述
         mTvMasterNewsDesc = (TextView) holder.getView(R.id.tv_master_news_desc);
         //大师日报图片
-        mIvMasterPic = (ImageView) holder.getView(R.id.iv_master_pic);
+        mIvMasterPic = (CircleImageView) holder.getView(R.id.iv_master_pic);
+        for (int i = 0;i<mHomeNewsTransfer.picAddress.size();i++) {
+
+            if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i) == 2) {
+
+                mTvMasterNews.setText(mHomeNewsTransfer.adsTitle.get(i));
+                mTvMasterNewsDesc.setText(mHomeNewsTransfer.adsDescription.get(i));
+                Glide.with(mContext).load(mHomeNewsTransfer.picAddress.get(i))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop()
+                        .crossFade()
+                        .error(R.drawable.master_news)
+                        .into(mIvMasterPic);
+            }
+        }
+
     }
 
     private void initLeft(ViewHolder holder) {
@@ -93,11 +124,27 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
         mIvNewsLeft = (ImageView) holder.getView(R.id.iv_news_left);
         mLlNewsLeft = (LinearLayout) holder.getView(R.id.ll_news_left);
         mLlNewsLeft.setOnClickListener(this);
-        Glide.with(mContext).load(mHomeNewsTransfer.picAddress.get(0))
+        for (int i = 0;i<mHomeNewsTransfer.picAddress.size();i++) {
+            if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i)== 1) {
+                Glide.with(mContext).load(mHomeNewsTransfer.picAddress.get(i))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop()
+                        .crossFade()
+                        .into(mIvNewsLeft);
+            }
+            if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i) == 2) {
+
+            }
+
+            if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i) == 3) {
+
+            }
+        }
+        /*Glide.with(mContext).load(mHomeNewsTransfer.picAddress.get(0))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .crossFade()
-                .into(mIvNewsLeft);
+                .into(mIvNewsLeft);*/
 
     }
 
