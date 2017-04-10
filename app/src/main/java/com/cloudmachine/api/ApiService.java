@@ -11,6 +11,7 @@ import com.cloudmachine.struc.LatestDailyEntity;
 import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.struc.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public interface ApiService {
      * @return
      */
     @GET("member/insertSignPoint")
-    Observable<BaseRespose<ScoreInfo>> getUserInsertSignInfo(@Query("memberId") String memberId);
+    Observable<BaseRespose/*<ScoreInfo>*/> getUserInsertSignInfo(@Query("memberId") String memberId);
 
     /**
      * 获得轮播图
@@ -181,6 +182,14 @@ public interface ApiService {
     Observable<BaseRespose> modifySignature(@Query("memberId") long memberId,
                                             @Query("key") String key,
                                             @Query("value") String value);
+
+    /**
+     * 根据云机械id获取对应用户的挖机大师id
+     * @param yjxid
+     * @return
+     */
+    @GET("excamaster/yjxapi/yjxuser")
+    Observable<BaseRespose<UserInfo>> excamMaster(@Query("yjxid") Long yjxid);
 
 }
 

@@ -14,7 +14,9 @@ public class Member implements Serializable{
 
 	private static final long serialVersionUID = 263723165474245016L;
 
-
+	private Long wjdsId;//对应挖机大师id
+	private Long wjdsStatus;//对应挖机大师角色
+	private Long wjdsRole_id;//挖机大师角色
 	private Long id;//主键
 	private String name;//真实姓名
 	private String nickName;// 昵称 
@@ -43,6 +45,30 @@ public class Member implements Serializable{
 	private String wecharNickname;
 	private String wecharLogo;
 
+
+	public Long getWjdsStatus() {
+		return wjdsStatus;
+	}
+
+	public void setWjdsStatus(Long wjdsStatus) {
+		this.wjdsStatus = wjdsStatus;
+	}
+
+	public Long getWjdsRole_id() {
+		return wjdsRole_id;
+	}
+
+	public void setWjdsRole_id(Long wjdsRole_id) {
+		this.wjdsRole_id = wjdsRole_id;
+	}
+
+	public Long getWjdsId() {
+		return wjdsId;
+	}
+
+	public void setWjdsId(Long wjdsId) {
+		this.wjdsId = wjdsId;
+	}
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;

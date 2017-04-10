@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +16,8 @@ import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.utils.Constants;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * 项目名称：CloudMachine
@@ -31,7 +32,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 public class HomeIssueDetailDelegate implements ItemViewDelegate<HomePageType>{
 
     private Context mContext;
-    private ImageView mIssueIcon;
+    private CircleImageView mIssueIcon;
     private HomeIssueDetailBean mHomeIssueDetailBean;
     private TextView mNickName;
     private TextView mTvBrand;
@@ -57,12 +58,13 @@ public class HomeIssueDetailDelegate implements ItemViewDelegate<HomePageType>{
         mContext = holder.getConvertView().getContext();
         mHomeIssueDetailBean = (HomeIssueDetailBean) homePageType;
         //头像
-        mIssueIcon = (ImageView) holder.getView(R.id.issue_icon);
+        mIssueIcon = (CircleImageView) holder.getView(R.id.issue_icon);
         if (mHomeIssueDetailBean.askerLogo != null) {
             Glide.with(mContext).load(mHomeIssueDetailBean.askerLogo)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .crossFade()
+                    .error(R.drawable.default_img)
                     .into(mIssueIcon);
         } else {
             Glide.with(mContext).load(R.drawable.master_news)

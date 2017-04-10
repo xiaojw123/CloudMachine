@@ -238,7 +238,7 @@ public class Constants {
 
     public static final String URL_LOGOCLOUDM = "https://f1.cloudm.com/logocloudm.png";
     //修改全局ip地址
-    public static final String URL_MAIN       = "http://192.168.1.13:8083/";//"http://api.test.cloudm.com";//http://192.168.1.8:8083//http://192.168.1.13:8090/cloudm3
+    public static final String URL_MAIN       = "http://api.test.cloudm.com";//"http://api.test.cloudm.com";//http://192.168.1.8:8083//http://192.168.1.13:8090/cloudm3
 
     public static final String URL_IMAGE_HOST            = URL_MAIN;// 文件上传地址
     public static final String URL_MyDevices             = URL_MAIN
@@ -407,6 +407,8 @@ public class Constants {
     public static final String P_MAPTTYPE                 = "maptype";
     public static final String P_SEARCHINFO               = "searchInfo";
     public static final String P_DEVICEINFO_MY            = "deviceInfo_my";
+    public static final String SIGN_OR_NOTSIGN            = "sign_or_notsign";
+
 
     public static final String S_FG                 = ":&&:";
     public static final String S_DEVICE_LOCATION_NO = "暂无";
@@ -623,8 +625,8 @@ public class Constants {
         if (null != msg && URL_MAIN.indexOf("test") != -1) {
             Log.e("Test", msg);
         }
-        // if(null != msg && URL_MAIN.indexOf("test")!=-1)
-        //Log.e("Test", msg);
+         if(null != msg  )
+        Log.e("Test", msg);
     }
 
     public static void ToastAction(String msg) {

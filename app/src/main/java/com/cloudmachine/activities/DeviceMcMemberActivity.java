@@ -216,9 +216,10 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 		startActivityForResult(intent_h,0);
 	}*/
 	private void getMemberList(){
-		if(deviceId != Constants.MC_Simulation_DeviceId){
-			new DevicesMemberListAsync(deviceId,mContext,mHandler).execute();
-		}
+//		if(deviceId != Constants.MC_Simulation_DeviceId){
+//			new DevicesMemberListAsync(deviceId,mContext,mHandler).execute();
+//		}
+		new DevicesMemberListAsync(deviceId,mContext,mHandler).execute();
 	}
 
 	@Override

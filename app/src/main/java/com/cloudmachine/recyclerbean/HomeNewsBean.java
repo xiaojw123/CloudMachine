@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class HomeNewsBean implements HomePageType,Serializable{
 
     //广告位置排序左上下
-    public int adsMidSort;
+    public Integer adsMidSort;
     //广告标题
     public String adsTitle;
     //广告描述

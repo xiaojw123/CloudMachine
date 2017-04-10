@@ -3,11 +3,17 @@ package com.cloudmachine.ui.homepage.fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.HostType;
 import com.cloudmachine.base.BaseFragment;
+import com.cloudmachine.base.baserx.RxBus;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.recycleadapter.HomePageAdapter;
 import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.recyclerbean.HomeBannerTransfer;
@@ -20,14 +26,17 @@ import com.cloudmachine.recyclerbean.HomeNewsBean;
 import com.cloudmachine.recyclerbean.HomeNewsTransfer;
 import com.cloudmachine.recyclerbean.HomePageBean;
 import com.cloudmachine.recyclerbean.HomePageType;
+import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.ui.homepage.activity.MessageActivity;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 import com.cloudmachine.ui.homepage.model.HomePageModel;
 import com.cloudmachine.ui.homepage.presenter.HomePagePresenter;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 
 import java.util.ArrayList;
 
+import rx.Subscriber;
 import rx.functions.Action1;
 
 /**
@@ -56,8 +65,9 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     private boolean                   getHotIssueInfo;
     private boolean                   isRefresh;
     private boolean                   refreshHotIssueOnly;//热门问题换一换
-    private boolean                   isfirstLoadHotIssue = true;//是否第一次加载热门问题
-    private HomeIssueDetailBean       mHomeIssueDetailBean;
+    private boolean isfirstLoadHotIssue = true;//是否第一次加载热门问题
+    private HomeIssueDetailBean mHomeIssueDetailBean;
+    private int                 signBetweenTime;
 
 
     @Override
@@ -77,6 +87,7 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
         mRxManager.on(Constants.GET_HOTISSUE, new Action1<Object>() {
             @Override
             public void call(Object o) {
+                Constants.MyLog("热门问题换一换");
                 refreshHotIssueOnly();
             }
         });
@@ -94,9 +105,11 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     @Override
     public void onResume() {
         super.onResume();
-        //每当获取焦点时去判断刷新一下签到状态
-        //refreshSignStateOnly();
+        if (MemeberKeeper.getOauth(getActivity()) != null) {
+            refreshSignState();
+        }
     }
+
 
     private void refreshSignStateOnly() {
 
@@ -283,5 +296,56 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
             homePageList.add(3, new HomeNewsTransfer(homeNewsList));
             homePageList.add(6, mHomeIssueDetailBean);
         }
+    }
+
+
+    private void refreshSignState() {
+
+        Api.getDefault(HostType.CLOUDM_HOST)
+                .getUserScoreInfo(MemeberKeeper.getOauth(getActivity()).getId())
+                .compose(RxHelper.<ScoreInfo>handleResult())
+                .subscribe(new Subscriber<ScoreInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ScoreInfo scoreInfo) {
+                        if (null != scoreInfo
+                                && !TextUtils.isEmpty(scoreInfo.getServerTime())
+                                && null != MemeberKeeper.getOauth(getActivity())) {
+                            //上一次签到的时间
+                            String oldTime = MySharedPreferences
+                                    .getSharedPString(MySharedPreferences.key_score_update_time
+                                            + String.valueOf(MemeberKeeper.getOauth(
+                                            getActivity()).getId()));
+                            //签到时间间隔
+                            signBetweenTime = Constants.getDateDays(
+                                    Constants.changeDateFormat(
+                                            scoreInfo.getServerTime(),
+                                            Constants.DateFormat2,
+                                            Constants.DateFormat1),
+                                    Constants.changeDateFormat(
+                                            oldTime,
+                                            Constants.DateFormat2,
+                                            Constants.DateFormat1),
+                                    Constants.DateFormat1
+                            );
+                            if (oldTime == null) {
+                                signBetweenTime = 1;
+                            }
+                        } else {
+                            signBetweenTime = 1;
+                        }
+                        Constants.MyLog("拿到的签到时间间隔" + signBetweenTime);
+                        RxBus.getInstance().post(Constants.SIGN_OR_NOTSIGN,signBetweenTime);
+                    }
+                });
     }
 }
