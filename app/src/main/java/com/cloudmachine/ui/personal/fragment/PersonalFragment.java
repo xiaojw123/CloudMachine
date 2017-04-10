@@ -29,6 +29,7 @@ import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.personal.activity.MyQRCodeActivity;
 import com.cloudmachine.ui.personal.activity.PersonalDataActivity;
 import com.cloudmachine.ui.personal.contract.PersonalContract;
@@ -256,6 +257,13 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
                 ((MainActivity) getActivity()).loginOut();
                 break;
             case R.id.rl_myquestion:
+                Constants.MyLog("进来了，，么@@@@@@@@");
+                Constants.MyLog("拿到的挖机大师id"+MemeberKeeper.getOauth(getActivity()).getWjdsId());
+                if (MemeberKeeper.getOauth(getActivity()).getWjdsId() != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("url"," http://h5.test.cloudm.com/n/ask_myq");
+                    Constants.toActivity(getActivity(), QuestionCommunityActivity.class,bundle,false);
+                }
                 break;
             case R.id.rl_insurance_consulting:
                 break;

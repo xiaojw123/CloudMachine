@@ -102,7 +102,7 @@ public interface ApiService {
      * @return
      */
     @GET("art/getArticles")
-    Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(@Query("artType") int artType, @Query("page") int page, @Query("size") int size);
+    Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(@Query("artType") int artType, @Query("page") int page, @Query("size") int size,@Query("artStatus") Integer artStatus);
 
     /**
      * 微信登录验证（是否绑定了云机械的账户）

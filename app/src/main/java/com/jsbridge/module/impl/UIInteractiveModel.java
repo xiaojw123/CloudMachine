@@ -5,6 +5,8 @@ import android.webkit.WebView;
 
 import com.cloudmachine.activities.WanaCloudBox;
 import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.utils.Constants;
 import com.jsbridge.core.JsCallback;
 import com.jsbridge.module.IModule;
 
@@ -63,6 +65,21 @@ public class UIInteractiveModel implements IModule {
             switch (action) {
                 case "back":
                     insuranceActivity.backPage("back");
+                    break;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void goLoginPage(AppCompatActivity activity, WebView webView, JSONObject params, final JsCallback callback) {
+        try {
+            String action = params.getString("action");
+            QuestionCommunityActivity questionCommunityActivity = (QuestionCommunityActivity) activity;
+            switch (action) {
+                case "login":
+                    Constants.toLoginActivity(questionCommunityActivity,2);
                     break;
 
             }

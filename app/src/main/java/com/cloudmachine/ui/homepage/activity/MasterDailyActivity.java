@@ -83,7 +83,7 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
                         && lastPosition == recyclerView.getLayoutManager().getItemCount() - 1) {
                     //下拉刷新的数据
                     if (pageCurrent < mMaxPage) {
-                        mPresenter.loadMoreDailyInfo(++pageCurrent,pageSize);
+                        mPresenter.loadMoreDailyInfo(++pageCurrent,pageSize,1);
                     }
 
                 }
@@ -94,7 +94,7 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
     private void getData() {
 
         //调用请求数据的事件
-        mPresenter.getMasterDailyInfo(1, pageSize);
+        mPresenter.getMasterDailyInfo(1, pageSize,1);
     }
 
     private void initData() {

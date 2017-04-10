@@ -1,11 +1,15 @@
 package com.cloudmachine.recycleadapter.delegate;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.cloudmachine.R;
 import com.cloudmachine.recyclerbean.HomeLoadMoreBean;
 import com.cloudmachine.recyclerbean.HomePageType;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -20,6 +24,9 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  */
 
 public class HomeLoadMoreDelegate implements ItemViewDelegate<HomePageType>{
+
+    private Context mContext;
+
     @Override
     public int getItemViewLayoutId() {
         return R.layout.delegate_home_more_questions;
@@ -32,12 +39,17 @@ public class HomeLoadMoreDelegate implements ItemViewDelegate<HomePageType>{
 
     @Override
     public void convert(ViewHolder holder, HomePageType homePageType, int position) {
+        mContext = holder.getConvertView().getContext();
         RelativeLayout rlLoadMore = (RelativeLayout) holder.getView(R.id.rl_loadmore);
         //加载更多点击
         rlLoadMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(mContext, QuestionCommunityActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
             }
         });
     }

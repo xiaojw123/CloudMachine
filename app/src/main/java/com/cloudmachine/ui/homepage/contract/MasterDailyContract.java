@@ -24,7 +24,7 @@ public interface MasterDailyContract {
 
     interface Model extends BaseModel {
 
-        Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(int page, int size);
+        Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(int page, int size,Integer artStatus);
     }
 
     interface View extends BaseView {
@@ -36,9 +36,9 @@ public interface MasterDailyContract {
 
     abstract static class Presenter extends BasePresenter<View, Model> {
 
-        public abstract void getMasterDailyInfo(int page,int size);
+        public abstract void getMasterDailyInfo(int page,int size,Integer artStatus);
 
-        public abstract void loadMoreDailyInfo(int page ,int size);
+        public abstract void loadMoreDailyInfo(int page ,int size,Integer artStatus);
     }
 
 }

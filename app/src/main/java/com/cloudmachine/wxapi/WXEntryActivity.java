@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.cloudmachine.api.Api;
 import com.cloudmachine.api.HostType;
+import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
@@ -19,8 +20,11 @@ import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.GetAccessTokenAsync;
 import com.cloudmachine.net.task.GetUserMsgAsync;
+import com.cloudmachine.struc.Member;
+import com.cloudmachine.struc.UserInfo;
 import com.cloudmachine.ui.login.acticity.VerifyPhoneNumActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.WeChatShareUtil;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -48,6 +52,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
     private int mSex;
     private String mUnionid;
     private String mOpenId;
+    private Member mMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +180,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
                     Constants.MyLog("代付单立方米萨");
                     Constants.MyLog(baseRespose.toString()+"服务器返回信息");
 
+                    mMember = (Member) baseRespose.result;
+                    if (mMember != null) {
+                        excamMaster(mMember.getId());
+                    }
+
 
                    /* Gson gson = new Gson();
                     gson.fromJson(String.valueOf(baseRespose.result), Member.class);
@@ -256,5 +266,29 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler ,Han
         super.onBackPressed();
         Constants.MyLog("执行了");
         Constants.toActivity(WXEntryActivity.this, MainActivity.class,null,true);
+    }
+
+    private void excamMaster(Long id) {
+
+        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(id)
+                .compose(RxHelper.<UserInfo>handleResult())
+                .subscribe(new RxSubscriber<UserInfo>(mContext,false) {
+                    @Override
+                    protected void _onNext(UserInfo userInfo) {
+                        Long wjdsId = userInfo.userinfo.id;
+                        Long status = userInfo.userinfo.status;
+                        Long role_id = userInfo.userinfo.role_id;
+                        mMember.setWjdsId(wjdsId);
+                        mMember.setWjdsStatus(status);
+                        mMember.setWjdsRole_id(role_id);
+                        MemeberKeeper.saveOAuth(mMember,mContext);
+                       WXEntryActivity.this.finish();
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+
+                    }
+                }));
     }
 }

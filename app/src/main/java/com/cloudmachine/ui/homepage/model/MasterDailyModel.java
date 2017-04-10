@@ -23,8 +23,8 @@ import rx.Observable;
 
 public class MasterDailyModel implements MasterDailyContract.Model{
     @Override
-    public Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(int page, int size) {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).getMasterDaily(5, page, size)
+    public Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(int page, int size,Integer artStatus) {
+        return Api.getDefault(HostType.GUOSHUAI_HOST).getMasterDaily(5, page, size,artStatus)
                 .compose(RxHelper.<List<MasterDailyBean>>handleBaseResult());
     }
 }

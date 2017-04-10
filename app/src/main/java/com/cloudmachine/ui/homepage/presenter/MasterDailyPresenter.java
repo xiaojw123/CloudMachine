@@ -21,8 +21,8 @@ import java.util.List;
 public class MasterDailyPresenter extends MasterDailyContract.Presenter {
 
     @Override
-    public void getMasterDailyInfo(int page,int size) {
-       mRxManage.add(mModel.getMasterDaily(page,size).subscribe(new RxSubscriber<BaseRespose<List<MasterDailyBean>>>(mContext,false) {
+    public void getMasterDailyInfo(int page,int size ,Integer artStatus) {
+       mRxManage.add(mModel.getMasterDaily(page,size,artStatus).subscribe(new RxSubscriber<BaseRespose<List<MasterDailyBean>>>(mContext,false) {
            @Override
            protected void _onNext(BaseRespose<List<MasterDailyBean>> listBaseRespose) {
                mView.returnMasterDailyInfo(listBaseRespose);
@@ -38,8 +38,8 @@ public class MasterDailyPresenter extends MasterDailyContract.Presenter {
     }
 
     @Override
-    public void loadMoreDailyInfo(int page, int size) {
-        mRxManage.add(mModel.getMasterDaily(page,size).subscribe(new RxSubscriber<BaseRespose<List<MasterDailyBean>>>(mContext,false) {
+    public void loadMoreDailyInfo(int page, int size,Integer artStatus) {
+        mRxManage.add(mModel.getMasterDaily(page,size, artStatus).subscribe(new RxSubscriber<BaseRespose<List<MasterDailyBean>>>(mContext,false) {
             @Override
             protected void _onNext(BaseRespose<List<MasterDailyBean>> listBaseRespose) {
                 mView.returnLoadMoreDailyInfo(listBaseRespose);

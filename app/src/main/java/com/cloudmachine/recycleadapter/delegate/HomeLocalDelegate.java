@@ -21,6 +21,7 @@ import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
@@ -110,7 +111,11 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llQuestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, QuestionCommunityActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             }
         });
 

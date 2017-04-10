@@ -12,13 +12,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.HostType;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.recyclerbean.CheckNumBean;
 import com.cloudmachine.struc.Member;
+import com.cloudmachine.struc.UserInfo;
 import com.cloudmachine.ui.login.contract.VerifyPhoneNumContract;
 import com.cloudmachine.ui.login.model.VerifyPhoneNumModel;
 import com.cloudmachine.ui.login.presenter.VerifyPhoneNumPresenter;
@@ -52,7 +57,7 @@ import rx.functions.Func1;
  */
 
 public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNumPresenter, VerifyPhoneNumModel>
-        implements VerifyPhoneNumContract.View, View.OnClickListener,Handler.Callback {
+        implements VerifyPhoneNumContract.View, View.OnClickListener, Handler.Callback {
 
 
     @BindView(R.id.ll_back)
@@ -80,18 +85,19 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
     @BindView(R.id.ll_password)
     LinearLayout      mLlPassword;
     private int mobileType = 2;
-    private String mNickname;
-    private String mUnionid;
-    private String mOpenid;
-    private int    mSex;
-    private String mAccount;
-    private String mInvitationValue;
-    private String mPwd;
-    private String mHeadimgurl;
+    private String           mNickname;
+    private String           mUnionid;
+    private String           mOpenid;
+    private int              mSex;
+    private String           mAccount;
+    private String           mInvitationValue;
+    private String           mPwd;
+    private String           mHeadimgurl;
     private RadiusButtonView mFindBtn;
-    private Handler mHandler;
+    private Handler          mHandler;
     private static final int MSG_SET_ALIAS = 1001;
     private String mCode;
+    private Member mMember;
 
 
     @Override
@@ -154,8 +160,8 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
               /*  mPresenter.bindWx(mUnionid,mOpenid,mAccount
                 ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);*/
 
-                mPresenter.wxBind(mUnionid,mOpenid,mAccount
-                        ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);
+                mPresenter.wxBind(mUnionid, mOpenid, mAccount
+                        , mCode, mInvitationValue, mPwd, mNickname, mHeadimgurl, mobileType);
 
                /* mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
                 .wxBind(mUnionid,mOpenid,mAccount
@@ -268,21 +274,26 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
     @Override
     public void returnBindWx(Member member) {
-        if (member != null) {
-            MemeberKeeper.saveOAuth(member, VerifyPhoneNumActivity.this);
+
+        if (mMember != null) {
+            mMember = member;
+            MemeberKeeper.saveOAuth(mMember, VerifyPhoneNumActivity.this);
             MyApplication.getInstance().setLogin(true);
             MyApplication.getInstance().setFlag(true);
 
+            if (mMember != null) {
+                excamMaster(mMember.getId());
+            }
+
             Intent intent = new Intent(VerifyPhoneNumActivity.this, MainActivity.class);
             startActivity(intent);
+            MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
 
-            MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,1);
 
-            VerifyPhoneNumActivity.this.finish();
             Constants.isMcLogin = true;
             //调用JPush API设置Alias
-            mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
-            MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
+            mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
+            MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));
         }
     }
 
@@ -341,4 +352,28 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
         }
 
     };
+
+    private void excamMaster(Long id) {
+
+        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(id)
+                .compose(RxHelper.<UserInfo>handleResult())
+                .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
+                    @Override
+                    protected void _onNext(UserInfo userInfo) {
+                        Long wjdsId = userInfo.userinfo.id;
+                        Long status = userInfo.userinfo.status;
+                        Long role_id = userInfo.userinfo.role_id;
+                        mMember.setWjdsId(wjdsId);
+                        mMember.setWjdsStatus(status);
+                        mMember.setWjdsRole_id(role_id);
+                        MemeberKeeper.saveOAuth(mMember, mContext);
+                       VerifyPhoneNumActivity.this.finish();
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+
+                    }
+                }));
+    }
 }
