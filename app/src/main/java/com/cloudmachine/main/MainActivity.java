@@ -200,6 +200,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				return;
 			} else {
 				//switchContent(2);
+				Constants.MyLog("挖机大师id为"+MemeberKeeper.getOauth(MainActivity.this).getWjdsId());
 				if (MemeberKeeper.getOauth(this).getWjdsStatus() != null && MemeberKeeper.getOauth(this).getWjdsStatus() != 2) {
 					Constants.MyLog("拿到的挖机大师id为"+MemeberKeeper.getOauth(MainActivity.this).getWjdsId());
 					Bundle bundle = new Bundle();

@@ -132,6 +132,10 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     public void onResume() {
         super.onResume();
         mPresenter.getMemberInfoById(memberId);
+        Constants.MyLog("进入个人信息");
+        Constants.MyLog("PersonalFragment挖机大师id:" + MemeberKeeper.getOauth(mContext).getWjdsId());
+        Constants.MyLog("PersonalFragment的numId:"+MemeberKeeper.getOauth(mContext).getNum());
+        Constants.MyLog("PersonalFragment的String:"+MemeberKeeper.getOauth(mContext).toString());
     }
 
     private void initListener() {

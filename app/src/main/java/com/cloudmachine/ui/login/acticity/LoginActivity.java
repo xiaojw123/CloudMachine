@@ -334,6 +334,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 mMember.setWjdsStatus(status);
                 mMember.setWjdsRole_id(role_id);
                 mMember.setNum(2L);
+
                 MemeberKeeper.saveOAuth(mMember,mContext);
                 Constants.MyLog("从当前页面拿到的挖机大师id" + MemeberKeeper.getOauth(LoginActivity.this).getWjdsId());
                 Constants.MyLog("从当前页面拿到的numId"+MemeberKeeper.getOauth(LoginActivity.this).getNum());

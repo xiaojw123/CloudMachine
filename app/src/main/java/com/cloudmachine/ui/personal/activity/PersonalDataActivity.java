@@ -37,6 +37,7 @@ import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.UpdateMemberInfoAsync;
 import com.cloudmachine.struc.Member;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.personal.contract.PersonalDataContract;
 import com.cloudmachine.ui.personal.model.PersonalDataModel;
 import com.cloudmachine.ui.personal.presenter.PersonalDataPresenter;
@@ -136,6 +137,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         ButterKnife.bind(this);
         getIntentData();
         initView();
+
     }
 
     private void getIntentData() {
