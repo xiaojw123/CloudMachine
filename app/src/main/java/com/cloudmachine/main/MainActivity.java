@@ -162,15 +162,17 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 	}
 
 	//新手引导图层
-	private void showGuide(){
+	/*private void showGuide(){
 		if(!MySharedPreferences.getSharedPBoolean(Constants.KEY_isGuide)){
 			MySharedPreferences.setSharedPBoolean(Constants.KEY_isGuide, true);
 			g_layout.setVisibility(View.VISIBLE);
 		}else{
 			g_layout.setVisibility(View.GONE);
 		}
-		
-	}
+
+	}*/
+
+
 	//在点击切换事件中判断是否需要登录
 	@Override
 	public void onClick(View v) {
@@ -179,12 +181,18 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 			switchContent(0);
 			break;
 		case R.id.tab_device_layout:
-			if (MemeberKeeper.getOauth(mContext) == null) {
+			/*if (MemeberKeeper.getOauth(mContext) == null) {
 				Constants.toLoginActivity(this, 2);
 				return;
-			} else {
+			} else {*/
 				switchContent(1);
-			}
+				if(!MySharedPreferences.getSharedPBoolean(Constants.KEY_isGuide)){
+					MySharedPreferences.setSharedPBoolean(Constants.KEY_isGuide, true);
+					g_layout.setVisibility(View.VISIBLE);
+				}else{
+					g_layout.setVisibility(View.GONE);
+				}
+			/*}*/
 			break;
 		case R.id.tab_question_layout:
 			if (MemeberKeeper.getOauth(mContext) == null) {
@@ -286,7 +294,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 			Constants.isGetScore = false;
 			new ScoreInfoAsync(0, mContext, mHandler).execute();
 		}
-		Constants.showTips(tips, 0);
+		//Constants.showTips(tips, 0);
 
 		new QuestionMessageAsync(mContext, mHandler).execute();
 		for(int i=0; i<mFragments.length; i++){
@@ -297,7 +305,8 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 //		mFragments[currentFragment].onResume();
 		super.onResume();
 		MobclickAgent.onResume(this);
-		showGuide();
+		//showGuide();
+		g_layout.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -350,7 +359,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		//消息页面小圆点展示
 		case Constants.HANDLER_GETALLMESSAGECOUNT_SUCCESS:
 		case Constants.HANDLER_GETALLMESSAGECOUNT_FAIL:
-			Constants.showTips(tips, 0);
+			//Constants.showTips(tips, 0);
 			// tips.setText(((List<MessageBO>)msg.obj).size()+"");
 			break;
 
@@ -537,9 +546,9 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 //						new AllRepairHistoryAsync(mContext, mHandler).execute();
 //					}
 //				}
-				if (n == 0) {
+				/*if (n == 0) {
 					to.onResume();
-				}
+				}*/
 
 			}
 

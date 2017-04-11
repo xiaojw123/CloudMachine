@@ -14,6 +14,8 @@ public class Member implements Serializable{
 
 	private static final long serialVersionUID = 263723165474245016L;
 
+	private Long num = 1L;
+
 	private Long wjdsId;//对应挖机大师id
 	private Long wjdsStatus;//对应挖机大师角色
 	private Long wjdsRole_id;//挖机大师角色
@@ -45,6 +47,13 @@ public class Member implements Serializable{
 	private String wecharNickname;
 	private String wecharLogo;
 
+	public Long getNum() {
+		return num;
+	}
+
+	public void setNum(Long num) {
+		this.num = num;
+	}
 
 	public Long getWjdsStatus() {
 		return wjdsStatus;

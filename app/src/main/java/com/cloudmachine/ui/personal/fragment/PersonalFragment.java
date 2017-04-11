@@ -259,6 +259,7 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
             case R.id.rl_myquestion:
                 Constants.MyLog("进来了，，么@@@@@@@@");
                 Constants.MyLog("拿到的挖机大师id"+MemeberKeeper.getOauth(getActivity()).getWjdsId());
+                Constants.MyLog("拿到的numId"+MemeberKeeper.getOauth(getActivity()).getNum());
                 if (MemeberKeeper.getOauth(getActivity()).getWjdsId() != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString("url"," http://h5.test.cloudm.com/n/ask_myq");
