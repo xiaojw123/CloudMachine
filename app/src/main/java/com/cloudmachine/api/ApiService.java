@@ -12,6 +12,7 @@ import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.struc.UserInfo;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +102,7 @@ public interface ApiService {
      * @param size
      * @return
      */
-    @GET("art/getArticles")
+    @GET("art/queryArticles")
     Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(@Query("artType") int artType, @Query("page") int page, @Query("size") int size,@Query("artStatus") Integer artStatus);
 
     /**
@@ -111,7 +112,7 @@ public interface ApiService {
      * @return
      */
     @GET("member/wxLogin")
-    Observable<BaseRespose> wxLogin(@Query("unionId") String unionId, @Query("openId") String openId, @Query("nickName") String nickName, @Query("headLogo") String headLogo);
+    Observable<JsonObject> wxLogin(@Query("unionId") String unionId, @Query("openId") String openId, @Query("nickName") String nickName, @Query("headLogo") String headLogo);
 
     /**
      * 微信绑定手机号
@@ -203,6 +204,13 @@ public interface ApiService {
     Observable<BaseRespose> test(@Query("sysCode") String sysCode
             , @Query("sysName") String sysName, @Query("sysDes") String sysDes, @Query("idxShow") String idxShow);
 
+    /**
+     * 大师日报点击增加阅读量
+     * @param id
+     * @return
+     */
+    @GET("art/readCount")
+    Observable<BaseRespose> readCount(@Query("id") Integer id);
 }
 
 

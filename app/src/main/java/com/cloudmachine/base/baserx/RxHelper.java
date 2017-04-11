@@ -72,6 +72,8 @@ public class RxHelper {
         };
     }
 
+
+
     /**
      * 对结果类型的数据进行预处理(只需要拿到message信息的)
      * @return
@@ -87,6 +89,26 @@ public class RxHelper {
                             return createData(baseRespose.message);
                         } else {
                             return Observable.error(new ServerException(baseRespose.message));
+                        }
+                    }
+                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    public static Observable.Transformer<BaseRespose, String> handleSwitchResult() {
+        return new Observable.Transformer<BaseRespose, String>() {
+            @Override
+            public Observable<String> call(Observable<BaseRespose> baseResposeObservable) {
+                return baseResposeObservable.flatMap(new Func1<BaseRespose, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(BaseRespose baseRespose) {
+                        if (baseRespose.code == 800) {
+                            return createData(baseRespose.message);
+                        } else if (baseRespose.code == 16305) {
+                            return Observable.error(new ServerException(String.valueOf(baseRespose.code)));
+                        } else {
+                            return Observable.error(new ServerException(baseRespose.getMessage()));
                         }
                     }
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

@@ -30,6 +30,7 @@ import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.personal.activity.InsuranceListActivity;
 import com.cloudmachine.ui.personal.activity.MyQRCodeActivity;
 import com.cloudmachine.ui.personal.activity.PersonalDataActivity;
 import com.cloudmachine.ui.personal.contract.PersonalContract;
@@ -267,6 +268,7 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
                 }
                 break;
             case R.id.rl_insurance_consulting:
+                Constants.toActivity(getActivity(), InsuranceListActivity.class, null, false);
                 break;
         }
     }

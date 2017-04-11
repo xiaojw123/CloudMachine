@@ -32,6 +32,8 @@ public abstract class RxSubscriber<T> extends Subscriber<T> {
     private String  msg;
     private boolean showDialog=true;
 
+
+
     /**
      * 是否显示浮动dialog
      */

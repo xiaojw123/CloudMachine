@@ -57,9 +57,21 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master_daily);
         ButterKnife.bind(this);
+        initTitleLayout();
         initData();
         initView();
         initListener();
+    }
+
+    private void initTitleLayout() {
+
+        mTitleLayout.setLeftImage(-1, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        mTitleLayout.setTitle("大师日报");
     }
 
     private void initListener() {
@@ -83,7 +95,7 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
                         && lastPosition == recyclerView.getLayoutManager().getItemCount() - 1) {
                     //下拉刷新的数据
                     if (pageCurrent < mMaxPage) {
-                        mPresenter.loadMoreDailyInfo(++pageCurrent,pageSize,1);
+                        mPresenter.loadMoreDailyInfo(++pageCurrent,pageSize,0);
                     }
 
                 }
@@ -94,7 +106,7 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
     private void getData() {
 
         //调用请求数据的事件
-        mPresenter.getMasterDailyInfo(1, pageSize,1);
+        mPresenter.getMasterDailyInfo(1, pageSize,0);
     }
 
     private void initData() {

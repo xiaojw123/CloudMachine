@@ -176,7 +176,7 @@ public class RepairListAdapter extends BaseAdapter {
                         double nloanamount = Double.parseDouble(historyInfos.get(position).getNloanamount());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Constants.ToastAction("服务器传参错误");
+                        //Constants.ToastAction("服务器传参错误");
                     }
 
                     switch (historyInfos.get(position).getNloanamount_TYPE()) {

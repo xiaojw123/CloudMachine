@@ -12,9 +12,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.WebviewActivity;
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.HostType;
+import com.cloudmachine.base.baserx.RxSchedulers;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.recyclerbean.MasterDailyBean;
 import com.cloudmachine.recyclerbean.MasterDailyType;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.ToastUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -37,6 +43,7 @@ public class MasterDailyContentDelegate implements ItemViewDelegate<MasterDailyT
     private TextView mTvModifyTime;
     private TextView mTvReadCount;
     private RelativeLayout mMasterLayout;
+    private int mId;
 
     @Override
     public int getItemViewLayoutId() {
@@ -53,6 +60,7 @@ public class MasterDailyContentDelegate implements ItemViewDelegate<MasterDailyT
 
         mContext = holder.getConvertView().getContext();
         mMasterDailyBean = (MasterDailyBean) masterDailyType;
+        mId = mMasterDailyBean.id;
         mMasterIcon = (ImageView) holder.getView(R.id.iv_icon);
         Glide.with(mContext).load(mMasterDailyBean.picAddress)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -77,6 +85,7 @@ public class MasterDailyContentDelegate implements ItemViewDelegate<MasterDailyT
             @Override
             public void onClick(View v) {
                 if (mMasterDailyBean.picUrl != null) {
+                    addReadCount();
                     Intent intent = new Intent(mContext, WebviewActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.P_WebView_Url,mMasterDailyBean.picUrl);
@@ -86,5 +95,25 @@ public class MasterDailyContentDelegate implements ItemViewDelegate<MasterDailyT
                 }
             }
         });
+    }
+
+    private void addReadCount() {
+
+        Api.getDefault(HostType.GUOSHUAI_HOST).readCount(mId)
+                .compose(RxSchedulers.<BaseRespose>io_main())
+                .subscribe(new RxSubscriber<BaseRespose>(mContext,false) {
+                    @Override
+                    protected void _onNext(BaseRespose baseRespose) {
+                        if (baseRespose.code == 800) {
+                            ToastUtils.success(((String) baseRespose.result), true);
+                        } else {
+                            ToastUtils.error(baseRespose.message,true);
+                        }
+                    }
+                    @Override
+                    protected void _onError(String message) {
+
+                    }
+                });
     }
 }

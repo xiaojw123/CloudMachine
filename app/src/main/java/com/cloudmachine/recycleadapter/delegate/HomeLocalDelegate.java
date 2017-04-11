@@ -23,6 +23,7 @@ import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
+import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
@@ -75,8 +76,8 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
 
             @Override
             public void call(Integer integer) {
-                Constants.MyLog("接受到刷新事件");
                 signBetweenTime = integer;
+                Constants.MyLog("主页面传递过来的签到时间间隔"+signBetweenTime);
                 if (integer != 0) {
                     signText.setText("签到");
                 } else {
@@ -124,7 +125,8 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llRepair.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, NewRepairActivity.class);
+                context.startActivity(intent);
             }
         });
 
@@ -153,16 +155,18 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
     }
 
     private void sign() {
-        Constants.MyLog("签到时间状态值"+signBetweenTime);
-        if (signBetweenTime != 0) {
+        Constants.MyLog("验证签到时间状态值"+signBetweenTime);
+        //if (signBetweenTime != 0) {
             rxManager.add(Api.getDefault(HostType.CLOUDM_HOST)
                     .getUserInsertSignInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
                     .compose(RxSchedulers.<BaseRespose>io_main()).subscribe(new RxSubscriber<BaseRespose>(context, false) {
                         @Override
                         protected void _onNext(BaseRespose baseRespose) {
+                            Constants.MyLog("成功");
                             if (baseRespose.code == 800) {
                                 signText.setText("已签到");
                                 ScoreInfo scoreInfo = (ScoreInfo) baseRespose.result;
+                                Constants.MyLog(scoreInfo+"点击签到详细信息");
                                 Member mb = MemeberKeeper.getOauth(context);
                                 if (null != mb) {
                                     Constants.MyLog("设置时间");
@@ -172,9 +176,11 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
                                 }
 
                             } else if (baseRespose.code == 200) {
+                                Constants.MyLog("进入已签到这里");
                                 ToastUtils.info("您已经签到过", true);
                                 signText.setText("已签到");
                             }
+                            //调用签到状态刷新
                             RxBus.getInstance().post(Constants.REFRESH_SIGN_STATE, "");
                         }
 
@@ -183,7 +189,7 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
 
                         }
                     }));
-        }
+       // }
 
     }
 

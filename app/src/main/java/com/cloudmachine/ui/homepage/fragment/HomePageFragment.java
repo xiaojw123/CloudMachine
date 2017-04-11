@@ -101,6 +101,10 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
             }
         });
 
+        if (MemeberKeeper.getOauth(getActivity()) != null) {
+            refreshSignState();
+        }
+
     }
 
     @Override
@@ -275,7 +279,6 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     }
 
     private void refreshData() {
-        Constants.MyLog("刷新方法调用了");
         getBannerInfo = false;
         getMidNewsInfo = false;
         getHotIssueInfo = false;
@@ -289,7 +292,6 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     public void finishRefresh() {
 
         if (getMidNewsInfo && getBannerInfo && getHotIssueInfo && isRefresh && !refreshHotIssueOnly) {
-            Constants.MyLog("进入刷新方法");
             mRecyclerView.scrollToPosition(0);
             mSwipeRefreshLayout.setRefreshing(false);
             getData();
@@ -338,9 +340,9 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
                                             Constants.DateFormat1),
                                     Constants.DateFormat1
                             );
-                            if (oldTime == null) {
+                            /*if (oldTime == null) {
                                 signBetweenTime = 1;
-                            }
+                            }*/
                         } else {
                             signBetweenTime = 1;
                         }

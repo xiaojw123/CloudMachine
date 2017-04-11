@@ -41,7 +41,6 @@ public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, B
         mContext = holder.getConvertView().getContext();
         Banner banner = holder.getView(R.id.banner);
         HomeBannerTransfer homeBannerTransfer = (HomeBannerTransfer) homeTypeItem;
-       // Constants.MyLog("转接类信息"+homeBannerTransfer.toString());
         banner.setImages(homeBannerTransfer.images)
                 .setBannerTitles(homeBannerTransfer.titles)
                 .setImageLoader(GlideImageLoader.getInstance())
