@@ -130,7 +130,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
     private boolean isAskDelete = true;
     private String radiu = "100";
     private McDeviceLocation fencingCenter;
-    private long deviceId;
+    private long deviceId = -1;
     private String mLat;
     private String mLng;
     private int mWorkStatus;
@@ -236,12 +236,15 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
     }
 
     private void initFencn() {            //重新初始化围栏的方法
+        if(null == mcDeviceBasicsInfo)
+            return;
         //是否有圆形的围栏
         McDeviceCircleFence circleFence = mcDeviceBasicsInfo.getCircleFence();
-        if (null != circleFence && deviceId != 0) {
+        if (null != circleFence && deviceId != -1) {
             title_layout.setRightText(-1, CHANGESET);
             //重新初始化围栏
             finishDraw();
+
             //重新初始化围栏半径marker
             addCircleMarkerToMap();
             aMap.invalidate();
