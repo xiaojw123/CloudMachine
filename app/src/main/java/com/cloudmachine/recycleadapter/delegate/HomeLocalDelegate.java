@@ -1,5 +1,6 @@
 package com.cloudmachine.recycleadapter.delegate;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -160,6 +161,7 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
 
     private void sign() {
         Constants.MyLog("验证签到时间状态值"+signBetweenTime);
+        //showSignDialog();
         //if (signBetweenTime != 0) {
             rxManager.add(Api.getDefault(HostType.CLOUDM_HOST)
                     .getUserInsertSignInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
@@ -169,6 +171,7 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
                                     JsonElement codeElement = jsonObject.get("code");
                                     int code = codeElement.getAsInt();
                                     if (code == 800) {
+                                        showSignDialog();
                                         JsonElement resultElement = jsonObject.get("result");
                                         if (resultElement == null) {
 
@@ -198,6 +201,22 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
                             }));
        // }
 
+    }
+    //弹出签到对话框
+    private void showSignDialog() {
+
+        final AlertDialog builder = new AlertDialog.Builder(context,R.style.transdialog)
+                .create();
+        builder.show();
+        View view = View.inflate(context, R.layout.dialog_sign_layout, null);
+        LinearLayout scoreLayout = (LinearLayout) view.findViewById(R.id.score_layout);
+        scoreLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.dismiss();
+            }
+        });
+        builder.getWindow().setContentView(view);
     }
 
 }

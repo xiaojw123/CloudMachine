@@ -13,4 +13,6 @@ package com.cloudmachine.base.baserx;
 public class RxConstants {
 
     public static final String REFRESH_PERSONAL_FRAGMENT = "refresh_personal_fragment";
+    public static final String REFRESH_DEVICE_FRAGMENT = "refresh_device_fragment";
+
 }

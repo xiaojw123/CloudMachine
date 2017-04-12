@@ -25,9 +25,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cloudm.autolayout.AutoLayoutFragmentActivity;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.BeginnerGuideActivity;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxBus;
 import com.cloudmachine.base.baserx.RxConstants;
 import com.cloudmachine.cache.MySharedPreferences;
@@ -57,8 +57,9 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.ArrayList;
 
 import cn.jpush.android.api.JPushInterface;
+import rx.functions.Action1;
 
-public class MainActivity extends AutoLayoutFragmentActivity implements OnClickListener,
+public class MainActivity extends BaseAutoLayoutActivity implements OnClickListener,
 		Callback {
 
 	public static boolean isForeground = false;
@@ -109,7 +110,23 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 		if (null != MemeberKeeper.getOauth(mContext))
 			MobclickAgent.onProfileSignIn(String.valueOf(MemeberKeeper
 					.getOauth(mContext).getId()));
+		initRxBusEvent();
 		
+	}
+
+	@Override
+	public void initPresenter() {
+
+	}
+
+	private void initRxBusEvent() {
+
+		mRxManager.on(RxConstants.REFRESH_DEVICE_FRAGMENT, new Action1<Object>() {
+			@Override
+			public void call(Object o) {
+				updateDevice();
+			}
+		});
 	}
 
 	private void getIntentData() {

@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.MessageAdapter;
 import com.cloudmachine.app.MyApplication;
-import com.cloudmachine.autolayout.widgets.TitleView;
-import com.cloudmachine.main.MainActivity;
+import com.cloudmachine.base.baserx.RxBus;
+import com.cloudmachine.base.baserx.RxConstants;
 import com.cloudmachine.net.task.AllMessagesListAsync;
 import com.cloudmachine.net.task.QuestionMessageAsync;
 import com.cloudmachine.struc.MessageBO;
@@ -37,7 +37,6 @@ public class MessageActivity extends Fragment implements Callback, IXListViewLis
 	private int pageNo = 1;
 	private List<MessageBO> dataList = new ArrayList<MessageBO>();
 	private MessageAdapter adapter;
-	private TitleView title_layout;
 	private View viewParent;
 	private View empty_layout;
 
@@ -96,9 +95,9 @@ public class MessageActivity extends Fragment implements Callback, IXListViewLis
 	
 	private void initTitleLayout(){
 		
-		title_layout = (TitleView)viewParent.findViewById(R.id.title_layout);
+		/*title_layout = (TitleView)viewParent.findViewById(title_layout);
 		title_layout.setTitle(getResources().getString(R.string.main_bar_text2));
-		title_layout.setLeftLayoutVisibility(View.GONE);
+		title_layout.setLeftLayoutVisibility(View.GONE);*/
 	}
 	private void showData(){
 		if(null != dataList && dataList.size()>0){
@@ -113,7 +112,6 @@ public class MessageActivity extends Fragment implements Callback, IXListViewLis
 	private OnClickListener mErrorClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-//			new MsgAsync().execute();
 			new AllMessagesListAsync(pageNo,mContext, mHandler).execute();
 		}
 	};
@@ -129,8 +127,7 @@ public class MessageActivity extends Fragment implements Callback, IXListViewLis
 			if(pageNo == 1){
 				dataList.clear();
 			}
-//			MyApplication.getInstance().setMsgNum(messageList.size());
-//			listView.setPullLoadEnable(true);
+
 			dataList.addAll(messageList);
 			if(dataList.size()>=MyApplication.getInstance().getPageSize()){
 				listView.setPullLoadEnable(true);
@@ -145,7 +142,6 @@ public class MessageActivity extends Fragment implements Callback, IXListViewLis
 			}
 			listView.stopRefresh();
 			listView.stopLoadMore();
-//			MyApplication.getInstance().setMsgNum(0);
 			showData();
 			break;
 		case Constants.HANDLER_QUESTION_SUCCESS:
@@ -154,33 +150,31 @@ public class MessageActivity extends Fragment implements Callback, IXListViewLis
 				questionMessage.setMessageType(5);
 				dataList.add(0, questionMessage);
 				adapter.notifyDataSetChanged();
-				if(null != getActivity())
-					((MainActivity)getActivity()).updateQuestion(true);
+				/*if(null != getActivity())
+					((MainActivity)getActivity()).updateQuestion(true);*/
 			}else{
-				if(null != getActivity())
-					((MainActivity)getActivity()).updateQuestion(false);
+				/*if(null != getActivity())
+					((MainActivity)getActivity()).updateQuestion(false);*/
 			}
 			break;
 		case Constants.HANDLER_QUESTION_FAIL:
-			if(null != getActivity())
-				((MainActivity)getActivity()).updateQuestion(false);
+			/*if(null != getActivity())
+				((MainActivity)getActivity()).updateQuestion(false);*/
 			break;
 		case Constants.HANDLER_MESSAGEACCEPTE_SUCCESS:
-			((MainActivity)getActivity()).updateDevice();
+			/*((MainActivity)getActivity()).updateDevice();*/
+			//添加设备成功，通知刷新设备页面
+			RxBus.getInstance().post(RxConstants.REFRESH_DEVICE_FRAGMENT,"");
 			Constants.isChangeDevice = true;
 			Constants.isAddDevice = true;
 			UIHelper.ToastMessage(mContext, "已经同意该邀请");
-//			dataList.clear();
 			dataList.get(msg.arg1).setStatus(3);
 			adapter.notifyDataSetChanged();
-//			new AllMessagesListAsync(mContext, mHandler).execute();
 			break;
 		case Constants.HANDLER_MESSAGEREFUSE_SUCCESS:
-//			dataList.clear();
 			dataList.get(msg.arg1).setStatus(2);
 			adapter.notifyDataSetChanged();
 			UIHelper.ToastMessage(mContext, "已经拒绝该邀请");
-//			new AllMessagesListAsync(mContext, mHandler).execute();
 			break;
 		case Constants.HANDLER_MESSAGEUPSTATE_SUCCESS:
 			dataList.get(msg.arg1).setStatus(4);
@@ -238,8 +232,6 @@ public class MessageActivity extends Fragment implements Callback, IXListViewLis
 		super.onResume();
 		new AllMessagesListAsync(pageNo,mContext, mHandler).execute();
 		new QuestionMessageAsync(mContext, mHandler).execute();
-		//MobclickAgent.onPageStart(this.getClass().getName());
-		//MobclickAgent.onPageStart(UMengKey.time_message_list);
 	}
 
 
@@ -247,8 +239,6 @@ public class MessageActivity extends Fragment implements Callback, IXListViewLis
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		//MobclickAgent.onPageEnd(this.getClass().getName());
-		//MobclickAgent.onPageEnd(UMengKey.time_message_list);
 	}
 
 	

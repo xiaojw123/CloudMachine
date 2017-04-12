@@ -37,7 +37,6 @@ import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.UpdateMemberInfoAsync;
 import com.cloudmachine.struc.Member;
-import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.personal.contract.PersonalDataContract;
 import com.cloudmachine.ui.personal.model.PersonalDataModel;
 import com.cloudmachine.ui.personal.presenter.PersonalDataPresenter;
@@ -368,7 +367,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 .subscribe(new Action1<File>() {
                     @Override
                     public void call(File file) {
-                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
+                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, "http://api.test.cloudm.com/member/kindEditorUpload",mHandler);
                     }
                 }, new Action1<Throwable>() {
                     @Override

@@ -7,46 +7,46 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.AutoLayoutFragmentActivity;
 import com.cloudmachine.R;
+import com.cloudmachine.activities.MessageActivity;
 import com.cloudmachine.autolayout.widgets.TitleView;
-import com.cloudmachine.utils.Constants;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.ui.homepage.fragment.SystemMessageFragment;
 
 /**
  * 项目名称：CloudMachine
- * 类描述：消息页面activity
+ * 类描述：
  * 创建人：shixionglu
- * 创建时间：2017/3/27 下午4:09
+ * 创建时间：2017/4/12 下午4:43
  * 修改人：shixionglu
- * 修改时间：2017/3/27 下午4:09
+ * 修改时间：2017/4/12 下午4:43
  * 修改备注：
  */
 
-public class MessageActivity extends AutoLayoutFragmentActivity implements View.OnClickListener {
+public class ViewMessageActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
 
-    private TitleView titleLayout;
-    private Context   mContext;
+    private Context mContext;
     private View[]     linearLayouts    = new View[2];
     private TextView[] textViews        = new TextView[2];
     private Fragment   mFragments[]     = new Fragment[2]; // 存储页面的数组
     private boolean    isInitFragment[] = new boolean[2];
     private Fragment mContentFragment; // 当前fragment
     private int currentFragment = 0; // 当前Fragment的索引
+    private TitleView titleLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_messages);
-        Constants.MyLog("进入消息页面");
+        setContentView(R.layout.activity_view_message);
         mContext = this;
-        initView();
+        initViews();
         initFragmentS(); // 初始化fragment
     }
 
     private void initFragmentS() {
 
-        /*mFragments[0] = new AvailableCouponsFragment();
-        mFragments[1] = new InvalidCouponFragment();*/
+        mFragments[0] = new MessageActivity();
+        mFragments[1] = new SystemMessageFragment();
         mContentFragment = null;
         switchContent(currentFragment);
     }
@@ -94,7 +94,27 @@ public class MessageActivity extends AutoLayoutFragmentActivity implements View.
         }
     }
 
-    private void initView() {
+    private void initViews() {
+
+        initTitleView();
+        linearLayouts[0] = findViewById(R.id.tab_one_layout);
+        linearLayouts[1] = findViewById(R.id.tab_two_layout);
+        textViews[0] = (TextView) findViewById(R.id.tab_one_text);
+        textViews[1] = (TextView) findViewById(R.id.tab_two_text);
+        linearLayouts[0].setOnClickListener(this);
+        linearLayouts[1].setOnClickListener(this);
+        titleLayout = (TitleView) findViewById(R.id.title_layout);
+        titleLayout.setLeftImage(-1, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        titleLayout.setTitle("消息");
+    }
+
+    private void initTitleView() {
+
 
         titleLayout = (TitleView) findViewById(R.id.title_layout);
         titleLayout.setLeftImage(-1, new View.OnClickListener() {
@@ -103,21 +123,16 @@ public class MessageActivity extends AutoLayoutFragmentActivity implements View.
                 finish();
             }
         });
-
         titleLayout.setTitle("消息");
+    }
 
-        linearLayouts[0] = findViewById(R.id.tab_one_layout);
-        linearLayouts[1] = findViewById(R.id.tab_two_layout);
-        textViews[0] = (TextView) findViewById(R.id.tab_one_text);
-        textViews[1] = (TextView) findViewById(R.id.tab_two_text);
-        linearLayouts[0].setOnClickListener(this);
-        linearLayouts[1].setOnClickListener(this);
+    @Override
+    public void initPresenter() {
 
     }
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.tab_one_layout:
                 switchContent(0);
@@ -126,5 +141,6 @@ public class MessageActivity extends AutoLayoutFragmentActivity implements View.
                 switchContent(1);
                 break;
         }
+
     }
 }

@@ -27,7 +27,7 @@ import com.cloudmachine.recyclerbean.HomeNewsTransfer;
 import com.cloudmachine.recyclerbean.HomePageBean;
 import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.struc.ScoreInfo;
-import com.cloudmachine.ui.homepage.activity.MessageActivity;
+import com.cloudmachine.ui.homepage.activity.ViewMessageActivity;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 import com.cloudmachine.ui.homepage.model.HomePageModel;
 import com.cloudmachine.ui.homepage.presenter.HomePagePresenter;
@@ -268,7 +268,7 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_message:
-                Constants.toActivity(getActivity(), MessageActivity.class, null, false);
+                Constants.toActivity(getActivity(), ViewMessageActivity.class,null,false);
                 break;
         }
     }
