@@ -14,12 +14,12 @@ import com.cloudmachine.base.baserx.RxBus;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.recyclerbean.HomeLocalBean;
 import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.ui.homepage.activity.AccessoriesMallActivity;
 import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
@@ -27,6 +27,9 @@ import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -93,7 +96,8 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llShoppingCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, AccessoriesMallActivity.class);
+                context.startActivity(intent);
             }
         });
 
@@ -159,36 +163,39 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         //if (signBetweenTime != 0) {
             rxManager.add(Api.getDefault(HostType.CLOUDM_HOST)
                     .getUserInsertSignInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
-                    .compose(RxSchedulers.<BaseRespose>io_main()).subscribe(new RxSubscriber<BaseRespose>(context, false) {
-                        @Override
-                        protected void _onNext(BaseRespose baseRespose) {
-                            Constants.MyLog("成功");
-                            if (baseRespose.code == 800) {
-                                signText.setText("已签到");
-                                ScoreInfo scoreInfo = (ScoreInfo) baseRespose.result;
-                                Constants.MyLog(scoreInfo+"点击签到详细信息");
-                                Member mb = MemeberKeeper.getOauth(context);
-                                if (null != mb) {
-                                    Constants.MyLog("设置时间");
-                                    MySharedPreferences.setSharedPString(MySharedPreferences.key_score_update_time +
-                                                    String.valueOf(mb.getId()),
-                                            scoreInfo.getServerTime());
+                    .compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(context,false) {
+                                @Override
+                                protected void _onNext(JsonObject jsonObject) {
+                                    JsonElement codeElement = jsonObject.get("code");
+                                    int code = codeElement.getAsInt();
+                                    if (code == 800) {
+                                        JsonElement resultElement = jsonObject.get("result");
+                                        if (resultElement == null) {
+
+                                        } else {
+                                            String result = resultElement.getAsString();
+                                            Gson gson = new Gson();
+                                            ScoreInfo scoreInfo = gson.fromJson(result, ScoreInfo.class);
+                                            Member member = MemeberKeeper.getOauth(context);
+                                            if (member != null) {
+                                                MySharedPreferences.setSharedPString(MySharedPreferences.key_score_update_time +
+                                                                String.valueOf(member.getId()),
+                                                        scoreInfo.getServerTime());
+                                            }
+                                        }
+                                    } else if (code == 200) {
+                                        ToastUtils.info("您已经签到过", true);
+                                        signText.setText("已签到");
+                                    }
+                                    //调用签到状态刷新
+                                    RxBus.getInstance().post(Constants.REFRESH_SIGN_STATE, "");
                                 }
 
-                            } else if (baseRespose.code == 200) {
-                                Constants.MyLog("进入已签到这里");
-                                ToastUtils.info("您已经签到过", true);
-                                signText.setText("已签到");
-                            }
-                            //调用签到状态刷新
-                            RxBus.getInstance().post(Constants.REFRESH_SIGN_STATE, "");
-                        }
+                                @Override
+                                protected void _onError(String message) {
 
-                        @Override
-                        protected void _onError(String message) {
-
-                        }
-                    }));
+                                }
+                            }));
        // }
 
     }

@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.cloudm.autolayout.AutoLayoutFragmentActivity;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.BeginnerGuideActivity;
+import com.cloudmachine.base.baserx.RxBus;
+import com.cloudmachine.base.baserx.RxConstants;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.task.AllMessagesCountAsync;
 import com.cloudmachine.net.task.GetVersionAsync;
@@ -199,7 +201,6 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				Constants.toLoginActivity(this, 2);
 				return;
 			} else {
-				//switchContent(2);
 				Constants.MyLog("挖机大师id为"+MemeberKeeper.getOauth(MainActivity.this).getWjdsId());
 				if (MemeberKeeper.getOauth(this).getWjdsStatus() != null && MemeberKeeper.getOauth(this).getWjdsStatus() != 2) {
 					Constants.MyLog("拿到的挖机大师id为"+MemeberKeeper.getOauth(MainActivity.this).getWjdsId());
@@ -518,6 +519,7 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 				}
 			}
 			Fragment to = mFragments[n];
+			//判断消息的总数
 			if (mContentFragment == mFragments[1]) {
 				if (MemeberKeeper.getOauth(mContext) != null) {
 					new AllMessagesCountAsync(mContext, mHandler).execute();
@@ -541,6 +543,9 @@ public class MainActivity extends AutoLayoutFragmentActivity implements OnClickL
 					fragmentTransaction.add(R.id.frame_content, to).commit();
 				}
 				mContentFragment = to;
+				if (n == 3) {
+					RxBus.getInstance().post(RxConstants.REFRESH_PERSONAL_FRAGMENT,"");
+				}
 //				if(mContentFragment == mFragments[3]){
 //					Constants.MyLog("联网获取数据");													//联网获取报修历史数据
 //					if (MemeberKeeper.getOauth(mContext) != null) {

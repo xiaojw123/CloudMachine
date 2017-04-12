@@ -1,12 +1,16 @@
 package com.cloudmachine.recycleadapter.delegate;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 
 import com.cloudmachine.R;
+import com.cloudmachine.activities.WebviewActivity;
 import com.cloudmachine.loader.GlideImageLoader;
 import com.cloudmachine.recyclerbean.HomeBannerTransfer;
 import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.utils.Banner.Banner;
+import com.cloudmachine.utils.Constants;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -25,6 +29,7 @@ public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, B
     private static final String TAG = "HomeHeaderItemDelegate";
 
     private Context mContext;
+    private HomeBannerTransfer mHomeBannerTransfer;
 
     @Override
     public int getItemViewLayoutId() {
@@ -40,9 +45,9 @@ public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, B
     public void convert(ViewHolder holder, HomePageType homeTypeItem, int position) {
         mContext = holder.getConvertView().getContext();
         Banner banner = holder.getView(R.id.banner);
-        HomeBannerTransfer homeBannerTransfer = (HomeBannerTransfer) homeTypeItem;
-        banner.setImages(homeBannerTransfer.images)
-                .setBannerTitles(homeBannerTransfer.titles)
+        mHomeBannerTransfer = (HomeBannerTransfer) homeTypeItem;
+        banner.setImages(mHomeBannerTransfer.images)
+                .setBannerTitles(mHomeBannerTransfer.titles)
                 .setImageLoader(GlideImageLoader.getInstance())
                 .setOnBannerClickListener(this)
                 .start();
@@ -51,5 +56,12 @@ public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, B
     @Override
     public void OnBannerClick(int position) {
         //对banner点击进行链接跳转
+        Intent intent = new Intent(mContext, WebviewActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.P_WebView_Url,mHomeBannerTransfer.jumpLinks.get(position));
+        Constants.MyLog("打印到的跳转链接"+mHomeBannerTransfer.jumpLinks.get(position));
+        bundle.putString(Constants.P_WebView_Title,"");
+        intent.putExtras(bundle);
+        mContext.startActivity(intent);
     }
 }

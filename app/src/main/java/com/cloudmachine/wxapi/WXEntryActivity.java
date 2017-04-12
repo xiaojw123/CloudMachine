@@ -172,12 +172,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                         .compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(WXEntryActivity.this, false) {
                             @Override
                             protected void _onNext(JsonObject jsonObject) {
-                               /*// String s = jsonObject.toString();
-                                JsonElement result = jsonObject.get("result");
-                                String s = result.toString();
-                                Gson gson = new Gson();
-                                Member member = gson.fromJson(s, Member.class);
-                                Constants.MyLog("拿到了"+member.getId());*/
                                 JsonElement jsonElement = jsonObject.get("code");
                                 int code = jsonElement.getAsInt();
                                 if (code == 16305) {
@@ -193,7 +187,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                                     String result = resultElement.getAsString();
                                     Gson gson = new Gson();
                                     Member member = gson.fromJson(result, Member.class);
-
+                                    if (member != null) {
+                                        excamMaster(member.getId());
+                                    }
                                     MemeberKeeper.saveOAuth(member, WXEntryActivity.this);
                                     MyApplication.getInstance().setLogin(true);
                                     MyApplication.getInstance().setFlag(true);
@@ -217,68 +213,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                             protected void _onError(String message) {
 
                             }
-                        })
-
-
-        /*.subscribe(new RxSubscriber<BaseRespose>(mContext,false) {
-            @Override
-            protected void _onNext(BaseRespose baseRespose) {
-
-                Constants.MyLog("拿到的微信登录返回码"+baseRespose.code);
-                if (baseRespose.code == 16305) {
-                    Bundle b = new Bundle();
-                    b.putString("nickname", nickname);
-                    b.putString("unionid", unionid);
-                    b.putString("openid", openId);
-                    b.putString("headimgurl", headimgurl);
-                    b.putInt("sex",sex);
-                    Constants.toActivity(WXEntryActivity.this, VerifyPhoneNumActivity.class,b,true);
-                } else if (baseRespose.code == 800) {
-                    Constants.MyLog("代付单立方米萨");
-                    Constants.MyLog(baseRespose.toString()+"服务器返回信息");
-                    String simpleName = baseRespose.result.getClass().getSimpleName();
-                    Constants.MyLog("toString"+baseRespose.result.toString());
-                    Constants.MyLog("getClass"+baseRespose.result.getClass());
-                    Constants.MyLog("打印类型"+simpleName);
-
-                    Member member = fromJsonToBean(String.valueOf(baseRespose.result));
-                    Constants.MyLog(member.toString());
-
-                   *//* mMember = (Member) baseRespose.result;
-                    if (mMember != null) {
-                        excamMaster(mMember.getId());
-                    }*//*
-
-
-                   *//* Gson gson = new Gson();
-                    gson.fromJson(String.valueOf(baseRespose.result), Member.class);
-                    Constants.toActivity(WXEntryActivity.this, MainActivity.class,null,true);
-                    Constants.MyLog("进来了！！！！");*//*
-
-                    *//*Constants.MyLog(member.toString()+"用户信息打印");
-                    MemeberKeeper.saveOAuth(member, WXEntryActivity.this);
-                    MyApplication.getInstance().setLogin(true);
-                    MyApplication.getInstance().setFlag(true);
-                    Intent intent = new Intent(WXEntryActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                    MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,1);*//*
-
-                   *//* Constants.isMcLogin = true;
-                    //调用JPush API设置Alias
-                    mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
-                    MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));*//*
-
-                } else {
-                    ToastUtils.error(baseRespose.message,true);
-                }
-            }
-
-            @Override
-            protected void _onError(String message) {
-
-            }
-        })*/);
+                        }));
     }
 
 

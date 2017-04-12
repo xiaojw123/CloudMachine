@@ -32,6 +32,7 @@ import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.LoginAsync;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.UserInfo;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.login.contract.LoginContract;
 import com.cloudmachine.ui.login.model.LoginModel;
 import com.cloudmachine.ui.login.presenter.LoginPresenter;
@@ -57,7 +58,6 @@ import cn.jpush.android.api.TagAliasCallback;
 public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginModel> implements OnClickListener, Callback ,LoginContract.View{
 
     private static final int MSG_SET_ALIAS = 1001;
-
     private Context mContext;
     private Handler mHandler;
     private ClearEditTextView password_ed;
@@ -74,6 +74,8 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
     private ImageView mIvVisible,mIvUnVisible;
     private Member    mMember;
 
+
+    //flag等于3跳转问答社区页面
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -300,6 +302,13 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 } else if (flag == 1) {
+                } else if (flag == 3) {
+                    Intent intent = new Intent(LoginActivity.this, QuestionCommunityActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
+                    intent.putExtras(bundle);
+                    mContext.startActivity(intent);
+                    finish();
                 }
 
                 MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,0);

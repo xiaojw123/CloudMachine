@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.CookieManager;
@@ -70,8 +71,18 @@ public class WebviewActivity extends BaseAutoLayoutActivity implements
 	}
 	private void initTitle(){
 		title_layout_about = (TitleView)findViewById(R.id.title_layout_about);
-		//title_layout_about.setTitle("我要云盒子");
-		title_layout_about.setLeftOnClickListener(new OnClickListener() {
+		if (!TextUtils.isEmpty(title)) {
+			title_layout_about.setTitle(title);
+		}
+
+		title_layout_about.setLeftImage(-1, new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+
+		/*title_layout_about.setLeftOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -83,7 +94,7 @@ public class WebviewActivity extends BaseAutoLayoutActivity implements
 				}
 			}
 
-		});
+		});*/
 	}
 	
 	private void initView(){

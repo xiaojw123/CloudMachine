@@ -235,4 +235,8 @@ public class TitleView extends AutoRelativeLayout {
     public boolean getRightTextEdit() {
         return rightTextEdit;
     }
+
+    public void setLeftGone() {
+        left_layout.setVisibility(View.GONE);
+    }
 }

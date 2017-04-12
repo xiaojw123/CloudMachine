@@ -31,5 +31,6 @@ public class JsBridgeClient {
         jsBridgeManager.registerMethod("deliverProId", DeliverMethodModel.class, "deliverProId");
         jsBridgeManager.registerMethod("backPage", UIInteractiveModel.class, "backPage");
         jsBridgeManager.registerMethod("goLoginPage",UIInteractiveModel.class,"goLoginPage");
+        jsBridgeManager.registerMethod("closeAskPage",UIInteractiveModel.class,"closeAskPage");
     }
 }

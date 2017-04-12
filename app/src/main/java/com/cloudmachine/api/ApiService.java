@@ -70,7 +70,7 @@ public interface ApiService {
      * @return
      */
     @GET("member/insertSignPoint")
-    Observable<BaseRespose/*<ScoreInfo>*/> getUserInsertSignInfo(@Query("memberId") String memberId);
+    Observable<JsonObject> getUserInsertSignInfo(@Query("memberId") String memberId);
 
     /**
      * 获得轮播图

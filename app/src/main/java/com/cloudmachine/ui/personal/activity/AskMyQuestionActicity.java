@@ -1,4 +1,4 @@
-package com.cloudmachine.ui.homepage.activity;
+package com.cloudmachine.ui.personal.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.webkit.GeolocationPermissions;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -20,9 +21,6 @@ import android.widget.ProgressBar;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.ui.homepage.contract.QuestionCommunityContract;
-import com.cloudmachine.ui.homepage.model.QuestionCommunityModel;
-import com.cloudmachine.ui.homepage.presenter.QuestionCommunityPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.jsbridge.JsBridgeClient;
@@ -33,38 +31,38 @@ import butterknife.ButterKnife;
 
 /**
  * 项目名称：CloudMachine
- * 类描述：问答社区
+ * 类描述：
  * 创建人：shixionglu
- * 创建时间：2017/4/10 下午7:14
+ * 创建时间：2017/4/12 下午1:48
  * 修改人：shixionglu
- * 修改时间：2017/4/10 下午7:14
+ * 修改时间：2017/4/12 下午1:48
  * 修改备注：
  */
 @SuppressLint("SetJavaScriptEnabled")
-public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCommunityPresenter, QuestionCommunityModel>
-        implements QuestionCommunityContract.View {
+public class AskMyQuestionActicity extends BaseAutoLayoutActivity {
 
 
     @BindView(R.id.webview_progressbar)
     ProgressBar mWebviewProgressbar;
     @BindView(R.id.wv_questions)
     WebView     mWvQuestions;
-
-    private Context mContext;
-    private String URLString = "http://h5.test.cloudm.com/n/ask_qlist";
+    private Context         mContext;
+    private String          URLString;
     private Long            mMyid;
     private JsBridgeManager jsBridgeManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_questioncommunity);
+        setContentView(R.layout.activity_askmyquestion);
         ButterKnife.bind(this);
         initJsBridgeManager();
         getIntentData();
         initView();
         initWebView();
+
     }
+
 
     private void getIntentData() {
 
@@ -77,7 +75,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     }
 
     private void initJsBridgeManager() {
-        jsBridgeManager = JsBridgeClient.getJsBridgeManager(QuestionCommunityActivity.this);
+        jsBridgeManager = JsBridgeClient.getJsBridgeManager(AskMyQuestionActicity.this);
     }
 
     private void initView() {
@@ -91,12 +89,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         }
     }
 
-    @Override
-    public void initPresenter() {
-        mPresenter.setVM(this,mModel);
-    }
-
-    private void initWebView(){
+    private void initWebView() {
         // 设置可以自动加载图片
         mWvQuestions.getSettings().setLoadsImagesAutomatically(true);
         mWvQuestions.getSettings().setBuiltInZoomControls(true);
@@ -132,8 +125,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
         });
         if (mMyid != null) {
-            mWvQuestions.loadUrl(URLString + "?myid=" + mMyid+"&hideback=1");
-            Constants.MyLog("QuestionCommunityActivity链接"+URLString + "?myid=" + mMyid+"&hideback=1");
+            mWvQuestions.loadUrl(URLString + "?myid=" + mMyid);
+            Constants.MyLog("AskMyQuestionActicity链接" + URLString + "?myid=" + mMyid);
         } else {
             mWvQuestions.loadUrl(URLString);
         }
@@ -148,18 +141,14 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     .setTitle(getResources().getString(R.string.app_name))
                     .setMessage(message)
                     .setPositiveButton(android.R.string.ok,
-                            new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
                                     result.confirm();
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
                                     result.cancel();
                                 }
                             })
@@ -171,7 +160,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin,
-                                                       android.webkit.GeolocationPermissions.Callback callback) {
+                                                       GeolocationPermissions.Callback callback) {
             super.onGeolocationPermissionsShowPrompt(origin, callback);
             callback.invoke(origin, true, false);
         }
@@ -188,6 +177,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             }
         }
     }
+
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
@@ -200,5 +190,11 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
         CookieSyncManager.getInstance().sync();
+    }
+
+
+    @Override
+    public void initPresenter() {
+
     }
 }

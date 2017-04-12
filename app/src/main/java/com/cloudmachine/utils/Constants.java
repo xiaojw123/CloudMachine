@@ -626,8 +626,9 @@ public class Constants {
         if (null != msg && URL_MAIN.indexOf("test") != -1) {
             Log.e("Test", msg);
         }
-        // if(null != msg  )
-       // Log.e("Test", msg);
+        /*//修改log打印
+         if(null != msg  )
+       Log.e("Test", msg);*/
     }
 
     public static void ToastAction(String msg) {

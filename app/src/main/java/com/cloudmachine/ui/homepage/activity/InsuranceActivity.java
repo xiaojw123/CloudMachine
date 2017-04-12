@@ -21,6 +21,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 import com.jsbridge.JsBridgeClient;
 import com.jsbridge.core.JsBridgeManager;
 
@@ -48,7 +49,8 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
     ProgressBar mWebviewProgressbar;
     private Context         mContext;
     private JsBridgeManager jsBridgeManager;
-    private String URLString = "http://h5.test.cloudm.com/Insurance";
+    private String URLString = "http://h5.test.cloudm.com/Insurance?userID=";
+    private String mUserID;
     /*http://h5.test.cloudm.com/Insurance*/
 
     @Override
@@ -56,6 +58,13 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insurance);
         ButterKnife.bind(this);
+        mContext = this;
+        if (MemeberKeeper.getOauth(mContext) != null) {
+            Long id = MemeberKeeper.getOauth(mContext).getId();
+            mUserID = String.valueOf(id);
+        } else {
+
+        }
         initJsBridgeManager();
         initWebView();
         initTitleView();
@@ -91,7 +100,7 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
             }
 
         });
-        mMWebview.loadUrl(URLString);
+        mMWebview.loadUrl(URLString+mUserID);
 
     }
 

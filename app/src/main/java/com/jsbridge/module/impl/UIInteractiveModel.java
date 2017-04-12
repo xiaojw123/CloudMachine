@@ -79,7 +79,22 @@ public class UIInteractiveModel implements IModule {
             QuestionCommunityActivity questionCommunityActivity = (QuestionCommunityActivity) activity;
             switch (action) {
                 case "login":
-                    Constants.toLoginActivity(questionCommunityActivity,2);
+                    Constants.toLoginActivity(questionCommunityActivity,3);
+                    break;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void closeAskPage(AppCompatActivity activity, WebView webView, JSONObject params, final JsCallback callback) {
+        try {
+            String action = params.getString("action");
+            QuestionCommunityActivity questionCommunityActivity = (QuestionCommunityActivity) activity;
+            switch (action) {
+                case "close":
+                    questionCommunityActivity.finish();
                     break;
 
             }

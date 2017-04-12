@@ -26,10 +26,11 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.ViewCouponActivity;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseFragment;
+import com.cloudmachine.base.baserx.RxConstants;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.personal.activity.AskMyQuestionActicity;
 import com.cloudmachine.ui.personal.activity.InsuranceListActivity;
 import com.cloudmachine.ui.personal.activity.MyQRCodeActivity;
 import com.cloudmachine.ui.personal.activity.PersonalDataActivity;
@@ -48,6 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.jpush.android.api.JPushInterface;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.functions.Action1;
 
 import static com.cloudmachine.R.id.exitlayout;
 
@@ -120,7 +122,19 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
         initRootView();// 控件初始化
         initListener();
         initData();
+        initRxBus();
         weChatShareUtil = WeChatShareUtil.getInstance(getContext());
+    }
+
+    private void initRxBus() {
+
+        mRxManager.on(RxConstants.REFRESH_PERSONAL_FRAGMENT, new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                Constants.MyLog("执行了刷新方法");
+                mPresenter.getMemberInfoById(memberId);
+            }
+        });
     }
 
     private void initData() {
@@ -171,6 +185,8 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     private void initTitleLayout() {
 
         mTitleLayout.setTitle("我");
+        mTitleLayout.setLeftGone();
+
     }
 
     private void getIntentData() {
@@ -262,13 +278,12 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
                 ((MainActivity) getActivity()).loginOut();
                 break;
             case R.id.rl_myquestion:
-                Constants.MyLog("进来了，，么@@@@@@@@");
                 Constants.MyLog("拿到的挖机大师id"+MemeberKeeper.getOauth(getActivity()).getWjdsId());
                 Constants.MyLog("拿到的numId"+MemeberKeeper.getOauth(getActivity()).getNum());
                 if (MemeberKeeper.getOauth(getActivity()).getWjdsId() != null) {
                     Bundle bundle = new Bundle();
-                    bundle.putString("url"," http://h5.test.cloudm.com/n/ask_myq");
-                    Constants.toActivity(getActivity(), QuestionCommunityActivity.class,bundle,false);
+                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_myq");
+                    Constants.toActivity(getActivity(), AskMyQuestionActicity.class,bundle,false);
                 }
                 break;
             case R.id.rl_insurance_consulting:
@@ -290,7 +305,7 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
                     .crossFade()
                     .error(R.drawable.default_img)
                     .into(mHeadIamge);
-            String name = mMember.getName();
+            String name = mMember.getNickName();
             mNickname.setText(name);
             String mobile = mMember.getMobile();
             mMobile.setText(mobile);
