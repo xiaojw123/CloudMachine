@@ -284,7 +284,7 @@
             android:name=".activities.SettingMessageActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.cloudmachine.activities.MessageActivity"
+            android:name="com.cloudmachine.ui.homepage.fragment.MessageActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="com.cloudmachine.activities.SearchActivity"

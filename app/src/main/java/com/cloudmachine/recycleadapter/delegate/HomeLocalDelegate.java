@@ -117,11 +117,15 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llQuestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, QuestionCommunityActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                if (MemeberKeeper.getOauth(context) != null) {
+                    Intent intent = new Intent(context, QuestionCommunityActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("url", "http://h5.test.cloudm.com/n/ask_qlist");
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                } else {
+
+                }
             }
         });
 

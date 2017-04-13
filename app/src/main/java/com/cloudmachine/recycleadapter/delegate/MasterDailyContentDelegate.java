@@ -89,6 +89,7 @@ public class MasterDailyContentDelegate implements ItemViewDelegate<MasterDailyT
                     Intent intent = new Intent(mContext, WebviewActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.P_WebView_Url,mMasterDailyBean.picUrl);
+                    Constants.MyLog("打印的跳转链接"+mMasterDailyBean.picUrl);
                     bundle.putString(Constants.P_WebView_Title, "大师日报");
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);

@@ -24,6 +24,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.ShareDialog;
 
 @SuppressLint("SetJavaScriptEnabled") 
 public class WebviewActivity extends BaseAutoLayoutActivity implements
@@ -35,6 +36,10 @@ public class WebviewActivity extends BaseAutoLayoutActivity implements
 	private String URLString = "http://www.cloudm.com";
 	private String title = "";
 	private TitleView title_layout_about;
+	private boolean showRightIcon = false;
+	private String mShareUrl;
+	private String mShareIcon;
+	private String mShareDescripyion;
 
 	/**
 	 * android:scrollbars="none" 不设置滚动条
@@ -64,6 +69,10 @@ public class WebviewActivity extends BaseAutoLayoutActivity implements
 			try {
 				URLString = bundle.getString(Constants.P_WebView_Url);
 				title = bundle.getString(Constants.P_WebView_Title);
+				showRightIcon = bundle.getBoolean(Constants.HOME_BANNER_SHARE);
+				mShareUrl = bundle.getString(Constants.HOME_SHARE_URL);
+				mShareIcon = bundle.getString(Constants.HOME_SHARE_ICON);
+				mShareDescripyion = bundle.getString(Constants.HOME_SHARE_DESCIRPTION);
 			} catch (Exception e) {
 				Constants.MyLog(e.getMessage());
 			}
@@ -95,6 +104,15 @@ public class WebviewActivity extends BaseAutoLayoutActivity implements
 			}
 
 		});*/
+		if (showRightIcon) {
+			title_layout_about.setRightImage(R.drawable.banner_share, new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					ShareDialog shareDialog = new ShareDialog(WebviewActivity.this, mShareUrl, title, mShareDescripyion, mShareIcon);
+					shareDialog.show();
+				}
+			});
+		}
 	}
 	
 	private void initView(){

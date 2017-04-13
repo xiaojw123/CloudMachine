@@ -10,6 +10,7 @@ import com.cloudmachine.recyclerbean.MasterDailyBean;
 import com.cloudmachine.struc.LatestDailyEntity;
 import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.Member;
+import com.cloudmachine.struc.MessageBO;
 import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.struc.UserInfo;
 import com.google.gson.JsonObject;
@@ -103,7 +104,7 @@ public interface ApiService {
      * @return
      */
     @GET("art/queryArticles")
-    Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(@Query("artType") int artType, @Query("page") int page, @Query("size") int size,@Query("artStatus") Integer artStatus);
+    Observable<BaseRespose<List<MasterDailyBean>>> getMasterDaily(/*@Query("artType") int artType,*/ @Query("page") int page, @Query("size") int size, @Query("artStatus") Integer artStatus);
 
     /**
      * 微信登录验证（是否绑定了云机械的账户）
@@ -211,30 +212,21 @@ public interface ApiService {
      */
     @GET("art/readCount")
     Observable<BaseRespose> readCount(@Query("id") Integer id);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
-     * 拿到用户积分信息
-     * @param memberId
+     * 获取到系统消息
      * @return
      */
+    @GET("getSystemMessages")
+    Observable<BaseRespose<List<MessageBO>>> getSystemMessage(@Query("memberId") Long memberId
+            , @Query("pageNo") int pageNo, @Query("pageSize") int pageSize);
+
+}
+
+
+/**
+ * 拿到用户积分信息
+ */
    /* @GET("member/userScoreInfo")
     Observable<BaseRespose<ScoreInfo>> getUserScoreInfo(@Query("memberId") String memberId);*/

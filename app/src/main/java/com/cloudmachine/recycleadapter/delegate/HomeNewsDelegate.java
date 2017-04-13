@@ -48,6 +48,9 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
     private TextView mTvWanaBox;
     private TextView mTvWanaBoxDesc;
     private CircleImageView mIvWanaBox;
+    private int leftPoint;
+    private int topPoint;
+    private int bottomPoint;
 
     @Override
     public int getItemViewLayoutId() {
@@ -79,9 +82,9 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
         for (int i = 0;i<mHomeNewsTransfer.picAddress.size();i++) {
 
             if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i) == 3) {
-
-                mTvMasterNews.setText(mHomeNewsTransfer.adsTitle.get(i));
-                mTvMasterNewsDesc.setText(mHomeNewsTransfer.adsDescription.get(i));
+                bottomPoint = i;
+                mTvWanaBox.setText(mHomeNewsTransfer.adsTitle.get(i));
+                mTvWanaBoxDesc.setText(mHomeNewsTransfer.adsDescription.get(i));
                 Glide.with(mContext).load(mHomeNewsTransfer.picAddress.get(i))
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .centerCrop()
@@ -105,7 +108,7 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
         for (int i = 0;i<mHomeNewsTransfer.picAddress.size();i++) {
 
             if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i) == 2) {
-
+                topPoint = i;
                 mTvMasterNews.setText(mHomeNewsTransfer.adsTitle.get(i));
                 mTvMasterNewsDesc.setText(mHomeNewsTransfer.adsDescription.get(i));
                 Glide.with(mContext).load(mHomeNewsTransfer.picAddress.get(i))
@@ -126,19 +129,14 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
         mLlNewsLeft.setOnClickListener(this);
         for (int i = 0;i<mHomeNewsTransfer.picAddress.size();i++) {
             if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i)== 1) {
+                leftPoint = i;
                 Glide.with(mContext).load(mHomeNewsTransfer.picAddress.get(i))
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .centerCrop()
                         .crossFade()
                         .into(mIvNewsLeft);
             }
-            if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i) == 2) {
 
-            }
-
-            if (mHomeNewsTransfer.adsMidSort.get(i) != null && mHomeNewsTransfer.adsMidSort.get(i) == 3) {
-
-            }
         }
         /*Glide.with(mContext).load(mHomeNewsTransfer.picAddress.get(0))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -156,7 +154,7 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
             case R.id.ll_news_left:
                 Intent intent = new Intent(mContext,WebviewActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(Constants.P_WebView_Url, mHomeNewsTransfer.picUrl.get(0));
+                bundle.putString(Constants.P_WebView_Url, mHomeNewsTransfer.picUrl.get(leftPoint));
                 bundle.putString(Constants.P_WebView_Title, "商城");
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
@@ -165,6 +163,7 @@ public class HomeNewsDelegate implements ItemViewDelegate<HomePageType>, View.On
                 //大师日报点击跳转
                 Intent masterIntent = new Intent(mContext, MasterDailyActivity.class);
                 mContext.startActivity(masterIntent);
+
                 break;
             case R.id.rl_wana_box:
                 Intent wanaBoxIntent = new Intent(mContext, WanaCloudBox.class);

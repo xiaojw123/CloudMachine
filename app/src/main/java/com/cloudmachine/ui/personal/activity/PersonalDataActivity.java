@@ -125,6 +125,8 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     private String mWecharNickname;
     private String mWecharLogo;
     private Long mMemberId;
+    private String mUrl;
+    private boolean syncWx = false;
 
 
     @Override
@@ -219,9 +221,11 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_head_logo:
+                syncWx = false;
                 showImageDialog();
                 break;
             case R.id.nickLayout:
+                syncWx = false;
                 Bundle bundle = new Bundle();
                 bundle.putInt("sign", 1);
                 bundle.putString("info", mNickName);
@@ -231,8 +235,11 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 MobclickAgent.onEvent(mContext, UMengKey.count_changepassword);
                 Constants.toActivity(PersonalDataActivity.this, UpdatePwdActivity.class, null);
                 break;
+            //同步微信信息
             case R.id.btn_synchronousWxData:
-
+                syncWx = true;
+                mPresenter.modifyLogo(mMemberId,"logo",mWecharLogo);
+                mPresenter.modifyNickName(mMemberId,"nickName",mWecharNickname);
                 break;
         }
     }
@@ -527,10 +534,10 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 Constants.MyToast((String) msg.obj);
                 break;
             case Constants.HANDLER_UPLOAD_SUCCESS:
-                String url = (String) msg.obj;
-                Constants.MyLog("上传照片得到的图片地址"+url);
-                if (url != null) {
-                    mPresenter.modifyLogo(mMemberId,"logo",url);
+                mUrl = (String) msg.obj;
+                Constants.MyLog("上传照片得到的图片地址"+ mUrl);
+                if (mUrl != null) {
+                    mPresenter.modifyLogo(mMemberId,"logo", mUrl);
                 }
                 break;
             case Constants.HANDLER_UPLOAD_FAILD:
@@ -546,11 +553,21 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
     @Override
     public void returnModifyLogo() {
-        Glide.with(mContext).load(mWecharLogo)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .centerCrop()
-                .crossFade()
-                .error(R.drawable.default_img)
-                .into(mHeadIamge);
+        if (syncWx) {
+            Glide.with(mContext).load(mWecharLogo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .crossFade()
+                    .error(R.drawable.default_img)
+                    .into(mHeadIamge);
+        } else {
+            Glide.with(mContext).load(mUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .crossFade()
+                    .error(R.drawable.default_img)
+                    .into(mHeadIamge);
+        }
+
     }
 }

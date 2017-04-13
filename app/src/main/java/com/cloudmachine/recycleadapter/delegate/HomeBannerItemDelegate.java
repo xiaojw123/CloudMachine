@@ -60,7 +60,15 @@ public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, B
         Bundle bundle = new Bundle();
         bundle.putString(Constants.P_WebView_Url,mHomeBannerTransfer.jumpLinks.get(position));
         Constants.MyLog("打印到的跳转链接"+mHomeBannerTransfer.jumpLinks.get(position));
-        bundle.putString(Constants.P_WebView_Title,"");
+        //分享标题
+        bundle.putString(Constants.P_WebView_Title,mHomeBannerTransfer.titles.get(position));
+        bundle.putBoolean(Constants.HOME_BANNER_SHARE,true);
+        //微信分享的链接
+        bundle.putString(Constants.HOME_SHARE_URL,mHomeBannerTransfer.wxUrl.get(position));
+        //微信分享的图标
+        bundle.putString(Constants.HOME_SHARE_ICON,mHomeBannerTransfer.wxLogo.get(position));
+        //微信分享描述
+        bundle.putString(Constants.HOME_SHARE_DESCIRPTION,mHomeBannerTransfer.description.get(position));
         intent.putExtras(bundle);
         mContext.startActivity(intent);
     }

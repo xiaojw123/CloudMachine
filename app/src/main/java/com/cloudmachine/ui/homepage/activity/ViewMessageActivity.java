@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.activities.MessageActivity;
+import com.cloudmachine.ui.homepage.fragment.MessageActivity;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.ui.homepage.fragment.SystemMessageFragment;

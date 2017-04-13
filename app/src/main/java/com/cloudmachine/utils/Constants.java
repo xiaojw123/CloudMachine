@@ -408,6 +408,10 @@ public class Constants {
     public static final String P_SEARCHINFO               = "searchInfo";
     public static final String P_DEVICEINFO_MY            = "deviceInfo_my";
     public static final String SIGN_OR_NOTSIGN            = "sign_or_notsign";
+    public static final String HOME_BANNER_SHARE            = "home_banner_share";
+    public static final String HOME_SHARE_URL            = "home_share_url";
+    public static final String HOME_SHARE_ICON            = "home_share_icon";
+    public static final String HOME_SHARE_DESCIRPTION            = "home_share_descirption";
 
 
     public static final String S_FG                 = ":&&:";

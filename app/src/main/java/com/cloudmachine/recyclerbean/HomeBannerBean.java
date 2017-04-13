@@ -16,20 +16,30 @@ public class HomeBannerBean implements Serializable,HomePageType {
 
     //标题
     public String adsTitle;
-    //图片
+    //描述
+    public String adsDescription;
+    //图片地址
     public String picAddress;
-    //跳转链接
+    //点击图片跳转链接
     public String picUrl;
     //广告id
     public long id;
+    //微信分享需要展示的图标
+    public String shareAddress;
+    //微信分享的地址
+    public String adsLink;
+
 
     @Override
     public String toString() {
         return "HomeBannerBean{" +
                 "adsTitle='" + adsTitle + '\'' +
+                ", adsDescription='" + adsDescription + '\'' +
                 ", picAddress='" + picAddress + '\'' +
                 ", picUrl='" + picUrl + '\'' +
                 ", id=" + id +
+                ", shareAddress='" + shareAddress + '\'' +
+                ", adsLink='" + adsLink + '\'' +
                 '}';
     }
 }

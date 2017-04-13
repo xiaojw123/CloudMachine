@@ -229,7 +229,7 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     //获取热门问题成功过
     @Override
     public void returnHotQuestion(HomeIssueDetailBean homeIssueDetailBean) {
-        //Constants.MyLog(homeIssueDetailBean.toString());
+        Constants.MyLog(homeIssueDetailBean.toString());
         mHomeIssueDetailBean = homeIssueDetailBean;
         getHotIssueInfo = true;
 

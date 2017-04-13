@@ -11,12 +11,12 @@ import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.base.bean.PageBean;
-import com.cloudmachine.recycleadapter.MasterDailyAdapter;
+import com.cloudmachine.recycleadapter.MasterDailyContentAdapter;
 import com.cloudmachine.recyclerbean.MasterDailyBean;
-import com.cloudmachine.recyclerbean.MasterDailyType;
 import com.cloudmachine.ui.homepage.contract.MasterDailyContract;
 import com.cloudmachine.ui.homepage.model.MasterDailyModel;
 import com.cloudmachine.ui.homepage.presenter.MasterDailyPresenter;
+import com.cloudmachine.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +43,13 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout mSwipeLayout;
 
-    private ArrayList<MasterDailyType> masterList;
-    private MasterDailyAdapter mMasterDailyAdapter;
+    private ArrayList<MasterDailyBean> masterList;
     private PageBean mPage;
     private List<MasterDailyBean> mResult;
     private int pageSize = 20;
     private int pageCurrent = 1;//当前页数
     private int mMaxPage;
+    private MasterDailyContentAdapter mMasterDailyContentAdapter;
 
 
     @Override
@@ -111,7 +111,8 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
 
     private void initData() {
         masterList = new ArrayList<>();
-        mMasterDailyAdapter = new MasterDailyAdapter(this, masterList);
+        //mMasterDailyAdapter = new MasterDailyAdapter(this, masterList);
+        mMasterDailyContentAdapter = new MasterDailyContentAdapter(this, masterList);
         getData();
     }
 
@@ -119,7 +120,7 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
 
         mTitleLayout.setTitle("大师日报");
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mMasterDailyAdapter);
+        mRecyclerView.setAdapter(mMasterDailyContentAdapter);
 
     }
 
@@ -137,8 +138,9 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
         mPage = masterDailyBeanBaseResposeList.page;
         calculatePageCount();
         mResult = masterDailyBeanBaseResposeList.result;
+        Constants.MyLog(mResult+"打印的集合");
         masterList.addAll(mResult);
-        mMasterDailyAdapter.notifyDataSetChanged();
+        mMasterDailyContentAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(0);
         mSwipeLayout.setRefreshing(false);
     }
@@ -153,7 +155,7 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
         PageBean page = masterDailyBeanBaseResposeList.page;
         List<MasterDailyBean> result = masterDailyBeanBaseResposeList.result;
         masterList.addAll(result);
-        mMasterDailyAdapter.notifyDataSetChanged();
+        mMasterDailyContentAdapter.notifyDataSetChanged();
     }
 
 

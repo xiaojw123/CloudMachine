@@ -12,18 +12,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+
+import java.util.concurrent.ExecutionException;
 
 import static com.cloudmachine.utils.WeChatShareUtil.weChatShareUtil;
 
 
 public class ShareDialog extends Dialog {
 
-    private final View view;
-    private ImageView ivSession;
-    private ImageView ivTimeline;
-    private Button btnCancel;
+    private final View      view;
+    private       ImageView ivSession;
+    private       ImageView ivTimeline;
+    private       Button    btnCancel;
 
     private String webpageUrl;
     private String msgTitle;
@@ -31,17 +34,18 @@ public class ShareDialog extends Dialog {
     private Bitmap msgBitmap;
     private boolean result = true;
     private Context mContext;
-    private String sessionTitle;
-    private String sessionDescription;
-    private String sessionUrl;
-    private Bitmap sessionThumb;
-    private String title;
-    private String description;
-    private String url;
+    private String  sessionTitle;
+    private String  sessionDescription;
+    private String  sessionUrl;
+    private Bitmap  sessionThumb;
+    private String  title;
+    private String  description;
+    private String  url;
     private int imageSource = -1;
     private Bitmap mThumb;
+    private String iconUrl;
 
-    public ShareDialog(Context context,String webpageUrl,String msgTitle,String msgDesc,int resource) {
+    public ShareDialog(Context context, String webpageUrl, String msgTitle, String msgDesc, int resource) {
         super(context, R.style.ShareDialog);
 
         this.webpageUrl = webpageUrl;
@@ -57,26 +61,42 @@ public class ShareDialog extends Dialog {
         initData();
     }
 
+    public ShareDialog(Context context, String webpageUrl, String msgTitle, String msgDesc, String icon) {
+        super(context, R.style.ShareDialog);
+
+        this.webpageUrl = webpageUrl;
+        this.msgTitle = msgTitle;
+        this.msgDesc = msgDesc;
+        this.iconUrl = icon;
+        this.mContext = context;
+
+        view = getLayoutInflater().inflate(R.layout.widget_dialog_share, null);
+        setContentView(view);
+        initWindow();
+        initView();
+        initData();
+    }
+
     /**
      * 初始化window窗口
      */
-    private void initWindow(){
+    private void initWindow() {
         Window window = getWindow();//当前弹窗所在的窗口对象
         WindowManager.LayoutParams attributes = window.getAttributes();
 
-        attributes.gravity = Gravity.BOTTOM ;
+        attributes.gravity = Gravity.BOTTOM;
         attributes.width = WindowManager.LayoutParams.MATCH_PARENT;
 
         window.setAttributes(attributes);
     }
 
-    private void initView(){
+    private void initView() {
         ivSession = (ImageView) view.findViewById(R.id.iv_session);
         ivTimeline = (ImageView) view.findViewById(R.id.iv_timeline);
         btnCancel = (Button) view.findViewById(R.id.btn_cancel);
     }
 
-    private void initData(){
+    private void initData() {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,10 +118,25 @@ public class ShareDialog extends Dialog {
                 if (null != msgDesc) {
                     sessionDescription = msgDesc;
                 }
+
                 if (imageSource != -1) {
                     sessionThumb = BitmapFactory.decodeResource(mContext.getResources(), imageSource);
                 } else {
                     sessionThumb = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.corner);
+                }
+                if (iconUrl != null) {
+                    try {
+                        sessionThumb = Glide.with(mContext)
+                                .load(iconUrl)
+                                .asBitmap()
+                                .centerCrop()
+                                .into(20, 20)
+                                .get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 result = weChatShareUtil.shareUrl(sessionUrl, sessionTitle, null, sessionDescription, SendMessageToWX.Req.WXSceneSession);
@@ -132,6 +167,22 @@ public class ShareDialog extends Dialog {
                     } else {
                         mThumb = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.corner);
                     }
+
+                    if (iconUrl != null) {
+                        try {
+                            mThumb = Glide.with(mContext)
+                                    .load(iconUrl)
+                                    .asBitmap()
+                                    .centerCrop()
+                                    .into(20, 20)
+                                    .get();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     result = weChatShareUtil.shareUrl(url, title, mThumb, description, SendMessageToWX.Req.WXSceneTimeline);
                 } else {
                     Toast.makeText(mContext, "手机上微信版本不支持分享到朋友圈", Toast.LENGTH_SHORT).show();
@@ -148,16 +199,8 @@ public class ShareDialog extends Dialog {
 }
 
 
-
-
-
-
-
-
-
 /**
  * 测试阶段发起微信分享
- * @param type
  */
    /* private void shareTest(int type){
         String webpageUrl = "http://baidu.com";

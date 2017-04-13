@@ -24,6 +24,8 @@ import com.cloudmachine.ui.question.model.QuestionModel;
 import com.cloudmachine.ui.question.presenter.QuestionPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
+import com.jsbridge.JsBridgeClient;
+import com.jsbridge.core.JsBridgeManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,13 +49,15 @@ public class QuestionActivity extends BaseAutoLayoutActivity<QuestionPresenter, 
 
     private Context mContext;
     private String URLString = "http://h5.test.cloudm.com/n/ask_qsubmit?";
-    private long mMyid;
+    private long            mMyid;
+    private JsBridgeManager jsBridgeManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
         ButterKnife.bind(this);
+        initJsBridgeManager();
         getIntentData();
         initView();
         initWebView();
@@ -67,6 +71,10 @@ public class QuestionActivity extends BaseAutoLayoutActivity<QuestionPresenter, 
             Constants.MyLog("传到跳转页面的id"+mMyid);
             Constants.MyLog("主键id" + MemeberKeeper.getOauth(this).getId());
         }
+    }
+
+    private void initJsBridgeManager() {
+        jsBridgeManager = JsBridgeClient.getJsBridgeManager(QuestionActivity.this);
     }
 
     private void getIntentData() {
@@ -119,7 +127,7 @@ public class QuestionActivity extends BaseAutoLayoutActivity<QuestionPresenter, 
                 //					return true;
                 //				}
                 //				url = addToken(url);
-                return super.shouldOverrideUrlLoading(view, url);
+                return jsBridgeManager.invokeNative(view, url);
             }
 
         });

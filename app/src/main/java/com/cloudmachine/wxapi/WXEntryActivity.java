@@ -59,6 +59,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
     private String    mUnionid;
     private String    mOpenId;
     private Member    mMember;
+    private Member    member;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                 if (sendResp != null) {
                     String code = sendResp.code;
                     getAccess_token(code);
+                } else {
+                    finish();
                 }
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
@@ -168,52 +171,57 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
     private void switchWXLogin(final String unionid, final String openId, final String nickname, final String headimgurl, final int sex) {
 
         mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
-                        .wxLogin(unionid, openId, nickname, headimgurl)
-                        .compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(WXEntryActivity.this, false) {
-                            @Override
-                            protected void _onNext(JsonObject jsonObject) {
-                                JsonElement jsonElement = jsonObject.get("code");
-                                int code = jsonElement.getAsInt();
-                                if (code == 16305) {
-                                    Bundle b = new Bundle();
-                                    b.putString("nickname", nickname);
-                                    b.putString("unionid", unionid);
-                                    b.putString("openid", openId);
-                                    b.putString("headimgurl", headimgurl);
-                                    b.putInt("sex", sex);
-                                    Constants.toActivity(WXEntryActivity.this, VerifyPhoneNumActivity.class, b, true);
-                                } else if (code == 800) {
-                                    JsonElement resultElement = jsonObject.get("result");
-                                    String result = resultElement.getAsString();
-                                    Gson gson = new Gson();
-                                    Member member = gson.fromJson(result, Member.class);
-                                    if (member != null) {
-                                        excamMaster(member.getId());
-                                    }
-                                    MemeberKeeper.saveOAuth(member, WXEntryActivity.this);
-                                    MyApplication.getInstance().setLogin(true);
-                                    MyApplication.getInstance().setFlag(true);
-                                    Intent intent = new Intent(WXEntryActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                    MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
-                                    Constants.isMcLogin = true;
-                                    //调用JPush API设置Alias
-                                    mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
-                                    MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
-                                } else {
-                                    JsonElement messageElement = jsonObject.get("message");
-                                    String message = messageElement.getAsString();
-                                    ToastUtils.error(message,true);
-                                }
-
+                .wxLogin(unionid, openId, nickname, headimgurl)
+                .compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(WXEntryActivity.this, false) {
+                    @Override
+                    protected void _onNext(JsonObject jsonObject) {
+                        JsonElement jsonElement = jsonObject.get("code");
+                        int code = jsonElement.getAsInt();
+                        if (code == 16305) {
+                            Bundle b = new Bundle();
+                            b.putString("nickname", nickname);
+                            b.putString("unionid", unionid);
+                            b.putString("openid", openId);
+                            b.putString("headimgurl", headimgurl);
+                            b.putInt("sex", sex);
+                            Constants.toActivity(WXEntryActivity.this, VerifyPhoneNumActivity.class, b, true);
+                        } else if (code == 800) {
+                            JsonElement resultElement = jsonObject.get("result");
+                            String result = resultElement.toString();
+                            try {
+                                Gson gson = new Gson();
+                                member = gson.fromJson(result, Member.class);
+                            } catch (Exception e) {
+                                Constants.MyLog("WXEntryActivity" + e.toString());
                             }
 
-                            @Override
-                            protected void _onError(String message) {
-
+                            if (member != null) {
+                                excamMaster(member.getId());
                             }
-                        }));
+                            MemeberKeeper.saveOAuth(member, WXEntryActivity.this);
+                            MyApplication.getInstance().setLogin(true);
+                            MyApplication.getInstance().setFlag(true);
+                            Intent intent = new Intent(WXEntryActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                            MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
+                            Constants.isMcLogin = true;
+                            //调用JPush API设置Alias
+                            mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
+                            MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
+                        } else {
+                            JsonElement messageElement = jsonObject.get("message");
+                            String message = messageElement.getAsString();
+                            ToastUtils.error(message, true);
+                        }
+
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+
+                    }
+                }));
     }
 
 

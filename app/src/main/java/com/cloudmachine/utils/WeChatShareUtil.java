@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 public class WeChatShareUtil {
 
     //从官网申请的合法appId
-    public static final String APP_ID = "wxfb6afbcc23f867df";
+    public static final String APP_ID = /*"wxfb6afbcc23f867df"*/Constants.APP_ID;
     private static final int TIMELINE_SUPPORTED_VERSION = 0x21020001;
 
     //IWXAPI是第三方app和微信通信的openapi接口

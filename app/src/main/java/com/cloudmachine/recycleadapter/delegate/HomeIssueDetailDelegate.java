@@ -14,6 +14,7 @@ import com.cloudmachine.activities.WebviewActivity;
 import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
 import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -42,6 +43,8 @@ public class HomeIssueDetailDelegate implements ItemViewDelegate<HomePageType>{
     private TextView mTvAskCount;
     private TextView mTvState;
     private LinearLayout mLlHotIssue;
+    private int mId;
+    private Long mMyId;
 
     @Override
     public int getItemViewLayoutId() {
@@ -57,6 +60,11 @@ public class HomeIssueDetailDelegate implements ItemViewDelegate<HomePageType>{
     public void convert(ViewHolder holder, HomePageType homePageType, int position) {
         mContext = holder.getConvertView().getContext();
         mHomeIssueDetailBean = (HomeIssueDetailBean) homePageType;
+        Constants.MyLog(mHomeIssueDetailBean.toString());
+        mId = mHomeIssueDetailBean.id;
+        if (MemeberKeeper.getOauth(mContext) != null) {
+            mMyId = MemeberKeeper.getOauth(mContext).getWjdsId();
+        }
         //头像
         mIssueIcon = (CircleImageView) holder.getView(R.id.issue_icon);
         if (mHomeIssueDetailBean.askerLogo != null) {
@@ -116,7 +124,8 @@ public class HomeIssueDetailDelegate implements ItemViewDelegate<HomePageType>{
                 if (mHomeIssueDetailBean.url != null) {
                     Intent intent = new Intent(mContext,WebviewActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString(Constants.P_WebView_Url,mHomeIssueDetailBean.url);
+                    bundle.putString(Constants.P_WebView_Url,
+                            "http://h5.test.cloudm.com/n/ask_qdetail?qid="+mId+"&myid="+mMyId);
                     bundle.putString(Constants.P_WebView_Title, "热门问题");
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);

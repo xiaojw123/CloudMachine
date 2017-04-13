@@ -111,6 +111,14 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
             public void onClick(View v) {
                 String call = "javascript:prev()";
                 mMWebview.loadUrl(call);
+
+                mTitleLayout.setTitle("车险报价");
+                mTitleLayout.setRightImage(R.drawable.banner_share, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
                /* if (mMWebview.canGoBack()) {
                     mMWebview.goBack();
                 } else {

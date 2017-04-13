@@ -146,6 +146,7 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     public void onResume() {
         super.onResume();
         mPresenter.getMemberInfoById(memberId);
+        mPresenter.getUserScoreInfo(memberId);
         Constants.MyLog("进入个人信息");
         Constants.MyLog("PersonalFragment挖机大师id:" + MemeberKeeper.getOauth(mContext).getWjdsId());
         Constants.MyLog("PersonalFragment的numId:"+MemeberKeeper.getOauth(mContext).getNum());
@@ -260,7 +261,7 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
                 Constants.toActivity(getActivity(), AboutCloudActivity.class, null);
                 break;
             case R.id.share_app:
-                ShareDialog shareDialog = new ShareDialog(this.getContext(), sessionUrl, sessionTitle, sessionDescription, -1);
+                ShareDialog shareDialog = new ShareDialog(getActivity(), sessionUrl, sessionTitle, sessionDescription, -1);
                 shareDialog.show();
                 MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
                 break;
@@ -316,7 +317,8 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     @Override
     public void returnUserScoreInfo(ScoreInfo scoreInfo) {
         if (scoreInfo != null) {
-            mScoreText.setText(scoreInfo.getPoint());
+            Constants.MyLog(String.valueOf(scoreInfo.getPoint())+"拿到的用户积分");
+            mScoreText.setText(String.valueOf(scoreInfo.getPoint()));
         }
     }
 
