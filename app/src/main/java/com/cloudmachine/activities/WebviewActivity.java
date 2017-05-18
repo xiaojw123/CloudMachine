@@ -25,71 +25,82 @@ import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ShareDialog;
+import com.github.mikephil.charting.utils.AppLog;
+import com.jsbridge.JsBridgeClient;
+import com.jsbridge.core.JsBridgeManager;
 
-@SuppressLint("SetJavaScriptEnabled") 
+@SuppressLint("SetJavaScriptEnabled")
 public class WebviewActivity extends BaseAutoLayoutActivity implements
-		OnClickListener {
+        OnClickListener {
+    private Context mContext;
+    private WebView webview;
+    private ProgressBar progressBar;
+    private String URLString = "http://www.cloudm.com";
+    private String title = "";
+    private TitleView title_layout_about;
+    private boolean showRightIcon = false;
+    private String mShareUrl;
+    private String mShareIcon;
+    private String mShareDescripyion;
+    private boolean isWithTitle = true;
+    private JsBridgeManager jsBridgeManager;
 
-	private Context mContext;
-	private WebView webview;
-	private ProgressBar progressBar;
-	private String URLString = "http://www.cloudm.com";
-	private String title = "";
-	private TitleView title_layout_about;
-	private boolean showRightIcon = false;
-	private String mShareUrl;
-	private String mShareIcon;
-	private String mShareDescripyion;
+    /**
+     * android:scrollbars="none" 不设置滚动条
+     */
 
-	/**
-	 * android:scrollbars="none" 不设置滚动条
-	 */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_webview);
+        this.mContext = this;
+        jsBridgeManager = JsBridgeClient.getJsBridgeManager(this);
+        getIntentData();
+        initTitle();
+        initView();
+        initWebView();
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_webview);
-		this.mContext = this;
-		getIntentData();
-		initTitle();
-		initView();
-		initWebView();
-		
-	}
+    }
 
-	@Override
-	public void initPresenter() {
+    @Override
+    public void initPresenter() {
 
-	}
+    }
 
-	private void getIntentData(){
+    private void getIntentData() {
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-		if (bundle != null) {
-			try {
-				URLString = bundle.getString(Constants.P_WebView_Url);
-				title = bundle.getString(Constants.P_WebView_Title);
-				showRightIcon = bundle.getBoolean(Constants.HOME_BANNER_SHARE);
-				mShareUrl = bundle.getString(Constants.HOME_SHARE_URL);
-				mShareIcon = bundle.getString(Constants.HOME_SHARE_ICON);
-				mShareDescripyion = bundle.getString(Constants.HOME_SHARE_DESCIRPTION);
-			} catch (Exception e) {
-				Constants.MyLog(e.getMessage());
-			}
-		}
-	}
-	private void initTitle(){
-		title_layout_about = (TitleView)findViewById(R.id.title_layout_about);
-		if (!TextUtils.isEmpty(title)) {
-			title_layout_about.setTitle(title);
-		}
+        if (bundle != null) {
+            try {
+                URLString = bundle.getString(Constants.P_WebView_Url);
+                title = bundle.getString(Constants.P_WebView_Title);
+                showRightIcon = bundle.getBoolean(Constants.HOME_BANNER_SHARE);
+                mShareUrl = bundle.getString(Constants.HOME_SHARE_URL);
+                mShareIcon = bundle.getString(Constants.HOME_SHARE_ICON);
+                mShareDescripyion = bundle.getString(Constants.HOME_SHARE_DESCIRPTION);
+                isWithTitle = bundle.getBoolean(Constants.P_WebView_With_Title, true);
+            } catch (Exception e) {
+                Constants.MyLog(e.getMessage());
+            }
+        }
+    }
 
-		title_layout_about.setLeftImage(-1, new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+    private void initTitle() {
+        title_layout_about = (TitleView) findViewById(R.id.title_layout_about);
+        if (!isWithTitle) {
+            title_layout_about.setVisibility(View.GONE);
+            return;
+        }
+        if (!TextUtils.isEmpty(title)) {
+            title_layout_about.setTitle(title);
+        }
+
+        title_layout_about.setLeftImage(-1, new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 		/*title_layout_about.setLeftOnClickListener(new OnClickListener() {
 
@@ -104,139 +115,147 @@ public class WebviewActivity extends BaseAutoLayoutActivity implements
 			}
 
 		});*/
-		if (showRightIcon) {
-			title_layout_about.setRightImage(R.drawable.banner_share, new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					ShareDialog shareDialog = new ShareDialog(WebviewActivity.this, mShareUrl, title, mShareDescripyion, mShareIcon);
-					shareDialog.show();
-				}
-			});
-		}
-	}
-	
-	private void initView(){
-		progressBar = (ProgressBar) findViewById(R.id.webview_progressbar);
-	}
-	
-	private void initWebView(){
-		this.webview = (WebView) findViewById(R.id.test_webview);
-		// 设置可以自动加载图片
-		webview.getSettings().setLoadsImagesAutomatically(true);
-		webview.getSettings().setBuiltInZoomControls(true);
-		webview.getSettings().setJavaScriptEnabled(true);
-		webview.getSettings().setUseWideViewPort(true);
-		webview.getSettings().setLoadWithOverviewMode(true);
-		webview.getSettings().setDefaultTextEncodingName("utf-8");
-		webview.getSettings().setGeolocationEnabled(true); 
-		webview.getSettings().setDomStorageEnabled(true);
-		//优先使用缓存：
+        if (showRightIcon) {
+            title_layout_about.setRightImage(R.drawable.banner_share, new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ShareDialog shareDialog = new ShareDialog(WebviewActivity.this, mShareUrl, title, mShareDescripyion, -1);
+                    shareDialog.show();
+                }
+            });
+        }
+    }
+
+    private void initView() {
+        progressBar = (ProgressBar) findViewById(R.id.webview_progressbar);
+    }
+
+
+    private void initWebView() {
+        this.webview = (WebView) findViewById(R.id.test_webview);
+        // 设置可以自动加载图片
+        webview.getSettings().setLoadsImagesAutomatically(true);
+        webview.getSettings().setBuiltInZoomControls(true);
+        webview.getSettings().setJavaScriptEnabled(true);
+        webview.getSettings().setUseWideViewPort(true);
+        webview.getSettings().setLoadWithOverviewMode(true);
+        webview.getSettings().setDefaultTextEncodingName("utf-8");
+        webview.getSettings().setGeolocationEnabled(true);
+        webview.getSettings().setDomStorageEnabled(true);
+        //优先使用缓存：
 //		webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); 
-		//不使用缓存：
-		webview.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        //不使用缓存：
+        webview.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 //		webview.clearHistory();
 //		webview.clearFormData();
 //		webview.clearCache(true);
-		webview.setWebChromeClient(new MyWebChromeClient());
+        webview.setWebChromeClient(new MyWebChromeClient());
 
-		if (Build.VERSION.SDK_INT >= 8) {
-			webview.getSettings().setPluginState(PluginState.ON);
-		} else {
-			// webview.getSettings().setPluginsEnabled(true);
-		}
-		webview.setWebViewClient(new WebViewClient() {
-			public void onReceivedError(WebView view, int errorCode,
-					String description, String failingUrl) {
-			}
+        if (Build.VERSION.SDK_INT >= 8) {
+            webview.getSettings().setPluginState(PluginState.ON);
+        } else {
+            // webview.getSettings().setPluginsEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webview.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        webview.setWebViewClient(new WebViewClient() {
+            public void onReceivedError(WebView view, int errorCode,
+                                        String description, String failingUrl) {
+            }
 
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				// TODO Auto-generated method stub
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // TODO Auto-generated method stub
 //				if(urlFilter.filtrate(url)){
 //					return true;
 //				}
 //				url = addToken(url);
-				return super.shouldOverrideUrlLoading(view, url);
-			}
-			
-		});
-		webview.loadUrl(URLString);
-		
-	}
-	
-	final class MyWebChromeClient extends WebChromeClient {
- 	    @Override
- 	    public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
- 	        new AlertDialog.Builder(mContext)
- 	        .setTitle(getResources().getString(R.string.app_name))
- 	        .setMessage(message)
- 	        .setPositiveButton(android.R.string.ok,
- 	                new DialogInterface.OnClickListener()
- 	        {
- 	            public void onClick(DialogInterface dialog, int which)
- 	            {
- 	                result.confirm();
- 	            }
- 	        })
- 	        .setNegativeButton(android.R.string.cancel,
- 	                new DialogInterface.OnClickListener()
- 	        {
- 	            public void onClick(DialogInterface dialog, int which)
- 	            {
- 	                result.cancel();
- 	            }
- 	        })
- 	        .create()
- 	        .show();
+                AppLog.print("LOAD URL____" + url);
+                if (url.contains("?")&&"cloudm://closeAskPage".equals(url.substring(0, url.indexOf("?")))) {
+                    finish();
+                    return true;
+                }
+                return jsBridgeManager.invokeNative(view, url);
 
- 	        return true;
- 	    }
- 	    
- 	   @Override
-       public void onGeolocationPermissionsShowPrompt(String origin,
-               android.webkit.GeolocationPermissions.Callback callback) {
-           super.onGeolocationPermissionsShowPrompt(origin, callback);
-           callback.invoke(origin, true, false);
-       }
+//                return super.shouldOverrideUrlLoading(view, url);
 
-	@Override
-	public void onProgressChanged(WebView view, int newProgress) {
-		// TODO Auto-generated method stub
-		super.onProgressChanged(view, newProgress);
-		progressBar.setVisibility(View.VISIBLE);
-		progressBar.setProgress(0);
-		progressBar.setProgress(newProgress);
-		if (newProgress == 100) {
-			progressBar.setVisibility(View.GONE);
-		}
-	}
- 	}
-	
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		
-		default:
-			break;
-		}
+            }
 
-	}
+        });
+        AppLog.print("url:" + URLString);
+        webview.loadUrl(URLString);
 
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		removeCookie(this);
-		super.onDestroy();
-	}
+    }
 
-	private void removeCookie(Context context) {
-		CookieSyncManager.createInstance(context);  
-		CookieManager cookieManager = CookieManager.getInstance(); 
-		cookieManager.removeAllCookie();
-		CookieSyncManager.getInstance().sync();  
-	}
-	/*private void cleanData(Context context){
-		File file = CacheManager.getCacheFileBaseDir(); 
+    final class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+            new AlertDialog.Builder(mContext)
+                    .setTitle(getResources().getString(R.string.app_name))
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    result.confirm();
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    result.cancel();
+                                }
+                            })
+                    .create()
+                    .show();
+
+            return true;
+        }
+
+        @Override
+        public void onGeolocationPermissionsShowPrompt(String origin,
+                                                       android.webkit.GeolocationPermissions.Callback callback) {
+            super.onGeolocationPermissionsShowPrompt(origin, callback);
+            callback.invoke(origin, true, false);
+        }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            // TODO Auto-generated method stub
+            super.onProgressChanged(view, newProgress);
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress(0);
+            progressBar.setProgress(newProgress);
+            if (newProgress == 100) {
+                progressBar.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            default:
+                break;
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        removeCookie(this);
+        super.onDestroy();
+    }
+
+    private void removeCookie(Context context) {
+        CookieSyncManager.createInstance(context);
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.removeAllCookie();
+        CookieSyncManager.getInstance().sync();
+    }
+    /*private void cleanData(Context context){
+        File file = CacheManager.getCacheFileBaseDir();
 		   if (file != null && file.exists() && file.isDirectory()) { 
 		    for (File item : file.listFiles()) { 
 		     item.delete(); 

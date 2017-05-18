@@ -5,7 +5,11 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.cloudmachine.struc.UploadResult;
+import com.github.mikephil.charting.utils.AppLog;
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -114,7 +118,7 @@ public class UploadPhotoUtils {
                 Constants.MyLog("到底有没有进来");
                 String result = response.body().string();
                 if (result != null) {
-                    Constants.MyLog(result.toString()+"2222222222");
+                    Constants.MyLog(result.toString() + "2222222222");
                     Gson gson = new Gson();
                     UploadResult uploadResult = gson.fromJson(result,
                             UploadResult.class);
@@ -122,7 +126,7 @@ public class UploadPhotoUtils {
                     if (uploadResult.getError() == 0) {
                         // 返回url
                         url = uploadResult.getUrl();
-                        Constants.MyLog("拿到的图片id"+url);
+                        Constants.MyLog("拿到的图片id" + url);
                         msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
                         msg.obj = url;
                     } else {
@@ -139,7 +143,7 @@ public class UploadPhotoUtils {
 
     public void upLoadFile(File file, String uploadurl, final Handler mHandler) {
         final Message msg = Message.obtain();
-       // File file = new File(filename);
+        // File file = new File(filename);
         MultipartBody.Builder mbody = new MultipartBody.Builder().setType(MultipartBody.FORM);
         mbody.addFormDataPart("imgFile", file.getName(), RequestBody.create(MEDIA_TYPE_PNG, file));
         RequestBody requestBody = mbody.build();
@@ -157,6 +161,7 @@ public class UploadPhotoUtils {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                AppLog.print("Call onResponse response___" + result);
                 if (result != null) {
                     Gson gson = new Gson();
                     UploadResult uploadResult = gson.fromJson(result,
@@ -173,6 +178,44 @@ public class UploadPhotoUtils {
                     }
                     mHandler.sendMessage(msg);
                 }
+            }
+        });
+
+    }
+
+    public void upLoadForH5File(File file, String uploadurl, final Handler mHandler) {
+        final Message msg = Message.obtain();
+        // File file = new File(filename);
+        MultipartBody.Builder mbody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        mbody.addFormDataPart("imgFile", file.getName(), RequestBody.create(MEDIA_TYPE_PNG, file));
+        RequestBody requestBody = mbody.build();
+        final Request request = new Request.Builder()
+                .url(uploadurl)
+                .post(requestBody)
+                .build();
+
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                AppLog.print("onFailure___e__"+e+", message__"+e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                try {
+                    JSONObject resultJobj = new JSONObject(result);
+                    String dataStr = resultJobj.optString("data");
+                    AppLog.print("sss__dataStr：" + dataStr);
+                    msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
+                    msg.obj = dataStr;
+                    mHandler.sendMessage(msg);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         });
 

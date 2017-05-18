@@ -11,6 +11,7 @@ import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.Utils;
+import com.github.mikephil.charting.utils.AppLog;
 
 import org.apache.http.NameValuePair;
 import org.json.JSONException;
@@ -53,6 +54,7 @@ public class GetAccessTokenAsync extends ATask {
         String result = null;
         try {
             result = httpRequest.post("https://api.weixin.qq.com/sns/oauth2/access_token", initListData());
+
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,6 +71,7 @@ public class GetAccessTokenAsync extends ATask {
     @Override
     protected void decodeJson(String result) {
         // TODO Auto-generated method stub
+        AppLog.print("decodeJson result___"+result);
         super.decodeJson(result);
         JSONObject jsonObject = null;
         Message msg = Message.obtain();
@@ -85,6 +88,7 @@ public class GetAccessTokenAsync extends ATask {
         } catch (JSONException e) {
             e.printStackTrace();
             try {
+                AppLog.print("json error___");
                 jsonObject = new JSONObject(result);
                 String errcode = jsonObject.getString("errcode").toString().trim();
                 String errmsg = jsonObject.getString("errmsg").toString().trim();

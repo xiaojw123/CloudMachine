@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
+import com.github.mikephil.charting.utils.AppLog;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 
 import java.util.concurrent.ExecutionException;
@@ -138,10 +139,13 @@ public class ShareDialog extends Dialog {
                         e.printStackTrace();
                     }
                 }
-
+                if (weChatShareUtil==null){
+                    weChatShareUtil=WeChatShareUtil.getInstance(mContext);
+                }
+                AppLog.print("sheredUtl__"+weChatShareUtil+"___sessionUrl__"+sessionUrl+"，sessionTitle");
                 result = weChatShareUtil.shareUrl(sessionUrl, sessionTitle, null, sessionDescription, SendMessageToWX.Req.WXSceneSession);
                 if (!result) {
-                    Toast.makeText(mContext, "没有检测到微信", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "分享失败!", Toast.LENGTH_SHORT).show();
                 }
                 dismiss();
             }

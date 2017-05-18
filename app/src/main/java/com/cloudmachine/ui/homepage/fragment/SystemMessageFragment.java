@@ -91,6 +91,7 @@ public class SystemMessageFragment extends BaseFragment<SystemMessagePresenter, 
                 }
             }
         });
+        getData();
     }
 
     private void getData() {

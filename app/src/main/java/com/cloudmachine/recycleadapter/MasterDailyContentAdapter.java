@@ -22,7 +22,6 @@ import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.recyclerbean.MasterDailyBean;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.ToastUtils;
 
 import java.util.ArrayList;
 
@@ -42,7 +41,7 @@ public class MasterDailyContentAdapter extends RecyclerView.Adapter<MasterDailyC
     private Context                    mContext;
     private ArrayList<MasterDailyBean> dataList;
     private LayoutInflater             inflater;
-    private int                        mId;
+//    private int                        mId;
 
 
     public MasterDailyContentAdapter(Context context,ArrayList<MasterDailyBean> dataList) {
@@ -62,7 +61,8 @@ public class MasterDailyContentAdapter extends RecyclerView.Adapter<MasterDailyC
     @Override
     public void onBindViewHolder(MasterDailyHolder holder, final int position) {
 
-        mId = dataList.get(position).id;
+//        mId = dataList.get(position).id;
+         final int id= dataList.get(position).id;
         Glide.with(mContext).load(dataList.get(position).picAddress)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
@@ -76,12 +76,18 @@ public class MasterDailyContentAdapter extends RecyclerView.Adapter<MasterDailyC
             @Override
             public void onClick(View v) {
                 if (dataList.get(position).picUrl != null) {
-                    addReadCount();
+                    addReadCount(id);
                     Intent intent = new Intent(mContext, WebviewActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString(Constants.P_WebView_Url,dataList.get(position).picUrl);
+                    String url=dataList.get(position).picUrl;
+                    bundle.putString(Constants.P_WebView_Url,url);
                     Constants.MyLog("打印的跳转链接"+dataList.get(position).picUrl);
-                    bundle.putString(Constants.P_WebView_Title, "大师日报");
+                    bundle.putString(Constants.P_WebView_Desc, dataList.get(position).artDescription);
+                    bundle.putBoolean(Constants.HOME_BANNER_SHARE,true);
+                    bundle.putString(Constants.HOME_SHARE_DESCIRPTION,dataList.get(position).artDescription);
+                    bundle.putString(Constants.HOME_SHARE_URL,dataList.get(position).artLink);
+//                    bundle.putString(Constants.HOME_SHARE_ICON,dataList.get(position).picAddress);
+                    bundle.putString(Constants.P_WebView_Title,dataList.get(position).artTitle);
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
                 }
@@ -115,17 +121,17 @@ public class MasterDailyContentAdapter extends RecyclerView.Adapter<MasterDailyC
     }
 
 
-    private void addReadCount() {
+    private void addReadCount(int id) {
 
-        Api.getDefault(HostType.GUOSHUAI_HOST).readCount(mId)
+        Api.getDefault(HostType.GUOSHUAI_HOST).readCount(id)
                 .compose(RxSchedulers.<BaseRespose>io_main())
                 .subscribe(new RxSubscriber<BaseRespose>(mContext,false) {
                     @Override
                     protected void _onNext(BaseRespose baseRespose) {
                         if (baseRespose.code == 800) {
-                            ToastUtils.success(((String) baseRespose.result), true);
+//                            ToastUtils.success(((String) baseRespose.result), true);
                         } else {
-                            ToastUtils.error(baseRespose.message,true);
+//                            ToastUtils.error(baseRespose.message,true);
                         }
                     }
                     @Override

@@ -9,7 +9,7 @@
         android:id="@+id/ll_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <!-- 图标加上右上角小圆点 -->
 
@@ -19,15 +19,14 @@
             android:layout_height="@dimen/message_rl_size1"
             android:layout_marginBottom="@dimen/message_rl_topmargin2"
             android:layout_marginLeft="@dimen/image_leftmargin"
-            android:layout_marginTop="@dimen/message_rl_topmargin2" >
+            android:layout_marginTop="@dimen/message_rl_topmargin2">
 
             <ImageView
                 android:id="@+id/message_body"
                 android:layout_width="@dimen/image_size"
                 android:layout_height="@dimen/image_size"
                 android:layout_centerInParent="true"
-                android:scaleType="centerCrop"
-                />
+                android:scaleType="centerCrop" />
 
             <View
                 android:id="@+id/message_oval"
@@ -43,59 +42,77 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/message_rl_leftmargin1" >
+            android:layout_marginLeft="@dimen/message_rl_leftmargin1">
 
-            <ImageView
-                android:id="@+id/arrow_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/public_textsize7"
-                android:src="@drawable/arrow_next" />
+            <!--<ImageView-->
+            <!--android:id="@+id/arrow_right"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginRight="@dimen/public_textsize7"-->
+            <!--android:src="@drawable/arrow_next" />-->
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/arrow_right"
-                android:orientation="vertical" >
+                android:layout_marginRight="3dp"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/rl_top"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/invite_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="13825698547"
                         android:textColor="@color/public_black"
                         android:textSize="@dimen/public_textsize3" />
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/message_info_other_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/detecting_item_leftmargin4"
+                    android:singleLine="true"
+                    android:textColor="@color/oval_message_color2"
+                    android:visibility="gone"
+                    />
                 <LinearLayout
                     android:id="@+id/rl_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detecting_item_leftmargin4"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal"
+                    >
+
 
                     <TextView
                         android:id="@+id/info_inv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="技师移交"
-                        android:textColor="@color/oval_message_color2"
+                        android:singleLine="true"
                         android:textSize="@dimen/public_textsize2" />
+
+                    <TextView
+                        android:id="@+id/message_list_nickname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxEms="5"
+                        android:singleLine="true"
+                        android:textColor="@color/light_blue"
+                        android:textSize="@dimen/public_textsize2" />
+
 
                     <TextView
                         android:id="@+id/device_name_message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=" 挖机XX"
                         android:textColor="@color/oval_message_color2"
                         android:textSize="@dimen/public_textsize2" />
 
@@ -103,7 +120,15 @@
                         android:id="@+id/tv3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=" 给您， 请接受"
+                        android:maxEms="7"
+                        android:singleLine="true"
+                        android:textColor="@color/light_blue"
+                        android:textSize="@dimen/public_textsize2" />
+
+                    <TextView
+                        android:id="@+id/tv4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:textColor="@color/oval_message_color2"
                         android:textSize="@dimen/public_textsize2" />
                 </LinearLayout>
@@ -113,10 +138,9 @@
                 android:id="@+id/message_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/arrow_right"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/public_textsize7"
-                android:text="16/07/16"
+                android:layout_marginTop="3dp"
                 android:textColor="@color/public_text_color2"
                 android:textSize="@dimen/public_textsize6" />
         </RelativeLayout>
@@ -128,61 +152,61 @@
         android:layout_height="@dimen/divider_height"
         android:background="@color/list_divider_color" />
 
-    <LinearLayout
-        android:id="@+id/ll_select"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/message_select_height"
-        android:orientation="horizontal" >
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ll_select"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/message_select_height"-->
+        <!--android:orientation="horizontal" >-->
 
-        <LinearLayout
-            android:id="@+id/ll_resfuse"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center" >
+        <!--<LinearLayout-->
+            <!--android:id="@+id/ll_resfuse"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center" >-->
 
-            <TextView
-                android:id="@+id/message_refuse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="拒绝"
-                android:textColor="@color/public_black_4"
-                android:textSize="@dimen/public_textsize1" />
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/message_refuse"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="拒绝"-->
+                <!--android:textColor="@color/public_black_4"-->
+                <!--android:textSize="@dimen/public_textsize1" />-->
+        <!--</LinearLayout>-->
 
-        <View
-            android:layout_width="@dimen/divider_height"
-            android:layout_height="match_parent"
-            android:background="@color/list_divider_color" />
+        <!--<View-->
+            <!--android:layout_width="@dimen/divider_height"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@color/list_divider_color" />-->
 
-        <LinearLayout
-            android:id="@+id/ll_accept"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center" 
-			android:background="@drawable/btn_selector"
-            >
+        <!--<LinearLayout-->
+            <!--android:id="@+id/ll_accept"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center" -->
+			<!--android:background="@drawable/btn_selector"-->
+            <!--&gt;-->
 
-            <TextView
-                android:id="@+id/message_accept"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="接受"
-                android:textColor="@color/oval_message_color3"
-                android:textSize="@dimen/public_textsize1" />
-        </LinearLayout>
-    </LinearLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/message_accept"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="接受"-->
+                <!--android:textColor="@color/oval_message_color3"-->
+                <!--android:textSize="@dimen/public_textsize1" />-->
+        <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
 
-    <TextView
-        android:id="@+id/button_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="已拒绝要求"
-        android:textColor="@color/oval_message_color2"
-        android:textSize="@dimen/public_textsize6" 
-        android:visibility="gone"
-        />
+    <!--<TextView-->
+        <!--android:id="@+id/button_text"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="已拒绝要求"-->
+        <!--android:textColor="@color/oval_message_color2"-->
+        <!--android:textSize="@dimen/public_textsize6" -->
+        <!--android:visibility="gone"-->
+        <!--/>-->
 
     <View
         android:id="@+id/divider2"

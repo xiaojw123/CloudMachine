@@ -13,15 +13,16 @@ import com.cloudm.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
 import com.cloudmachine.struc.RepairHistoryInfo;
 import com.cloudmachine.utils.Constants;
+import com.github.mikephil.charting.utils.AppLog;
 
 import java.util.ArrayList;
 
 public class RepairListAdapter extends BaseAdapter {
 
-    private Context        mActivity;
+    private Context mActivity;
     private LayoutInflater layoutInflater;
-    private boolean haveShowOnce  = false;
-    private int     unFinishedNum = -1;
+    private boolean haveShowOnce = false;
+    private int unFinishedNum = -1;
     private ArrayList<RepairHistoryInfo> historyInfos;
 
     public RepairListAdapter(Context mActivity,
@@ -60,6 +61,7 @@ public class RepairListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = layoutInflater.inflate(
                     R.layout.list_item_repair_history, null);
+            holder.logoFlagIcon = (ImageView) convertView.findViewById(R.id.logo_flag_img);
             holder.ivIcon = (ImageView) convertView//左侧小圆点
                     .findViewById(R.id.iv_icon);
             holder.deviceName = (TextView) convertView
@@ -110,13 +112,27 @@ public class RepairListAdapter extends BaseAdapter {
 
             holder.repairDate.setText(historyInfos.get(position)
                     .getDopportunity());
-
-            if (null != historyInfos.get(position).getPrice() &&
-                    !historyInfos.get(position).getPrice().startsWith("0")) {
+            RepairHistoryInfo historyInfo = historyInfos.get(position);
+            int type = historyInfo.getNloanamount_TYPE();
+            String price = type==1 ? historyInfo.getNloanamount():historyInfo.getPrice();
+            if (null != price &&
+                    !price.startsWith("0")) {
                 holder.price.setVisibility(View.VISIBLE);
-                holder.price.setText(historyInfos.get(position).getPrice() + "元");
+                holder.price.setText(price + "元");
             } else {
                 holder.price.setVisibility(View.INVISIBLE);
+            }
+            String logoFlag = historyInfos.get(position).getLogo_flag();
+            AppLog.print("logoFlag___pos:" + position + ", flag:" + logoFlag);
+            if ("0".equals(logoFlag)) {
+                if (holder.logoFlagIcon.getVisibility() == View.VISIBLE) {
+                    holder.logoFlagIcon.setVisibility(View.INVISIBLE);
+                }
+            }
+            if ("1".equals(logoFlag)) {
+                if (holder.logoFlagIcon.getVisibility() != View.VISIBLE) {
+                    holder.logoFlagIcon.setVisibility(View.VISIBLE);
+                }
             }
             String nStatusString = "";
             if (historyInfos.get(position).getFlag().equals("0")) {
@@ -195,7 +211,7 @@ public class RepairListAdapter extends BaseAdapter {
                                 } else {
                                     if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
                                         nStatusString = "待评价";
-                                    }else if (historyInfos.get(position).getIs_EVALUATE().equals("Y")) {
+                                    } else if (historyInfos.get(position).getIs_EVALUATE().equals("Y")) {
                                         nStatusString = "已完工";
                                     }
                                 }
@@ -210,7 +226,7 @@ public class RepairListAdapter extends BaseAdapter {
                             } else {
                                 if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
                                     nStatusString = "待评价";
-                                }else if (historyInfos.get(position).getIs_EVALUATE().equals("Y")) {
+                                } else if (historyInfos.get(position).getIs_EVALUATE().equals("Y")) {
                                     nStatusString = "已完工";
                                 }
                             }
@@ -237,16 +253,17 @@ public class RepairListAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        ImageView      ivIcon;
-        TextView       deviceName;
-        TextView       repairPlace;
-        TextView       repairDate;
-        TextView       price;
-        ImageView      arrowRight;
-        TextView       status;
-        View           bgBottom;
+        ImageView logoFlagIcon;
+        ImageView ivIcon;
+        TextView deviceName;
+        TextView repairPlace;
+        TextView repairDate;
+        TextView price;
+        ImageView arrowRight;
+        TextView status;
+        View bgBottom;
         RelativeLayout completed;
-        TextView       textComplete;
+        TextView textComplete;
     }
 
 }

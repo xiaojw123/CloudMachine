@@ -6,7 +6,8 @@
 	<com.cloudmachine.autolayout.widgets.TitleView
         android:id="@+id/title_layout_about"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+		/>
     	<ProgressBar
             android:id="@+id/webview_progressbar"
             style="@android:style/Widget.ProgressBar.Horizontal"

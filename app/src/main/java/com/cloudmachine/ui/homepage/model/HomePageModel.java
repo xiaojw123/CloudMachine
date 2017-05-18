@@ -8,6 +8,8 @@ import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
 import com.cloudmachine.recyclerbean.HomeNewsBean;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import rx.Observable;
@@ -30,7 +32,7 @@ public class HomePageModel implements HomePageContract.Model{
      */
     @Override
     public Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo() {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).GetHomeBannerInfo(1)
+        return Api.getDefault(HostType.GUOSHUAI_HOST).GetHomeBannerInfo(1,0)
                 .compose(RxHelper.<ArrayList<HomeBannerBean>>handleResult());
     }
 
@@ -49,4 +51,14 @@ public class HomePageModel implements HomePageContract.Model{
         return Api.getDefault(HostType.CAITINGTING_HOST).getHotQuestion()
                 .compose(RxHelper.<HomeIssueDetailBean>handleResult());
     }
+
+    @Override
+    public Observable<JSONObject> getMessageUntreated(long memberId) {
+//        CLOUDM_HOST
+//        return Api.getDefault(HostType.CLOUDM_HOST).getMessageUntreatedCount(memberId)
+//                .compose(RxHelper.<JSONObject>handleResult());
+        return null;
+    }
+
+
 }

@@ -31,7 +31,17 @@
             android:layout_marginRight="16dp"
             android:src="@drawable/sign"
             />
-
+        <View
+            android:id="@+id/hp_message_oval"
+            android:layout_width="@dimen/oval_message_size"
+            android:layout_height="@dimen/oval_message_size"
+            android:background="@drawable/oval_message"
+            android:layout_above="@+id/iv_message"
+            android:layout_toRightOf="@+id/iv_message"
+            android:layout_marginBottom="-8dp"
+            android:layout_marginLeft="-18dp"
+            android:visibility="gone"
+            />
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"

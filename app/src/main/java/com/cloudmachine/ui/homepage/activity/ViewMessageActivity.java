@@ -8,10 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.ui.homepage.fragment.MessageActivity;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.ui.homepage.fragment.SystemMessageFragment;
+import com.cloudmachine.ui.homepage.fragment.MessageFragment;
 
 /**
  * 项目名称：CloudMachine
@@ -24,11 +23,12 @@ import com.cloudmachine.ui.homepage.fragment.SystemMessageFragment;
  */
 
 public class ViewMessageActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
-
+    public static final  String FRAGMENT_TYPE_ALL="all_message";
+    public static final  String FRAGMENT_TYPE_SYSTEM="system_message";
     private Context mContext;
     private View[]     linearLayouts    = new View[2];
     private TextView[] textViews        = new TextView[2];
-    private Fragment   mFragments[]     = new Fragment[2]; // 存储页面的数组
+    private MessageFragment   mFragments[]     = new MessageFragment[2]; // 存储页面的数组
     private boolean    isInitFragment[] = new boolean[2];
     private Fragment mContentFragment; // 当前fragment
     private int currentFragment = 0; // 当前Fragment的索引
@@ -45,8 +45,10 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity implements View.
 
     private void initFragmentS() {
 
-        mFragments[0] = new MessageActivity();
-        mFragments[1] = new SystemMessageFragment();
+        mFragments[0] = new MessageFragment();
+        mFragments[0].setFragmentType(FRAGMENT_TYPE_ALL);
+        mFragments[1] = new MessageFragment();
+        mFragments[1].setFragmentType(FRAGMENT_TYPE_SYSTEM);
         mContentFragment = null;
         switchContent(currentFragment);
     }

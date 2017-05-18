@@ -3,11 +3,20 @@ package com.cloudmachine.struc;
 public class ScoreInfo {
 	
 		private String update_DATE;  
-		private String server_TIME;  
+			private String server_TIME;
 		private int point_AVAILABLE; 
-		private int point; 
-	
-		public int getPoint() {
+		private int point;
+	    private int point_TOTAL;
+
+	public int getPoint_TOTAL() {
+		return point_TOTAL;
+	}
+
+	public void setPoint_TOTAL(int point_TOTAL) {
+		this.point_TOTAL = point_TOTAL;
+	}
+
+	public int getPoint() {
 			return point;
 		}
 		public void setPoint(int point) {

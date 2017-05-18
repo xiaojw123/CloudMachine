@@ -26,6 +26,14 @@
             android:layout_height="163dp"
             android:layout_centerInParent="true"
             />
+        <TextView
+            android:id="@+id/leftime_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/iv_qrcode"
+            android:layout_marginTop="10dp"
+            />
     </RelativeLayout>
 
 </LinearLayout>

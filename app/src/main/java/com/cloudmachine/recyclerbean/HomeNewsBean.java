@@ -26,6 +26,7 @@ public class HomeNewsBean implements HomePageType,Serializable{
     public String picAddress;
     //分享图片位置
     public String shareAddress;
+    public String adsLink;
 
     @Override
     public String toString() {
@@ -36,6 +37,7 @@ public class HomeNewsBean implements HomePageType,Serializable{
                 ", picUrl='" + picUrl + '\'' +
                 ", picAddress='" + picAddress + '\'' +
                 ", shareAddress='" + shareAddress + '\'' +
+                ", adsLink='" + adsLink + '\'' +
                 '}';
     }
 }

@@ -56,7 +56,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/common_view_min_gap"
-                        android:text=""
                         android:textColor="@color/chart_Limit_line"
                         android:textSize="@dimen/info_score_text_size2"
                         />

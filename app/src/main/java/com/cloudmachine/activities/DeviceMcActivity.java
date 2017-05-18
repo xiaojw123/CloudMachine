@@ -168,8 +168,8 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
     private LinearLayout ll_repair_record;
     private McDeviceInfo mcDeviceInfo;
     private int mWorkState;
-    private boolean haveDetectExperience = false,haveDetectMachine = false,isHaveDetectExperienceComplete = false,
-    isHaveDetectMachineComplete = false;
+    private boolean haveDetectExperience = false, haveDetectMachine = false, isHaveDetectExperienceComplete = false,
+            isHaveDetectMachineComplete = false;
     private LinearLayout mLlDeviceLocation;
     private TextView mTvDeviceLocation;
     private TextView mTvLocation;
@@ -319,7 +319,7 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
 
     @Override
     protected void onResume() {
-       // MobclickAgent.onPageStart(UMengKey.time_machine_detection);
+        // MobclickAgent.onPageStart(UMengKey.time_machine_detection);
         if (Constants.isChangeDevice) {
             getBasicsInfo();
         }
@@ -332,7 +332,7 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
-       // MobclickAgent.onPageEnd(UMengKey.time_machine_detection);
+        // MobclickAgent.onPageEnd(UMengKey.time_machine_detection);
         if (null != mapView)
             mapView.onPause();
         super.onPause();
@@ -369,19 +369,19 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
             case R.id.test_report:
 //			faultWarnInfo
 
+                if (null == faultWarnInfo) {
+                    faultWarnInfo = (FaultWarnInfo) LocationSerializable.getSerializable2File(LocationSerializable.TestReportInfo + deviceId);
                     if (null == faultWarnInfo) {
-                        faultWarnInfo = (FaultWarnInfo) LocationSerializable.getSerializable2File(LocationSerializable.TestReportInfo + deviceId);
-                        if (null == faultWarnInfo) {
-                            no_test_data_layout.setVisibility(View.VISIBLE);
-                            return;
-                        }
+                        no_test_data_layout.setVisibility(View.VISIBLE);
+                        return;
                     }
-                    Bundle b = new Bundle();
-                    b.putLong(Constants.P_DEVICEID, deviceId);
-                    b.putString(Constants.P_DEVICENAME, deviceName);
-                    b.putInt(Constants.P_WORKSTATES,mWorkState);
-                    b.putSerializable(Constants.P_DEVICEINFO_faultWarnInfo, faultWarnInfo);
-                    Constants.toActivity(this, FaultDitailsActivity.class, b, false);
+                }
+                Bundle b = new Bundle();
+                b.putLong(Constants.P_DEVICEID, deviceId);
+                b.putString(Constants.P_DEVICENAME, deviceName);
+                b.putInt(Constants.P_WORKSTATES, mWorkState);
+                b.putSerializable(Constants.P_DEVICEINFO_faultWarnInfo, faultWarnInfo);
+                Constants.toActivity(this, FaultDitailsActivity.class, b, false);
 
               /*  else {
                     Constants.MyToast("机器未工作,无法获取当前检测报告");
@@ -395,7 +395,7 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
                 Constants.toActivity(this, OilAmountActivity.class, b_ail, false);
                 break;
             case R.id.workTime_layout:
-                MobclickAgent.onEvent(mContext,UMengKey.count_machine_worktime_detai);
+                MobclickAgent.onEvent(mContext, UMengKey.count_machine_worktime_detai);
                 Bundle b_wt = new Bundle();
                 b_wt.putLong(Constants.P_DEVICEID, deviceId);
                 Constants.toActivity(this, WorkHoursActivity.class, b_wt, false);
@@ -418,7 +418,7 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
                 Constants.toActivity(this, RepairRecordActivity.class, bundle_repair);
                 break;
             case R.id.device_location:
-                MobclickAgent.onEvent(mContext,UMengKey.count_device_location);
+                MobclickAgent.onEvent(mContext, UMengKey.count_device_location);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(Constants.P_MCDEVICEBASICSINFO,
                         mcDeviceBasicsInfo);
@@ -480,7 +480,7 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 if (detectState == COMPLETE_DETECTING) {
-                    MobclickAgent.onEvent(mContext,UMengKey.count_machine_check_completed);
+                    MobclickAgent.onEvent(mContext, UMengKey.count_machine_check_completed);
                     switchLayout(detectState);
                     detectState = WATING_DETECTING;
                     switchScannState(detectState);
@@ -571,20 +571,20 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
             public void onClick(View arg0) {
                 MobclickAgent.onEvent(mContext, UMengKey.count_machine_check);
 
-                    if (detectState == COMPLETE_DETECTING) {
-                        MobclickAgent.onEvent(mContext,UMengKey.count_machine_check_complete);
-                        switchLayout(detectState);
-                        detectState = WATING_DETECTING;
-                        button_ok.setVisibility(View.INVISIBLE);
-                        switchScannState(detectState);
-                    } else {
-                        if (detectState != IS_DETECTING) {
-                            showGuide();
-                            new DeviceReportAsync(mContext, mHandler, deviceId)
-                                    .execute();
-                            startAnimation();
-                        }
+                if (detectState == COMPLETE_DETECTING) {
+                    MobclickAgent.onEvent(mContext, UMengKey.count_machine_check_complete);
+                    switchLayout(detectState);
+                    detectState = WATING_DETECTING;
+                    button_ok.setVisibility(View.INVISIBLE);
+                    switchScannState(detectState);
+                } else {
+                    if (detectState != IS_DETECTING) {
+                        showGuide();
+                        new DeviceReportAsync(mContext, mHandler, deviceId)
+                                .execute();
+                        startAnimation();
                     }
+                }
 
             }
         });
@@ -690,10 +690,15 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
                 if (null != mcDeviceBasicsInfo) {
                     deviceName = mcDeviceBasicsInfo.getDeviceName();
                     title_layout.setTitle(deviceName);
+                    McDeviceLocation location = mcDeviceBasicsInfo.getLocation();
+                    if (location != null) {
+                        mTvLocation.setText(location.getPosition());
+                    }
                     updateWorkStatus(mcDeviceBasicsInfo.getWorkStatus());
 
                     addMarkerToMap();// 往地图上添加marker
                 }
+
                 break;
             case Constants.HANDLER_GETDEVICEBASICSINFO_FAIL:
 
@@ -733,7 +738,7 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
             case Constants.HANDLE_GETCHECKREPORT_FAILD:
                 Constants.MyToast((String) msg.obj);
                 ivOvalDetecting.clearAnimation();
-               // detectState = COMPLETE_DETECTING;
+                // detectState = COMPLETE_DETECTING;
                 detectState = WATING_DETECTING;
                 //switchLayout(detectState);
                 switchScannState(detectState);
@@ -764,7 +769,7 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
 
     private void changeScanningText(int n) {
         /*
-		 * if(n == 0){//显示分数 scanning_text_b.setVisibility(View.GONE);
+         * if(n == 0){//显示分数 scanning_text_b.setVisibility(View.GONE);
 		 * scanning_text_f.setVisibility(View.VISIBLE);
 		 * scanning_text_fn.setVisibility(View.VISIBLE); }else{//显示百分比
 		 * scanning_text_b.setVisibility(View.VISIBLE);
@@ -959,7 +964,7 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
     }
 
 	/*
-	 * private void addHsdLayout(int n){ if(null != mcDeviceSInfo && null !=
+     * private void addHsdLayout(int n){ if(null != mcDeviceSInfo && null !=
 	 * mcDeviceSInfo.getHsdList() && mcDeviceSInfo.getHsdList().length>0){
 	 * ScanningHsdInfo hsdInfo = mcDeviceSInfo.getHsdList()[0]; String name,val;
 	 * hydraulic_line_d.setVisibility(View.VISIBLE);
@@ -1017,7 +1022,7 @@ public class DeviceMcActivity extends BaseAutoLayoutActivity implements
         int f = 0;
         if (null != mcDeviceSInfo) {
             f = mcDeviceSInfo.getScore();
-			/*
+            /*
 			 * if(mcDeviceSInfo.getOcdList()!=null &&
 			 * mcDeviceSInfo.getOcdList().length>0){ ScanningOcdInfo ocdInfo =
 			 * mcDeviceSInfo.getOcdList()[0]; f +=ocdInfo.getScore(); }

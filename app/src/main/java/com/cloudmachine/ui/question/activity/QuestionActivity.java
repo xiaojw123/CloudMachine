@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.cloudmachine.R;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.ui.question.contract.QuestionContract;
 import com.cloudmachine.ui.question.model.QuestionModel;
@@ -48,7 +49,8 @@ public class QuestionActivity extends BaseAutoLayoutActivity<QuestionPresenter, 
     ProgressBar mWebviewProgressbar;
 
     private Context mContext;
-    private String URLString = "http://h5.test.cloudm.com/n/ask_qsubmit?";
+//    private String URLString = "http://h5.test.cloudm.com/n/ask_qsubmit?";
+    private String URLString = ApiConstants.H5_HOST+"n/ask_qsubmit?";
     private long            mMyid;
     private JsBridgeManager jsBridgeManager;
 

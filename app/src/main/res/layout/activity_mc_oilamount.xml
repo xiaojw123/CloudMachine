@@ -51,7 +51,7 @@
             <TextView 
                 style="@style/TextView.oilamount_big_text"
   				android:layout_alignParentTop="true"
-  				android:text="当前油位百分比"
+  				android:text="当前油位"
                 />
             <LinearLayout 
                 android:layout_width="wrap_content"
@@ -119,7 +119,7 @@
             <TextView 
                 android:id="@+id/last_date_oil_text"
             	style="@style/TextView.oilamount_big_text"
-  				android:text="最后油位百分比"
+  				android:text="关机油位"
   				android:gravity="bottom|center_horizontal"
   				android:layout_width="match_parent"
   				android:layout_height="match_parent"

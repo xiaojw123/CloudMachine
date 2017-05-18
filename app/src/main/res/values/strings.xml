@@ -73,29 +73,29 @@
     <string name="title_activity_beginner_guide">BeginnerGuideActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    
+
     <!--新版本-->
-	 <string name="btn_repair">报修</string>
-	 <string name="repair_now">马上报修</string>
-	 <string name="completed">已完成</string>
-	 
-	 
-	 <!-- <string name="app_name">Stepview</string> -->
-	 <string name="back">返回</string>
-	 <string name="detail">详细</string>
-	 <string name="repair_progress">进度</string>
-	 <string name="new_repair">新增报修</string>
-	 <string name="basicinfo">基本信息</string>
-	 <string name="title_experience_machine">体验机</string>
-	 <string name="detect_report">检测报告</string>
-	 <string name="get_newdata">一键检测, 实时获取设备的最新数据</string>
-	 <string name="repair_record">维修记录</string>
-	 <string name="history_repair_record">历史维修记录, 让你一目了然</string>
-	 <string name="conference">成员组成</string>
-	 <string name="share_conference">管理成员组成, 共享设备数据</string>
-	 
-	 
-	 <!--一键加测-->
-	 <string name="detect_now">一键检测</string>
-	 
+    <string name="btn_repair">报修</string>
+    <string name="repair_now">马上报修</string>
+    <string name="completed">已完成</string>
+
+
+    <!-- <string name="app_name">Stepview</string> -->
+    <string name="back">返回</string>
+    <string name="detail">详细</string>
+    <string name="repair_progress">进度</string>
+    <string name="new_repair">新增报修</string>
+    <string name="basicinfo">基本信息</string>
+    <string name="title_experience_machine">体验机</string>
+    <string name="detect_report">检测报告</string>
+    <string name="get_newdata">一键检测, 实时获取设备的最新数据</string>
+    <string name="repair_record">维修记录</string>
+    <string name="history_repair_record">历史维修记录, 让你一目了然</string>
+    <string name="conference">成员组成</string>
+    <string name="share_conference">管理成员组成, 共享设备数据</string>
+
+
+    <!--一键加测-->
+    <string name="detect_now">一键检测</string>
+
 </resources>

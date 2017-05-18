@@ -45,6 +45,7 @@ public class AvailableCouponsFragment extends Fragment implements Handler.Callba
     private GetCouponAdapter getCouponAdapter;
     private RecyclerView mRecyclerView;
     private ValidCouponAdapter mValidCouponAdapter;
+    private View emptTv;
 
 
     @Nullable
@@ -72,6 +73,7 @@ public class AvailableCouponsFragment extends Fragment implements Handler.Callba
         dataList = new ArrayList<>();
         ViewCouponActivity viewCouponActivity = (ViewCouponActivity) getActivity();
         new GetCouponAsync(mHandler, "0", null, viewCouponActivity).execute();
+        emptTv=viewParent.findViewById(R.id.empt_tv);
         mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, getActivity().getResources().getDimensionPixelSize(R.dimen.padding_middle), true));
@@ -86,9 +88,14 @@ public class AvailableCouponsFragment extends Fragment implements Handler.Callba
             case Constants.HANDLER_GETCOUPONS_SUCCESS:
                 dataList.clear();
                 ArrayList<CouponInfo> data = (ArrayList<CouponInfo>) msg.obj;
-                if (null != data) {
+                if (null != data&&data.size()>0) {
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    emptTv.setVisibility(View.GONE);
                     dataList.addAll(data);
                     mValidCouponAdapter.notifyDataSetChanged();
+                }else{
+                    mRecyclerView.setVisibility(View.GONE);
+                    emptTv.setVisibility(View.VISIBLE);
                 }
                 break;
             case Constants.HANDLER_GETCOUPONS_FAILD:

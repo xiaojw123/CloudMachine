@@ -1,11 +1,5 @@
 package com.cloudmachine.net.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -20,17 +14,28 @@ import com.cloudmachine.struc.MessageBO;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.URLs;
+import com.github.mikephil.charting.utils.AppLog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class AllMessagesListAsync extends ATask {
+    public static final String TYPE_MESSAGE_SYSTEM="message_system";
+    public static final String TYPE_MESSAGE_ALL="message_all";
 
 	private Handler handler;
 	private int pageNo;
+	private  String taskType;
 	
-	public AllMessagesListAsync(int pageNo,Context context,Handler handler){
+	public AllMessagesListAsync(String taskType,int pageNo,Context context,Handler handler){
 		this.pageNo = pageNo;
 		this.handler = handler;
+		this.taskType=taskType;
 		try{
 			memberId = String.valueOf(MemeberKeeper.getOauth(context).getId());
 		}catch(Exception ee){
@@ -49,7 +54,11 @@ public class AllMessagesListAsync extends ATask {
 		list.add(new BasicNameValuePair("pageSize", String.valueOf(MyApplication.getInstance().getPageSize())));
 		String result = null;
 		try {
+			if (TYPE_MESSAGE_ALL.equals(taskType)){
 				result = httpRequest.post(URLs.GET_MESSAGE, list);
+			}else{
+				result = httpRequest.post(URLs.GET_MESSAGE_SYSTEM, list);
+			}
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,6 +77,7 @@ public class AllMessagesListAsync extends ATask {
 	@Override
 	protected void decodeJson(String result) {
 		// TODO Auto-generated method stub
+		AppLog.print("AllMessagesListAsync___result__"+result);
 		super.decodeJson(result);
 		Message msg = Message.obtain();
 		if (isSuccess) {

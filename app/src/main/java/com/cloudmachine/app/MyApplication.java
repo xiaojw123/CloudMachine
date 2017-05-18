@@ -51,12 +51,12 @@ import cn.jpush.android.api.JPushInterface;
 
 public class MyApplication extends Application {
     private static MyApplication baseApplication;
-    public static  Context       mContext;
+    public static Context mContext;
     private int pageSize = 10;
     private boolean isLogin;
     private boolean isFresh;
     private boolean isFlag = false;
-    private int    msgNum;
+    private int msgNum;
     private Member tempMember;
 
     @Override
@@ -107,8 +107,8 @@ public class MyApplication extends Application {
         this.catId = catId;
     }
 
-    private              Hashtable<String, Object> memeryCache = new Hashtable<String, Object>();
-    private static final int                       CACHE_TIME  = 60 * 60000;//缓存失效时间
+    private Hashtable<String, Object> memeryCache = new Hashtable<String, Object>();
+    private static final int CACHE_TIME = 60 * 60000;//缓存失效时间
 
     public Hashtable<String, Object> getMemeryCache() {
         return memeryCache;
@@ -143,19 +143,19 @@ public class MyApplication extends Application {
     /**
      * wap网络
      */
-    public static final int NETWORKTYPE_WAP     = 1;
+    public static final int NETWORKTYPE_WAP = 1;
     /**
      * 2G网络
      */
-    public static final int NETWORKTYPE_2G      = 2;
+    public static final int NETWORKTYPE_2G = 2;
     /**
      * 3G和3G以上网络
      */
-    public static final int NETWORKTYPE_3G      = 3;
+    public static final int NETWORKTYPE_3G = 3;
     /**
      * wifi网络
      */
-    public static final int NETWORKTYPE_WIFI    = 4;
+    public static final int NETWORKTYPE_WIFI = 4;
     private static MyApplication mApplication;
 
     public synchronized static MyApplication getInstance() {
@@ -211,6 +211,7 @@ public class MyApplication extends Application {
 
     /**
      * 监测网络状态的状态
+     *
      * @return if can connection the internet,return true
      */
     public boolean isOpenNetwork(Context context) {
@@ -224,6 +225,7 @@ public class MyApplication extends Application {
 
     /**
      * 获取网络状态，wifi,wap,2g,3g.
+     *
      * @param context
      * @return int 网络状态 {@link #NETWORKTYPE_2G},{@link #NETWORKTYPE_3G}, *
      * {@link #NETWORKTYPE_INVALID},{@link #NETWORKTYPE_WAP}*
@@ -297,6 +299,7 @@ public class MyApplication extends Application {
 
     /**
      * 判断缓存数据是否可读
+     *
      * @param cachefile
      * @return
      */
@@ -306,6 +309,7 @@ public class MyApplication extends Application {
 
     /**
      * 判断缓存是否存在
+     *
      * @param cachefile
      * @return
      */
@@ -319,6 +323,7 @@ public class MyApplication extends Application {
 
     /**
      * 判断缓存是否失效
+     *
      * @param cachefile
      * @return
      */
@@ -334,6 +339,7 @@ public class MyApplication extends Application {
 
     /**
      * 保存对象
+     *
      * @param ser
      * @param file
      * @throws java.io.IOException
@@ -364,6 +370,7 @@ public class MyApplication extends Application {
 
     /**
      * 读取对象
+     *
      * @param file
      * @return
      * @throws java.io.IOException

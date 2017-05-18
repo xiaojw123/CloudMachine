@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.cloudmachine.R;
+import com.cloudmachine.activities.WanaCloudBox;
 import com.cloudmachine.activities.WebviewActivity;
 import com.cloudmachine.loader.GlideImageLoader;
 import com.cloudmachine.recyclerbean.HomeBannerTransfer;
@@ -24,7 +25,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * 修改备注：
  */
 
-public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, Banner.OnBannerClickListener{
+public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, Banner.OnBannerClickListener {
 
     private static final String TAG = "HomeHeaderItemDelegate";
 
@@ -55,20 +56,26 @@ public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, B
 
     @Override
     public void OnBannerClick(int position) {
+        if (mHomeBannerTransfer.ids.get(position) == 46) {
+            Intent wanaBoxIntent = new Intent(mContext, WanaCloudBox.class);
+            wanaBoxIntent.putExtra(Constants.P_WebView_Url, mHomeBannerTransfer.jumpLinks.get(position));
+            mContext.startActivity(wanaBoxIntent);
+            return;
+        }
         //对banner点击进行链接跳转
         Intent intent = new Intent(mContext, WebviewActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.P_WebView_Url,mHomeBannerTransfer.jumpLinks.get(position));
-        Constants.MyLog("打印到的跳转链接"+mHomeBannerTransfer.jumpLinks.get(position));
+        bundle.putString(Constants.P_WebView_Url, mHomeBannerTransfer.jumpLinks.get(position));
+        Constants.MyLog("打印到的跳转链接" + mHomeBannerTransfer.jumpLinks.get(position));
         //分享标题
-        bundle.putString(Constants.P_WebView_Title,mHomeBannerTransfer.titles.get(position));
-        bundle.putBoolean(Constants.HOME_BANNER_SHARE,true);
+        bundle.putString(Constants.P_WebView_Title, mHomeBannerTransfer.titles.get(position));
+        bundle.putBoolean(Constants.HOME_BANNER_SHARE, true);
         //微信分享的链接
-        bundle.putString(Constants.HOME_SHARE_URL,mHomeBannerTransfer.wxUrl.get(position));
+        bundle.putString(Constants.HOME_SHARE_URL, mHomeBannerTransfer.wxUrl.get(position));
         //微信分享的图标
-        bundle.putString(Constants.HOME_SHARE_ICON,mHomeBannerTransfer.wxLogo.get(position));
+        bundle.putString(Constants.HOME_SHARE_ICON, mHomeBannerTransfer.wxLogo.get(position));
         //微信分享描述
-        bundle.putString(Constants.HOME_SHARE_DESCIRPTION,mHomeBannerTransfer.description.get(position));
+        bundle.putString(Constants.HOME_SHARE_DESCIRPTION, mHomeBannerTransfer.description.get(position));
         intent.putExtras(bundle);
         mContext.startActivity(intent);
     }

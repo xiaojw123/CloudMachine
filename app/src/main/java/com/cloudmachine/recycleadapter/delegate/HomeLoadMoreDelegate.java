@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.cloudmachine.R;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.recyclerbean.HomeLoadMoreBean;
 import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
@@ -47,7 +48,8 @@ public class HomeLoadMoreDelegate implements ItemViewDelegate<HomePageType>{
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, QuestionCommunityActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
+//                bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
+                bundle.putString("url", ApiConstants.H5_HOST+"n/ask_qlist");
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
             }

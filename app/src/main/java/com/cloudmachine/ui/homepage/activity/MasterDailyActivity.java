@@ -113,6 +113,13 @@ public class MasterDailyActivity extends BaseAutoLayoutActivity<MasterDailyPrese
         masterList = new ArrayList<>();
         //mMasterDailyAdapter = new MasterDailyAdapter(this, masterList);
         mMasterDailyContentAdapter = new MasterDailyContentAdapter(this, masterList);
+//        getData();
+    }
+
+    // TODO: 2017/4/25  move by xiaojw
+    @Override
+    protected void onResume() {
+        super.onResume();
         getData();
     }
 

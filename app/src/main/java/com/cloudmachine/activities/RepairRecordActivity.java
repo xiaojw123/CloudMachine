@@ -197,6 +197,7 @@ public class RepairRecordActivity extends BaseAutoLayoutActivity implements
 				for (int i = 0; i < count; i++) {
 					RepairHistoryInfo historyInfo = new RepairHistoryInfo();
 					if (i < unfinishedBeans.size()) {
+						historyInfo.setLogo_flag(unfinishedBeans.get(i).getLogo_flag());
 						historyInfo.setFlag(unfinishedBeans.get(i).getFlag());
 						historyInfo.setPrice(unfinishedBeans.get(i).getPrice());
 						historyInfo.setDopportunity(unfinishedBeans.get(i)
@@ -222,6 +223,7 @@ public class RepairRecordActivity extends BaseAutoLayoutActivity implements
 						historyInfo.setOrderNum(unfinishedBeans.get(i)
 								.getOrderNum());
 					} else {
+						historyInfo.setLogo_flag(finishBeans.get(finishCount).getLogo_flag());
 						historyInfo.setFlag(finishBeans.get(finishCount)
 								.getFlag());
 						historyInfo.setPrice(finishBeans.get(finishCount)

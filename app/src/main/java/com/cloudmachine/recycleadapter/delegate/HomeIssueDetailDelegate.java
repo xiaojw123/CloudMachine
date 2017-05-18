@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.WebviewActivity;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
 import com.cloudmachine.recyclerbean.HomePageType;
 import com.cloudmachine.utils.Constants;
@@ -121,15 +122,17 @@ public class HomeIssueDetailDelegate implements ItemViewDelegate<HomePageType>{
         mLlHotIssue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mHomeIssueDetailBean.url != null) {
+//                if (mHomeIssueDetailBean.url != null) {
                     Intent intent = new Intent(mContext,WebviewActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString(Constants.P_WebView_Url,
-                            "http://h5.test.cloudm.com/n/ask_qdetail?qid="+mId+"&myid="+mMyId);
-                    bundle.putString(Constants.P_WebView_Title, "热门问题");
+//                    bundle.putString(Constants.P_WebView_Url,
+//                            "http://h5.test.cloudm.com/n/ask_qdetail?qid="+mId+"&myid="+mMyId);
+                bundle.putString(Constants.P_WebView_Url,
+                        ApiConstants.H5_HOST+"n/ask_qdetail?qid="+mId+"&myid="+mMyId);
+                    bundle.putBoolean(Constants.P_WebView_With_Title,false);
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
-                }
+//                }
             }
         });
     }

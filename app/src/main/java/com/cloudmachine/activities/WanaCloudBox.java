@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -24,15 +25,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.cloudmachine.R;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.task.SaveArrivalNoticeAsync;
 import com.cloudmachine.net.task.YunBoxStoreAsync;
 import com.cloudmachine.struc.YunBoxStoreVolumeInfo;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.MutableHeightViewWrapper;
 import com.cloudmachine.utils.ShareDialog;
 import com.cloudmachine.utils.WeChatShareUtil;
+import com.github.mikephil.charting.utils.AppLog;
 import com.jsbridge.JsBridgeClient;
 import com.jsbridge.core.JsBridgeManager;
 
@@ -52,7 +57,7 @@ public class WanaCloudBox extends BaseAutoLayoutActivity implements View.OnClick
     private WebView     wvWanaBox;
     private ProgressBar progressBar;
     private Context     mContext;
-    private String URLString = "http://h5.cloudm.com/box_detail";
+    private String URLString = ApiConstants.H5_HOST+"n/box_detail?from=singlemessage&isappinstalled=0";
     private TitleView titleLayout;
     private ImageView ivBack;
     private Handler   mHandler;
@@ -133,11 +138,17 @@ public class WanaCloudBox extends BaseAutoLayoutActivity implements View.OnClick
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                AppLog.print("shouldOverUrl____"+url);
                return jsBridgeManager.invokeNative(view, url);
             }
 
         });
+        String url=getIntent().getStringExtra(Constants.P_WebView_Url);
+        if (!TextUtils.isEmpty(url)){
+            URLString=url;
+        }
         wvWanaBox.loadUrl(URLString);
+
     }
 
     private void initView() {
@@ -164,20 +175,27 @@ public class WanaCloudBox extends BaseAutoLayoutActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buy_now:
-                if (store_volume > 0 && result) {
-                    Constants.toActivity(WanaCloudBox.this, ConfirmInformationActivity.class, null, false);
-                } else {
-                    if (null != proId) {
-                        new SaveArrivalNoticeAsync(mHandler, mContext, proId).execute();
+                if (MemeberKeeper.getOauth(mContext)==null){
+                    Bundle bundle=new Bundle();
+                    bundle.putInt("flag",1);
+                    Constants.toActivity(this, LoginActivity.class,bundle);
+                }else{
+                    if (store_volume > 0 && result) {
+                        Constants.toActivity(WanaCloudBox.this, ConfirmInformationActivity.class, null, false);
+                    } else {
+                        if (null != proId) {
+                            new SaveArrivalNoticeAsync(mHandler, mContext, proId).execute();
+                        }
+                        return;
                     }
-                    return;
                 }
+
                 break;
             case R.id.iv_back:
                 finish();
                 break;
             case R.id.iv_sharebox:
-                ShareDialog shareDialog = new ShareDialog(WanaCloudBox.this, null, "智能云盒子", "让您的设备与您共享云端服务", -1);
+                ShareDialog shareDialog = new ShareDialog(WanaCloudBox.this, URLString, "智能云盒子", "让您的设备与您共享云端服务", -1);
                 shareDialog.show();
                 break;
         }

@@ -1,7 +1,6 @@
 package com.cloudmachine.struc;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by shixionglu on 2016/10/29.
@@ -40,6 +39,15 @@ public class BOInfo {
      */
 
     private String flag;
+
+    public ArrayList<String> getLogoList() {
+        return logoList;
+    }
+
+    public void setLogoList(ArrayList<String> logoList) {
+        this.logoList = logoList;
+    }
+
     /**
      * createTime : 2016-10-28 17:25:33
      * desc : 已报修
@@ -47,6 +55,7 @@ public class BOInfo {
      */
 
     private ArrayList<ScheduleBean> schedule;
+    private ArrayList<String> logoList;
 
     public WorkDetailBean getWorkDetail() {
         return workDetail;
@@ -92,6 +101,7 @@ public class BOInfo {
         private String pk_VHCL_MATERIAL;
         private String vmacoptel;
         private String vmacopname;
+
 
         public String getDr() {
             return dr;

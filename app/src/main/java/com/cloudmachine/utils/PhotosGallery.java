@@ -16,12 +16,13 @@ public class PhotosGallery {
 	public static final Intent gotoPhotosGallery(){
 		Intent intent = new Intent();
 		intent.setType("image/*"); // 设置文件类型
-		//根据版本号不同使用不同的Action  
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-			intent.setAction(Intent.ACTION_GET_CONTENT);  
-		}else {  
-			intent.setAction(Intent.ACTION_OPEN_DOCUMENT);  
-		}  
+//		//根据版本号不同使用不同的Action
+//		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+//			intent.setAction(Intent.ACTION_GET_CONTENT);
+//		}else {
+//			intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+//		}
+		intent.setAction(Intent.ACTION_PICK);
 		return intent;
 	}
 	

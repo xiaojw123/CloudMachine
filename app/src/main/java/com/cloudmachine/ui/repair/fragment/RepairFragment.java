@@ -99,6 +99,7 @@ public class RepairFragment extends BaseFragment<RepairPresenter, RepairModel> i
             public void onClick(View arg0) {
                 Constants.toActivity(mActivity, NewRepairActivity.class, null);
             }
+
         });
 
         showData();
@@ -171,6 +172,7 @@ public class RepairFragment extends BaseFragment<RepairPresenter, RepairModel> i
                     for (int i = 0; i < count; i++) {
                         RepairHistoryInfo historyInfo = new RepairHistoryInfo();
                         if (i < unfinishedBeans.size()) {
+                            historyInfo.setLogo_flag(unfinishedBeans.get(i).getLogo_flag());
                             historyInfo.setFlag(unfinishedBeans.get(i).getFlag());
                             historyInfo.setPrice(unfinishedBeans.get(i).getPrice());
                             historyInfo.setDopportunity(unfinishedBeans.get(i)
@@ -199,6 +201,7 @@ public class RepairFragment extends BaseFragment<RepairPresenter, RepairModel> i
                             historyInfo.setNloanamount_TYPE(unfinishedBeans.get(i).getNloanamount_TYPE());
                             //Constants.MyLog(historyInfo.toString());
                         } else {
+                            historyInfo.setLogo_flag(finishBeans.get(finishCount).getLogo_flag());
                             historyInfo.setFlag(finishBeans.get(finishCount)
                                     .getFlag());
                             historyInfo.setPrice(finishBeans.get(finishCount)

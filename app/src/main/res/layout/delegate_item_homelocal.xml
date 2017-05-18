@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="11dp"
-            android:text="车险报价"
+            android:text="保险报价"
             android:textColor="#444444"
             android:textSize="12sp"
             />
@@ -65,16 +65,14 @@
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="18dp"
-            android:src="@drawable/quentions"
-            />
+            android:src="@drawable/quentions" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -83,8 +81,7 @@
             android:layout_marginTop="11dp"
             android:text="问答社区"
             android:textColor="#444444"
-            android:textSize="12sp"
-            />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <LinearLayout

@@ -104,6 +104,7 @@
 
 
     <LinearLayout
+        android:id="@+id/invitation_code_cotainer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_input_height"
          >

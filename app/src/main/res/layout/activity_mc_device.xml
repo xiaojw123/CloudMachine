@@ -298,7 +298,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_below="@id/tv_device_location"
                                     android:layout_marginTop="@dimen/public_text_margintop"
-                                    android:text="@string/history_repair_record"
                                     android:textColor="@color/public_text_grey1"
                                     android:textSize="@dimen/public_textsize2"/>
 

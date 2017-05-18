@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.FindPasswordActivity;
 import com.cloudmachine.api.Api;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.api.HostType;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.autolayout.widgets.CircleTextImageView;
@@ -44,6 +45,7 @@ import com.cloudmachine.utils.widgets.AppMsg;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.utils.widgets.ClearEditTextView.ICoallBack;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
+import com.github.mikephil.charting.utils.AppLog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -231,6 +233,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
             case R.id.forget_pw_tv:
                 MobclickAgent.onEvent(mContext, UMengKey.count_forgotpassword);
                 it = new Intent(this, FindPasswordActivity.class);
+                it.putExtra(FindPasswordActivity.HASINVITATIONCODE,true);
                 it.putExtra("type", 1);
                 startActivity(it);
                 break;
@@ -239,9 +242,11 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 switchPwd(isExpress);
                 break;
             case R.id.weixin_login:
+                AppLog.print("weixin_login click");
                 loginToWeiXin();
                 break;
             case R.id.rl_weixin_login:
+                AppLog.print("rl_weixin_login click");
                 loginToWeiXin();
                 break;
             default:
@@ -253,11 +258,13 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
     private void loginToWeiXin() {
         IWXAPI mApi = WXAPIFactory.createWXAPI(this,Constants.APP_ID, true);
         mApi.registerApp(Constants.APP_ID);
+        AppLog.print("loginToWeiXin_____");
         if (mApi != null && mApi.isWXAppInstalled()) {
             SendAuth.Req req = new SendAuth.Req();
             req.scope = "snsapi_userinfo";
             req.state = "wechat_sdk_demo_test_neng";
             mApi.sendReq(req);
+            AppLog.print("senReq___");
             finish();
         } else
             Toast.makeText(this, "用户未安装微信", Toast.LENGTH_SHORT).show();
@@ -288,14 +295,18 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 JPushInterface.setAliasAndTags(getApplicationContext(), (String) msg.obj, null, mAliasCallback);
                 break;
             case Constants.HANDLER_LOGIN_SUCCESS:
+                AppLog.print("loginScuess___");
                 disMiss();
                 Constants.isGetScore = true;
                 mMember = (Member) msg.obj;
                 if (mMember != null) {
                     excamMaster(mMember.getId());
                 }
-                Constants.MyLog("云机械登录获取到的账号信息"+ mMember.toString());
+                Constants.MyLog("云机械登录获取到的账号信息"+ mMember.getWjdsId());
                 MemeberKeeper.saveOAuth(mMember, LoginActivity.this);
+                Member m = MemeberKeeper.getOauth(this);
+                Constants.MyLog("云机械登录获取到的账号信息  数据库"+ m.getWjdsId());
+
                 MyApplication.getInstance().setLogin(true);
                 MyApplication.getInstance().setFlag(true);
                 if (flag == 2) {
@@ -305,7 +316,8 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 } else if (flag == 3) {
                     Intent intent = new Intent(LoginActivity.this, QuestionCommunityActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
+//                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
+                    bundle.putString("url", ApiConstants.H5_HOST+"n/ask_qlist");
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
                     finish();

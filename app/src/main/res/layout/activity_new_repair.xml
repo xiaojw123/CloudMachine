@@ -324,12 +324,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
                     android:layout_toLeftOf="@id/arrow_address"
                     android:layout_toRightOf="@id/t4"
                     android:singleLine="true"
                     android:text="输入机器所在位置"
                     android:textColor="@color/hint"
+                    android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
                     android:textSize="@dimen/public_textsize1"/>
             </RelativeLayout>
 

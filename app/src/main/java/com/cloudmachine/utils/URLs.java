@@ -73,6 +73,7 @@ public class URLs {
     public static String GET_MESSAGECOUNT = URL_API_HOST + "device/getMessageUntreatedCount";
    //获取所有的消息
     public static String GET_MESSAGE = URL_API_HOST + "device/getAllMessages";
+    public static String GET_MESSAGE_SYSTEM = URL_API_HOST + "device/getSystemMessages";
     //搜索设备成员
     public static String SEARCH_MEMBER = URL_API_HOST + "device/search";
     //添加设备成员

@@ -17,6 +17,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.cloudmachine.R;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.utils.Constants;
@@ -46,7 +47,8 @@ public class InsuranceListActivity extends BaseAutoLayoutActivity {
     @BindView(R.id.webview_progressbar)
     ProgressBar mWebviewProgressbar;
     private Context mContext;
-    private String URLString = "http://h5.test.cloudm.com/InsuranceList";
+//    private String URLString = "http://h5.test.cloudm.com/InsuranceList";
+    private String URLString = ApiConstants.H5_HOST+"InsuranceList";
     private String userID;
 
     @Override
@@ -58,7 +60,8 @@ public class InsuranceListActivity extends BaseAutoLayoutActivity {
         if (MemeberKeeper.getOauth(mContext) != null) {
             userID = String.valueOf(MemeberKeeper.getOauth(mContext).getId());
         }
-        URLString = "http://h5.test.cloudm.com/InsuranceList?userID=" + userID;
+//        URLString = "http://h5.test.cloudm.com/InsuranceList?userID=" + userID;
+        URLString = ApiConstants.H5_HOST+"InsuranceList?userID=" + userID;
         initTitle();
         initView();
         initWebView();

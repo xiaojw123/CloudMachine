@@ -107,6 +107,7 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 		switch(msg.what){
 		case Constants.HANDLER_UPDATEPWD_SUCCESS:
 			Constants.MyToast((String)msg.obj);
+			setResult(RESULT_OK);
 			finish();
 			break;
 		case Constants.HANDLER_UPDATEPWD_FAIL:

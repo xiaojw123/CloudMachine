@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.homepage.fragment;
 
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,9 @@ import com.cloudmachine.api.HostType;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.base.baserx.RxBus;
 import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.recycleadapter.HomePageAdapter;
 import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.recyclerbean.HomeBannerTransfer;
@@ -26,18 +29,24 @@ import com.cloudmachine.recyclerbean.HomeNewsBean;
 import com.cloudmachine.recyclerbean.HomeNewsTransfer;
 import com.cloudmachine.recyclerbean.HomePageBean;
 import com.cloudmachine.recyclerbean.HomePageType;
+import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.struc.UnReadMessage;
 import com.cloudmachine.ui.homepage.activity.ViewMessageActivity;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 import com.cloudmachine.ui.homepage.model.HomePageModel;
 import com.cloudmachine.ui.homepage.presenter.HomePagePresenter;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
+import com.github.mikephil.charting.utils.AppLog;
 
 import java.util.ArrayList;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * 项目名称：CloudMachine
@@ -52,26 +61,31 @@ import rx.functions.Action1;
 public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageModel> implements HomePageContract.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
 
-    private SwipeRefreshLayout        mSwipeRefreshLayout;
-    private RecyclerView              mRecyclerView;
-    private HomePageAdapter           homePageAdapter;
-    private ArrayList<HomePageType>   homePageList;
-    private HomePageBean              homePageBean;
-    private ImageView                 ivMessage;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
+    private HomePageAdapter homePageAdapter;
+    private ArrayList<HomePageType> homePageList;
+    private HomePageBean homePageBean;
+    private ImageView ivMessage;
     private ArrayList<HomeBannerBean> homeBannerList;
-    private ArrayList<HomeNewsBean>   homeNewsList;
-    private boolean                   getBannerInfo;
-    private boolean                   getMidNewsInfo;
-    private boolean                   getHotIssueInfo;
-    private boolean                   isRefresh;
-    private boolean                   refreshHotIssueOnly;//热门问题换一换
+    private ArrayList<HomeNewsBean> homeNewsList;
+    private boolean getBannerInfo;
+    private boolean getMidNewsInfo;
+    private boolean getHotIssueInfo;
+    private boolean isRefresh;
+    private boolean refreshHotIssueOnly;//热门问题换一换
     private boolean isfirstLoadHotIssue = true;//是否第一次加载热门问题
     private HomeIssueDetailBean mHomeIssueDetailBean;
-    private int                 signBetweenTime;
+    private int signBetweenTime;
+    private View unReadOval;
+    private boolean isFirstBanner=true;
+    private boolean isFirstAdvert=true;
+
 
 
     @Override
     protected void initView() {
+        AppLog.print("homePage initView___");
 
         initFindViews();
         initListeners();
@@ -83,6 +97,7 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
         mPresenter.getHomeBannerInfo();
         mPresenter.getHomeMidAdvertisement();
         mPresenter.getHotQuestion();
+
 
         mRxManager.on(Constants.GET_HOTISSUE, new Action1<Object>() {
             @Override
@@ -110,8 +125,47 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     @Override
     public void onResume() {
         super.onResume();
+        AppLog.print("homePage onResume__");
+        if (MemeberKeeper.getOauth(getActivity()) == null) {
+            if (homePageAdapter != null) {
+                if (homePageAdapter.localDelegate != null) {
+                    homePageAdapter.localDelegate.resetSign();
+                }
+            }
+        }
         if (MemeberKeeper.getOauth(getActivity()) != null) {
             refreshSignState();
+        }
+        updateUnReadMessage();
+
+    }
+
+    private void updateUnReadMessage() {
+        Member member = MemeberKeeper.getOauth(getActivity());
+        if (member != null) {
+            Api.getDefault(HostType.CLOUDM_HOST).getMessageUntreatedCount(member.getId())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<BaseRespose<UnReadMessage>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(BaseRespose<UnReadMessage> jsonObject) {
+                            UnReadMessage urm = jsonObject.result;
+                            if (urm != null) {
+                                returnMessageUntreated(urm.getCount());
+                            }
+
+                        }
+                    });
         }
     }
 
@@ -123,6 +177,7 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
         } else {
             homePageList.set(0, new HomeLocalBean());
         }*/
+        AppLog.print("refreshSignStateOnly___");
         homePageAdapter.notifyDataSetChanged();
     }
 
@@ -160,6 +215,7 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
 
     private void initFindViews() {
         ivMessage = (ImageView) viewParent.findViewById(R.id.iv_message);
+        unReadOval = viewParent.findViewById(R.id.hp_message_oval);
         mSwipeRefreshLayout = (SwipeRefreshLayout) viewParent.findViewById(R.id.swipe_layout);
         mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recyclerView);
     }
@@ -197,13 +253,53 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
     }
 
 
+    private void refreshComplete() {
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mRecyclerView.scrollToPosition(0);
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void loadBannerError() {
+        if (isFirstBanner) {
+            isFirstBanner = false;
+        }
+        refreshComplete();
+    }
+
+    @Override
+    public void loadMidAdError() {
+        if (isFirstAdvert){
+            isFirstAdvert=false;
+        }
+        refreshComplete();
+    }
+
+    @Override
+    public void loadHotQuestionError() {
+        if (isfirstLoadHotIssue){
+            isfirstLoadHotIssue=false;
+        }
+        refreshComplete();
+
+    }
+
     //拿到轮播信息成功
     @Override
     public void returnHomeBannerInfo(ArrayList<HomeBannerBean> homeBannerBeen) {
+        if (getMidNewsInfo && getBannerInfo && getHotIssueInfo && isRefresh && !refreshHotIssueOnly) {
+            return;
+        }
         homeBannerList.clear();
         homeBannerList.addAll(homeBannerBeen);
         getBannerInfo = true;
-        homePageList.add(0, new HomeBannerTransfer(homeBannerList));
+        if (isFirstBanner) {
+            isFirstBanner = false;
+            homePageList.add(0, new HomeBannerTransfer(homeBannerList));
+        }
+//        homePageList.set(0, new HomeBannerTransfer(homeBannerList));
+        AppLog.print("__returnHomeBannerInfo_size_" + homePageList.size());
         finishRefresh();
         homePageAdapter.notifyDataSetChanged();
     }
@@ -214,13 +310,22 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
         homeNewsList.clear();
         homeNewsList.addAll(homeNewsBeen);
         getMidNewsInfo = true;
-        if (homeNewsList != null && homeNewsList.size() > 0) {
-            if (homeBannerList != null && homeBannerList.size() > 0) {
-                homePageList.add(3, new HomeNewsTransfer(homeNewsList));
-            } else {
-                homePageList.add(2, new HomeNewsTransfer(homeNewsList));
+        if (isFirstAdvert) {
+            isFirstAdvert = false;
+            if (homeNewsList != null && homeNewsList.size() > 0) {
+                AppLog.print("newListSize>0");
+                if (homeBannerList != null && homeBannerList.size() > 0) {
+                    homePageList.add(3, new HomeNewsTransfer(homeNewsList));
+                    AppLog.print("bannler___1");
+//                homePageList.set(3, new HomeNewsTransfer(homeNewsList));
+                } else {
+                    homePageList.add(2, new HomeNewsTransfer(homeNewsList));
+                    AppLog.print("bannner___2");
+//                homePageList.set(2, new HomeNewsTransfer(homeNewsList));
+                }
             }
         }
+        AppLog.print("homeMidAdvert size__" + homePageList.size());
         finishRefresh();
         homePageAdapter.notifyDataSetChanged();
 
@@ -237,10 +342,13 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
             //热门问题加载插入位置
             if (homeBannerList.size() > 0 && homeNewsList.size() > 0) {
                 homePageList.add(6, mHomeIssueDetailBean);
+//                homePageList.set(6, mHomeIssueDetailBean);
             } else if (homeBannerList.size() <= 0 && homeNewsList.size() <= 0) {
                 homePageList.add(4, mHomeIssueDetailBean);
+//                homePageList.set(4, mHomeIssueDetailBean);
             } else {
                 homePageList.add(5, mHomeIssueDetailBean);
+//                homePageList.set(5, mHomeIssueDetailBean);
             }
             isfirstLoadHotIssue = false;
         }
@@ -263,18 +371,36 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
 
     }
 
+    @Override
+    public void returnMessageUntreated(int count) {
+        if (count > 0) {
+            unReadOval.setVisibility(View.VISIBLE);
+        } else {
+            unReadOval.setVisibility(View.GONE);
+        }
+
+
+    }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_message:
-                Constants.toActivity(getActivity(), ViewMessageActivity.class,null,false);
+                if (UserHelper.isLogin(getActivity())) {
+                    Constants.toActivity(getActivity(), ViewMessageActivity.class, null, false);
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("flag", 2);
+                    Constants.toActivity(getActivity(), LoginActivity.class, bundle);
+                }
                 break;
         }
     }
 
     @Override
     public void onRefresh() {
+        AppLog.print("onRefresh___");
         refreshData();
     }
 
@@ -290,8 +416,9 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
 
     //查看是否为刷新
     public void finishRefresh() {
-
+        AppLog.print("finishRefresh ?");
         if (getMidNewsInfo && getBannerInfo && getHotIssueInfo && isRefresh && !refreshHotIssueOnly) {
+            AppLog.print("finishRefresh ok");
             mRecyclerView.scrollToPosition(0);
             mSwipeRefreshLayout.setRefreshing(false);
             getData();
@@ -347,7 +474,7 @@ public class HomePageFragment extends BaseFragment<HomePagePresenter, HomePageMo
                             signBetweenTime = 1;
                         }
                         Constants.MyLog("拿到的签到时间间隔" + signBetweenTime);
-                        RxBus.getInstance().post(Constants.SIGN_OR_NOTSIGN,signBetweenTime);
+                        RxBus.getInstance().post(Constants.SIGN_OR_NOTSIGN, signBetweenTime);
                     }
                 });
     }

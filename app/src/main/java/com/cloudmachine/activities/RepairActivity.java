@@ -29,6 +29,7 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UMListUtil;
 import com.cloudmachine.utils.widgets.XListView;
 import com.cloudmachine.utils.widgets.XListView.IXListViewListener;
+import com.github.mikephil.charting.utils.AppLog;
 
 import java.util.ArrayList;
 
@@ -163,7 +164,8 @@ public class RepairActivity extends Fragment implements Callback,
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case Constants.HANDLER_GET_REPAIRHISTORY_SUCCESS:
-                xlvComplete.stopRefresh();
+                AppLog.print("recv messsage data");
+               xlvComplete.stopRefresh();
                 xlvComplete.stopLoadMore();
                 finishBeans.clear();
                 unfinishedBeans.clear();
@@ -181,12 +183,14 @@ public class RepairActivity extends Fragment implements Callback,
                     if (null != unfinished) {
                         unfinishedBeans.addAll(unfinished);
                     }
-
+                    AppLog.print("ss1___repair__"+repairList.size());
                     int count = finishBeans.size() + unfinishedBeans.size();
                     int finishCount = 0;
                     for (int i = 0; i < count; i++) {
+                        AppLog.print("ssf__");
                         RepairHistoryInfo historyInfo = new RepairHistoryInfo();
                         if (i < unfinishedBeans.size()) {
+                            historyInfo.setLogo_flag(unfinishedBeans.get(i).getLogo_flag());
                             historyInfo.setFlag(unfinishedBeans.get(i).getFlag());
                             historyInfo.setPrice(unfinishedBeans.get(i).getPrice());
                             historyInfo.setDopportunity(unfinishedBeans.get(i)
@@ -215,6 +219,7 @@ public class RepairActivity extends Fragment implements Callback,
                             historyInfo.setNloanamount_TYPE(unfinishedBeans.get(i).getNloanamount_TYPE());
                             //Constants.MyLog(historyInfo.toString());
                         } else {
+                            historyInfo.setLogo_flag(finishBeans.get(finishCount).getLogo_flag());
                             historyInfo.setFlag(finishBeans.get(finishCount)
                                     .getFlag());
                             historyInfo.setPrice(finishBeans.get(finishCount)
@@ -249,6 +254,7 @@ public class RepairActivity extends Fragment implements Callback,
                         repairList.add(historyInfo);
 
                     }
+                    AppLog.print("ss___repair__"+repairList.size());
                     showData();
                     repairListAdapter.setUnFinishedNum(unfinishedBeans.size());
                     repairListAdapter.notifyDataSetChanged();

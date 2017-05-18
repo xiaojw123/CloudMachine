@@ -1,6 +1,15 @@
 package com.cloudmachine.struc;
 
 public class UnfinishedBean {
+    public String getLogo_flag() {
+        return logo_flag;
+    }
+
+    public void setLogo_flag(String logo_flag) {
+        this.logo_flag = logo_flag;
+    }
+
+    private String logo_flag;
     private String flag;
     private String price;
     private String dopportunity;
@@ -141,6 +150,7 @@ public class UnfinishedBean {
     public String toString() {
         return "UnfinishedBean{" +
                 "flag='" + flag + '\'' +
+                ", logo_flag='" + logo_flag + '\'' +
                 ", price='" + price + '\'' +
                 ", dopportunity='" + dopportunity + '\'' +
                 ", vmachinenum='" + vmachinenum + '\'' +

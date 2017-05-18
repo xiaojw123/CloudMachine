@@ -28,6 +28,7 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.WeChatShareUtil;
+import com.github.mikephil.charting.utils.AppLog;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -48,22 +49,24 @@ import cn.jpush.android.api.TagAliasCallback;
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Handler.Callback {
 
     private IWXAPI api;
-    private static final String APP_SECRET    = "3c69a7395f5e54009accf1e1194d553c";
-    private static final int    MSG_SET_ALIAS = 1001;
-    private Handler   mHandler;
-    public  RxManager mRxManager;
-    private Context   mContext;
-    private String    mNickname;
-    private String    mHeadimgurl;
-    private int       mSex;
-    private String    mUnionid;
-    private String    mOpenId;
-    private Member    mMember;
-    private Member    member;
+    private static final String APP_SECRET = "3c69a7395f5e54009accf1e1194d553c";
+    private static final int MSG_SET_ALIAS = 1001;
+    private Handler mHandler;
+    public RxManager mRxManager;
+    private Context mContext;
+    private String mNickname;
+    private String mHeadimgurl;
+    private int mSex;
+    private String mUnionid;
+    private String mOpenId;
+    private Member mMember;
+    private Member member;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_wxentry);
+        AppLog.print("wxentryActivity__oncreate_");
         mRxManager = new RxManager();
         mHandler = new Handler(this);
         mContext = this;
@@ -89,14 +92,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
     @Override
     public void onResp(BaseResp baseResp) {
         String result;
-        Constants.MyLog("获取返货成功");
         switch (baseResp.errCode) {
-
             case BaseResp.ErrCode.ERR_OK:
                 result = "分享成功";
                 //发送成功
-                SendAuth.Resp sendResp = (SendAuth.Resp) baseResp;
-                if (sendResp != null) {
+                if (baseResp instanceof SendAuth.Resp) {
+                    SendAuth.Resp sendResp = (SendAuth.Resp) baseResp;
+                    AppLog.print("sendResp");
                     String code = sendResp.code;
                     getAccess_token(code);
                 } else {
@@ -125,8 +127,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
 
     /**
      * 获取openid accessToken值用于后期操作
-     * @param code
-     *         请求码
+     *
+     * @param code 请求码
      */
     private void getAccess_token(String code) {
 
@@ -136,6 +138,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
 
     /**
      * 拿到 access_token,openid
+     *
      * @param message
      * @return
      */
@@ -146,13 +149,19 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
 
         switch (message.what) {
             case Constants.HANDLER_GETACCESSTOKEN_SUCCESS:
+                AppLog.print("HANDLER_GETACCESSTOKEN_SUCCESS_____");
                 String openid = bundle.getString("openid");
                 String access_token = bundle.getString("access_token");
+                AppLog.print("access_token___" + access_token + ", openid___" + openid);
                 if (!TextUtils.isEmpty(access_token) && !TextUtils.isEmpty(openid)) {
+                    AppLog.print("getUserMsg____");
                     getUserMsg(access_token, openid);
+                } else {
+                    AppLog.print("finish____");
                 }
                 break;
             case Constants.HANDLER_GETUSERMSG_SUCCESS:
+                AppLog.print("HANDLER_GETUSERMSG_SUCCESS_____");
                 mNickname = bundle.getString("nickname");
                 mHeadimgurl = bundle.getString("headimgurl");
                 mSex = bundle.getInt("sex");
@@ -177,7 +186,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                     protected void _onNext(JsonObject jsonObject) {
                         JsonElement jsonElement = jsonObject.get("code");
                         int code = jsonElement.getAsInt();
+                        AppLog.print("switchWxLogin code___" + code);
                         if (code == 16305) {
+                            AppLog.print("set 1");
                             Bundle b = new Bundle();
                             b.putString("nickname", nickname);
                             b.putString("unionid", unionid);
@@ -186,6 +197,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                             b.putInt("sex", sex);
                             Constants.toActivity(WXEntryActivity.this, VerifyPhoneNumActivity.class, b, true);
                         } else if (code == 800) {
+                            AppLog.print("set 2");
                             JsonElement resultElement = jsonObject.get("result");
                             String result = resultElement.toString();
                             try {
@@ -210,16 +222,19 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                             mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
                             MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
                         } else {
+                            AppLog.print("set 3");
                             JsonElement messageElement = jsonObject.get("message");
                             String message = messageElement.getAsString();
-                            ToastUtils.error(message, true);
+                            ToastUtils.showToast(WXEntryActivity.this,message);
+                            finish();
                         }
 
                     }
 
                     @Override
                     protected void _onError(String message) {
-
+                        ToastUtils.showToast(WXEntryActivity.this,message);
+                        finish();
                     }
                 }));
     }

@@ -21,8 +21,9 @@ import android.widget.ProgressBar;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.utils.Constants;
+import com.cloudmachine.struc.Member;
 import com.cloudmachine.utils.MemeberKeeper;
+import com.github.mikephil.charting.utils.AppLog;
 import com.jsbridge.JsBridgeClient;
 import com.jsbridge.core.JsBridgeManager;
 
@@ -40,15 +41,12 @@ import butterknife.ButterKnife;
  */
 @SuppressLint("SetJavaScriptEnabled")
 public class AskMyQuestionActicity extends BaseAutoLayoutActivity {
-
-
     @BindView(R.id.webview_progressbar)
     ProgressBar mWebviewProgressbar;
     @BindView(R.id.wv_questions)
-    WebView     mWvQuestions;
-    private Context         mContext;
-    private String          URLString;
-    private Long            mMyid;
+    WebView mWvQuestions;
+    private String URLString;
+    private Long mMyid;
     private JsBridgeManager jsBridgeManager;
 
     @Override
@@ -57,35 +55,29 @@ public class AskMyQuestionActicity extends BaseAutoLayoutActivity {
         setContentView(R.layout.activity_askmyquestion);
         ButterKnife.bind(this);
         initJsBridgeManager();
-        getIntentData();
-        initView();
+        initParams();
         initWebView();
 
     }
 
 
-    private void getIntentData() {
+    private void initJsBridgeManager() {
+        jsBridgeManager = JsBridgeClient.getJsBridgeManager(AskMyQuestionActicity.this);
+    }
 
+    private void initParams() {
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         String url = bundle.getString("url");
         if (!TextUtils.isEmpty(url)) {
             URLString = url;
         }
-    }
-
-    private void initJsBridgeManager() {
-        jsBridgeManager = JsBridgeClient.getJsBridgeManager(AskMyQuestionActicity.this);
-    }
-
-    private void initView() {
-        mContext = this;
-        if (MemeberKeeper.getOauth(this) != null) {
-            if (MemeberKeeper.getOauth(mContext).getWjdsId() != null) {
-                mMyid = MemeberKeeper.getOauth(mContext).getWjdsId();
-            } /*else {
-                Constants.toLoginActivity(QuestionCommunityActivity.this, 2);
-            }*/
+        if (URLString != null && URLString.contains("myid")) {
+            return;
+        }
+        Member member = MemeberKeeper.getOauth(this);
+        if (member != null && member.getWjdsId() != null) {
+            mMyid = member.getWjdsId();
         }
     }
 
@@ -108,6 +100,10 @@ public class AskMyQuestionActicity extends BaseAutoLayoutActivity {
         //		webview.clearCache(true);
         mWvQuestions.setWebChromeClient(new MyWebChromeClient());
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mWvQuestions.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+
         if (Build.VERSION.SDK_INT >= 8) {
             mWvQuestions.getSettings().setPluginState(WebSettings.PluginState.ON);
         } else {
@@ -125,11 +121,10 @@ public class AskMyQuestionActicity extends BaseAutoLayoutActivity {
 
         });
         if (mMyid != null) {
-            mWvQuestions.loadUrl(URLString + "?myid=" + mMyid);
-            Constants.MyLog("AskMyQuestionActicity链接" + URLString + "?myid=" + mMyid);
-        } else {
-            mWvQuestions.loadUrl(URLString);
+            URLString += "?myid=" + mMyid;
         }
+        mWvQuestions.loadUrl(URLString);
+        AppLog.print("ASK AND QUES loadUrl___" + URLString);
 
 
     }

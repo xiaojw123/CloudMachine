@@ -24,13 +24,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.ViewCouponActivity;
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.ApiConstants;
+import com.cloudmachine.api.HostType;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.base.baserx.RxConstants;
+import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
-import com.cloudmachine.ui.personal.activity.AskMyQuestionActicity;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.personal.activity.InsuranceListActivity;
 import com.cloudmachine.ui.personal.activity.MyQRCodeActivity;
 import com.cloudmachine.ui.personal.activity.PersonalDataActivity;
@@ -42,6 +46,7 @@ import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ShareDialog;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.WeChatShareUtil;
+import com.github.mikephil.charting.utils.AppLog;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
@@ -49,7 +54,10 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.jpush.android.api.JPushInterface;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.cloudmachine.R.id.exitlayout;
 
@@ -64,57 +72,57 @@ import static com.cloudmachine.R.id.exitlayout;
  */
 
 public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalModel> implements PersonalContract.View, Handler.Callback, View.OnClickListener {
-
+    public static String MEMBER_ID = "memberid";
 
     @BindView(R.id.title_layout)
-    TitleView       mTitleLayout;  //标题头
+    TitleView mTitleLayout;  //标题头
     @BindView(R.id.head_iamge)
     CircleImageView mHeadIamge;    //圆形头像
     @BindView(R.id.nickname)
-    TextView        mNickname;     //昵称
+    TextView mNickname;     //昵称
     @BindView(R.id.ll_personal_information)
-    LinearLayout    mLlPersonalInformation; //个人信息页面
+    LinearLayout mLlPersonalInformation; //个人信息页面
     @BindView(R.id.rl_qr_code)
-    RelativeLayout  mRlQrCode;     //二维码
+    RelativeLayout mRlQrCode;     //二维码
     @BindView(R.id.rl_coupon)
-    RelativeLayout  mRlCoupon;     //优惠券
+    RelativeLayout mRlCoupon;     //优惠券
     @BindView(R.id.score_text)
-    TextView        mScoreText;     //积分
+    TextView mScoreText;     //积分
     @BindView(R.id.about_and_help)
-    RelativeLayout  mAboutAndHelp;  //关于与帮助
+    RelativeLayout mAboutAndHelp;  //关于与帮助
     @BindView(R.id.share_app)
-    RelativeLayout  mShareApp;      //分享app
+    RelativeLayout mShareApp;      //分享app
     @BindView(R.id.exitlayout)
-    LinearLayout    mExitlayout;    //退出登录
+    LinearLayout mExitlayout;    //退出登录
     Unbinder unbinder;
     @BindView(R.id.mobile)
-    TextView       mMobile;
+    TextView mMobile;
     @BindView(R.id.rl_score)
     RelativeLayout mRlScore;
     @BindView(R.id.exitLogin)
-    Button         mExitLogin;
+    Button mExitLogin;
     @BindView(R.id.scrollView)
-    ScrollView     mScrollView;
+    ScrollView mScrollView;
     @BindView(R.id.rl_myquestion)
     RelativeLayout mRlMyquestion;
     @BindView(R.id.rl_insurance_consulting)
     RelativeLayout mRlInsuranceConsulting;
 
 
-    private Context         mContext;
-    private Handler         mHandler;
+    private Context mContext;
+    private Handler mHandler;
     private WeChatShareUtil weChatShareUtil;//微信分享工具类
-    private int             infoType;
-    private int             infoMemberId;
+    private int infoType;
+    private int infoMemberId;
     private long memberId = -1;
-    private boolean     isMyInfo;
-    private Member      mMember;
+    private boolean isMyInfo;
+    private Member mMember;
     private PopupWindow mpopupWindow;
 
     //分享信息
-    private String sessionTitle       = "云机械";
+    private String sessionTitle = "云机械";
     private String sessionDescription = "我的工程机械设备都在云机械APP，你的设备在哪里，赶紧加入吧！";
-    private String sessionUrl         = "http://www.cloudm.com/yjx";
+    private String sessionUrl = "http://www.cloudm.com/yjx";
 
     @Override
     protected void initView() {
@@ -143,14 +151,69 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden){
+            AppLog.print("PersonalFragment  onHiddenChanged__"+hidden);
+            getScoreInfo();
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        mPresenter.getMemberInfoById(memberId);
-        mPresenter.getUserScoreInfo(memberId);
-        Constants.MyLog("进入个人信息");
-        Constants.MyLog("PersonalFragment挖机大师id:" + MemeberKeeper.getOauth(mContext).getWjdsId());
-        Constants.MyLog("PersonalFragment的numId:"+MemeberKeeper.getOauth(mContext).getNum());
-        Constants.MyLog("PersonalFragment的String:"+MemeberKeeper.getOauth(mContext).toString());
+        memberId = MemeberKeeper.getOauth(getActivity()).getId();
+        AppLog.print("PersonalFragment onResume memberId___" + memberId + "___persenter__" + mPresenter);
+//        mPresenter.setVM(this,mModel);
+//        mPresenter.getMemberInfoById(memberId);
+//        mPresenter.getUserScoreInfo(memberId);
+        getMemberInfo();
+        getScoreInfo();
+
+//        Constants.MyLog("进入个人信息");
+//        Member member = MemeberKeeper.getOauth(mContext);
+//        Constants.MyLog("PersonalFragment挖机大师id:" + member.getWjdsId());
+//        Constants.MyLog("PersonalFragment的numId:" + member.getNum());
+//        Constants.MyLog("PersonalFragment的String:" + member.toString());
+    }
+
+    private void getScoreInfo() {
+        Api.getDefault(HostType.CLOUDM_HOST)
+                .getUserScoreInfo(memberId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<BaseRespose<ScoreInfo>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BaseRespose<ScoreInfo> scoreInfoBaseRespose) {
+                returnUserScoreInfo(scoreInfoBaseRespose.getResult());
+            }
+        });
+    }
+
+    private void getMemberInfo() {
+        Api.getDefault(HostType.CLOUDM_HOST).getMemberInfoById(memberId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<BaseRespose<Member>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BaseRespose<Member> memberBaseRespose) {
+                returnMemberInfo(memberBaseRespose.getResult());
+
+            }
+        });
     }
 
     private void initListener() {
@@ -228,7 +291,8 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        AppLog.print("PersonalFragment onDestroyView_____");
+//        unbinder.unbind();
     }
 
     @Override
@@ -247,7 +311,9 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
                 }
                 break;
             case R.id.rl_qr_code:
-                Constants.toActivity(getActivity(), MyQRCodeActivity.class, null, false);
+                Bundle codeB = new Bundle();
+                codeB.putString(MEMBER_ID, String.valueOf(memberId));
+                Constants.toActivity(getActivity(), MyQRCodeActivity.class, codeB, false);
                 break;
             case R.id.rl_coupon:
                 //优惠券列表（待修改）
@@ -277,14 +343,21 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
                 JPushInterface.setAliasAndTags(getActivity().getApplicationContext(), "", null, null);
                 MemeberKeeper.clearOauth(getActivity());
                 ((MainActivity) getActivity()).loginOut();
+                AppLog.print("LOGINOUT Auth :" + MemeberKeeper.getOauth(mContext));
                 break;
             case R.id.rl_myquestion:
-                Constants.MyLog("拿到的挖机大师id"+MemeberKeeper.getOauth(getActivity()).getWjdsId());
-                Constants.MyLog("拿到的numId"+MemeberKeeper.getOauth(getActivity()).getNum());
-                if (MemeberKeeper.getOauth(getActivity()).getWjdsId() != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_myq");
-                    Constants.toActivity(getActivity(), AskMyQuestionActicity.class,bundle,false);
+                Member member = MemeberKeeper.getOauth(getActivity());
+                if (member != null) {
+                    Constants.MyLog("拿到的挖机大师id" + member.getWjdsId());
+                    Constants.MyLog("拿到的numId" + member.getNum());
+                    Long wjdsId=member.getWjdsId();
+                    if (wjdsId!= null) {
+                        Bundle bundle = new Bundle();
+//                        bundle.putString("url", "http://h5.test.cloudm.com/n/ask_myq?myid=" + wjdsId);
+                        bundle.putString("url", ApiConstants.H5_HOST+"n/ask_myq?myid=" + wjdsId);
+//                        Constants.toActivity(getActivity(), AskMyQuestionActicity.class, bundle, false);
+                        Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle, false);
+                    }
                 }
                 break;
             case R.id.rl_insurance_consulting:
@@ -294,7 +367,13 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void returnMemberInfo(Member member) {
+        AppLog.print("returnMemberInfo member_" + member);
         this.mMember = member;
         if (mMember != null) {
             //序列化信息到本地
@@ -317,8 +396,8 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
     @Override
     public void returnUserScoreInfo(ScoreInfo scoreInfo) {
         if (scoreInfo != null) {
-            Constants.MyLog(String.valueOf(scoreInfo.getPoint())+"拿到的用户积分");
-            mScoreText.setText(String.valueOf(scoreInfo.getPoint()));
+            Constants.MyLog(String.valueOf(scoreInfo.getPoint_TOTAL()) + "拿到的用户积分");
+            mScoreText.setText(String.valueOf(scoreInfo.getPoint_TOTAL()));
         }
     }
 
@@ -356,5 +435,7 @@ public class PersonalFragment extends BaseFragment<PersonalPresenter, PersonalMo
         mpopupWindow.showAtLocation(view, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         mpopupWindow.update();
     }
+
+
 
 }

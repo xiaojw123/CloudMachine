@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.amap.api.maps2d.model.LatLng;
 import com.cloudmachine.R;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.cache.MySharedPreferences;
@@ -63,437 +64,442 @@ import java.util.regex.Pattern;
 
 public class Constants {
 
-    public static final int HANDLER_CHANGE_MAP                             = 1;
-    public static final int HANDLER_GETDEVICELIST_SUCCESS                  = HANDLER_CHANGE_MAP + 1;
-    public static final int HANDLER_GETDEVICELIST_FAIL                     = HANDLER_GETDEVICELIST_SUCCESS + 1;
-    public static final int HANDLER_GETDEVICEINFO_SUCCESS                  = HANDLER_GETDEVICELIST_FAIL + 1;
-    public static final int HANDLER_GETDEVICEINFO_FAIL                     = HANDLER_GETDEVICEINFO_SUCCESS + 1;
-    public static final int HANDLER_SCROLLVIEW_DOWN                        = HANDLER_GETDEVICEINFO_FAIL + 1;
-    public static final int HANDLER_GETDEVICEBASICSINFO_SUCCESS            = HANDLER_SCROLLVIEW_DOWN + 1;
-    public static final int HANDLER_GETDEVICEBASICSINFO_FAIL               = HANDLER_GETDEVICEBASICSINFO_SUCCESS + 1;
-    public static final int HANDLER_GETDEVICEMEMBER_SUCCESS                = HANDLER_GETDEVICEBASICSINFO_FAIL + 1;
-    public static final int HANDLER_GETDEVICEMEMBER_FAIL                   = HANDLER_GETDEVICEMEMBER_SUCCESS + 1;
-    public static final int HANDLER_DELETEMEMBER_SUCCESS                   = HANDLER_GETDEVICEMEMBER_FAIL + 1;
-    public static final int HANDLER_DELETEMBER_FAIL                        = HANDLER_DELETEMEMBER_SUCCESS + 1;
-    public static final int HANDLER_SEARCHMEMBER_SUCCESS                   = HANDLER_DELETEMBER_FAIL + 1;
-    public static final int HANDLER_SEARCHMEMBER_FAIL                      = HANDLER_SEARCHMEMBER_SUCCESS + 1;
-    public static final int HANDLER_ADDMEMBER_SUCCESS                      = HANDLER_SEARCHMEMBER_FAIL + 1;
-    public static final int HANDLER_ADDMEMBER_FAIL                         = HANDLER_ADDMEMBER_SUCCESS + 1;
-    public static final int HANDLER_GETROOTNODES_SUCCESS                   = HANDLER_ADDMEMBER_FAIL + 1;
-    public static final int HANDLER_GETROOTNODES_FAIL                      = HANDLER_GETROOTNODES_SUCCESS + 1;
-    public static final int HANDLER_UPDATEDEVICEBYKEY_SUCCESS              = HANDLER_GETROOTNODES_FAIL + 1;
-    public static final int HANDLER_UPDATEDEVICEBYKEY_FAIL                 = HANDLER_UPDATEDEVICEBYKEY_SUCCESS + 1;
-    public static final int HANDLER_ADDDEVICE_SUCCESS                      = HANDLER_UPDATEDEVICEBYKEY_FAIL + 1;
-    public static final int HANDLER_ADDDEVICE_FAIL                         = HANDLER_ADDDEVICE_SUCCESS + 1;
-    public static final int HANDLER_DELETEDEVICE_SUCCESS                   = HANDLER_ADDDEVICE_FAIL + 1;
-    public static final int HANDLER_DELETEDEVICE_FAIL                      = HANDLER_DELETEDEVICE_SUCCESS + 1;
-    public static final int HANDLER_SWITCH_GUIDACTIVITY                    = HANDLER_DELETEDEVICE_FAIL + 1;
-    public static final int HANDLER_SWITCH_MAINACTIVITY                    = HANDLER_SWITCH_GUIDACTIVITY + 1;
-    public static final int HANDLER_FINISH_IMAGEPAGERACTIVITY              = HANDLER_SWITCH_MAINACTIVITY + 1;
-    public static final int HANDLER_GETPERMISSIONS_SUCCESS                 = HANDLER_FINISH_IMAGEPAGERACTIVITY + 1;
-    public static final int HANDLER_GETPERMISSIONS_FAIL                    = HANDLER_GETPERMISSIONS_SUCCESS + 1;
-    public static final int HANDLER_GETMACHINETYPES_SUCCESS                = HANDLER_GETPERMISSIONS_FAIL + 1;
-    public static final int HANDLER_GETMACHINETYPES_FAIL                   = HANDLER_GETMACHINETYPES_SUCCESS + 1;
-    public static final int HANDLER_GETMACHINEBRAND_SUCCESS                = HANDLER_GETMACHINETYPES_FAIL + 1;
-    public static final int HANDLER_GETMACHINEBRAND_FAIL                   = HANDLER_GETMACHINEBRAND_SUCCESS + 1;
-    public static final int HANDLER_GETMACHINEMODEL_SUCCESS                = HANDLER_GETMACHINEBRAND_FAIL + 1;
-    public static final int HANDLER_GETMACHINEMODEL_FAIL                   = HANDLER_GETMACHINEMODEL_SUCCESS + 1;
-    public static final int HANDLER_TIMER                                  = HANDLER_GETMACHINEMODEL_FAIL + 1;
-    public static final int HANDLER_GETVERSION_SUCCESS                     = HANDLER_TIMER + 1;
-    public static final int HANDLER_GETVERSION_FAIL                        = HANDLER_GETVERSION_SUCCESS + 1;
-    public static final int HANDLER_VERSIONDOWNLOAD                        = HANDLER_GETVERSION_FAIL + 1;
-    public static final int HANDLER_GETCOMMUNITYLIST_SUCCESS               = HANDLER_VERSIONDOWNLOAD + 1;
-    public static final int HANDLER_GETCOMMUNITYLIST_FAIL                  = HANDLER_GETCOMMUNITYLIST_SUCCESS + 1;
-    public static final int HANDLER_GETALLMESSAGECOUNT_SUCCESS             = HANDLER_GETCOMMUNITYLIST_FAIL + 1;
-    public static final int HANDLER_GETALLMESSAGECOUNT_FAIL                = HANDLER_GETALLMESSAGECOUNT_SUCCESS + 1;
-    public static final int HANDLER_GETALLMESSAGELIST_SUCCESS              = HANDLER_GETALLMESSAGECOUNT_FAIL + 1;
-    public static final int HANDLER_GETALLMESSAGELIST_FAIL                 = HANDLER_GETALLMESSAGELIST_SUCCESS + 1;
-    public static final int HANDLER_BLOGSUPPORT_SUCCESS                    = HANDLER_GETALLMESSAGELIST_FAIL + 1;
-    public static final int HANDLER_BLOGSUPPORT_FAIL                       = HANDLER_BLOGSUPPORT_SUCCESS + 1;
-    public static final int HANDLER_BLOGSUPPORTLIST_SUCCESS                = HANDLER_BLOGSUPPORT_FAIL + 1;
-    public static final int HANDLER_BLOGSUPPORTLIST_FAIL                   = HANDLER_BLOGSUPPORTLIST_SUCCESS + 1;
-    public static final int HANDLER_BLOGDETAIL_SUCCESS                     = HANDLER_BLOGSUPPORTLIST_FAIL + 1;
-    public static final int HANDLER_BLOGDETAIL_FAIL                        = HANDLER_BLOGDETAIL_SUCCESS + 1;
-    public static final int HANDLER_BLOGCOMMENTSLIST_SUCCESS               = HANDLER_BLOGDETAIL_FAIL + 1;
-    public static final int HANDLER_BLOGCOMMENTSLIST_FAIL                  = HANDLER_BLOGCOMMENTSLIST_SUCCESS + 1;
-    public static final int HANDLER_GETSENSORPOSITION_SUCCESS              = HANDLER_BLOGCOMMENTSLIST_FAIL + 1;
-    public static final int HANDLER_GETSENSORPOSITION_FAIL                 = HANDLER_GETSENSORPOSITION_SUCCESS + 1;
-    public static final int HANDLER_GETSENSORLIST_SUCCESS                  = HANDLER_GETSENSORPOSITION_FAIL + 1;
-    public static final int HANDLER_GETSENSORLIST_FAIL                     = HANDLER_GETSENSORLIST_SUCCESS + 1;
-    public static final int HANDLER_SAVESENSOR_SUCCESS                     = HANDLER_GETSENSORLIST_FAIL + 1;
-    public static final int HANDLER_SAVESENSOR_FAIL                        = HANDLER_SAVESENSOR_SUCCESS + 1;
-    public static final int HANDLER_DELETESENSOR_SUCCESS                   = HANDLER_SAVESENSOR_FAIL + 1;
-    public static final int HANDLER_DELETESENSOR_FAIL                      = HANDLER_DELETESENSOR_SUCCESS + 1;
-    public static final int HANDLER_GETCODE_SUCCESS                        = HANDLER_DELETESENSOR_FAIL + 1;
-    public static final int HANDLER_GETCODE_FAIL                           = HANDLER_GETCODE_SUCCESS + 1;
-    public static final int HANDLER_GETVIEWHW                              = HANDLER_GETCODE_FAIL + 1;
-    public static final int HANDLER_UPCLIENTID_SUCCESS                     = HANDLER_GETVIEWHW + 1;
-    public static final int HANDLER_UPCLIENTID_FAIL                        = HANDLER_UPCLIENTID_SUCCESS + 1;
-    public static final int HANDLER_GETMEMBERINFO_SUCCESS                  = HANDLER_UPCLIENTID_FAIL + 1;
-    public static final int HANDLER_GETMEMBERINFO_FAIL                     = HANDLER_GETMEMBERINFO_SUCCESS + 1;
-    public static final int HANDLER_MESSAGEACCEPTE_SUCCESS                 = HANDLER_GETMEMBERINFO_FAIL + 1;
-    public static final int HANDLER_MESSAGEREFUSE_SUCCESS                  = HANDLER_MESSAGEACCEPTE_SUCCESS + 1;
-    public static final int HANDLER_MESSAGEUPSTATE_SUCCESS                 = HANDLER_MESSAGEREFUSE_SUCCESS + 1;
-    public static final int HANDLER_MESSAGEACTION_FAIL                     = HANDLER_MESSAGEUPSTATE_SUCCESS + 1;
-    public static final int HANDLER_LOGIN_SUCCESS                          = HANDLER_MESSAGEACTION_FAIL + 1;
-    public static final int HANDLER_LOGIN_FAIL                             = HANDLER_LOGIN_SUCCESS + 1;
-    public static final int HANDLER_UPDATEMEMBERINFO_SUCCESS               = HANDLER_LOGIN_FAIL + 1;
-    public static final int HANDLER_UPDATEMEMBERINFO_FAIL                  = HANDLER_UPDATEMEMBERINFO_SUCCESS + 1;
-    public static final int HANDLER_FORGETPWD_SUCCESS                      = HANDLER_UPDATEMEMBERINFO_FAIL + 1;
-    public static final int HANDLER_FORGETPWD_FAIL                         = HANDLER_FORGETPWD_SUCCESS + 1;
-    public static final int HANDLER_UPDATEPWD_SUCCESS                      = HANDLER_FORGETPWD_FAIL + 1;
-    public static final int HANDLER_UPDATEPWD_FAIL                         = HANDLER_UPDATEPWD_SUCCESS + 1;
-    public static final int HANDLER_REGISTER_SUCCESS                       = HANDLER_UPDATEPWD_FAIL + 1;
-    public static final int HANDLER_REGISTER_FAIL                          = HANDLER_REGISTER_SUCCESS + 1;
-    public static final int HANDLER_CHECKCODE_SUCCESS                      = HANDLER_REGISTER_FAIL + 1;
-    public static final int HANDLER_CHECKCODE_FAIL                         = HANDLER_CHECKCODE_SUCCESS + 1;
-    public static final int HANDLER_SEARCHBLOG_SUCCESS                     = HANDLER_CHECKCODE_FAIL + 1;
-    public static final int HANDLER_SEARCHBLOG_FAIL                        = HANDLER_SEARCHBLOG_SUCCESS + 1;
-    public static final int HANDLER_GETMYBLOG_SUCCESS                      = HANDLER_SEARCHBLOG_FAIL + 1;
-    public static final int HANDLER_GETMYBLOG_FAIL                         = HANDLER_GETMYBLOG_SUCCESS + 1;
-    public static final int HANDLER_NEWBLOG_SUCCESS                        = HANDLER_GETMYBLOG_FAIL + 1;
-    public static final int HANDLER_NEWBLOG_FAIL                           = HANDLER_NEWBLOG_SUCCESS + 1;
-    public static final int HANDLER_COMMENTBLOG_SUCCESS                    = HANDLER_NEWBLOG_FAIL + 1;
-    public static final int HANDLER_COMMENTBLOG_FAIL                       = HANDLER_COMMENTBLOG_SUCCESS + 1;
-    public static final int HANDLER_FEEDBACK_SUCCESS                       = HANDLER_COMMENTBLOG_FAIL + 1;
-    public static final int HANDLER_FEEDBACK_FAIL                          = HANDLER_FEEDBACK_SUCCESS + 1;
-    public static final int HANDLER_GOTO_MESSAGECONTENT                    = HANDLER_FEEDBACK_FAIL + 1;
-    public static final int HANDLER_GETAGENTS_SUCCESS                      = HANDLER_GOTO_MESSAGECONTENT + 1;
-    public static final int HANDLER_GETAGENTS_FAIL                         = HANDLER_GETAGENTS_SUCCESS + 1;
-    public static final int HANDLER_ADDFENCE_SUCCESS                       = HANDLER_GETAGENTS_FAIL + 1;
-    public static final int HANDLER_ADDFENCE_FAIL                          = HANDLER_ADDFENCE_SUCCESS + 1;
-    public static final int HANDLER_DELETEFENCE_SUCCESS                    = HANDLER_ADDFENCE_FAIL + 1;
-    public static final int HANDLER_DELETEFENCE_FAIL                       = HANDLER_DELETEFENCE_SUCCESS + 1;
-    public static final int HANDLER_DELETEFENCE_ASK                        = HANDLER_DELETEFENCE_FAIL + 1;
-    public static final int HANDLER_UPLOADCARDPIC_SUCCESS                  = HANDLER_DELETEFENCE_ASK + 1;
-    public static final int HANDLER_UPLOADCARDPIC_FAIL                     = HANDLER_UPLOADCARDPIC_SUCCESS + 1;
-    public static final int HANDLER_DAILYWORK_SUCCESS                      = HANDLER_UPLOADCARDPIC_FAIL + 1;
-    public static final int HANDLER_DAILYWORK_FAIL                         = HANDLER_DAILYWORK_SUCCESS + 1;
-    public static final int HANDLER_FAULTINFO_SUCCESS                      = HANDLER_DAILYWORK_FAIL + 1;
-    public static final int HANDLER_FAULTINFO_FAIL                         = HANDLER_FAULTINFO_SUCCESS + 1;
-    public static final int HANDLER_FAULTDITAILS_SUCCESS                   = HANDLER_FAULTINFO_FAIL + 1;
-    public static final int HANDLER_FAULTDITAILS_FAIL                      = HANDLER_FAULTDITAILS_SUCCESS + 1;
-    public static final int HANDLER_LOCUS_SUCCESS                          = HANDLER_FAULTDITAILS_FAIL + 1;
-    public static final int HANDLER_LOCUS_FAIL                             = HANDLER_LOCUS_SUCCESS + 1;
-    public static final int HANDLER_REPAIRRECORD_SUCCESS                   = HANDLER_LOCUS_FAIL + 1;
-    public static final int HANDLER_REPAIRRECORD_FAIL                      = HANDLER_REPAIRRECORD_SUCCESS + 1;
-    public static final int HANDLER_INTEGRAL_SUCCESS                       = HANDLER_REPAIRRECORD_FAIL + 1;
-    public static final int HANDLER_INTEGRAL_FAIL                          = HANDLER_INTEGRAL_SUCCESS + 1;
-    public static final int HANDLER_CHART_MARKER_TIME                      = HANDLER_INTEGRAL_FAIL + 1;
-    public static final int HANDLER_QUESTION_SUCCESS                       = HANDLER_CHART_MARKER_TIME + 1;
-    public static final int HANDLER_QUESTION_FAIL                          = HANDLER_QUESTION_SUCCESS + 1;
+    public static final int HANDLER_CHANGE_MAP = 1;
+    public static final int HANDLER_GETDEVICELIST_SUCCESS = HANDLER_CHANGE_MAP + 1;
+    public static final int HANDLER_GETDEVICELIST_FAIL = HANDLER_GETDEVICELIST_SUCCESS + 1;
+    public static final int HANDLER_GETDEVICEINFO_SUCCESS = HANDLER_GETDEVICELIST_FAIL + 1;
+    public static final int HANDLER_GETDEVICEINFO_FAIL = HANDLER_GETDEVICEINFO_SUCCESS + 1;
+    public static final int HANDLER_SCROLLVIEW_DOWN = HANDLER_GETDEVICEINFO_FAIL + 1;
+    public static final int HANDLER_GETDEVICEBASICSINFO_SUCCESS = HANDLER_SCROLLVIEW_DOWN + 1;
+    public static final int HANDLER_GETDEVICEBASICSINFO_FAIL = HANDLER_GETDEVICEBASICSINFO_SUCCESS + 1;
+    public static final int HANDLER_GETDEVICEMEMBER_SUCCESS = HANDLER_GETDEVICEBASICSINFO_FAIL + 1;
+    public static final int HANDLER_GETDEVICEMEMBER_FAIL = HANDLER_GETDEVICEMEMBER_SUCCESS + 1;
+    public static final int HANDLER_DELETEMEMBER_SUCCESS = HANDLER_GETDEVICEMEMBER_FAIL + 1;
+    public static final int HANDLER_DELETEMBER_FAIL = HANDLER_DELETEMEMBER_SUCCESS + 1;
+    public static final int HANDLER_SEARCHMEMBER_SUCCESS = HANDLER_DELETEMBER_FAIL + 1;
+    public static final int HANDLER_SEARCHMEMBER_FAIL = HANDLER_SEARCHMEMBER_SUCCESS + 1;
+    public static final int HANDLER_ADDMEMBER_SUCCESS = HANDLER_SEARCHMEMBER_FAIL + 1;
+    public static final int HANDLER_ADDMEMBER_FAIL = HANDLER_ADDMEMBER_SUCCESS + 1;
+    public static final int HANDLER_GETROOTNODES_SUCCESS = HANDLER_ADDMEMBER_FAIL + 1;
+    public static final int HANDLER_GETROOTNODES_FAIL = HANDLER_GETROOTNODES_SUCCESS + 1;
+    public static final int HANDLER_UPDATEDEVICEBYKEY_SUCCESS = HANDLER_GETROOTNODES_FAIL + 1;
+    public static final int HANDLER_UPDATEDEVICEBYKEY_FAIL = HANDLER_UPDATEDEVICEBYKEY_SUCCESS + 1;
+    public static final int HANDLER_ADDDEVICE_SUCCESS = HANDLER_UPDATEDEVICEBYKEY_FAIL + 1;
+    public static final int HANDLER_ADDDEVICE_FAIL = HANDLER_ADDDEVICE_SUCCESS + 1;
+    public static final int HANDLER_DELETEDEVICE_SUCCESS = HANDLER_ADDDEVICE_FAIL + 1;
+    public static final int HANDLER_DELETEDEVICE_FAIL = HANDLER_DELETEDEVICE_SUCCESS + 1;
+    public static final int HANDLER_SWITCH_GUIDACTIVITY = HANDLER_DELETEDEVICE_FAIL + 1;
+    public static final int HANDLER_SWITCH_MAINACTIVITY = HANDLER_SWITCH_GUIDACTIVITY + 1;
+    public static final int HANDLER_FINISH_IMAGEPAGERACTIVITY = HANDLER_SWITCH_MAINACTIVITY + 1;
+    public static final int HANDLER_GETPERMISSIONS_SUCCESS = HANDLER_FINISH_IMAGEPAGERACTIVITY + 1;
+    public static final int HANDLER_GETPERMISSIONS_FAIL = HANDLER_GETPERMISSIONS_SUCCESS + 1;
+    public static final int HANDLER_GETMACHINETYPES_SUCCESS = HANDLER_GETPERMISSIONS_FAIL + 1;
+    public static final int HANDLER_GETMACHINETYPES_FAIL = HANDLER_GETMACHINETYPES_SUCCESS + 1;
+    public static final int HANDLER_GETMACHINEBRAND_SUCCESS = HANDLER_GETMACHINETYPES_FAIL + 1;
+    public static final int HANDLER_GETMACHINEBRAND_FAIL = HANDLER_GETMACHINEBRAND_SUCCESS + 1;
+    public static final int HANDLER_GETMACHINEMODEL_SUCCESS = HANDLER_GETMACHINEBRAND_FAIL + 1;
+    public static final int HANDLER_GETMACHINEMODEL_FAIL = HANDLER_GETMACHINEMODEL_SUCCESS + 1;
+    public static final int HANDLER_TIMER = HANDLER_GETMACHINEMODEL_FAIL + 1;
+    public static final int HANDLER_GETVERSION_SUCCESS = HANDLER_TIMER + 1;
+    public static final int HANDLER_GETVERSION_FAIL = HANDLER_GETVERSION_SUCCESS + 1;
+    public static final int HANDLER_VERSIONDOWNLOAD = HANDLER_GETVERSION_FAIL + 1;
+    public static final int HANDLER_GETCOMMUNITYLIST_SUCCESS = HANDLER_VERSIONDOWNLOAD + 1;
+    public static final int HANDLER_GETCOMMUNITYLIST_FAIL = HANDLER_GETCOMMUNITYLIST_SUCCESS + 1;
+    public static final int HANDLER_GETALLMESSAGECOUNT_SUCCESS = HANDLER_GETCOMMUNITYLIST_FAIL + 1;
+    public static final int HANDLER_GETALLMESSAGECOUNT_FAIL = HANDLER_GETALLMESSAGECOUNT_SUCCESS + 1;
+    public static final int HANDLER_GETALLMESSAGELIST_SUCCESS = HANDLER_GETALLMESSAGECOUNT_FAIL + 1;
+    public static final int HANDLER_GETALLMESSAGELIST_FAIL = HANDLER_GETALLMESSAGELIST_SUCCESS + 1;
+    public static final int HANDLER_BLOGSUPPORT_SUCCESS = HANDLER_GETALLMESSAGELIST_FAIL + 1;
+    public static final int HANDLER_BLOGSUPPORT_FAIL = HANDLER_BLOGSUPPORT_SUCCESS + 1;
+    public static final int HANDLER_BLOGSUPPORTLIST_SUCCESS = HANDLER_BLOGSUPPORT_FAIL + 1;
+    public static final int HANDLER_BLOGSUPPORTLIST_FAIL = HANDLER_BLOGSUPPORTLIST_SUCCESS + 1;
+    public static final int HANDLER_BLOGDETAIL_SUCCESS = HANDLER_BLOGSUPPORTLIST_FAIL + 1;
+    public static final int HANDLER_BLOGDETAIL_FAIL = HANDLER_BLOGDETAIL_SUCCESS + 1;
+    public static final int HANDLER_BLOGCOMMENTSLIST_SUCCESS = HANDLER_BLOGDETAIL_FAIL + 1;
+    public static final int HANDLER_BLOGCOMMENTSLIST_FAIL = HANDLER_BLOGCOMMENTSLIST_SUCCESS + 1;
+    public static final int HANDLER_GETSENSORPOSITION_SUCCESS = HANDLER_BLOGCOMMENTSLIST_FAIL + 1;
+    public static final int HANDLER_GETSENSORPOSITION_FAIL = HANDLER_GETSENSORPOSITION_SUCCESS + 1;
+    public static final int HANDLER_GETSENSORLIST_SUCCESS = HANDLER_GETSENSORPOSITION_FAIL + 1;
+    public static final int HANDLER_GETSENSORLIST_FAIL = HANDLER_GETSENSORLIST_SUCCESS + 1;
+    public static final int HANDLER_SAVESENSOR_SUCCESS = HANDLER_GETSENSORLIST_FAIL + 1;
+    public static final int HANDLER_SAVESENSOR_FAIL = HANDLER_SAVESENSOR_SUCCESS + 1;
+    public static final int HANDLER_DELETESENSOR_SUCCESS = HANDLER_SAVESENSOR_FAIL + 1;
+    public static final int HANDLER_DELETESENSOR_FAIL = HANDLER_DELETESENSOR_SUCCESS + 1;
+    public static final int HANDLER_GETCODE_SUCCESS = HANDLER_DELETESENSOR_FAIL + 1;
+    public static final int HANDLER_GETCODE_FAIL = HANDLER_GETCODE_SUCCESS + 1;
+    public static final int HANDLER_GETVIEWHW = HANDLER_GETCODE_FAIL + 1;
+    public static final int HANDLER_UPCLIENTID_SUCCESS = HANDLER_GETVIEWHW + 1;
+    public static final int HANDLER_UPCLIENTID_FAIL = HANDLER_UPCLIENTID_SUCCESS + 1;
+    public static final int HANDLER_GETMEMBERINFO_SUCCESS = HANDLER_UPCLIENTID_FAIL + 1;
+    public static final int HANDLER_GETMEMBERINFO_FAIL = HANDLER_GETMEMBERINFO_SUCCESS + 1;
+    public static final int HANDLER_MESSAGEACCEPTE_SUCCESS = HANDLER_GETMEMBERINFO_FAIL + 1;
+    public static final int HANDLER_MESSAGEREFUSE_SUCCESS = HANDLER_MESSAGEACCEPTE_SUCCESS + 1;
+    public static final int HANDLER_MESSAGEUPSTATE_SUCCESS = HANDLER_MESSAGEREFUSE_SUCCESS + 1;
+    public static final int HANDLER_MESSAGEACTION_FAIL = HANDLER_MESSAGEUPSTATE_SUCCESS + 1;
+    public static final int HANDLER_LOGIN_SUCCESS = HANDLER_MESSAGEACTION_FAIL + 1;
+    public static final int HANDLER_LOGIN_FAIL = HANDLER_LOGIN_SUCCESS + 1;
+    public static final int HANDLER_UPDATEMEMBERINFO_SUCCESS = HANDLER_LOGIN_FAIL + 1;
+    public static final int HANDLER_UPDATEMEMBERINFO_FAIL = HANDLER_UPDATEMEMBERINFO_SUCCESS + 1;
+    public static final int HANDLER_FORGETPWD_SUCCESS = HANDLER_UPDATEMEMBERINFO_FAIL + 1;
+    public static final int HANDLER_FORGETPWD_FAIL = HANDLER_FORGETPWD_SUCCESS + 1;
+    public static final int HANDLER_UPDATEPWD_SUCCESS = HANDLER_FORGETPWD_FAIL + 1;
+    public static final int HANDLER_UPDATEPWD_FAIL = HANDLER_UPDATEPWD_SUCCESS + 1;
+    public static final int HANDLER_REGISTER_SUCCESS = HANDLER_UPDATEPWD_FAIL + 1;
+    public static final int HANDLER_REGISTER_FAIL = HANDLER_REGISTER_SUCCESS + 1;
+    public static final int HANDLER_CHECKCODE_SUCCESS = HANDLER_REGISTER_FAIL + 1;
+    public static final int HANDLER_CHECKCODE_FAIL = HANDLER_CHECKCODE_SUCCESS + 1;
+    public static final int HANDLER_SEARCHBLOG_SUCCESS = HANDLER_CHECKCODE_FAIL + 1;
+    public static final int HANDLER_SEARCHBLOG_FAIL = HANDLER_SEARCHBLOG_SUCCESS + 1;
+    public static final int HANDLER_GETMYBLOG_SUCCESS = HANDLER_SEARCHBLOG_FAIL + 1;
+    public static final int HANDLER_GETMYBLOG_FAIL = HANDLER_GETMYBLOG_SUCCESS + 1;
+    public static final int HANDLER_NEWBLOG_SUCCESS = HANDLER_GETMYBLOG_FAIL + 1;
+    public static final int HANDLER_NEWBLOG_FAIL = HANDLER_NEWBLOG_SUCCESS + 1;
+    public static final int HANDLER_COMMENTBLOG_SUCCESS = HANDLER_NEWBLOG_FAIL + 1;
+    public static final int HANDLER_COMMENTBLOG_FAIL = HANDLER_COMMENTBLOG_SUCCESS + 1;
+    public static final int HANDLER_FEEDBACK_SUCCESS = HANDLER_COMMENTBLOG_FAIL + 1;
+    public static final int HANDLER_FEEDBACK_FAIL = HANDLER_FEEDBACK_SUCCESS + 1;
+    public static final int HANDLER_GOTO_MESSAGECONTENT = HANDLER_FEEDBACK_FAIL + 1;
+    public static final int HANDLER_GETAGENTS_SUCCESS = HANDLER_GOTO_MESSAGECONTENT + 1;
+    public static final int HANDLER_GETAGENTS_FAIL = HANDLER_GETAGENTS_SUCCESS + 1;
+    public static final int HANDLER_ADDFENCE_SUCCESS = HANDLER_GETAGENTS_FAIL + 1;
+    public static final int HANDLER_ADDFENCE_FAIL = HANDLER_ADDFENCE_SUCCESS + 1;
+    public static final int HANDLER_DELETEFENCE_SUCCESS = HANDLER_ADDFENCE_FAIL + 1;
+    public static final int HANDLER_DELETEFENCE_FAIL = HANDLER_DELETEFENCE_SUCCESS + 1;
+    public static final int HANDLER_DELETEFENCE_ASK = HANDLER_DELETEFENCE_FAIL + 1;
+    public static final int HANDLER_UPLOADCARDPIC_SUCCESS = HANDLER_DELETEFENCE_ASK + 1;
+    public static final int HANDLER_UPLOADCARDPIC_FAIL = HANDLER_UPLOADCARDPIC_SUCCESS + 1;
+    public static final int HANDLER_DAILYWORK_SUCCESS = HANDLER_UPLOADCARDPIC_FAIL + 1;
+    public static final int HANDLER_DAILYWORK_FAIL = HANDLER_DAILYWORK_SUCCESS + 1;
+    public static final int HANDLER_FAULTINFO_SUCCESS = HANDLER_DAILYWORK_FAIL + 1;
+    public static final int HANDLER_FAULTINFO_FAIL = HANDLER_FAULTINFO_SUCCESS + 1;
+    public static final int HANDLER_FAULTDITAILS_SUCCESS = HANDLER_FAULTINFO_FAIL + 1;
+    public static final int HANDLER_FAULTDITAILS_FAIL = HANDLER_FAULTDITAILS_SUCCESS + 1;
+    public static final int HANDLER_LOCUS_SUCCESS = HANDLER_FAULTDITAILS_FAIL + 1;
+    public static final int HANDLER_LOCUS_FAIL = HANDLER_LOCUS_SUCCESS + 1;
+    public static final int HANDLER_REPAIRRECORD_SUCCESS = HANDLER_LOCUS_FAIL + 1;
+    public static final int HANDLER_REPAIRRECORD_FAIL = HANDLER_REPAIRRECORD_SUCCESS + 1;
+    public static final int HANDLER_INTEGRAL_SUCCESS = HANDLER_REPAIRRECORD_FAIL + 1;
+    public static final int HANDLER_INTEGRAL_FAIL = HANDLER_INTEGRAL_SUCCESS + 1;
+    public static final int HANDLER_CHART_MARKER_TIME = HANDLER_INTEGRAL_FAIL + 1;
+    public static final int HANDLER_QUESTION_SUCCESS = HANDLER_CHART_MARKER_TIME + 1;
+    public static final int HANDLER_QUESTION_FAIL = HANDLER_QUESTION_SUCCESS + 1;
     public static final int HANDLER_REPAIR_RECORD_BASIC_INFOMATION_SUCCESS = HANDLER_QUESTION_FAIL + 1;
-    public static final int HANDLER_REPAIR_RECORD_BASIC_INFOMATION_FAILED  = HANDLER_REPAIR_RECORD_BASIC_INFOMATION_SUCCESS + 1;
-    public static final int HANDLER_GETMACHINEDETAIL_SUCCESS               = HANDLER_REPAIR_RECORD_BASIC_INFOMATION_FAILED + 1;
-    public static final int HANDLER_GETMACHINEDETAIL_FAILD                 = HANDLER_GETMACHINEDETAIL_SUCCESS + 1;
-    public static final int HANDLE_GETCHECKREPORT_SUCCESS                  = HANDLER_GETMACHINEDETAIL_FAILD + 1;
-    public static final int HANDLE_GETCHECKREPORT_FAILD                    = HANDLE_GETCHECKREPORT_SUCCESS + 1;
-    public static final int HANDLE_GETOILLIST_SUCCESS                      = HANDLE_GETCHECKREPORT_FAILD + 1;
-    public static final int HANDLE_GETOILLIST_FAILD                        = HANDLE_GETOILLIST_SUCCESS + 1;
-    public static final int HANDLE_GETWORKTIMELIST_SUCCESS                 = HANDLE_GETOILLIST_FAILD + 1;
-    public static final int HANDLE_GETWORKTIMELIST_FAILD                   = HANDLE_GETWORKTIMELIST_SUCCESS + 1;
-    public static final int HANDLER_GETMACHINETYPE_SUCCESS                 = HANDLE_GETWORKTIMELIST_FAILD + 1;
-    public static final int HANDLER_GETMACHINETYPE_FAILD                   = HANDLER_GETMACHINETYPE_SUCCESS + 1;
-    public static final int HANDLER_GETTAGINFO_SUCCESS                     = HANDLER_GETMACHINETYPE_FAILD + 1;
-    public static final int HANDLER_GETTAGINFO_FAILD                       = HANDLER_GETTAGINFO_SUCCESS + 1;
-    public static final int HANDLER_ADDMEMBER                              = HANDLER_GETTAGINFO_FAILD + 1;
-    public static final int REQUEST_SELECTCITY                             = HANDLER_ADDMEMBER + 1;
-    public static final int REQUEST_MAPCHOOSE                              = REQUEST_SELECTCITY + 1;
-    public static final int HANDLER_NEWREPAIR_SUCCESS                      = HANDLER_ADDMEMBER + 1;
-    public static final int HANDLER_NEWREPAIR_FAILD                        = HANDLER_NEWREPAIR_SUCCESS + 1;
-    public static final int HANDLER_GET_BODETAIL_SUCCESS                   = HANDLER_NEWREPAIR_FAILD + 1;
-    public static final int HANDLER_GET_CWDETAIL_SUCCESS                   = HANDLER_GET_BODETAIL_SUCCESS + 1;
-    public static final int HANDLER_GET_WORKDETAIL_FAILD                   = HANDLER_GET_CWDETAIL_SUCCESS + 1;
-    public static final int HANDLER_SUBMITCOMMENT_SUCCESS                  = HANDLER_GET_WORKDETAIL_FAILD + 1;
-    public static final int HANDLER_SUBMITCOMMENT_FAILD                    = HANDLER_SUBMITCOMMENT_SUCCESS + 1;
-    public static final int HANDLER_ADDCIRCLEFENCH_SUCCESS                 = HANDLER_SUBMITCOMMENT_FAILD + 1;
-    public static final int HANDLER_ADDCIRCLEFENCH_FAILD                   = HANDLER_ADDCIRCLEFENCH_SUCCESS + 1;
-    public static final int HANDLER_GETDATASTATISTICS_SUCCESS              = HANDLER_ADDCIRCLEFENCH_FAILD + 1;
-    public static final int HANDLER_GETDATASTATISTICS_FAILD                = HANDLER_GETDATASTATISTICS_SUCCESS + 1;
-    public static final int HANDLER_GETCOUPON_SUCCESS                      = HANDLER_GETDATASTATISTICS_FAILD + 1;
-    public static final int HANDLER_GETCOUPON_FAILD                        = HANDLER_GETCOUPON_SUCCESS + 1;
-    public static final int HANDLER_GETDELIVERYMETHOD_SUCCESS              = HANDLER_GETCOUPON_FAILD + 1;
-    public static final int HANDLER_GETDELIVERYMETHOD_FAILD                = HANDLER_GETDELIVERYMETHOD_SUCCESS + 1;
-    public static final int HANDLER_GETSETUPTIME_SUCCESS                   = HANDLER_GETDELIVERYMETHOD_FAILD + 1;
-    public static final int HANDLER_GETSETUPTIME_FAILD                     = HANDLER_GETSETUPTIME_SUCCESS + 1;
-    public static final int HANDLER_GETYUNBOXPAY_SUCCESS                   = HANDLER_GETSETUPTIME_FAILD + 1;
-    public static final int HANDLER_GETYUNBOXPAY_FAILD                     = HANDLER_GETYUNBOXPAY_SUCCESS + 1;
-    public static final int HANDLER_GETCOUPONS_SUCCESS                     = HANDLER_GETYUNBOXPAY_FAILD + 1;
-    public static final int HANDLER_GETCOUPONS_FAILD                       = HANDLER_GETCOUPONS_SUCCESS + 1;
-    public static final int HANDLER_GETPAYPRICE_SUCCESS                            = HANDLER_GETCOUPONS_FAILD + 1;
-    public static final int HANDLER_GETPAYPRICE_FAILD                            = HANDLER_GETPAYPRICE_SUCCESS + 1;
-    public static final int HANDLER_GETCWPAY_SUCCESS                            = HANDLER_GETPAYPRICE_FAILD + 1;
-    public static final int HANDLER_GETCWPAY_FAILD                            = HANDLER_GETCWPAY_SUCCESS + 1;
-    public static final int HANDLER_CHECKPAY_SUCCESS                            = HANDLER_GETCWPAY_FAILD + 1;
-    public static final int HANDLER_CHECKPAY_FAIDL                            = HANDLER_CHECKPAY_SUCCESS + 1;
-    public static final int HANDLER_YUNBOXSTOREVOLUME_SUCCESS                            = HANDLER_CHECKPAY_FAIDL + 1;
-    public static final int HANDLER_YUNBOXSTOREVOLUME_FAILD                            = HANDLER_YUNBOXSTOREVOLUME_SUCCESS + 1;
-    public static final int HANDLER_SAVEARRIVALNOTICE_SUCCESS                            = HANDLER_YUNBOXSTOREVOLUME_FAILD + 1;
-    public static final int HANDLER_SAVEARRIVALNOTICE_FAILD                            = HANDLER_SAVEARRIVALNOTICE_SUCCESS + 1;
-    public static final int HANDLER_GETACCESSTOKEN_SUCCESS                            = HANDLER_SAVEARRIVALNOTICE_FAILD + 1;
-    public static final int HANDLER_GETUSERMSG_SUCCESS                            = HANDLER_GETACCESSTOKEN_SUCCESS + 1;
-    public static final int HANDLER_UPLOAD_SUCCESS                            = HANDLER_GETUSERMSG_SUCCESS + 1;
-    public static final int HANDLER_UPLOAD_FAILD                           = HANDLER_UPLOAD_SUCCESS + 1;
+    public static final int HANDLER_REPAIR_RECORD_BASIC_INFOMATION_FAILED = HANDLER_REPAIR_RECORD_BASIC_INFOMATION_SUCCESS + 1;
+    public static final int HANDLER_GETMACHINEDETAIL_SUCCESS = HANDLER_REPAIR_RECORD_BASIC_INFOMATION_FAILED + 1;
+    public static final int HANDLER_GETMACHINEDETAIL_FAILD = HANDLER_GETMACHINEDETAIL_SUCCESS + 1;
+    public static final int HANDLE_GETCHECKREPORT_SUCCESS = HANDLER_GETMACHINEDETAIL_FAILD + 1;
+    public static final int HANDLE_GETCHECKREPORT_FAILD = HANDLE_GETCHECKREPORT_SUCCESS + 1;
+    public static final int HANDLE_GETOILLIST_SUCCESS = HANDLE_GETCHECKREPORT_FAILD + 1;
+    public static final int HANDLE_GETOILLIST_FAILD = HANDLE_GETOILLIST_SUCCESS + 1;
+    public static final int HANDLE_GETWORKTIMELIST_SUCCESS = HANDLE_GETOILLIST_FAILD + 1;
+    public static final int HANDLE_GETWORKTIMELIST_FAILD = HANDLE_GETWORKTIMELIST_SUCCESS + 1;
+    public static final int HANDLER_GETMACHINETYPE_SUCCESS = HANDLE_GETWORKTIMELIST_FAILD + 1;
+    public static final int HANDLER_GETMACHINETYPE_FAILD = HANDLER_GETMACHINETYPE_SUCCESS + 1;
+    public static final int HANDLER_GETTAGINFO_SUCCESS = HANDLER_GETMACHINETYPE_FAILD + 1;
+    public static final int HANDLER_GETTAGINFO_FAILD = HANDLER_GETTAGINFO_SUCCESS + 1;
+    public static final int HANDLER_ADDMEMBER = HANDLER_GETTAGINFO_FAILD + 1;
+    public static final int REQUEST_SELECTCITY = HANDLER_ADDMEMBER + 1;
+    public static final int REQUEST_MAPCHOOSE = REQUEST_SELECTCITY + 1;
+    public static final int HANDLER_NEWREPAIR_SUCCESS = HANDLER_ADDMEMBER + 1;
+    public static final int HANDLER_NEWREPAIR_FAILD = HANDLER_NEWREPAIR_SUCCESS + 1;
+    public static final int HANDLER_GET_BODETAIL_SUCCESS = HANDLER_NEWREPAIR_FAILD + 1;
+    public static final int HANDLER_GET_CWDETAIL_SUCCESS = HANDLER_GET_BODETAIL_SUCCESS + 1;
+    public static final int HANDLER_GET_WORKDETAIL_FAILD = HANDLER_GET_CWDETAIL_SUCCESS + 1;
+    public static final int HANDLER_SUBMITCOMMENT_SUCCESS = HANDLER_GET_WORKDETAIL_FAILD + 1;
+    public static final int HANDLER_SUBMITCOMMENT_FAILD = HANDLER_SUBMITCOMMENT_SUCCESS + 1;
+    public static final int HANDLER_ADDCIRCLEFENCH_SUCCESS = HANDLER_SUBMITCOMMENT_FAILD + 1;
+    public static final int HANDLER_ADDCIRCLEFENCH_FAILD = HANDLER_ADDCIRCLEFENCH_SUCCESS + 1;
+    public static final int HANDLER_GETDATASTATISTICS_SUCCESS = HANDLER_ADDCIRCLEFENCH_FAILD + 1;
+    public static final int HANDLER_GETDATASTATISTICS_FAILD = HANDLER_GETDATASTATISTICS_SUCCESS + 1;
+    public static final int HANDLER_GETCOUPON_SUCCESS = HANDLER_GETDATASTATISTICS_FAILD + 1;
+    public static final int HANDLER_GETCOUPON_FAILD = HANDLER_GETCOUPON_SUCCESS + 1;
+    public static final int HANDLER_GETDELIVERYMETHOD_SUCCESS = HANDLER_GETCOUPON_FAILD + 1;
+    public static final int HANDLER_GETDELIVERYMETHOD_FAILD = HANDLER_GETDELIVERYMETHOD_SUCCESS + 1;
+    public static final int HANDLER_GETSETUPTIME_SUCCESS = HANDLER_GETDELIVERYMETHOD_FAILD + 1;
+    public static final int HANDLER_GETSETUPTIME_FAILD = HANDLER_GETSETUPTIME_SUCCESS + 1;
+    public static final int HANDLER_GETYUNBOXPAY_SUCCESS = HANDLER_GETSETUPTIME_FAILD + 1;
+    public static final int HANDLER_GETYUNBOXPAY_FAILD = HANDLER_GETYUNBOXPAY_SUCCESS + 1;
+    public static final int HANDLER_GETCOUPONS_SUCCESS = HANDLER_GETYUNBOXPAY_FAILD + 1;
+    public static final int HANDLER_GETCOUPONS_FAILD = HANDLER_GETCOUPONS_SUCCESS + 1;
+    public static final int HANDLER_GETPAYPRICE_SUCCESS = HANDLER_GETCOUPONS_FAILD + 1;
+    public static final int HANDLER_GETPAYPRICE_FAILD = HANDLER_GETPAYPRICE_SUCCESS + 1;
+    public static final int HANDLER_GETCWPAY_SUCCESS = HANDLER_GETPAYPRICE_FAILD + 1;
+    public static final int HANDLER_GETCWPAY_FAILD = HANDLER_GETCWPAY_SUCCESS + 1;
+    public static final int HANDLER_CHECKPAY_SUCCESS = HANDLER_GETCWPAY_FAILD + 1;
+    public static final int HANDLER_CHECKPAY_FAIDL = HANDLER_CHECKPAY_SUCCESS + 1;
+    public static final int HANDLER_YUNBOXSTOREVOLUME_SUCCESS = HANDLER_CHECKPAY_FAIDL + 1;
+    public static final int HANDLER_YUNBOXSTOREVOLUME_FAILD = HANDLER_YUNBOXSTOREVOLUME_SUCCESS + 1;
+    public static final int HANDLER_SAVEARRIVALNOTICE_SUCCESS = HANDLER_YUNBOXSTOREVOLUME_FAILD + 1;
+    public static final int HANDLER_SAVEARRIVALNOTICE_FAILD = HANDLER_SAVEARRIVALNOTICE_SUCCESS + 1;
+    public static final int HANDLER_GETACCESSTOKEN_SUCCESS = HANDLER_SAVEARRIVALNOTICE_FAILD + 1;
+    public static final int HANDLER_GETUSERMSG_SUCCESS = HANDLER_GETACCESSTOKEN_SUCCESS + 1;
+    public static final int HANDLER_UPLOAD_SUCCESS = HANDLER_GETUSERMSG_SUCCESS + 1;
+    public static final int HANDLER_UPLOAD_FAILD = HANDLER_UPLOAD_SUCCESS + 1;
 
-
+    public static final String URL_H5_ARGUMENT = "http://www.cloudm.com/agreement";
     public static final String URL_LOGOCLOUDM = "https://f1.cloudm.com/logocloudm.png";
     //修改全局ip地址
-    public static final String URL_MAIN       = "http://api.test.cloudm.com";//"http://api.test.cloudm.com";//http://192.168.1.8:8083//http://192.168.1.13:8090/cloudm3
+//    public static final String URL_MAIN = "http://api.test.cloudm.com";//"http://api.test.cloudm.com";//http://192.168.1.8:8083//http://192.168.1.13:8090/cloudm3
+    public static final String URL_MAIN = ApiConstants.CLOUDM_HOST;//"http://api.test.cloudm.com";//http://192.168.1.8:8083//http://192.168.1.13:8090/cloudm3
 
-    public static final String URL_IMAGE_HOST            = URL_MAIN;// 文件上传地址
-    public static final String URL_MyDevices             = URL_MAIN
+    public static final String URL_IMAGE_HOST = URL_MAIN;// 文件上传地址
+    public static final String URL_MyDevices = URL_MAIN
             + "/device/getDeviceByKey"; // 获取设备列表
-    public static final String URL_DevicesInfo           = URL_MAIN
+    public static final String URL_DevicesInfo = URL_MAIN
             + "/device/getDeviceInfo";// 一键检测设备历史
-    public static final String URL_DevicesCheck          = URL_MAIN + "/device/getCheck";// 一键检测设备实时信息
+    public static final String URL_DevicesCheck = URL_MAIN + "/device/getCheck";// 一键检测设备实时信息
     // Device
-    public static final String URL_CHECKREPORT           = URL_MAIN
+    public static final String URL_CHECKREPORT = URL_MAIN
             + "/device/getCheckReport";// 新版本获取一键设备事实信息
-    public static final String URL_Devices               = URL_MAIN + "/device/getDevice";// 获取设备基本信息
-    public static final String URL_MEMBERLIST            = URL_MAIN + "/device/member";// 获取设备成员列表
-    public static final String URL_OILLEVELIST           = URL_MAIN + "/device/oilLevelList";// 获取油位列表
-    public static final String URL_WORKTIMELIST          = URL_MAIN + "/device/whdList";// 获取工作时长列表
-    public static final String URL_DELETEMEMBER          = URL_MAIN
+    public static final String URL_Devices = URL_MAIN + "/device/getDevice";// 获取设备基本信息
+    public static final String URL_MEMBERLIST = URL_MAIN + "/device/member";// 获取设备成员列表
+    public static final String URL_OILLEVELIST = URL_MAIN + "/device/oilLevelList";// 获取油位列表
+    public static final String URL_WORKTIMELIST = URL_MAIN + "/device/whdList";// 获取工作时长列表
+    public static final String URL_DELETEMEMBER = URL_MAIN
             + "/device/deleteMember";// 删除设备成员
-    public static final String URL_ADDFENCE              = URL_MAIN + "/device/addFence";// 上传围栏
-    public static final String URL_DELETEFENCE           = URL_MAIN
+    public static final String URL_ADDFENCE = URL_MAIN + "/device/addFence";// 上传围栏
+    public static final String URL_DELETEFENCE = URL_MAIN
             + "/device/deleteFence";// 删除围栏
-    public static final String URL_SEARCHMEMBER          = URL_MAIN + "/device/search";// 搜索设备成员
+    public static final String URL_SEARCHMEMBER = URL_MAIN + "/device/search";// 搜索设备成员
     // mobi
-    public static final String URL_GIVEPERMISSION        = URL_MAIN
+    public static final String URL_GIVEPERMISSION = URL_MAIN
             + "/device/givePermission";// 添加成员
-    public static final String URL_GETROOTNODES          = URL_MAIN
+    public static final String URL_GETROOTNODES = URL_MAIN
             + "/member/getRootNodes";// 获取角色岗位名称
     public static final String URL_UPDATEDEVICEINFOBYKEY = URL_MAIN
             + "/device/updateDeviceInfoByKey";// 获取角色岗位名称
-    public static final String URL_DEVICESSAVE           = URL_MAIN + "/device/save";// 新增机器
-    public static final String URL_DELETEDEVICE          = URL_MAIN + "/device/delete";// 删除机器
-    public static final String URL_GETPERMISSIONS        = URL_MAIN
+    public static final String URL_DEVICESSAVE = URL_MAIN + "/device/save";// 新增机器
+    public static final String URL_DELETEDEVICE = URL_MAIN + "/device/delete";// 删除机器
+    public static final String URL_GETPERMISSIONS = URL_MAIN
             + "/member/getPermissions";// 获取权限列表
-    public static final String URL_GETMACHINETYPES       = URL_MAIN
+    public static final String URL_GETMACHINETYPES = URL_MAIN
             + "/device/getMachineTypesNC";// 获取机器种类列表
-    public static final String URL_GETMACHINEBRAND       = URL_MAIN
+    public static final String URL_GETMACHINEBRAND = URL_MAIN
             + "/device/getMachineBrandNC";// 获取机器品牌列表
-    public static final String URL_GETMACHINEMODEL       = URL_MAIN
+    public static final String URL_GETMACHINEMODEL = URL_MAIN
             + "/device/getMachineModelNC";// 获取机器型号列表
-    public static final String URL_UPDATEDEVICEINFO      = URL_MAIN
+    public static final String URL_UPDATEDEVICEINFO = URL_MAIN
             + "/device/updateDeviceInfo";// 获取机器型号列表
-    public static final String URL_UPDATEPERMISSION      = URL_MAIN
+    public static final String URL_UPDATEPERMISSION = URL_MAIN
             + "/device/updatePermission";// 更新机器某成员权限
-    public static final String URL_GETVERSION            = URL_MAIN
+    public static final String URL_GETVERSION = URL_MAIN
             + "/version/getVersion";// 软件更新
-    public static final String URL_GETSENSORPOSITION     = URL_MAIN
+    public static final String URL_GETSENSORPOSITION = URL_MAIN
             + "/device/getSensor";// 获取传感器安装位置
-    public static final String URL_GETSENSORLIST         = URL_MAIN
+    public static final String URL_GETSENSORLIST = URL_MAIN
             + "/device/getDeviceSensor";// 获取设备传感器列表
-    public static final String URL_SAVESENSOR            = URL_MAIN
+    public static final String URL_SAVESENSOR = URL_MAIN
             + "/device/saveDeviceSensor";// 添加传感器或车牌
-    public static final String URL_DELETESENSOR          = URL_MAIN
+    public static final String URL_DELETESENSOR = URL_MAIN
             + "/device/deleteDeviceSensor";// 添加传感器或车牌
-    public static final String URL_UPCLIENTID            = URL_MAIN + "/push/upclientid";// 上传个推clientid
-    public final static String UPLOAD_IMG_PATH           = URL_MAIN + "/kindEditorUpload";
-    public final static String UPLOAD_IMG_MEMBER_PATH    = URL_MAIN
+    public static final String URL_UPCLIENTID = URL_MAIN + "/push/upclientid";// 上传个推clientid
+    public final static String UPLOAD_IMG_PATH = URL_MAIN + "/kindEditorUpload";
+    public final static String UPLOAD_IMG_MEMBER_PATH = URL_MAIN
             + "/member/kindEditorUpload";
-    public static final String URL_DAILYWORKDITAILS      = URL_MAIN
+    public static final String URL_DAILYWORKDITAILS = URL_MAIN
             + "/device/dailyWorkDitails";// 当日工作区间分布
-    public static final String URL_MACHINE_DETAIL        = URL_MAIN
+    public static final String URL_MACHINE_DETAIL = URL_MAIN
             + "/device/getDeviceNowData";
-    public static final String URL_GETMACHINETYPE        = URL_MAIN  //获取机器类型
+    public static final String URL_GETMACHINETYPE = URL_MAIN  //获取机器类型
             + "/device/getMachineTypesNC";
-    public static final String URL_SAVEVBUSINESS         = URL_MAIN +    //上传新增维修
+    public static final String URL_SAVEVBUSINESS = URL_MAIN +    //上传新增维修
             "/device/saveVbusiness";
-    public static final String URL_SAVEEVALUATE          = URL_MAIN
+    public static final String URL_SAVEEVALUATE = URL_MAIN
             + "/device/saveEvaluate";
-    public static final String URL_ADDCIRCLEFENCH        = URL_MAIN
+    public static final String URL_ADDCIRCLEFENCH = URL_MAIN
             + "/device/addCricleFence";
-    public static final String URL_GETCOUPON             = URL_MAIN + "/pay/myCoupon";
-    public static final String URL_GETDELIVERYMETHOD     = URL_MAIN + "/pay/deliveryMethod";
-    public static final String URL_GETSETUPTIME          = URL_MAIN + "/pay/setupTime";
-    public static final String URL_GETINFOS              = URL_MAIN + "/pay/getInfos";
-    public static final String URL_YUNBOXPAY             = URL_MAIN + "/pay/yunBoxPay";
-    public static final String URL_GETPAYPRICE           = URL_MAIN + "/pay/payPrice";
-    public static final String URL_CWPAY           = URL_MAIN + "/pay/cwPay";
-    public static final String URL_CHECK_PAY           = URL_MAIN + "/pay/checkPay";
-    public static final String URL_YUNBOXSTOREVOLUME           = URL_MAIN + "/pay/yunBoxStoreVolume";
-    public static final String URL_SAVEARRIVALNOTICE           = URL_MAIN + "/pay/saveArrivalNotice";
+    public static final String URL_GETCOUPON = URL_MAIN + "/pay/myCoupon";
+    public static final String URL_GETDELIVERYMETHOD = URL_MAIN + "/pay/deliveryMethod";
+    public static final String URL_GETSETUPTIME = URL_MAIN + "/pay/setupTime";
+    public static final String URL_GETINFOS = URL_MAIN + "/pay/getInfos";
+    public static final String URL_YUNBOXPAY = URL_MAIN + "/pay/yunBoxPay";
+    public static final String URL_GETPAYPRICE = URL_MAIN + "/pay/payPrice";
+    public static final String URL_CWPAY = URL_MAIN + "/pay/cwPay";
+    public static final String URL_CHECK_PAY = URL_MAIN + "/pay/checkPay";
+    public static final String URL_YUNBOXSTOREVOLUME = URL_MAIN + "/pay/yunBoxStoreVolume";
+    public static final String URL_SAVEARRIVALNOTICE = URL_MAIN + "/pay/saveArrivalNotice";
 
-    public static final String P_ID                 = "Id";
-    public static final String P_MAC_DEVICE         = "MacDevice";
-    public static final String P_WORKSTATES         = "WorkState";
-    public static final String P_DEVICEID           = "DeviceId";
-    public static final String P_DEVICETYPE         = "DeviceType";
-    public static final String P_DEVICENAME         = "DeviceName";
-    public static final String P_DEVICEMAC          = "DeviceMacAddress";
-    public static final String P_MERMBERINFO        = "MemberInfo";
-    public static final String P_MERMBERID          = "MermberId";
-    public static final String P_MERMBERTYPE        = "MermberType";
-    public static final String P_MERMBERNAME        = "MermberName";
-    public static final String P_MERMBERROLE        = "MermberRole";
-    public static final String P_MERMBERROLEREMARK  = "MermberRoleRemark";
-    public static final String P_MERMBERPERMISSION  = "MermberPermission";
-    public static final String P_OCDSERIALIZABLE    = "OcdSerializable";
-    public static final String P_OILLAVE            = "oillave";
-    public static final String P_OILLEVE            = "oilLeve";
-    public static final String P_LASTLEVEL          = "lastLevel";
-    public static final String P_WTSERIALIZABLE     = "WtSerializable";
-    public static final String P_EDSERIALIZABLE     = "EdSerializable";
-    public static final String P_HSDSERIALIZABLE    = "HsdSerializable";
+    public static final String P_ID = "Id";
+    public static final String P_MAC_DEVICE = "MacDevice";
+    public static final String P_WORKSTATES = "WorkState";
+    public static final String P_DEVICEID = "DeviceId";
+    public static final String P_DEVICETYPE = "DeviceType";
+    public static final String P_DEVICENAME = "DeviceName";
+    public static final String P_DEVICEMAC = "DeviceMacAddress";
+    public static final String P_MERMBERINFO = "MemberInfo";
+    public static final String P_MERMBERID = "MermberId";
+    public static final String P_MERMBERTYPE = "MermberType";
+    public static final String P_MERMBERNAME = "MermberName";
+    public static final String P_MERMBERROLE = "MermberRole";
+    public static final String P_MERMBERROLEREMARK = "MermberRoleRemark";
+    public static final String P_MERMBERPERMISSION = "MermberPermission";
+    public static final String P_OCDSERIALIZABLE = "OcdSerializable";
+    public static final String P_OILLAVE = "oillave";
+    public static final String P_OILLEVE = "oilLeve";
+    public static final String P_LASTLEVEL = "lastLevel";
+    public static final String P_WTSERIALIZABLE = "WtSerializable";
+    public static final String P_EDSERIALIZABLE = "EdSerializable";
+    public static final String P_HSDSERIALIZABLE = "HsdSerializable";
     public static final String P_MCDEVICEBASICSINFO = "mcDeviceBasicsInfo";
-    public static final String P_MACHINEDETAILINFO  = "MachineDetailInfo";
-    public static final String P_ADDMCDEVICETYPE    = "addDeviceType";
-    public static final String P_ISDELETEMERMBER    = "isDeletemermber";
-    public static final String P_SEARCHLISTTYPE     = "searchListType";
-    public static final String P_PERMISSIONTYPE     = "permissionType";
-    public static final String P_TITLETEXT          = "titleText";
-    public static final String P_EDITTYPE           = "editType";
-    public static final String P_ITEMTYPE           = "itemType";
-    public static final String P_EDITRESULTSTRING   = "editResultString";
-    public static final String P_EDITRESULTINT      = "editResultInt";
-    public static final String P_EDITRESULTITEM     = "editResultItem";
-    public static final String P_IMAGEBROWERURLS    = "imageBrowerUrls";
-    public static final String P_IMAGEBROWERDELETE  = "imageBrowerDelete";
-    public static final String P_PERMISSIONSKEY     = "permissionsKey";
-    public static final String P_EDIT_LIST_VALUE1   = "editListValue1";
-    public static final String P_EDIT_LIST_VALUE2   = "editListValue2";
-    public static final String P_EDIT_LIST_VALUE3   = "editListValue3";
+    public static final String P_MACHINEDETAILINFO = "MachineDetailInfo";
+    public static final String P_ADDMCDEVICETYPE = "addDeviceType";
+    public static final String P_ISDELETEMERMBER = "isDeletemermber";
+    public static final String P_SEARCHLISTTYPE = "searchListType";
+    public static final String P_PERMISSIONTYPE = "permissionType";
+    public static final String P_TITLETEXT = "titleText";
+    public static final String P_EDITTYPE = "editType";
+    public static final String P_ITEMTYPE = "itemType";
+    public static final String P_EDITRESULTSTRING = "editResultString";
+    public static final String P_EDITRESULTINT = "editResultInt";
+    public static final String P_EDITRESULTITEM = "editResultItem";
+    public static final String P_IMAGEBROWERURLS = "imageBrowerUrls";
+    public static final String P_IMAGEBROWERDELETE = "imageBrowerDelete";
+    public static final String P_PERMISSIONSKEY = "permissionsKey";
+    public static final String P_EDIT_LIST_VALUE1 = "editListValue1";
+    public static final String P_EDIT_LIST_VALUE2 = "editListValue2";
+    public static final String P_EDIT_LIST_VALUE3 = "editListValue3";
 
-    public static final String P_DEVICEINFO_devicePhoto    = "devicePhoto";
+    public static final String P_DEVICEINFO_devicePhoto = "devicePhoto";
     public static final String P_DEVICEINFO_nameplatePhoto = "nameplatePhoto";
-    public static final String P_DEVICEINFO_deviceName     = "deviceName";
-    public static final String P_DEVICEINFO_category       = "category";
-    public static final String P_DEVICEINFO_brand          = "brand";
-    public static final String P_DEVICEINFO_model          = "model";
-    public static final String P_DEVICEINFO_typeId         = "typeId";
-    public static final String P_DEVICEINFO_brandId        = "brandId";
-    public static final String P_DEVICEINFO_modelId        = "modelId";
-    public static final String P_DEVICEINFO_factoryTime    = "factoryTime";
-    public static final String P_DEVICEINFO_deviceType     = "deviceType";
-    public static final String P_DEVICEINFO_buyTime        = "buyTime";
-    public static final String P_DEVICEINFO_buyPlace       = "buyPlace";
-    public static final String P_DEVICEINFO_buyPrice       = "buyPrice";
-    public static final String P_DEVICEINFO_sellerName     = "sellerName";
-    public static final String P_DEVICEINFO_sellerPlace    = "sellerPlace";
+    public static final String P_DEVICEINFO_deviceName = "deviceName";
+    public static final String P_DEVICEINFO_category = "category";
+    public static final String P_DEVICEINFO_brand = "brand";
+    public static final String P_DEVICEINFO_model = "model";
+    public static final String P_DEVICEINFO_typeId = "typeId";
+    public static final String P_DEVICEINFO_brandId = "brandId";
+    public static final String P_DEVICEINFO_modelId = "modelId";
+    public static final String P_DEVICEINFO_factoryTime = "factoryTime";
+    public static final String P_DEVICEINFO_deviceType = "deviceType";
+    public static final String P_DEVICEINFO_buyTime = "buyTime";
+    public static final String P_DEVICEINFO_buyPlace = "buyPlace";
+    public static final String P_DEVICEINFO_buyPrice = "buyPrice";
+    public static final String P_DEVICEINFO_sellerName = "sellerName";
+    public static final String P_DEVICEINFO_sellerPlace = "sellerPlace";
     public static final String P_DEVICEINFO_sellerContacts = "sellerContacts";
-    public static final String P_DEVICEINFO_sellerMobi     = "sellerMobi";
-    public static final String P_DEVICEINFO_sellerEmail    = "sellerEmail";
-    public static final String P_DEVICEINFO_insurer        = "insurer";
-    public static final String P_DEVICEINFO_insurerNo      = "insurerNo";
-    public static final String P_DEVICEINFO_company        = "company";
-    public static final String P_DEVICEINFO_contractNo     = "contractNo";
-    public static final String P_DEVICEINFO_serviceName    = "serviceName";
-    public static final String P_DEVICEINFO_serviceMobi    = "serviceMobi";
-    public static final String P_DEVICEINFO_servicePlace   = "servicePlace";
-    public static final String P_DEVICEINFO_filtNumber     = "filtNumber";
+    public static final String P_DEVICEINFO_sellerMobi = "sellerMobi";
+    public static final String P_DEVICEINFO_sellerEmail = "sellerEmail";
+    public static final String P_DEVICEINFO_insurer = "insurer";
+    public static final String P_DEVICEINFO_insurerNo = "insurerNo";
+    public static final String P_DEVICEINFO_company = "company";
+    public static final String P_DEVICEINFO_contractNo = "contractNo";
+    public static final String P_DEVICEINFO_serviceName = "serviceName";
+    public static final String P_DEVICEINFO_serviceMobi = "serviceMobi";
+    public static final String P_DEVICEINFO_servicePlace = "servicePlace";
+    public static final String P_DEVICEINFO_filtNumber = "filtNumber";
     public static final String P_DEVICEINFO_collectionDate = "collectionDate";
-    public static final String P_DEVICEINFO_faultWarnInfo  = "faultWarnInfo";
+    public static final String P_DEVICEINFO_faultWarnInfo = "faultWarnInfo";
 
-    public static final String P_BLOG_News          = "blogNews";
+    public static final String P_BLOG_News = "blogNews";
     public static final String P_BLOG_LIST_Position = "position";
-    public static final String P_LicenceNum         = "licenceNum";
-    public static final String P_SensorNum          = "sensorNum";
-    public static final String P_SensorType         = "sensorType";
-    public static final String P_SensorPhoto        = "sensorPhoto";
-    public static final String P_SensorListInfo     = "SensorListInfo";
+    public static final String P_LicenceNum = "licenceNum";
+    public static final String P_SensorNum = "sensorNum";
+    public static final String P_SensorType = "sensorType";
+    public static final String P_SensorPhoto = "sensorPhoto";
+    public static final String P_SensorListInfo = "SensorListInfo";
     public static final String P_SensorPositionType = "sensorPositionType";
-    public static final String P_CardImageBackPic   = "backPic";
-    public static final String P_CardImageFrontPic  = "frontPic";
+    public static final String P_CardImageBackPic = "backPic";
+    public static final String P_CardImageFrontPic = "frontPic";
 
-    public static final String P_SignBetweenTime          = "signBetweenTime";
-    public static final String P_WebView_Url              = "webViewUrl";
-    public static final String P_WebView_Title            = "webViewTitle";
+    public static final String P_SignBetweenTime = "signBetweenTime";
+    public static final String P_WebView_Url = "webViewUrl";
+    public static final String P_WebView_With_Title = "webViewWithTitle";
+    public static final String P_WebView_Title = "webViewTitle";
+    public static final String P_WebView_Type = "webViewType";
+    public static final String P_WebView_Desc = "webViewDesc";
     public static final String P_MainActivity_Fragment_Id = "mainActivity_fragment_id";
-    public static final String P_DEVICELIST               = "DeviceList";
-    public static final String P_CITYNAME                 = "city_name";
-    public static final String P_MAPTTYPE                 = "maptype";
-    public static final String P_SEARCHINFO               = "searchInfo";
-    public static final String P_DEVICEINFO_MY            = "deviceInfo_my";
-    public static final String SIGN_OR_NOTSIGN            = "sign_or_notsign";
-    public static final String HOME_BANNER_SHARE            = "home_banner_share";
-    public static final String HOME_SHARE_URL            = "home_share_url";
-    public static final String HOME_SHARE_ICON            = "home_share_icon";
-    public static final String HOME_SHARE_DESCIRPTION            = "home_share_descirption";
+    public static final String P_DEVICELIST = "DeviceList";
+    public static final String P_CITYNAME = "city_name";
+    public static final String P_MAPTTYPE = "maptype";
+    public static final String P_SEARCHINFO = "searchInfo";
+    public static final String P_DEVICEINFO_MY = "deviceInfo_my";
+    public static final String SIGN_OR_NOTSIGN = "sign_or_notsign";
+    public static final String HOME_BANNER_SHARE = "home_banner_share";
+    public static final String HOME_SHARE_URL = "home_share_url";
+    public static final String HOME_SHARE_ICON = "home_share_icon";
+    public static final String HOME_SHARE_DESCIRPTION = "home_share_descirption";
 
 
-    public static final String S_FG                 = ":&&:";
+    public static final String S_FG = ":&&:";
     public static final String S_DEVICE_LOCATION_NO = "暂无";
-    public static final String S_SCANNING_PER       = "%";
-    public static final String S_SCANNING_CONSUME   = "L";
-    public static final String S_SCANNING_PAY       = "元";
-    public static final String S_SCANNING_PREE      = "Bar";
-    public static final String S_SCANNING_TIME      = "小时";
-    public static final String S_SCANNING_TEMPER    = "℃";
-    public static final String S_TIME_FG            = "-";
+    public static final String S_SCANNING_PER = "%";
+    public static final String S_SCANNING_CONSUME = "L";
+    public static final String S_SCANNING_PAY = "元";
+    public static final String S_SCANNING_PREE = "Bar";
+    public static final String S_SCANNING_TIME = "小时";
+    public static final String S_SCANNING_TEMPER = "℃";
+    public static final String S_TIME_FG = "-";
     public static final String S_UPDATEDEVICEKEY_FG = ",";
 
     public static final int E_DEVICE_TEXT = 10;
     public static final int E_DEVICE_DATA = E_DEVICE_TEXT + 1;
     public static final int E_DEVICE_LIST = E_DEVICE_DATA + 1;
 
-    public static final int E_ITEMS_deviceName     = 50;// 设备名称
-    public static final int E_ITEMS_category       = E_ITEMS_deviceName + 1;// 品类
-    public static final int E_ITEMS_brand          = E_ITEMS_category + 1;// 品牌
-    public static final int E_ITEMS_model          = E_ITEMS_brand + 1;// 型号
-    public static final int E_ITEMS_factoryTime    = E_ITEMS_model + 1;// 新机出厂时间
-    public static final int E_ITEMS_deviceType     = E_ITEMS_factoryTime + 1;// 机器类型
+    public static final int E_ITEMS_deviceName = 50;// 设备名称
+    public static final int E_ITEMS_category = E_ITEMS_deviceName + 1;// 品类
+    public static final int E_ITEMS_brand = E_ITEMS_category + 1;// 品牌
+    public static final int E_ITEMS_model = E_ITEMS_brand + 1;// 型号
+    public static final int E_ITEMS_factoryTime = E_ITEMS_model + 1;// 新机出厂时间
+    public static final int E_ITEMS_deviceType = E_ITEMS_factoryTime + 1;// 机器类型
     // 1：新机
     // 2：二手
-    public static final int E_ITEMS_buyTime        = E_ITEMS_deviceType + 1;// 购机时间
-    public static final int E_ITEMS_buyPlace       = E_ITEMS_buyTime + 1;// 购机所在地区
-    public static final int E_ITEMS_buyPrice       = E_ITEMS_buyPlace + 1;// 购机价格
-    public static final int E_ITEMS_sellerName     = E_ITEMS_buyPrice + 1;// 卖家名称
-    public static final int E_ITEMS_sellerPlace    = E_ITEMS_sellerName + 1;// 卖家地址
+    public static final int E_ITEMS_buyTime = E_ITEMS_deviceType + 1;// 购机时间
+    public static final int E_ITEMS_buyPlace = E_ITEMS_buyTime + 1;// 购机所在地区
+    public static final int E_ITEMS_buyPrice = E_ITEMS_buyPlace + 1;// 购机价格
+    public static final int E_ITEMS_sellerName = E_ITEMS_buyPrice + 1;// 卖家名称
+    public static final int E_ITEMS_sellerPlace = E_ITEMS_sellerName + 1;// 卖家地址
     public static final int E_ITEMS_sellerContacts = E_ITEMS_sellerPlace + 1;// 卖家联系人姓名
-    public static final int E_ITEMS_sellerMobi     = E_ITEMS_sellerContacts + 1;// 卖家联系人手机
-    public static final int E_ITEMS_sellerEmail    = E_ITEMS_sellerMobi + 1;// 卖家联系人邮箱
-    public static final int E_ITEMS_insurer        = E_ITEMS_sellerEmail + 1;// 保险公司
-    public static final int E_ITEMS_insurerNo      = E_ITEMS_insurer + 1;// 保险单号
-    public static final int E_ITEMS_company        = E_ITEMS_insurerNo + 1;// 融资银行或公司
-    public static final int E_ITEMS_contractNo     = E_ITEMS_company + 1;// 融资协议合同号
-    public static final int E_ITEMS_serviceName    = E_ITEMS_contractNo + 1;// 维保单位名称
-    public static final int E_ITEMS_serviceMobi    = E_ITEMS_serviceName + 1;// 维保单位联系电话
-    public static final int E_ITEMS_servicePlace   = E_ITEMS_serviceMobi + 1;// 维保单位地址
-    public static final int E_ITEMS_oldId          = E_ITEMS_servicePlace + 1;// 原来的设备ID号
+    public static final int E_ITEMS_sellerMobi = E_ITEMS_sellerContacts + 1;// 卖家联系人手机
+    public static final int E_ITEMS_sellerEmail = E_ITEMS_sellerMobi + 1;// 卖家联系人邮箱
+    public static final int E_ITEMS_insurer = E_ITEMS_sellerEmail + 1;// 保险公司
+    public static final int E_ITEMS_insurerNo = E_ITEMS_insurer + 1;// 保险单号
+    public static final int E_ITEMS_company = E_ITEMS_insurerNo + 1;// 融资银行或公司
+    public static final int E_ITEMS_contractNo = E_ITEMS_company + 1;// 融资协议合同号
+    public static final int E_ITEMS_serviceName = E_ITEMS_contractNo + 1;// 维保单位名称
+    public static final int E_ITEMS_serviceMobi = E_ITEMS_serviceName + 1;// 维保单位联系电话
+    public static final int E_ITEMS_servicePlace = E_ITEMS_serviceMobi + 1;// 维保单位地址
+    public static final int E_ITEMS_oldId = E_ITEMS_servicePlace + 1;// 原来的设备ID号
     // 特指该机器为二手
-    public static final int E_ITEMS_isDelete       = E_ITEMS_oldId + 1;// 逻辑有效 1：有效
+    public static final int E_ITEMS_isDelete = E_ITEMS_oldId + 1;// 逻辑有效 1：有效
     // 0：无效
-    public static final int E_ITEMS_checkType      = E_ITEMS_isDelete + 1;// 审核状态
+    public static final int E_ITEMS_checkType = E_ITEMS_isDelete + 1;// 审核状态
     // 1：审核中
     // 2：审核通过
     // 3：审核拒绝
-    public static final int E_ITEMS_deviceId       = E_ITEMS_checkType + 1;// 设备基础信息有效表id
-    public static final int E_ITEMS_type           = E_ITEMS_deviceId + 1;// 待审核数据的类型
+    public static final int E_ITEMS_deviceId = E_ITEMS_checkType + 1;// 设备基础信息有效表id
+    public static final int E_ITEMS_type = E_ITEMS_deviceId + 1;// 待审核数据的类型
     // 1:新增设备
     // 2：修改设备信息 3：过户
     // 4：删除
-    public static final int E_ITEMS_idCard         = E_ITEMS_type + 1;// 身份证号
-    public static final int E_ITEMS_filtNumber     = E_ITEMS_idCard + 1;// 网关编号
+    public static final int E_ITEMS_idCard = E_ITEMS_type + 1;// 身份证号
+    public static final int E_ITEMS_filtNumber = E_ITEMS_idCard + 1;// 网关编号
 
     public static final int E_ITEMS_role_remark = E_ITEMS_filtNumber + 1;// 成员备注
-    public static final int E_ITEMS_role_list   = E_ITEMS_role_remark + 1;// 成员备注
+    public static final int E_ITEMS_role_list = E_ITEMS_role_remark + 1;// 成员备注
 
-    public static final int REQUEST_EditActivity           = 0;
-    public static final int REQUEST_ImageActivity          = 100;
-    public static final int REQUEST_BLOGCOMMENT            = REQUEST_ImageActivity + 1;
-    public static final int REQUEST_ToSearchActivity       = REQUEST_BLOGCOMMENT + 1;
+    public static final int REQUEST_EditActivity = 0;
+    public static final int REQUEST_ImageActivity = 100;
+    public static final int REQUEST_BLOGCOMMENT = REQUEST_ImageActivity + 1;
+    public static final int REQUEST_ToSearchActivity = REQUEST_BLOGCOMMENT + 1;
     public static final int REQUEST_ToSearchDeviceActivity = REQUEST_ToSearchActivity + 1;
-    public static final int MC_Simulation_DeviceId         = 0;
-    public static final int MC_DevicesList_AllType         = 15;
+    public static final int MC_Simulation_DeviceId = 0;
+    public static final int MC_DevicesList_AllType = 15;
 
-    public static final String KEY_isGuide        = "isGuide"; // 是否引导过
-    public static final String KEY_isMcMainGuide  = "isMcMainGuide"; // 机器页是否引导过
-    public static final String KEY_DownloadId     = "DownloadID"; // 下载的ID
-    public static final String KEY_NewVersion     = "NewVersion"; // 最新版本
+    public static final String KEY_isGuide = "isGuide"; // 是否引导过
+    public static final String KEY_isHomeGuide = "isHomeGuide"; // 是否首页引导过
+    public static final String KEY_isMcMainGuide = "isMcMainGuide"; // 机器页是否引导过
+    public static final String KEY_DownloadId = "DownloadID"; // 下载的ID
+    public static final String KEY_NewVersion = "NewVersion"; // 最新版本
     public static final String KEY_NewMessageSize = "NewMessageSize"; // 新邀请消息条数
 
-    public static final int KEY_ImageUpload_Kinds_m1          = 2; // 机博上传照片
-    public static final int Thread_Priority                   = 10; // 默认线程优先级
+    public static final int KEY_ImageUpload_Kinds_m1 = 2; // 机博上传照片
+    public static final int Thread_Priority = 10; // 默认线程优先级
     // 获取维修历史记录
     public static final int HANDLER_GET_REPAIRHISTORY_SUCCESS = REQUEST_BLOGCOMMENT + 1;
-    public static final int HANDLER_GET_REPAIRHISTORY_FAILD   = HANDLER_GET_REPAIRHISTORY_SUCCESS + 1;
+    public static final int HANDLER_GET_REPAIRHISTORY_FAILD = HANDLER_GET_REPAIRHISTORY_SUCCESS + 1;
 
 
-    public static final int              CLICK_POSITION = HANDLER_GET_REPAIRHISTORY_FAILD;
-    public static final java.lang.String APP_ID         = "wxfb6afbcc23f867df";
+    public static final int CLICK_POSITION = HANDLER_GET_REPAIRHISTORY_FAILD;
+    public static final java.lang.String APP_ID = "wxfb6afbcc23f867df";
 
     public static final String GET_HOTISSUE = "getHotIssue";
     public static final String REFRESH_SIGN_STATE = "refreshSignState";
@@ -512,10 +518,10 @@ public class Constants {
     public static BadgeView badgeMessage;
 
     public static Class<?> photoParent;
-    public static Bitmap   photoBimap;
+    public static Bitmap photoBimap;
     public static MyDialog alertDialog;
     public static final int CODE_license = 10;
-    public static final int CODE_snNum   = CODE_license + 1;
+    public static final int CODE_snNum = CODE_license + 1;
 
     public static final String DateFormat1 = "yyyy-MM-dd";
     public static final String DateFormat2 = "yyyy-MM-dd HH:mm:ss";
@@ -559,12 +565,12 @@ public class Constants {
     }
 
 
-    public static final DisplayImageOptions displayMcImageOptions     = new DisplayImageOptions.Builder()
+    public static final DisplayImageOptions displayMcImageOptions = new DisplayImageOptions.Builder()
             .showImageOnFail(R.drawable.mc_default_icon)
             .showImageForEmptyUri(R.drawable.mc_default_icon)
             .showImageOnFail(R.drawable.mc_default_icon).cacheInMemory(true)
             .cacheOnDisc(true).displayer(new RoundedBitmapDisplayer(5)).build();
-    public static       DisplayImageOptions displayDeviceImageOptions = new DisplayImageOptions.Builder()
+    public static DisplayImageOptions displayDeviceImageOptions = new DisplayImageOptions.Builder()
             .showImageOnFail(R.drawable.mc_default_icon)
             .showImageForEmptyUri(R.drawable.mc_default_icon)
             .showImageOnFail(R.drawable.mc_default_icon).cacheInMemory(true)
@@ -669,8 +675,8 @@ public class Constants {
     }
 
     public static String float2String(float f, int pSize) {
-		/*
-		 * String zStr ="0"; String fStr = "."; String s = String.valueOf(f);
+        /*
+         * String zStr ="0"; String fStr = "."; String s = String.valueOf(f);
 		 * for(int i=0; i<pSize; i++){ fStr += zStr; } if(fStr.length()>2){
 		 * DecimalFormat decimalFormat=new
 		 * DecimalFormat(fStr);//构造方法的字符格式这里如果小数不足2位,会以0补足.
@@ -795,7 +801,7 @@ public class Constants {
             betweenTime = date.getTime() - dateBegin.getTime();
             betweenTime = betweenTime / 1000 / 60 / 60 / 24;
         } catch (Exception e) {
-            Constants.MyLog(e.toString()+"打印到的错误信息");
+            Constants.MyLog(e.toString() + "打印到的错误信息");
             return -1;
 
         }
@@ -953,7 +959,9 @@ public class Constants {
     public static final void toActivityForR(Activity activity, Class cl,
                                             Bundle bundle, int requestCode) {
         Intent intent = new Intent(activity, cl);
-        intent.putExtras(bundle);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
         activity.startActivityForResult(intent, requestCode);
         activity.overridePendingTransition(R.anim.slide_right_in,
                 R.anim.slide_left_out);
@@ -996,6 +1004,7 @@ public class Constants {
 
     /**
      * 裁剪图片方法实现
+     *
      * @param uri
      */
     public static final void startPhotoZoom(Activity activity, Uri uri, int code) {
@@ -1195,7 +1204,7 @@ public class Constants {
         alertDialog.setText(message);
         alertDialog.setNegativeText("确定");
         alertDialog.setPositiveText("稍后");
-		
+
 		/*alertDialog = new AlertDialog.Builder(context).setTitle("版本更新")
 				.setMessage(message)
 				// .setIcon(R.drawable.ic_launcher)

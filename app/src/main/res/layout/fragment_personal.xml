@@ -1,42 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:cloudm="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/public_bg"
-              android:orientation="vertical"
-    >
+    xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical">
 
     <com.cloudmachine.autolayout.widgets.TitleView
         android:id="@+id/title_layout"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/public_bg"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="16dp"
-                    android:background="#f6f6f9"
-                    />
+                    android:background="#f6f6f9" />
 
                 <LinearLayout
                     android:id="@+id/ll_personal_information"
@@ -45,14 +39,13 @@
                     android:background="#ffffff"
                     android:orientation="horizontal">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/head_iamge"
                         android:layout_width="54dp"
                         android:layout_height="54dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="14dp"
-                        android:src="@drawable/master_news"
+                        android:src="@drawable/default_img"
                         app:civ_border_color="#FFFFFF"
                         app:civ_border_width="1dp"
                         />
@@ -63,27 +56,22 @@
                         android:layout_marginLeft="16dp"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:orientation="vertical"
-                        >
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/nickname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="王小伟"
                             android:textColor="#000000"
-                            android:textSize="16sp"
-                            />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/mobile"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="17316206653"
                             android:textColor="#999999"
-                            android:textSize="12sp"
-                            />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -92,16 +80,14 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|center_vertical"
                         android:layout_marginRight="10dp"
-                        android:src="@drawable/arrow_next"
-                        />
+                        android:src="@drawable/arrow_next" />
 
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="16dp"
-                    android:background="#f6f6f9"
-                    />
+                    android:background="#f6f6f9" />
 
                 <RelativeLayout
                     android:id="@+id/rl_qr_code"
@@ -109,162 +95,137 @@
 
                     <TextView
                         style="@style/personal_left_text"
-                        android:text="我的二维码"
-                        />
+                        android:text="我的二维码" />
 
-                    <ImageView
-                        style="@style/personal_arrow_image"/>
+                    <ImageView style="@style/personal_arrow_image" />
                 </RelativeLayout>
 
                 <LinearLayout
                     style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
+                    android:layout_marginLeft="@dimen/public_layout_padding_left" />
 
                 <RelativeLayout
                     android:id="@+id/rl_coupon"
-                    style="@style/layout_item"
-                    >
+                    style="@style/layout_item">
 
                     <TextView
                         style="@style/personal_left_text"
-                        android:text="卡券"
-                        />
+                        android:text="卡券" />
 
-                    <ImageView
-                        style="@style/personal_arrow_image"/>
+                    <ImageView style="@style/personal_arrow_image" />
 
                 </RelativeLayout>
 
                 <LinearLayout
                     style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
+                    android:layout_marginLeft="@dimen/public_layout_padding_left" />
 
                 <RelativeLayout
                     android:id="@+id/rl_score"
                     style="@style/layout_item"
+                    android:clickable="false"
                     >
 
                     <TextView
                         style="@style/personal_left_text"
-                        android:text="我的积分"
-                        />
+                        android:text="我的积分" />
 
                     <TextView
                         android:id="@+id/score_text"
                         style="@style/personal_edit_text"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/public_layout_padding_left"
-                        />
+                        android:layout_marginRight="@dimen/public_layout_padding_left" />
 
                 </RelativeLayout>
+
                 <LinearLayout
                     style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
+                    android:layout_marginLeft="@dimen/public_layout_padding_left" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="16dp"
-                    android:background="#f6f6f9"
-                    />
+                    android:background="#f6f6f9" />
 
                 <RelativeLayout
                     android:id="@+id/rl_myquestion"
-                    style="@style/layout_item"
-                    >
+                    style="@style/layout_item">
 
                     <TextView
                         style="@style/personal_left_text"
-                        android:text="我的提问"
-                        />
+                        android:text="我的提问" />
 
-                    <ImageView
-                        style="@style/personal_arrow_image"/>
+                    <ImageView style="@style/personal_arrow_image" />
 
                 </RelativeLayout>
 
                 <LinearLayout
                     style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
+                    android:layout_marginLeft="@dimen/public_layout_padding_left" />
 
                 <RelativeLayout
                     android:id="@+id/rl_insurance_consulting"
-                    style="@style/layout_item"
-                    >
+                    style="@style/layout_item">
 
                     <TextView
                         style="@style/personal_left_text"
-                        android:text="保险咨询"
-                        />
+                        android:text="保险咨询" />
 
-                    <ImageView
-                        style="@style/personal_arrow_image"/>
+                    <ImageView style="@style/personal_arrow_image" />
 
                 </RelativeLayout>
 
                 <LinearLayout
                     style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
+                    android:layout_marginLeft="@dimen/public_layout_padding_left" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="16dp"
-                    android:background="#f6f6f9"
-                    />
+                    android:background="#f6f6f9" />
 
                 <RelativeLayout
-                    style="@style/layout_item"
                     android:id="@+id/about_and_help"
-                    >
+                    style="@style/layout_item">
 
                     <TextView
                         style="@style/personal_left_text"
-                        android:text="关于与帮助"
-                        />
+                        android:text="关于与帮助" />
 
-                    <ImageView
-                        style="@style/personal_arrow_image"/>
+                    <ImageView style="@style/personal_arrow_image" />
 
                 </RelativeLayout>
 
                 <LinearLayout
                     style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
+                    android:layout_marginLeft="@dimen/public_layout_padding_left" />
 
                 <RelativeLayout
-                    style="@style/layout_item"
                     android:id="@+id/share_app"
-                    >
+                    style="@style/layout_item">
 
                     <TextView
                         style="@style/personal_left_text"
-                        android:text="分享APP"
-                        />
-                    <ImageView
-                        style="@style/personal_arrow_image"/>
+                        android:text="分享APP" />
+
+                    <ImageView style="@style/personal_arrow_image" />
 
                 </RelativeLayout>
 
                 <LinearLayout
                     style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
+                    android:layout_marginLeft="@dimen/public_layout_padding_left" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="16dp"
-                    android:background="#f6f6f9"
-                    />
+                    android:background="#f6f6f9" />
 
                 <LinearLayout
                     android:id="@+id/exitlayout"
                     style="@style/layout_item"
-                    android:gravity="center_horizontal"
-                    >
+                    android:gravity="center_horizontal">
 
                     <Button
                         android:id="@+id/exitLogin"
@@ -274,7 +235,7 @@
                         android:clickable="false"
                         android:text="退出登录"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/public_textsize1"/>
+                        android:textSize="@dimen/public_textsize1" />
 
                 </LinearLayout>
 

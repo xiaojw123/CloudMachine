@@ -5,6 +5,7 @@ import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.ui.personal.contract.PersonalContract;
 import com.cloudmachine.utils.ToastUtils;
+import com.github.mikephil.charting.utils.AppLog;
 
 /**
  * 项目名称：CloudMachine
@@ -20,15 +21,18 @@ public class PersonalPresenter extends PersonalContract.Presenter {
 
     @Override
     public void getMemberInfoById(long memberId) {
+        AppLog.print("Preseneter getMemberInfoById__");
         mRxManage.add(mModel.getMemberInfoById(memberId)
         .subscribe(new RxSubscriber<Member>(mContext,false) {
             @Override
             protected void _onNext(Member member) {
+                AppLog.print("getMemberInfoById _onNext___");
                 mView.returnMemberInfo(member);
             }
 
             @Override
             protected void _onError(String message) {
+                AppLog.print("getMemberInfoById _onError___"+message);
                 ToastUtils.error(message,true);
             }
         }));

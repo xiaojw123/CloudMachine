@@ -25,12 +25,14 @@ import java.util.List;
  */
 
 public class HomePageAdapter extends MultiItemTypeAdapter<HomePageType>{
+    public   HomeLocalDelegate localDelegate;
 
     public HomePageAdapter(Context context, List<HomePageType> datas) {
         super(context, datas);
 
         addItemViewDelegate(new HomeBannerItemDelegate());
-        addItemViewDelegate(new HomeLocalDelegate());
+        localDelegate =new HomeLocalDelegate();
+        addItemViewDelegate(localDelegate);
         addItemViewDelegate(new HomeDividerDelegate());
         addItemViewDelegate(new HomeNewsDelegate());
         addItemViewDelegate(new HomeIssueDelegate());

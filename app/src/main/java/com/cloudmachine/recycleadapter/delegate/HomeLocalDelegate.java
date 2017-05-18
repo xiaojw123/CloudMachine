@@ -1,5 +1,6 @@
 package com.cloudmachine.recycleadapter.delegate;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.api.Api;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.api.HostType;
 import com.cloudmachine.base.baserx.RxBus;
 import com.cloudmachine.base.baserx.RxManager;
@@ -27,7 +29,7 @@ import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
-import com.cloudmachine.utils.ToastUtils;
+import com.github.mikephil.charting.utils.AppLog;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,7 +39,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import rx.functions.Action1;
 
 import static com.cloudmachine.R.id.sign_text;
-import static com.cloudmachine.app.MyApplication.mContext;
 
 /**
  * 项目名称：CloudMachine
@@ -56,9 +57,17 @@ import static com.cloudmachine.app.MyApplication.mContext;
 public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
 
     private RxManager rxManager;
-    private int       signBetweenTime;
-    private TextView  signText;//签到字段信息
-    private Context   context;
+    private int signBetweenTime;
+    private TextView signText;//签到字段信息
+    private Context context;
+
+
+    public void resetSign() {
+        if (signText != null) {
+            signText.setText("签到");
+        }
+    }
+
 
     @Override
     public int getItemViewLayoutId() {
@@ -81,7 +90,7 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
             @Override
             public void call(Integer integer) {
                 signBetweenTime = integer;
-                Constants.MyLog("主页面传递过来的签到时间间隔"+signBetweenTime);
+                Constants.MyLog("主页面传递过来的签到时间间隔" + signBetweenTime);
                 if (integer != 0) {
                     signText.setText("签到");
                 } else {
@@ -107,8 +116,12 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llInsurance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, InsuranceActivity.class);
-                context.startActivity(intent);
+                if (MemeberKeeper.getOauth(context) == null) {
+                    Constants.toLoginActivity((Activity) context, 2);
+                } else {
+                    Intent intent = new Intent(context, InsuranceActivity.class);
+                    context.startActivity(intent);
+                }
             }
         });
 
@@ -117,15 +130,16 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llQuestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MemeberKeeper.getOauth(context) != null) {
-                    Intent intent = new Intent(context, QuestionCommunityActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("url", "http://h5.test.cloudm.com/n/ask_qlist");
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                } else {
-
-                }
+//                if (MemeberKeeper.getOauth(context) != null) {
+                Intent intent = new Intent(context, QuestionCommunityActivity.class);
+                Bundle bundle = new Bundle();
+//                bundle.putString("url", "http://h5.test.cloudm.com/n/ask_qlist");
+                bundle.putString("url", ApiConstants.H5_HOST+"n/ask_qlist");
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+//                } else {
+//                    Constants.toLoginActivity((Activity) context, 2);
+//                }
             }
         });
 
@@ -134,8 +148,13 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
         llRepair.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, NewRepairActivity.class);
-                context.startActivity(intent);
+                if (MemeberKeeper.getOauth(context) == null) {
+                    Constants.toLoginActivity((Activity) context, 2);
+                } else {
+                    Intent intent = new Intent(context, NewRepairActivity.class);
+                    context.startActivity(intent);
+                }
+
             }
         });
 
@@ -151,12 +170,12 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
 
 
     private void checkSignInfo() {
-        if (MemeberKeeper.getOauth(mContext) == null) {
-            Intent intent = new Intent(mContext, LoginActivity.class);
+        if (MemeberKeeper.getOauth(context) == null) {
+            Intent intent = new Intent(context, LoginActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt("flag", 2);
             intent.putExtras(bundle);
-            mContext.startActivity(intent);
+            context.startActivity(intent);
         } else {
             sign();
         }
@@ -164,64 +183,79 @@ public class HomeLocalDelegate implements ItemViewDelegate<HomePageType> {
     }
 
     private void sign() {
-        Constants.MyLog("验证签到时间状态值"+signBetweenTime);
+        Constants.MyLog("验证签到时间状态值" + signBetweenTime);
         //showSignDialog();
         //if (signBetweenTime != 0) {
-            rxManager.add(Api.getDefault(HostType.CLOUDM_HOST)
-                    .getUserInsertSignInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
-                    .compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(context,false) {
-                                @Override
-                                protected void _onNext(JsonObject jsonObject) {
-                                    JsonElement codeElement = jsonObject.get("code");
-                                    int code = codeElement.getAsInt();
-                                    if (code == 800) {
-                                        showSignDialog();
-                                        JsonElement resultElement = jsonObject.get("result");
-                                        if (resultElement == null) {
+        rxManager.add(Api.getDefault(HostType.CLOUDM_HOST)
+                .getUserInsertSignInfo(String.valueOf(MemeberKeeper.getOauth(context).getId()))
+                .compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(context, false) {
+                    @Override
+                    protected void _onNext(JsonObject jsonObject) {
+                        updateView(jsonObject);
+                    }
 
-                                        } else {
-                                            String result = resultElement.getAsString();
-                                            Gson gson = new Gson();
-                                            ScoreInfo scoreInfo = gson.fromJson(result, ScoreInfo.class);
-                                            Member member = MemeberKeeper.getOauth(context);
-                                            if (member != null) {
-                                                MySharedPreferences.setSharedPString(MySharedPreferences.key_score_update_time +
-                                                                String.valueOf(member.getId()),
-                                                        scoreInfo.getServerTime());
-                                            }
-                                        }
-                                    } else if (code == 200) {
-                                        ToastUtils.info("您已经签到过", true);
-                                        signText.setText("已签到");
-                                    }
-                                    //调用签到状态刷新
-                                    RxBus.getInstance().post(Constants.REFRESH_SIGN_STATE, "");
-                                }
+                    @Override
+                    protected void _onError(String message) {
 
-                                @Override
-                                protected void _onError(String message) {
-
-                                }
-                            }));
-       // }
+                    }
+                }));
+        // }
 
     }
-    //弹出签到对话框
-    private void showSignDialog() {
 
-        final AlertDialog builder = new AlertDialog.Builder(context,R.style.transdialog)
+    private void updateView(JsonObject jsonObject) {
+        JsonElement codeElement = jsonObject.get("code");
+        int code = codeElement.getAsInt();
+        if (code == 800) {
+            AppLog.print("code 800___result__");
+            JsonElement resultElement = jsonObject.get("result");
+            if (resultElement != null) {
+                AppLog.print("resultElement__" + resultElement);
+//                String result = resultElement.getAsString();
+                String result = resultElement.toString();
+                AppLog.print("result__" + result);
+                Gson gson = new Gson();
+                ScoreInfo scoreInfo = gson.fromJson(result, ScoreInfo.class);
+                AppLog.print("showSignDialog___");
+                showSignDialog(scoreInfo.getPoint());
+                Member member = MemeberKeeper.getOauth(context);
+                AppLog.print("getMeber___" + member);
+                if (member != null) {
+                    MySharedPreferences.setSharedPString(MySharedPreferences.key_score_update_time +
+                                    String.valueOf(member.getId()),
+                            scoreInfo.getServerTime());
+                }
+            }
+        } else if (code == 200) {
+//                            ToastUtils.info("您已经签到过", false);
+            AppLog.print("code 200___result__");
+            signText.setText("已签到");
+        }
+        //调用签到状态刷新
+        RxBus.getInstance().post(Constants.REFRESH_SIGN_STATE, "");
+    }
+
+
+    //弹出签到对话框
+    private void showSignDialog(int point) {
+
+        final AlertDialog builder = new AlertDialog.Builder(context, R.style.transdialog)
                 .create();
         builder.show();
         View view = View.inflate(context, R.layout.dialog_sign_layout, null);
         LinearLayout scoreLayout = (LinearLayout) view.findViewById(R.id.score_layout);
+        TextView scoreNumTv = (TextView) view.findViewById(R.id.score_num);
+        scoreNumTv.setText(String.valueOf(point));
         scoreLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 builder.dismiss();
+                signText.setText("已签到");
             }
         });
         builder.getWindow().setContentView(view);
     }
+
 
 }
 

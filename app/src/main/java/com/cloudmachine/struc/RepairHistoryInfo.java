@@ -6,7 +6,7 @@ package com.cloudmachine.struc;
  *  将已完成工单和未完成的工单合并到一起的实体类
  */
 public class RepairHistoryInfo {
-	
+	private String     logo_flag;
 	private String     flag;
     private String     price;
     private String     dopportunity;
@@ -16,7 +16,16 @@ public class RepairHistoryInfo {
     private String     vmacopname;
     private String     vdiscription;
     private String     is_EVALUATE;
-    private String     vprodname;
+
+	public String getLogo_flag() {
+		return logo_flag;
+	}
+
+	public void setLogo_flag(String logo_flag) {
+		this.logo_flag = logo_flag;
+	}
+
+	private String     vprodname;
     private String     vmacoptel;
     private String     nstatus;
     private String     orderNum;
@@ -123,6 +132,7 @@ public class RepairHistoryInfo {
 	public String toString() {
 		return "RepairHistoryInfo{" +
 				"flag='" + flag + '\'' +
+				", logo_flag='" + logo_flag + '\'' +
 				", price='" + price + '\'' +
 				", dopportunity='" + dopportunity + '\'' +
 				", vmachinenum='" + vmachinenum + '\'' +

@@ -33,6 +33,8 @@ import android.provider.MediaStore;
 import android.text.Html;
 import android.text.TextUtils;
 
+import com.github.mikephil.charting.utils.AppLog;
+
 /**
  * @fileName FileUtils.java
  * @package com.util
@@ -43,7 +45,9 @@ import android.text.TextUtils;
  */
 public class FileUtils {
 	
-	public static String SDPATH = Environment.getExternalStorageDirectory()
+//	public static String SDPATH = Environment.getExternalStorageDirectory()
+//			+ "/Photo_LJ/";
+	public static String SDPATH = Environment.getExternalStorageDirectory().getPath()
 			+ "/Photo_LJ/";
 
 	/**
@@ -686,7 +690,7 @@ public class FileUtils {
 		 
 		 public static String saveBitmap(Bitmap bm, String picName) {
 				try {
-					File f = new File(SDPATH, picName + ".JPEG"); 
+					File f = new File(SDPATH, picName + ".JPEG");
 					if (f.exists()) {
 						f.delete();
 					}

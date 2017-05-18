@@ -82,8 +82,8 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
     private Button btnToPay;
     int couponCount = 1;
     private ArrayList<CouponInfo> couponData;
-    private int                   height;
-    private int                   couponHeight;
+    private int height;
+    private int couponHeight;
     private RelativeLayout root;
     private Button btnCancel;
     private BottomSheetDialog couponDialog;
@@ -92,7 +92,7 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
     private long couponId = -1;
     private TextView tvCoupon;
     private String ndiscountworkhourcost;
-    private String amount ;
+    private String amount;
     private String payType;
     private String partnerId;
     private String prepayId;
@@ -123,20 +123,22 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
                         Toast.makeText(RepairDetailsActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
                         Bundle b = new Bundle();
                         b.putString("paymentResult", "支付成功");
-                        Constants.toActivity(RepairDetailsActivity.this,PaymentResultsActivity.class,b,true);
+                        Constants.toActivity(RepairDetailsActivity.this, PaymentResultsActivity.class, b, true);
                     } else {
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                         Toast.makeText(RepairDetailsActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
                         Bundle b = new Bundle();
-                        b.putString("paymentResult","支付失败");
-                        Constants.toActivity(RepairDetailsActivity.this,PaymentResultsActivity.class,b,false);
+                        b.putString("paymentResult", "支付失败");
+                        Constants.toActivity(RepairDetailsActivity.this, PaymentResultsActivity.class, b, false);
                     }
                     break;
                 }
                 default:
                     break;
             }
-        };
+        }
+
+        ;
     };
     private TitleView titleLayout;
     private String nrepairworkhourcost;
@@ -159,7 +161,7 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
         new GetWorkDetailAsync(mHandler, context, orderNum, flag).execute();
         if (null != orderNum) {
             //拿到可用优惠券
-            new GetCouponAsync(mHandler, "0", orderNum,context).execute();
+            new GetCouponAsync(mHandler, "0", orderNum, context).execute();
         }
         //拿到需要支付金额
         new PayPriceAsync(context, mHandler, orderNum, "302", String.valueOf(couponId)).execute();
@@ -245,7 +247,7 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
                         npartstotalamount = workSettle.getNpartstotalamount();
                         ndiscounttotalamount = workSettle.getNdiscounttotalamount();
                         tvConsumptionTotalAmount.setText("¥" + npartstotalamount);
-                        tvDiscountAmount.setText("-¥"+ndiscounttotalamount);
+                        tvDiscountAmount.setText("-¥" + ndiscounttotalamount);
                     }
                 }
                 break;
@@ -277,10 +279,25 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
                 Constants.MyLog("拿到价格成功");
                 PayPriceInfo payPriceInfo = (PayPriceInfo) msg.obj;
                 amount = payPriceInfo.getAmount();
-                Constants.MyLog(amount+"222222222222222");
+                Constants.MyLog(amount + "222222222222222");
+                String coupon = tvCoupon.getText().toString();
+                int couponValue = 0;
+                if (!TextUtils.isEmpty(coupon) && coupon.contains("¥")) {
+                    int startIndex = coupon.indexOf("¥") + 1;
+                    try {
+                        couponValue = Integer.parseInt(coupon.substring(startIndex, coupon.length()));
+                    } catch (Exception e) {
+                    }
+                }
 
                 if (!TextUtils.isEmpty(amount)) {
-                    tvPayPrice.setText("合计¥ "+amount);
+                    double amountValue = Double.parseDouble(amount);
+                    amountValue -= couponValue;
+                    if (amountValue < 0) {
+                        amountValue = 0;
+                    }
+//                    tvPayPrice.setText("合计¥ " + amount);
+                    tvPayPrice.setText("合计¥ " + amountValue);
                 }
                 break;
             case Constants.HANDLER_GETPAYPRICE_FAILD:
@@ -298,7 +315,7 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
                     payWeiXin();
                 } else if (payType.equals("102")) {
                     AliPayBean aliPayBean = (AliPayBean) msg.obj;
-                    Constants.MyLog("解析到的支付宝信息"+aliPayBean);
+                    Constants.MyLog("解析到的支付宝信息" + aliPayBean);
                     String signInfo = aliPayBean.getSign();
                     payV2(signInfo);
                 }
@@ -325,10 +342,10 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
             case R.id.rl_coupon:
                 //showCounponDialog();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("couponData",couponData);
+                bundle.putSerializable("couponData", couponData);
                 Constants.toActivityForR(RepairDetailsActivity.this
                         , ViewRepairActivity.class
-                ,bundle,selectCouponCode);
+                        , bundle, selectCouponCode);
                 break;
             case R.id.btn_topay:
                 if (!mCbAliPay.isChecked() && !mCbWeiXinPay.isChecked()) {
@@ -344,6 +361,7 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
                 break;
         }
     }
+
     //弹出优惠券列表
     private void showCounponDialog() {
         //查看优惠券弹窗除listview其余部分的高度
@@ -395,8 +413,8 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 couponId = couponData.get(position).getId();
-                Constants.MyLog("获取到优惠券id"+couponId);
-                tvCoupon.setText("-¥"+String.valueOf(couponData.get(position).getAmount()));
+                Constants.MyLog("获取到优惠券id" + couponId);
+                tvCoupon.setText("-¥" + String.valueOf(couponData.get(position).getAmount()));
                 new PayPriceAsync(context, mHandler, orderNum, "302", String.valueOf(couponId)).execute();
                 couponDialog.dismiss();
             }
@@ -472,7 +490,7 @@ public class RepairDetailsActivity extends BaseAutoLayoutActivity implements Han
         if (requestCode == selectCouponCode) {
             long couponId = data.getLongExtra("couponId", -1);
             String amount = data.getStringExtra("amount");
-            tvCoupon.setText("-¥"+amount);
+            tvCoupon.setText("-¥" + amount);
             new PayPriceAsync(context, mHandler, orderNum, "302", String.valueOf(couponId)).execute();
         }
     }

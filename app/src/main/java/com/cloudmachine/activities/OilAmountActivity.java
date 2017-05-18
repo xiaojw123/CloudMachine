@@ -131,11 +131,11 @@ OnChartValueSelectedListener{
 	}
 	private void setLastData(){
 		if(null != lastLevel){
-			last_date_oil_text.setText(lastLevel.getTime()+" 最后油位百分比");
+			last_date_oil_text.setText(lastLevel.getTime()+" 关机油位");
 			oil_proportion_last.setText(lastLevel.getLevel()+"%");
 		}else{
 			if(null != oilLeve && oilLeve.length>0){
-				last_date_oil_text.setText(oilLeve[0].getTime()+" 最后油位百分比");
+				last_date_oil_text.setText(oilLeve[0].getTime()+" 关机油位");
 				oil_proportion_last.setText(oilLeve[0].getLevel()+"%");
 			}else{
 				last_date_oil_text.setText("机器未启动");

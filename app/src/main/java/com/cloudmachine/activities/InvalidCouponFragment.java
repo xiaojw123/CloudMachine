@@ -47,6 +47,7 @@ public class InvalidCouponFragment extends Fragment implements Handler.Callback{
     private ListView              lvInvaliCoupon1;
     private RecyclerView          mRecyclerView;
     private InvalidCouponAdapter  mInvalidCouponAdapter;
+    private View empTv;
 
     @Nullable
     @Override
@@ -73,6 +74,7 @@ public class InvalidCouponFragment extends Fragment implements Handler.Callback{
     private void initView() {
         dataList = new ArrayList<>();
         ViewCouponActivity viewCouponActivity = (ViewCouponActivity) getActivity();
+        empTv=viewParent.findViewById(R.id.empt_tv);
         mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
@@ -94,10 +96,16 @@ public class InvalidCouponFragment extends Fragment implements Handler.Callback{
         switch (msg.what) {
             case Constants.HANDLER_GETCOUPONS_SUCCESS:
                 ArrayList<CouponInfo> data = (ArrayList<CouponInfo>) msg.obj;
-                if (null != data) {
+                if (null != data&&data.size()>0) {
+                    empTv.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
                     dataList.addAll(data);
                     mInvalidCouponAdapter.notifyDataSetChanged();
+                }else{
+                    empTv.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
                 }
+
                 break;
             case Constants.HANDLER_GETCOUPONS_FAILD:
                 Constants.ToastAction((String) msg.obj);

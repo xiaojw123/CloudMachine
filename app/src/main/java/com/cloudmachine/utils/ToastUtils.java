@@ -1,5 +1,6 @@
 package com.cloudmachine.utils;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 
@@ -18,6 +19,10 @@ import es.dmoral.toasty.Toasty;
  */
 
 public class ToastUtils {
+
+    public static void showToast(Context context,String message){
+        Toast.makeText(context,message,Toast.LENGTH_LONG).show();
+    }
 
     /**
      *

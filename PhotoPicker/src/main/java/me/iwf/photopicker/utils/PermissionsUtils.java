@@ -1,9 +1,7 @@
 package me.iwf.photopicker.utils;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -26,7 +24,6 @@ public class PermissionsUtils {
                 ContextCompat.checkSelfPermission(activity, READ_EXTERNAL_STORAGE);
 
         boolean readStoragePermissionGranted = readStoragePermissionState == PackageManager.PERMISSION_GRANTED;
-
         if (!readStoragePermissionGranted) {
             ActivityCompat.requestPermissions(activity,
                     PermissionsConstant.PERMISSIONS_EXTERNAL_READ,

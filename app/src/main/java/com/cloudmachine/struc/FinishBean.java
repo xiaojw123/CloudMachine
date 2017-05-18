@@ -1,6 +1,15 @@
 package com.cloudmachine.struc;
 
 public class FinishBean {
+    public String getLogo_flag() {
+        return logo_flag;
+    }
+
+    public void setLogo_flag(String logo_flag) {
+        this.logo_flag = logo_flag;
+    }
+
+    private String  logo_flag;
     private String flag;
     private String price;
     private String dopportunity;

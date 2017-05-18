@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.cloudm.autolayout.AutoLayoutFragmentActivity;
 import com.cloudmachine.R;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.utils.Constants;
 
@@ -129,7 +130,8 @@ public class ViewCouponActivity extends AutoLayoutFragmentActivity implements Vi
             public void onClick(View v) {
                 Constants.MyLog("优惠券点击事件");
                 Intent intent = new Intent(mContext, WebviewActivity.class);
-                intent.putExtra(Constants.P_WebView_Url, "http://h5.cloudm.com/coupon_description");
+                intent.putExtra(Constants.P_WebView_Title,"说明");
+                intent.putExtra(Constants.P_WebView_Url, ApiConstants.H5_HOST+"n/coupon_description");
                 startActivity(intent);
             }
         });

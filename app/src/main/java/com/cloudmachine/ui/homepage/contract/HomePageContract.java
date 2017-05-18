@@ -7,6 +7,8 @@ import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
 import com.cloudmachine.recyclerbean.HomeNewsBean;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import rx.Observable;
@@ -30,15 +32,20 @@ public interface HomePageContract {
         Observable<ArrayList<HomeNewsBean>> getHomeMidAdvertisement();
 
         Observable<HomeIssueDetailBean> getHotQuestion();
+        Observable<JSONObject> getMessageUntreated(long memberId);
     }
 
     interface View extends BaseView {
+        void loadBannerError();
+        void loadMidAdError();
+        void loadHotQuestionError();
 
         void returnHomeBannerInfo(ArrayList<HomeBannerBean> homeBannerBeen);
 
         void returnHomeMidAdvertisement(ArrayList<HomeNewsBean> homeNewsBeen);
 
         void returnHotQuestion(HomeIssueDetailBean homeIssueDetailBean);
+        void returnMessageUntreated(int count);
     }
 
     abstract static class Presenter extends BasePresenter<View, Model> {
@@ -49,5 +56,6 @@ public interface HomePageContract {
         public abstract void getHomeMidAdvertisement();
 
         public abstract void getHotQuestion();
+        public abstract void getMessageUntreated();
     }
 }

@@ -28,10 +28,10 @@ import butterknife.Unbinder;
 public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel> extends Fragment {
 
 
-    public  T         mPresenter;
-    public  E         mModel;
-    public  RxManager mRxManager;
-    public View      viewParent;
+    public T mPresenter;
+    public E mModel;
+    public RxManager mRxManager;
+    public View viewParent;
     private Unbinder mUnbinder;
 
     @Nullable
@@ -82,10 +82,14 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
+        if (mUnbinder != null) {
+            mUnbinder.unbind();
+            mUnbinder=null;
+        }
         UMListUtil.getUMListUtil().removeList(this.getClass().getSimpleName());
         if (mPresenter != null)
             mPresenter.onDestroy();
+        if (mRxManager!=null)
         mRxManager.clear();
     }
 
@@ -111,8 +115,6 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
     public void stopProgressDialog() {
         LoadingDialog.cancelDialogForLoading();
     }
-
-
 
 
 }

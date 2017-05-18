@@ -53,10 +53,8 @@ public class SystemMessageAdapter extends RecyclerView.Adapter<SystemMessageAdap
         if(item.getMessageType() == Constants.MESSAGETYPE[3]
                 || item.getMessageType() == Constants.MESSAGETYPE[4]
                 ||item.getMessageType() == Constants.MESSAGETYPE[5]){//系统消息
-            holder.arrowRight.setVisibility(View.VISIBLE);
             holder.tv2.setVisibility(View.GONE);
             holder.tv3.setVisibility(View.GONE);
-            holder.llSelect.setVisibility(View.GONE);
             holder.dividerBottom.setVisibility(View.GONE);
             holder.dividerTop.setVisibility(View.VISIBLE);
             holder.llDetail.setOnClickListener(new ActionClickListener(3, position, item.getId(), item.getInviterId()));
@@ -82,67 +80,25 @@ public class SystemMessageAdapter extends RecyclerView.Adapter<SystemMessageAdap
             }
             holder.imageView.setImageResource(R.drawable.system1);
         }else{
-            holder.arrowRight.setVisibility(View.INVISIBLE);
             holder.tv2.setVisibility(View.VISIBLE);
             holder.tv3.setVisibility(View.VISIBLE);
-            holder.llSelect.setVisibility(View.VISIBLE);
             holder.dividerBottom.setVisibility(View.VISIBLE);
-
-            switch(item.getStatus()){
-                case 1:
-                    holder.messageOval.setVisibility(View.VISIBLE);
-                    holder.llSelect.setVisibility(View.VISIBLE);
-                    holder.dividerBottom.setVisibility(View.VISIBLE);
-                    if (item.getMessageType() == 1) {
-                        holder.info_inv.setText("邀请你共享 ");
-                        holder.tv2.setText(item.getDeviceName());
-                        holder.tv3.setText(" 该设备的数据");
-                    }else if(item.getMessageType() == 2){
-                        holder.info_inv.setText("技师移交 ");
-                        holder.tv2.setText(item.getDeviceName());
-                        holder.tv3.setText(" 给您，请接受");
-                    }
-                    break;
-
-                case 2:
-
-                    holder.messageOval.setVisibility(View.INVISIBLE);
-                    holder.llSelect.setVisibility(View.GONE);
-                    holder.dividerTop.setVisibility(View.GONE);
-                    if (item.getMessageType() == 1) {
-                        holder.info_inv.setText("邀请你共享 ");
-                        holder.tv2.setText(item.getDeviceName());
-                        holder.tv3.setText(" 该设备的数据，已拒绝");
-                    }else if(item.getMessageType() == 2){
-                        holder.info_inv.setText("技师移交 ");
-                        holder.tv2.setText(item.getDeviceName());
-                        holder.tv3.setText(" 给您，已拒绝");
-                    }
-                    break;
-                case 3:
-                    holder.dividerTop.setVisibility(View.GONE);
-                    holder.messageOval.setVisibility(View.INVISIBLE);
-                    holder.llSelect.setVisibility(View.GONE);
-
-                    if (item.getMessageType() == 1) {
-                        holder.info_inv.setText("邀请你共享 ");
-                        holder.tv2.setText(item.getDeviceName());
-                        holder.tv3.setText(" 该设备的数据，已接受");
-                    }else if(item.getMessageType() == 2){
-                        holder.info_inv.setText("技师移交 ");
-                        holder.tv2.setText(item.getDeviceName());
-                        holder.tv3.setText(" 给您，已接受");
-                    }
-                    break;
+            if (item.getStatus()==1){
+                holder.messageOval.setVisibility(View.VISIBLE);
+            }else{
+                holder.messageOval.setVisibility(View.GONE);
             }
-
+            holder.dividerBottom.setVisibility(View.VISIBLE);
+            holder.info_inv.setText(item.getInviterNickname());
+            holder.tv2.setText("回复了");
+            holder.tv3.setText(item.getMessage() + ", 点击查看");
             holder.invite_name.setText(item.getInviterNickname());
             holder.time.setText(item.getInviteTime());
             ImageLoader.getInstance().displayImage(item.getImgpath(), holder.imageView, Utils.displayImageOptions);
         }
 
-        holder.llaccept.setOnClickListener(new ActionClickListener(1, position, item.getId(), item.getInviterId()));//点击事件
-        holder.llrefuse.setOnClickListener(new ActionClickListener(2, position, item.getId(), item.getInviterId()));
+//        holder.llaccept.setOnClickListener(new ActionClickListener(1, position, item.getId(), item.getInviterId()));//点击事件
+//        holder.llrefuse.setOnClickListener(new ActionClickListener(2, position, item.getId(), item.getInviterId()));
 
     }
 
@@ -164,11 +120,11 @@ public class SystemMessageAdapter extends RecyclerView.Adapter<SystemMessageAdap
                 Message msg = Message.obtain();
                 msg.what = Constants.HANDLER_GOTO_MESSAGECONTENT;
                 msg.arg1 = position;
-                //myHandler.sendMessage(msg);
+//                myHandler.sendMessage(msg);
             }
             if(null != dataList){
                 if (dataList.get(position).getMessageType() != Constants.MESSAGETYPE[5]) {
-                    //  new MessageUpdateStatusAsync(type,itemId,inviteId,position,mContext,myHandler).execute();
+//                      new MessageUpdateStatusAsync(type,itemId,inviteId,position,mContext,myHandler).execute();
                 }
 
             }
@@ -185,35 +141,33 @@ public class SystemMessageAdapter extends RecyclerView.Adapter<SystemMessageAdap
 
         private ImageView imageView;
         private TextView     time;//时间复用
-        private LinearLayout llSelect; //下半部分，接受或者拒绝布局
+//        private LinearLayout llSelect; //下半部分，接受或者拒绝布局
         private View         dividerBottom;    //底部分割线
         private LinearLayout llDetail; //上半部分，消息详情布局
         private View         messageOval;  //小圆点，标识是否阅读过消息
         private TextView     invite_name;//邀请人昵称，消息页面中标识消息状态
         private TextView     info_inv;    //昵称下面的文字，第一段
-        private LinearLayout llaccept;
-        private LinearLayout llrefuse;
+//        private LinearLayout llaccept;
+//        private LinearLayout llrefuse;
         private TextView     tv2; //昵称下面的文字，第二段
         private TextView     tv3; //昵称下面的文字，第三段
         private View         dividerTop;
-        private ImageView    arrowRight;
 
         public SystemMessageHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.message_body);//照片
             time = (TextView) itemView.findViewById(R.id.message_time);//系统通知时间
-            llSelect = (LinearLayout) itemView.findViewById(R.id.ll_select);
+//            llSelect = (LinearLayout) itemView.findViewById(R.id.ll_select);
             dividerBottom = itemView.findViewById(R.id.divider2);
             llDetail = (LinearLayout) itemView.findViewById(R.id.ll_detail);
             messageOval = itemView.findViewById(R.id.message_oval);
             invite_name = (TextView) itemView.findViewById(R.id.invite_name);
             info_inv = (TextView) itemView.findViewById(R.id.info_inv);
-            llrefuse = (LinearLayout) itemView.findViewById(R.id.ll_resfuse);
-            llaccept = (LinearLayout) itemView.findViewById(R.id.ll_accept);
+//            llrefuse = (LinearLayout) itemView.findViewById(R.id.ll_resfuse);
+//            llaccept = (LinearLayout) itemView.findViewById(R.id.ll_accept);
             tv2 = (TextView) itemView.findViewById(R.id.device_name_message);
             tv3 = (TextView) itemView.findViewById(R.id.tv3);
             dividerTop = itemView.findViewById(R.id.divider1);
-            arrowRight = (ImageView) itemView.findViewById(R.id.arrow_right);
         }
     }
 }

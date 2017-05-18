@@ -11,6 +11,7 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.DeviceMcActivity;
 import com.cloudmachine.activities.WanaCloudBox;
 import com.cloudmachine.main.MainActivity;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
 
 import org.json.JSONException;
@@ -26,6 +27,7 @@ import cn.jpush.android.api.JPushInterface;
  */
 public class MyReceiver extends BroadcastReceiver {
     private static final String TAG = "JPush";
+    public static final String NOTIFY_URL = "notify_url";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -105,6 +107,7 @@ public class MyReceiver extends BroadcastReceiver {
         if (!TextUtils.isEmpty(extras)) {
             try {
                 JSONObject extraJson = new JSONObject(extras);
+                Log.d(TAG, "notifaction__Result__" + extras.toString());
                 if (null != extraJson && extraJson.has("type")) {
                     String type = extraJson.getString("type");
                     int iType = Integer.valueOf(type);
@@ -149,6 +152,14 @@ public class MyReceiver extends BroadcastReceiver {
                             i4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(i4);
                             return;
+                        case 9:
+//                            notifaction__Result__{"url":"http:\/\/h5.test.cloudm.com\/n\/ask_chatlist?qid=949&auid=4823&myid=4852","type":"9"}
+                            Intent notifyIntent = new Intent(context, QuestionCommunityActivity.class);
+                            String notifyUrl = extraJson.optString("url");
+                            notifyIntent.putExtra(NOTIFY_URL, notifyUrl);
+                            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(notifyIntent);
+                            break;
                         default:
                             Intent i2 = new Intent(context, MainActivity.class);
                             i2.putExtras(bundle);
@@ -164,11 +175,6 @@ public class MyReceiver extends BroadcastReceiver {
             }
         }
 
-        Intent i2 = new Intent(context, MainActivity.class);
-        i2.putExtras(bundle);
-        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(i2);
     }
 
 }

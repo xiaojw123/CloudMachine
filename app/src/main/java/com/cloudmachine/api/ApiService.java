@@ -12,6 +12,7 @@ import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.MessageBO;
 import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.struc.UnReadMessage;
 import com.cloudmachine.struc.UserInfo;
 import com.google.gson.JsonObject;
 
@@ -79,7 +80,15 @@ public interface ApiService {
      * @return
      */
     @GET("ads/getAdvertisements")
-    Observable<BaseRespose<ArrayList<HomeBannerBean>>> GetHomeBannerInfo(@Query("adsType") int adsType);
+    Observable<BaseRespose<ArrayList<HomeBannerBean>>> GetHomeBannerInfo(@Query("adsType") int adsType,@Query("adsStatus") int adsStatus);
+
+    /**
+     * 获得车险
+     * @param adsType
+     * @return
+     */
+    @GET("ads/getAdvertisements")
+    Observable<BaseRespose<ArrayList<HomeBannerBean>>> GetHomeInsurance(@Query("adsType") int adsType);
 
     /**
      * 获取中间广告位信息
@@ -93,8 +102,11 @@ public interface ApiService {
      * 获取热门问题
      * @return
      */
+//    @GET("device/getHotQuestio")
     @GET("device/getHotQuestion")
     Observable<BaseRespose<HomeIssueDetailBean>> getHotQuestion();
+    @GET("/device/getMessageUntreatedCount")
+    Observable<BaseRespose<UnReadMessage>> getMessageUntreatedCount(@Query("memberId") long memberId);
 
     /**
      * 获取大师日报列表
@@ -153,7 +165,7 @@ public interface ApiService {
                                            @Query("code") String code,
                                            @Query("inviteCode") String inviteCode,
                                            @Query("pwd") String pwd,
-                                           @Query("nickname") String nickname,
+                                           @Query("nickName") String nickname,
                                            @Query("headLogo") String headLogo,
                                            @Query("type") Integer type);
 
@@ -218,7 +230,7 @@ public interface ApiService {
      * 获取到系统消息
      * @return
      */
-    @GET("getSystemMessages")
+    @GET("device/getSystemMessages")
     Observable<BaseRespose<List<MessageBO>>> getSystemMessage(@Query("memberId") Long memberId
             , @Query("pageNo") int pageNo, @Query("pageSize") int pageSize);
 

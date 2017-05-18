@@ -1,11 +1,15 @@
 package com.cloudmachine.ui.homepage.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -18,12 +22,22 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.cloudmachine.R;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.recyclerbean.HomeBannerBean;
+import com.cloudmachine.ui.homepage.contract.InsuranceContract;
+import com.cloudmachine.ui.homepage.model.InsuranceModel;
+import com.cloudmachine.ui.homepage.presenter.InsurancePresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
+import com.cloudmachine.utils.ShareDialog;
+import com.cloudmachine.utils.ToastUtils;
+import com.github.mikephil.charting.utils.AppLog;
 import com.jsbridge.JsBridgeClient;
 import com.jsbridge.core.JsBridgeManager;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,20 +52,22 @@ import butterknife.ButterKnife;
  * 修改备注：
  */
 @SuppressLint("SetJavaScriptEnabled")
-public class InsuranceActivity extends BaseAutoLayoutActivity {
-
-
+public class InsuranceActivity extends BaseAutoLayoutActivity<InsurancePresenter, InsuranceModel> implements InsuranceContract.View {
+    public static final int REQUEST_PERMISSION_CALL = 0x11;
+    public static final String AUTO_BEAN = "auto_bean";
     @BindView(R.id.title_layout)
-    TitleView   mTitleLayout;
+    TitleView mTitleLayout;
     @BindView(R.id.m_webview)
-    WebView     mMWebview;
+    WebView mMWebview;
     @BindView(R.id.webview_progressbar)
     ProgressBar mWebviewProgressbar;
-    private Context         mContext;
+    private Context mContext;
     private JsBridgeManager jsBridgeManager;
-    private String URLString = "http://h5.test.cloudm.com/Insurance?userID=";
+//    private String URLString = "http://h5.test.cloudm.com/Insurance?userID=";
+    private String URLString = ApiConstants.H5_HOST+"Insurance?userID=";
     private String mUserID;
     /*http://h5.test.cloudm.com/Insurance*/
+    HomeBannerBean mHomeBannerBeen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +85,7 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
         initWebView();
         initTitleView();
         initView();
+        mPresenter.getSharedInfo();
 
     }
 
@@ -100,7 +117,7 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
             }
 
         });
-        mMWebview.loadUrl(URLString+mUserID);
+        mMWebview.loadUrl(URLString + mUserID);
 
     }
 
@@ -112,19 +129,21 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
                 String call = "javascript:prev()";
                 mMWebview.loadUrl(call);
 
-                mTitleLayout.setTitle("车险报价");
-                mTitleLayout.setRightImage(R.drawable.banner_share, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                    }
-                });
                /* if (mMWebview.canGoBack()) {
                     mMWebview.goBack();
                 } else {
                     finish();
                 }*/
 
+            }
+        });
+        mTitleLayout.setTitle("工程机械保险报价");
+        mTitleLayout.setRightImage(R.drawable.banner_share, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareDialog shareDialog = new ShareDialog(InsuranceActivity.this, URLString+mUserID+"&tabbar=1", mHomeBannerBeen.adsTitle, mHomeBannerBeen.adsDescription, -1);
+                shareDialog.show();
             }
         });
     }
@@ -142,7 +161,12 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
 
     @Override
     public void initPresenter() {
+        mPresenter.setVM(this, mModel);
+    }
 
+    @Override
+    public void returnSharedInfo(ArrayList<HomeBannerBean> homeBannerBeen) {
+        mHomeBannerBeen = homeBannerBeen.get(0);
     }
 
     final class MyWebChromeClient extends WebChromeClient {
@@ -210,8 +234,24 @@ public class InsuranceActivity extends BaseAutoLayoutActivity {
 
     public void backPage(String params) {
         if (params.equals("back")) {
-            Constants.MyLog("当前所在的线程"+Thread.currentThread().getName());
+            Constants.MyLog("当前所在的线程" + Thread.currentThread().getName());
             finish();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        if (requestCode == REQUEST_PERMISSION_CALL) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                AppLog.print("权限被允许———jsBridgeManager—"+jsBridgeManager+", gran_"+ ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE));
+                if (jsBridgeManager != null) {
+                    jsBridgeManager.callTelNum();
+                }
+            } else {
+                AppLog.print("权限被拒绝—"+jsBridgeManager);
+                ToastUtils.warning("拨打电话权限被拒绝", true);
+            }
         }
     }
 }

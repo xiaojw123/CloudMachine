@@ -11,13 +11,23 @@ package com.cloudmachine.api;
  */
 
 public class ApiConstants {
+/* 测试环境*/
+//   public static final String CLOUDM_HOST = "http://api.test.cloudm.com/";
+//    public static final String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3-web/";
+//    public static final String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3-web/";
+//    public static final String XIEXIN_HOST = "http://121.40.130.218:8980/";
+//    public static final String H5_HOST = "http://h5.test.cloudm.com/";
 
-    public static final String CLOUDM_HOST = "http://api.test.cloudm.com/";
-    public static final String ZHIHU_HOST = "http://news-at.zhihu.com/api/4/";
-    public static final String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3-web/";
-    public static final String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3-web/";
-    public static final String XIEXIN_HOST = "http://121.40.130.218:8980/";
-    public static final String LIZHAOHUA_HOST = "http://192.168.31.165:8091/bus-web/";
+/*线上环境*/
+    public static final String CLOUDM_HOST = "http://api.cloudm.com/";
+    public static final String GUOSHUAI_HOST = "http://api.cloudm.com/cloudm3/";
+    public static final String CAITINGTING_HOST = "http://api.cloudm.com/cloudm3/";
+    public static final String XIEXIN_HOST = "http://ask.cloudm.com/";
+    public static final String H5_HOST = "http://h5.cloudm.com/";
+
+@Deprecated
+//    public static final String  ZHIHU_HOST = "http://news-at.zhihu.com/api/4/";
+//    public static final String LIZHAOHUA_HOST = "http://192.168.31.165:8091/bus-web/";
 
 
     /*"http://api.test.cloudm.com/"*/
@@ -41,9 +51,7 @@ public class ApiConstants {
             case HostType.NEWS_DETAIL_HTML_PHOTO:
                 host = "http://kaku.com/";
                 break;*/
-            case HostType.ZHIHU_HOST:
-                host = ZHIHU_HOST;
-                break;
+
             case HostType.GUOSHUAI_HOST:
                 host = GUOSHUAI_HOST;
                 break;
@@ -53,9 +61,12 @@ public class ApiConstants {
             case HostType.XIEXIN_HOSR:
                 host = XIEXIN_HOST;
                 break;
-            case HostType.LIZHAOHUA_HOST:
-                host = LIZHAOHUA_HOST;
-                break;
+//            case HostType.ZHIHU_HOST:
+//                host = ZHIHU_HOST;
+//                break;
+//            case HostType.LIZHAOHUA_HOST:
+//                host = LIZHAOHUA_HOST;
+//                break;
             default:
                 host = "";
                 break;

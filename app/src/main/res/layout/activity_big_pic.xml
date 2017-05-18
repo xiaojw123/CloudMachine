@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical"
+    tools:context="com.cloudmachine.activities.BigPicActivity">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        >
+
+        <ImageView
+            android:id="@+id/big_pic_backimg"
+            android:layout_width="@dimen/public_title_back_image_width"
+            android:layout_height="@dimen/public_title_back_image_width"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/bg_btn_back" />
+
+        <TextView
+            android:id="@+id/big_pic_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_22_sp" />
+    </FrameLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/big_pic_vpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        />
+
+
+</LinearLayout>

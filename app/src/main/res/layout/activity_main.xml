@@ -75,30 +75,29 @@
                         />
                 </RelativeLayout>
 
-                <ImageView
-                    android:visibility="gone"
-                    android:id="@+id/tips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:layout_toRightOf="@id/two_r_layout"
-                    android:background="@drawable/tips_new" />
+                <!--<ImageView-->
+                    <!--android:id="@+id/tips"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="2dp"-->
+                    <!--android:layout_toRightOf="@id/two_r_layout"-->
+                    <!--android:background="@drawable/tips_new" />-->
 
-                <com.cloudmachine.utils.widgets.RadiusButtonView
-                    android:id="@+id/question_text"
-                    android:layout_width="@dimen/main_bar_score_width"
-                    android:layout_height="@dimen/main_bar_score_height"
-                    android:layout_marginTop="2dp"
-                    android:layout_toRightOf="@id/two_r_layout"
-                    android:visibility="gone"
-                    cloudm:rbtn_fillColor_dw="@color/mc_rad_but_dw_1"
-                    cloudm:rbtn_fillColor_nm="@color/transparent"
-                    cloudm:rbtn_roundRadius="15dp"
-                    cloudm:rbtn_strokeColor="@color/main_bar_score_text"
-                    cloudm:rbtn_text="问卷"
-                    cloudm:rbtn_textColor="@color/main_bar_score_text"
-                    cloudm:rbtn_textSize="@dimen/main_bar_score_text_size" >
-                </com.cloudmachine.utils.widgets.RadiusButtonView>
+                <!--<com.cloudmachine.utils.widgets.RadiusButtonView-->
+                    <!--android:id="@+id/question_text"-->
+                    <!--android:layout_width="@dimen/main_bar_score_width"-->
+                    <!--android:layout_height="@dimen/main_bar_score_height"-->
+                    <!--cloudm:rbtn_fillColor_dw="@color/mc_rad_but_dw_1"-->
+                    <!--cloudm:rbtn_fillColor_nm="@color/transparent"-->
+                    <!--cloudm:rbtn_roundRadius="15dp"-->
+                    <!--cloudm:rbtn_strokeColor="@color/main_bar_score_text"-->
+                    <!--cloudm:rbtn_text="问卷"-->
+                    <!--cloudm:rbtn_textColor="@color/main_bar_score_text"-->
+                    <!--cloudm:rbtn_textSize="@dimen/main_bar_score_text_size"-->
+                    <!--android:layout_below="@+id/tips"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_alignParentEnd="true">-->
+                <!--</com.cloudmachine.utils.widgets.RadiusButtonView>-->
             </RelativeLayout>
         </LinearLayout>
 

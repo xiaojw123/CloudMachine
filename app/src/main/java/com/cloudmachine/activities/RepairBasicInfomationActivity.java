@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.adapter.PhotoListAdapter;
+import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.task.GetWorkDetailAsync;
@@ -22,6 +27,7 @@ import com.cloudmachine.struc.BOInfo.WorkDetailBean;
 import com.cloudmachine.struc.CWInfo;
 import com.cloudmachine.struc.ScheduleBean;
 import com.cloudmachine.utils.Constants;
+import com.github.mikephil.charting.utils.AppLog;
 
 import java.util.ArrayList;
 
@@ -31,14 +37,19 @@ import java.util.ArrayList;
 public class RepairBasicInfomationActivity extends BaseAutoLayoutActivity
         implements Callback {
 
-    private Handler   mHandler;
-    private Context   mContext;
+    private Handler mHandler;
+    private Context mContext;
     private TitleView title_layout;
-    private String    orderNum, flag;
+    private String orderNum, flag;
     private TextView repair_basic_text1, repair_basic_text2, repair_basic_text3, repair_basic_text4,
             repair_basic_text5, repair_basic_text6, repair_basic_text7, repair_basic_text8;
     private View line5, layout5;
     private LinearLayout add_list_layout;
+    private RecyclerView repair_basic_rlv;
+    private PhotoListAdapter photoRlvAdapter;
+    private LinearLayout repair_img_container;
+    private LinearLayout repair_loc_layout;
+    private TextView location_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +76,8 @@ public class RepairBasicInfomationActivity extends BaseAutoLayoutActivity
 
     private void initView() {
         initTitleLayout();
+        repair_loc_layout = (LinearLayout) findViewById(R.id.repair_basic_loc_layout);
+        location_tv = (TextView) findViewById(R.id.repair_basic_loc);
         repair_basic_text1 = (TextView) findViewById(R.id.repair_basic_text1);
         repair_basic_text2 = (TextView) findViewById(R.id.repair_basic_text2);
         repair_basic_text3 = (TextView) findViewById(R.id.repair_basic_text3);
@@ -76,6 +89,13 @@ public class RepairBasicInfomationActivity extends BaseAutoLayoutActivity
         line5 = findViewById(R.id.line5);
         layout5 = findViewById(R.id.layout5);
         add_list_layout = (LinearLayout) findViewById(R.id.add_list_layout);
+        repair_img_container = (LinearLayout) findViewById(R.id.repair_basic_img_container);
+        repair_basic_rlv = (RecyclerView) findViewById(R.id.repair_basic_rlv);
+        repair_basic_rlv.setNestedScrollingEnabled(false);
+        repair_basic_rlv.setLayoutManager(new GridLayoutManager(this, 3));
+        repair_basic_rlv.addItemDecoration(new SpaceItemDecoration(this, 5));
+        photoRlvAdapter = new PhotoListAdapter();
+        repair_basic_rlv.setAdapter(photoRlvAdapter);
 
     }
 
@@ -107,6 +127,17 @@ public class RepairBasicInfomationActivity extends BaseAutoLayoutActivity
             line5.setVisibility(View.GONE);
             layout5.setVisibility(View.GONE);
         }
+    }
+
+    private void updateRecyclerView(ArrayList<String> urls) {
+        if (urls == null) {
+            return;
+        }
+        if (repair_img_container.getVisibility() != View.VISIBLE) {
+            repair_img_container.setVisibility(View.VISIBLE);
+        }
+        AppLog.print("imgUrl size__" + urls.size());
+        photoRlvAdapter.updateItems(urls);
     }
 
 
@@ -159,6 +190,7 @@ public class RepairBasicInfomationActivity extends BaseAutoLayoutActivity
             add_list_layout.addView(layout);
         }
 
+
     }
 
     @Override
@@ -174,18 +206,24 @@ public class RepairBasicInfomationActivity extends BaseAutoLayoutActivity
                 setItemText(workDetail.getVprodname(), workDetail.getVbrandname(), workDetail.getVmaterialname(),
                         workDetail.getVmachinenum(), null, workDetail.getVmacopname(), workDetail.getVmacoptel(),
                         workDetail.getVdiscription());
+                updateRecyclerView(boInfo.getLogoList());
                 break;
             case Constants.HANDLER_GET_CWDETAIL_SUCCESS:
                 CWInfo cwInfo = (CWInfo) msg.obj;
                 ArrayList<ScheduleBean> schedule = cwInfo.getSchedule();
                 addListItem(schedule);
                 com.cloudmachine.struc.WorkDetailBean workDetail2 = cwInfo.getWorkDetail();
-
+                String workAddress = workDetail2.getVworkaddress();
+                if (!TextUtils.isEmpty(workAddress)) {
+                    repair_loc_layout.setVisibility(View.VISIBLE);
+                    location_tv.setText(workAddress);
+                }else{
+                    repair_loc_layout.setVisibility(View.GONE);
+                }
                 setItemText(workDetail2.getVprodname(), workDetail2.getVbrandname(), workDetail2.getVmaterialname(),
                         workDetail2.getVmachinenum(), null, workDetail2.getVfieldcontactor(),
                         workDetail2.getVcontactphone(), workDetail2.getCusdemanddesc());
-
-
+                updateRecyclerView(cwInfo.getLogoList());
                 break;
             case Constants.HANDLER_GET_WORKDETAIL_FAILD:
                 Constants.MyToast((String) msg.obj);

@@ -13,7 +13,7 @@
         android:textColor="#121212"
         android:textSize="@dimen/public_textsize1"
         android:layout_marginLeft="@dimen/share_text_margin_left"
-        android:text="分享APP下载链接到"/>
+        android:text="分享到"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

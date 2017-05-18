@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.utils.Constants;
+import com.github.mikephil.charting.utils.AppLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,15 +43,15 @@ public class AccessoriesMallActivity extends BaseAutoLayoutActivity {
 
 
     @BindView(R.id.title_name)
-    TextView    mTitleName;
+    TextView mTitleName;
     @BindView(R.id.title_left_button)
-    ImageView   mTitleLeftButton;
+    ImageView mTitleLeftButton;
     @BindView(R.id.finish)
-    ImageView   mFinish;
+    ImageView mFinish;
     @BindView(R.id.webview_progressbar)
     ProgressBar mWebviewProgressbar;
     @BindView(webview)
-    WebView     mWebview;
+    WebView mWebview;
 
     private Context mContext;
     private String URLString = "https://wap.youzan.com/v2/showcase/homepage?alias=g2vu0cez&sf=wx_menu&redirect_count=2";
@@ -74,8 +75,11 @@ public class AccessoriesMallActivity extends BaseAutoLayoutActivity {
         mTitleLeftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AppLog.print("leftBtn GOBack_click__" + mWebview.canGoBack());
                 if (mWebview.canGoBack()) {
                     mWebview.goBack();
+                } else {
+                    finish();
                 }
             }
         });
@@ -93,7 +97,7 @@ public class AccessoriesMallActivity extends BaseAutoLayoutActivity {
 
     }
 
-    private void getIntentData(){
+    private void getIntentData() {
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
@@ -106,7 +110,7 @@ public class AccessoriesMallActivity extends BaseAutoLayoutActivity {
         }
     }
 
-    private void initWebView(){
+    private void initWebView() {
         // 设置可以自动加载图片
         mWebview.getSettings().setLoadsImagesAutomatically(true);
         mWebview.getSettings().setBuiltInZoomControls(true);
@@ -142,6 +146,15 @@ public class AccessoriesMallActivity extends BaseAutoLayoutActivity {
                 //					return true;
                 //				}
                 //				url = addToken(url);
+                if (!URLString.equals(url)) {
+                    if (mFinish.getVisibility() != View.VISIBLE) {
+                        mFinish.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (mFinish.getVisibility() == View.VISIBLE) {
+                        mFinish.setVisibility(View.GONE);
+                    }
+                }
                 return super.shouldOverrideUrlLoading(view, url);
             }
 
@@ -157,18 +170,14 @@ public class AccessoriesMallActivity extends BaseAutoLayoutActivity {
                     .setTitle(getResources().getString(R.string.app_name))
                     .setMessage(message)
                     .setPositiveButton(android.R.string.ok,
-                            new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
                                     result.confirm();
                                 }
                             })
                     .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
                                     result.cancel();
                                 }
                             })

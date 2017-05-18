@@ -13,9 +13,18 @@ public class CWInfo {
     private ArrayList<ScheduleBean> schedule;
     private WorkDetailBean workDetail;
     private String flag;
+    private ArrayList<String> logoList;
 
     public ArrayList<WorkcollarListBean> getWorkcollarList() {
         return workcollarList;
+    }
+
+    public ArrayList<String> getLogoList() {
+        return logoList;
+    }
+
+    public void setLogoList(ArrayList<String> logoList) {
+        this.logoList = logoList;
     }
 
     public void setWorkcollarList(ArrayList<WorkcollarListBean> workcollarList) {

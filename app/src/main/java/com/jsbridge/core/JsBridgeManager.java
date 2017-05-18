@@ -1,11 +1,21 @@
 package com.jsbridge.core;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.webkit.WebView;
 
+import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.ToastUtils;
+import com.github.mikephil.charting.utils.AppLog;
 import com.jsbridge.bean.JsRequestBean;
 import com.jsbridge.module.IModule;
 import com.jsbridge.parse.CommonParse;
@@ -29,7 +39,7 @@ import java.util.concurrent.Executors;
  * Copyright  : Copyright (c) 2016
  */
 public class JsBridgeManager {
-
+    private String mUrl;
     private JsBridge jsBridge;
     /**
      * 注册的方法集合,key为action,value为具体的class和method。
@@ -90,9 +100,42 @@ public class JsBridgeManager {
      * @returnType Boolean js格式验证是否通过
      */
     public boolean invokeNative(WebView webView, String url) {
-        Constants.MyLog("进入拦截协议第1步");
+        Constants.MyLog("进入拦截协议第1步url__" + url);
         // 是否是指定的协议
         if (!url.startsWith("cloudm://")) {
+            Constants.MyLog("进入拦截协议第1步url__" + url.startsWith("tel:"));
+            if (url.startsWith("tel:")) {
+                mUrl = url;
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                String telNUM = url.split(":")[1];
+                builder.setMessage(telNUM);
+                builder.setCancelable(false);
+                builder.setPositiveButton("呼叫", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, InsuranceActivity.REQUEST_PERMISSION_CALL);
+                            } else {
+                                callTelNum();
+                            }
+                        } else {
+                            callTelNum();
+                        }
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create();
+                builder.show();
+                return true;
+
+            }
             return false;
         }
         Constants.MyLog("进入拦截协议第2步");
@@ -109,7 +152,7 @@ public class JsBridgeManager {
         // action是否注册
         Uri uriRequest = Uri.parse(url);
         String action = uriRequest.getHost();
-        Constants.MyLog("拿到的action是"+action);
+        Constants.MyLog("拿到的action是" + action);
 
         if (!registerMethods.containsKey(action)) {
             return false;
@@ -137,6 +180,7 @@ public class JsBridgeManager {
                     jsRequestBean.action = action;
                     jsRequestBean.clazz = targetClass.getName();
                     jsRequestBean.method = targetMethod;
+                    AppLog.print("webview jsRequst__" + jsRequestBean);
                     // 异步调用Native接口
                     InvokeNative invokeNative = new InvokeNative(webView, jsRequestBean);
                     invokeNative.invoke();
@@ -149,6 +193,25 @@ public class JsBridgeManager {
         return false;
     }
 
+    public void callTelNum() {
+        AppLog.print("callTelNum___" + mUrl);
+        if (mUrl == null) {
+            ToastUtils.warning("为获取到联系方式", true);
+            return;
+        }
+        //tel:13333333
+        AppLog.print("开始打电话" + mUrl);
+        Uri uri = Uri.parse(mUrl);
+        Intent intent = new Intent(Intent.ACTION_CALL, uri);
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            return;
+        }
+        activity.startActivity(intent);
+
+
+    }
+
     /**
      * 解析js命令,获取以下二个参数
      * 1. params
@@ -158,7 +221,7 @@ public class JsBridgeManager {
      * @return
      */
     public JsRequestBean parseJsRequestUri(Uri uriRequest, JsRequestBean jsRequestBean) {
-        L.d("action","要解析的js命令为:" + uriRequest.toString());
+        L.d("action", "要解析的js命令为:" + uriRequest.toString());
         return CommonParse.parseBasicParams(uriRequest, jsRequestBean);
     }
 
@@ -181,7 +244,7 @@ public class JsBridgeManager {
                 @Override
                 public void run() {
                     try {
-                        jsBridge.jsCallJava(activity,webView, requestBean);
+                        jsBridge.jsCallJava(activity, webView, requestBean);
                     } catch (Exception e) {
                     }
                 }

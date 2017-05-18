@@ -99,7 +99,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
 
     private static final String NEWSET = "新增围栏";
     private static final String RESET = "重置围栏";
-    private static final String CHANGESET = "编辑围栏";
+//    private static final String CHANGESET = "编辑围栏";
     private static final String FINISH = "完成围栏";
 
     private Context mContext;
@@ -241,7 +241,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
         //是否有圆形的围栏
         McDeviceCircleFence circleFence = mcDeviceBasicsInfo.getCircleFence();
         if (null != circleFence && deviceId != -1) {
-            title_layout.setRightText(-1, CHANGESET);
+//            title_layout.setRightText(-1, CHANGESET);
             //重新初始化围栏
             finishDraw();
 
@@ -253,7 +253,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
             List<FenceInfo> fenceInfo = mcDeviceBasicsInfo.getFence();
             if (null != fenceInfo) {
                 if (null != mcDeviceBasicsInfo && mcDeviceBasicsInfo.getId() != 0) {//有数据,编辑围栏
-                    title_layout.setRightText(-1, CHANGESET);
+//                    title_layout.setRightText(-1, CHANGESET);
                 }
                 int size = fenceInfo.size();
                 for (int i = 0; i < size; i++) {
@@ -286,55 +286,55 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
                 finish();
             }
         });
-        if (null != mcDeviceBasicsInfo && mcDeviceBasicsInfo.getId() != 0) {
-            title_layout.setRightText(-1, NEWSET, new OnClickListener() {
-                @Override
-                public void onClick(View v) {                               //1111111111
-                    // TODO Auto-generated method stub
-
-                    // showEditDialog();
-
-                    if (null != myMarker && myMarker.isInfoWindowShown()) {
-                        myMarker.hideInfoWindow();
-                    }
-                    if (!isEnclosure) {
-                        showEditDialog();
-                        isEnclosure = true;
-                        title_layout.setRightText(-1, FINISH);
-                        jumpPoint(myMarker);
-
-                        if (null != listPoint && listPoint.size() > 0) {
-                            MobclickAgent.onEvent(mContext, UMengKey.count_fence_add);
-                            changePolygon(null);
-                        } else {
-
-                        }
-
-
-                    } else {
-                        MobclickAgent.onEvent(mContext, UMengKey.count_fence_edit);
-                        /*int size = listPoint.size();
-                        if (size >= 3 && size <= 10) {                                      //多边形围栏
-							String fence = "";
-							for (int i = 0; i < size; i++) {
-								if (i == size - 1) {
-									fence += listPoint.get(i).longitude + ","
-											+ listPoint.get(i).latitude;
-								} else {
-									fence += listPoint.get(i).longitude + ","
-											+ listPoint.get(i).latitude + ";";
-								}
-							}
-							new EnclosureUploadAsync(mContext, mHandler)
-									.execute(String.valueOf(mcDeviceBasicsInfo
-											.getId()), fence);
-						}*/
-                        showEditDialog();
-                    }
-                }
-            });
-            title_layout.setRightTextEdit(true);
-        }
+//        if (null != mcDeviceBasicsInfo && mcDeviceBasicsInfo.getId() != 0) {
+//            title_layout.setRightText(-1, NEWSET, new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {                               //1111111111
+//                    // TODO Auto-generated method stub
+//
+//                    // showEditDialog();
+//
+//                    if (null != myMarker && myMarker.isInfoWindowShown()) {
+//                        myMarker.hideInfoWindow();
+//                    }
+//                    if (!isEnclosure) {
+//                        showEditDialog();
+//                        isEnclosure = true;
+////                        title_layout.setRightText(-1, FINISH);
+//                        jumpPoint(myMarker);
+//
+//                        if (null != listPoint && listPoint.size() > 0) {
+//                            MobclickAgent.onEvent(mContext, UMengKey.count_fence_add);
+//                            changePolygon(null);
+//                        } else {
+//
+//                        }
+//
+//
+//                    } else {
+//                        MobclickAgent.onEvent(mContext, UMengKey.count_fence_edit);
+//                        /*int size = listPoint.size();
+//                        if (size >= 3 && size <= 10) {                                      //多边形围栏
+//							String fence = "";
+//							for (int i = 0; i < size; i++) {
+//								if (i == size - 1) {
+//									fence += listPoint.get(i).longitude + ","
+//											+ listPoint.get(i).latitude;
+//								} else {
+//									fence += listPoint.get(i).longitude + ","
+//											+ listPoint.get(i).latitude + ";";
+//								}
+//							}
+//							new EnclosureUploadAsync(mContext, mHandler)
+//									.execute(String.valueOf(mcDeviceBasicsInfo
+//											.getId()), fence);
+//						}*/
+//                        showEditDialog();
+//                    }
+//                }
+//            });
+//            title_layout.setRightTextEdit(true);
+//        }
 
     }
 
@@ -381,10 +381,10 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
             @Override
             public void cancel() {
                 if (null != mcDeviceBasicsInfo.getCircleFence()) {
-                    title_layout.setRightText(-1, CHANGESET);
+//                    title_layout.setRightText(-1, CHANGESET);
                     finishDraw();
                 } else {
-                    title_layout.setRightText(-1,NEWSET);
+//                    title_layout.setRightText(-1,NEWSET);
                 }
 
             }
@@ -826,13 +826,13 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
                 Constants.isChangeDevice = true;
                 finishDraw();
                 isEnclosure = false;
-                title_layout.setRightText(-1, CHANGESET);
+//                title_layout.setRightText(-1, CHANGESET);
                 break;
             case Constants.HANDLER_ADDFENCE_FAIL:
                 Constants.MyToast((String) msg.obj);
                 finishDraw();
                 isEnclosure = false;
-                title_layout.setRightText(-1, CHANGESET);
+//                title_layout.setRightText(-1, CHANGESET);
                 break;
             case Constants.HANDLER_DELETEFENCE_SUCCESS:
                 //Constants.MyLog("删除了0");
@@ -844,7 +844,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
                 }
                 aMap.invalidate();
                 isEnclosure = false;
-                title_layout.setRightText(-1, NEWSET);
+//                title_layout.setRightText(-1, NEWSET);
                 new DevicesBasicsInfoAsync(deviceId, mContext, mHandler).execute();
                 break;
             case Constants.HANDLER_DELETEFENCE_FAIL:
@@ -909,13 +909,13 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
                 Constants.isChangeDevice = true;
                 finishDraw();
                 isEnclosure = false;
-                title_layout.setRightText(-1, CHANGESET);
+//                title_layout.setRightText(-1, CHANGESET);
                 break;
             case Constants.HANDLER_ADDCIRCLEFENCH_FAILD:            //新增圆形围栏失败
                 Constants.MyToast((String) msg.obj);
                 finishDraw();
                 isEnclosure = false;
-                title_layout.setRightText(-1, CHANGESET);
+//                title_layout.setRightText(-1, CHANGESET);
                 break;
 
         }

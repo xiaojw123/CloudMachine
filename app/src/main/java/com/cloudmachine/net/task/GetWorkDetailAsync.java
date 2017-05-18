@@ -1,11 +1,5 @@
 package com.cloudmachine.net.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -19,8 +13,15 @@ import com.cloudmachine.struc.CWInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.URLs;
+import com.github.mikephil.charting.utils.AppLog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetWorkDetailAsync extends ATask{
 	

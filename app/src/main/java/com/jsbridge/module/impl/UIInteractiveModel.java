@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 
 import com.cloudmachine.activities.WanaCloudBox;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
@@ -127,7 +128,8 @@ public class UIInteractiveModel implements IModule {
             switch (action) {
                 case "myPage":
                     Bundle bundle = new Bundle();
-                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_myq");
+//                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_myq");
+                    bundle.putString("url", ApiConstants.H5_HOST+"n/ask_myq");
                     Constants.toActivity(questionActivity, AskMyQuestionActicity.class,bundle,true);
                     questionActivity.finish();
                     break;

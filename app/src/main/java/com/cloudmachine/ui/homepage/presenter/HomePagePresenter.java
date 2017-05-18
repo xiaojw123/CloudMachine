@@ -6,7 +6,7 @@ import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
 import com.cloudmachine.recyclerbean.HomeNewsBean;
 import com.cloudmachine.ui.homepage.contract.HomePageContract;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.ToastUtils;
+import com.github.mikephil.charting.utils.AppLog;
 
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ public class HomePagePresenter extends HomePageContract.Presenter {
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.error(message,true);
+                mView.loadBannerError();
             }
         }));
     }
@@ -48,7 +48,7 @@ public class HomePagePresenter extends HomePageContract.Presenter {
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.error(message,true);
+                mView.loadMidAdError();
             }
         }));
     }
@@ -58,13 +58,22 @@ public class HomePagePresenter extends HomePageContract.Presenter {
         mRxManage.add(mModel.getHotQuestion().subscribe(new RxSubscriber<HomeIssueDetailBean>(mContext,false) {
             @Override
             protected void _onNext(HomeIssueDetailBean homeIssueDetailBean) {
+                AppLog.print("onNext__returnHotQuestion____");
                 mView.returnHotQuestion(homeIssueDetailBean);
             }
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.error(message,true);
+                mView.loadHotQuestionError();
+
             }
         }));
     }
+
+    @Override
+    public void getMessageUntreated() {
+
+    }
+
+
 }

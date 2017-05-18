@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.cloudmachine.R;
 import com.cloudmachine.activities.BeginnerGuideActivity;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxBus;
 import com.cloudmachine.base.baserx.RxConstants;
@@ -40,17 +41,17 @@ import com.cloudmachine.struc.RepairHistoryInfo;
 import com.cloudmachine.struc.ScoreInfo;
 import com.cloudmachine.struc.VersionInfo;
 import com.cloudmachine.ui.device.fragment.DeviceFragment;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.homepage.fragment.HomePageFragment;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.personal.fragment.PersonalFragment;
-import com.cloudmachine.ui.question.activity.QuestionActivity;
 import com.cloudmachine.ui.repair.fragment.RepairFragment;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.VerisonCheckSP;
-import com.cloudmachine.utils.widgets.RadiusButtonView;
+import com.github.mikephil.charting.utils.AppLog;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.umeng.analytics.MobclickAgent;
 
@@ -76,13 +77,13 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 	private TextView[] textViews = new TextView[4];
 	private String catId;
 	private OnActivityBack mListViewListener;
-	private ImageView tips;
+//	private ImageView tips;
 	// private List<News> displaylist = new ArrayList<News>();
 	private Fragment mFragments[] = new Fragment[4]; // 存储页面的数组
 	private boolean isInitFragment[] = new boolean[4];//是否被初始化
 	private Fragment mContentFragment; // 当前fragment
 	private int signBetweenTime; // 签到的时间间隔
-	private RadiusButtonView sign_text, question_text;
+//	private RadiusButtonView sign_text, question_text;
 	private int currentFragment; // 当前Fragment的索引
 	private ArrayList<RepairHistoryInfo> repairHistoryList;
 	private ImageView main_guide_image;//新手引导图标
@@ -91,7 +92,6 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 	private RelativeLayout mRlQuestionLayout;
 	private ImageView mIvQuestionImage;
 	private TextView mTvQuestionText;
-
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@SuppressLint("ResourceAsColor")
@@ -111,7 +111,7 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 			MobclickAgent.onProfileSignIn(String.valueOf(MemeberKeeper
 					.getOauth(mContext).getId()));
 		initRxBusEvent();
-		
+
 	}
 
 	@Override
@@ -149,7 +149,7 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 		main_guide_image = (ImageView)findViewById(R.id.main_guide_image);
 		main_guide_image.setOnClickListener(this);
 		
-		question_text = (RadiusButtonView) findViewById(R.id.question_text); // 问卷
+//		question_text = (RadiusButtonView) findViewById(R.id.question_text); // 问卷
 		//sign_text = (RadiusButtonView) findViewById(R.id.sign_text); // 签到
 		linearLayouts[0] = findViewById(R.id.tab_homepage_layout);//主页
 		linearLayouts[1] = findViewById(R.id.tab_device_layout);//设备
@@ -169,8 +169,8 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 		mTvQuestionText = (TextView) findViewById(R.id.tab_question_text);
 		textViews[2] = (TextView) findViewById(R.id.tab_repair_text);
 		textViews[3] = (TextView) findViewById(R.id.tab_personal_text);
-		tips = (ImageView) findViewById(R.id.tips); // 小圆点
-		tips.setVisibility(View.GONE);
+//		tips = (ImageView) findViewById(R.id.tips); // 小圆点
+//		tips.setVisibility(View.GONE);
 		linearLayouts[0].setOnClickListener(this);
 		linearLayouts[1].setOnClickListener(this);
 		//linearLayouts[2].setOnClickListener(this);
@@ -220,10 +220,9 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 			} else {
 				Constants.MyLog("挖机大师id为"+MemeberKeeper.getOauth(MainActivity.this).getWjdsId());
 				if (MemeberKeeper.getOauth(this).getWjdsStatus() != null && MemeberKeeper.getOauth(this).getWjdsStatus() != 2) {
-					Constants.MyLog("拿到的挖机大师id为"+MemeberKeeper.getOauth(MainActivity.this).getWjdsId());
-					Bundle bundle = new Bundle();
-					bundle.putLong("myid",MemeberKeeper.getOauth(this).getWjdsId());
-					Constants.toActivity(this, QuestionActivity.class,bundle,false);
+					Bundle bundle=new Bundle();
+                    bundle.putString("url", ApiConstants.H5_HOST+"n/ask_qsubmit?myid="+MemeberKeeper.getOauth(this).getWjdsId()+"&hidebackleft=1");
+					Constants.toActivity(this, QuestionCommunityActivity.class,bundle,false);
 				} else {
 					ToastUtils.info("您的角色为技师，不能提问哦~",true);
 				}
@@ -240,9 +239,11 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 			break;
 			case R.id.tab_personal_layout:
 				if (MemeberKeeper.getOauth(mContext) == null) {
+					AppLog.print("用户未登录");
 					Constants.toLoginActivity(this, 2);
 					return;
 				} else {
+					AppLog.print("用户已登录登录");
 					switchContent(3);
 				}
 				break;
@@ -316,16 +317,18 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 		//Constants.showTips(tips, 0);
 
 		new QuestionMessageAsync(mContext, mHandler).execute();
-		for(int i=0; i<mFragments.length; i++){
-			if(null !=mFragments[i] && isInitFragment[i]){
-				mFragments[i].onResume();
-			}
-		}
+        // TODO: 2017/5/2  modify by xjw
+//		for(int i=0; i<mFragments.length; i++){
+//			if(null !=mFragments[i] && isInitFragment[i]){
+//				mFragments[i].onResume();
+//			}
+//		}
 //		mFragments[currentFragment].onResume();
 		super.onResume();
 		MobclickAgent.onResume(this);
 		//showGuide();
 		g_layout.setVisibility(View.GONE);
+
 	}
 
 	@Override
@@ -362,14 +365,14 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 			}
 			break;
 		case Constants.HANDLER_GETVERSION_FAIL:
-			ToastUtils.error("请求版本失败，请检查网络",true);
+//			ToastUtils.error("请求版本失败，请检查网络",true);
 			break;
 		case Constants.HANDLER_QUESTION_SUCCESS:
 			//是否展示调查问卷
 			if (null != msg.obj) {
-				question_text.setVisibility(View.VISIBLE);
+//				question_text.setVisibility(View.VISIBLE);
 			} else {
-				question_text.setVisibility(View.GONE);
+//				question_text.setVisibility(View.GONE);
 			}
 			break;
 		case Constants.HANDLER_VERSIONDOWNLOAD:
@@ -496,9 +499,9 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 
 	public void updateQuestion(boolean b) { // 问卷调查（不知道在哪里出现的）
 		if (b) {
-			question_text.setVisibility(View.VISIBLE);
+//			question_text.setVisibility(View.VISIBLE);
 		} else {
-			question_text.setVisibility(View.GONE);
+//			question_text.setVisibility(View.GONE);
 		}
 	}
 
@@ -555,6 +558,7 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 						if (to == mFragments[1]) {
 							to.onResume();
 						}
+
 					}
 				} else {
 					fragmentTransaction.add(R.id.frame_content, to).commit();

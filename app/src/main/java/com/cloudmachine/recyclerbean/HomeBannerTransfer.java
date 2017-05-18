@@ -1,5 +1,7 @@
 package com.cloudmachine.recyclerbean;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -16,13 +18,13 @@ import java.util.ArrayList;
 public class HomeBannerTransfer implements HomePageType, Serializable {
 
     public ArrayList<HomeBannerBean> bannerStories;
-    public ArrayList<String>         images;
-    public ArrayList<String>         titles;
-    public ArrayList<Long>           ids;
-    public ArrayList<String>         jumpLinks;
-    public ArrayList<String>         wxLogo;
-    public ArrayList<String>         wxUrl;
-    public ArrayList<String>         description;
+    public ArrayList<String> images;
+    public ArrayList<String> titles;
+    public ArrayList<Long> ids;
+    public ArrayList<String> jumpLinks;
+    public ArrayList<String> wxLogo;
+    public ArrayList<String> wxUrl;
+    public ArrayList<String> description;
 
 
     public HomeBannerTransfer(ArrayList<HomeBannerBean> bannerStories) {
@@ -43,10 +45,16 @@ public class HomeBannerTransfer implements HomePageType, Serializable {
         for (HomeBannerBean bannerBean : bannerStories) {
             images.add(bannerBean.picAddress);
             titles.add(bannerBean.adsTitle);
-            jumpLinks.add(bannerBean.picUrl);
+//            jumpLinks.add(bannerBean.picUrl);
+            if (TextUtils.isEmpty(bannerBean.adsLink)) {
+                jumpLinks.add(bannerBean.picUrl);
+                wxUrl.add(bannerBean.picUrl);
+            } else {
+                jumpLinks.add(bannerBean.adsLink);
+                wxUrl.add(bannerBean.adsLink);
+            }
             ids.add(bannerBean.id);
             wxLogo.add(bannerBean.shareAddress);
-            wxUrl.add(bannerBean.adsLink);
             description.add(bannerBean.adsDescription);
         }
     }

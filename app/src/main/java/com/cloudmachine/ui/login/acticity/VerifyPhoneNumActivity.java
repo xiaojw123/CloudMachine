@@ -7,10 +7,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.api.Api;
 import com.cloudmachine.api.HostType;
@@ -59,42 +61,43 @@ import rx.functions.Func1;
 public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNumPresenter, VerifyPhoneNumModel>
         implements VerifyPhoneNumContract.View, View.OnClickListener, Handler.Callback {
 
-
+    @BindView(R.id.vp_weixinlogo)
+    ImageView mWexinAvatar;
     @BindView(R.id.ll_back)
-    LinearLayout      mLlBack;//返回按钮
+    LinearLayout mLlBack;//返回按钮
     @BindView(R.id.phone_string)//手机号码
-    ClearEditTextView mPhoneString;
+            ClearEditTextView mPhoneString;
     @BindView(R.id.validate_text)
-    TextView          mValidateText;
+    TextView mValidateText;
     @BindView(R.id.validate_layout)
-    RelativeLayout    mValidateLayout;
+    RelativeLayout mValidateLayout;
     @BindView(R.id.validate_code)
     ClearEditTextView mValidateCode;
     @BindView(R.id.code_layout)
-    RelativeLayout    mCodeLayout;
+    RelativeLayout mCodeLayout;
     @BindView(R.id.invitation_code)
     ClearEditTextView mInvitationCode;
     @BindView(R.id.pwd_string)
     ClearEditTextView mPwdString;
     @BindView(R.id.agreement_text)
-    TextView          mAgreementText;
+    TextView mAgreementText;
     @BindView(R.id.agreement_layout)
-    LinearLayout      mAgreementLayout;
+    LinearLayout mAgreementLayout;
     @BindView(R.id.ll_invitation)
-    LinearLayout      mLlInvitation;
+    LinearLayout mLlInvitation;
     @BindView(R.id.ll_password)
-    LinearLayout      mLlPassword;
+    LinearLayout mLlPassword;
     private int mobileType = 2;
-    private String           mNickname;
-    private String           mUnionid;
-    private String           mOpenid;
-    private int              mSex;
-    private String           mAccount;
-    private String           mInvitationValue;
-    private String           mPwd;
-    private String           mHeadimgurl;
+    private String mNickname;
+    private String mUnionid;
+    private String mOpenid;
+    private int mSex;
+    private String mAccount;
+    private String mInvitationValue;
+    private String mPwd;
+    private String mHeadimgurl;
     private RadiusButtonView mFindBtn;
-    private Handler          mHandler;
+    private Handler mHandler;
     private static final int MSG_SET_ALIAS = 1001;
     private String mCode;
     private Member mMember;
@@ -125,7 +128,9 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
     private void initView() {
         mHandler = new Handler(this);
+        mAgreementText.setOnClickListener(this);
         mValidateLayout.setOnClickListener(this);
+        mLlBack.setOnClickListener(this);
         switchLayout();
         mFindBtn = (RadiusButtonView) findViewById(R.id.find_btn);
         mFindBtn.setOnClickListener(new View.OnClickListener() {
@@ -187,7 +192,9 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
             }
         });
-
+        if (!TextUtils.isEmpty(mHeadimgurl)) {
+            Glide.with(this).load(mHeadimgurl).error(R.drawable.weichat_login).into(mWexinAvatar);
+        }
     }
 
     private void switchLayout() {
@@ -228,8 +235,8 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                 .subscribe(new Observer<Long>() {
                     @Override
                     public void onCompleted() {
-                        mValidateText.setText("获取验证码");
-                        mValidateText.setTextColor(Color.GRAY);
+//                        mValidateText.setText("获取验证码");
+//                        mValidateText.setTextColor(Color.GRAY);
                     }
 
                     @Override
@@ -239,8 +246,8 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
                     @Override
                     public void onNext(Long aLong) {
-                        mValidateText.setText("重新发送" + aLong + "秒");
-                        mValidateText.setTextColor(Color.BLUE);
+//                        mValidateText.setText("重新发送" + aLong + "秒");
+//                        mValidateText.setTextColor(Color.BLUE);
                         mValidateLayout.setEnabled(true);
                     }
                 });
@@ -275,7 +282,7 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
     @Override
     public void returnBindWx(Member member) {
 
-        if (mMember != null) {
+        if (member != null) {
             mMember = member;
             MemeberKeeper.saveOAuth(mMember, VerifyPhoneNumActivity.this);
             MyApplication.getInstance().setLogin(true);
@@ -316,6 +323,10 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                     mPresenter.checkNum(Long.parseLong(mPhoneString.getText().toString().trim()));
                 }
                 break;
+            case R.id.ll_back:
+                finish();
+                break;
+
         }
     }
 
@@ -367,7 +378,7 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                         mMember.setWjdsStatus(status);
                         mMember.setWjdsRole_id(role_id);
                         MemeberKeeper.saveOAuth(mMember, mContext);
-                       VerifyPhoneNumActivity.this.finish();
+                        VerifyPhoneNumActivity.this.finish();
                     }
 
                     @Override

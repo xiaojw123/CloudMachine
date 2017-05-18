@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.DocumentsContract;
@@ -30,13 +31,19 @@ import com.cloudmachine.R;
 import com.cloudmachine.activities.EditPersonalActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.UpdatePwdActivity;
+import com.cloudmachine.api.Api;
+import com.cloudmachine.api.HostType;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.UpdateMemberInfoAsync;
+import com.cloudmachine.struc.ExcamMasterInfo;
 import com.cloudmachine.struc.Member;
+import com.cloudmachine.struc.UserInfo;
 import com.cloudmachine.ui.personal.contract.PersonalDataContract;
 import com.cloudmachine.ui.personal.model.PersonalDataModel;
 import com.cloudmachine.ui.personal.presenter.PersonalDataPresenter;
@@ -50,6 +57,7 @@ import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UIHelper;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.UploadPhotoUtils;
+import com.github.mikephil.charting.utils.AppLog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
@@ -78,56 +86,59 @@ import static com.cloudmachine.utils.Constants.IMAGE_PATH;
  * 修改备注：
  */
 
-public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPresenter,PersonalDataModel> implements
-        View.OnClickListener, Handler.Callback,PersonalDataContract.View {
+public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPresenter, PersonalDataModel> implements
+        View.OnClickListener, Handler.Callback, PersonalDataContract.View {
 
     @BindView(R.id.title_layout)
-    TitleView       mTitleLayout;
+    TitleView mTitleLayout;
     @BindView(R.id.head_iamge)
     CircleImageView mHeadIamge;
     @BindView(R.id.edit_textPhone)
-    TextView        mEditTextPhone;
+    TextView mEditTextPhone;
     @BindView(R.id.phoneLayout)
-    RelativeLayout  mPhoneLayout;
+    RelativeLayout mPhoneLayout;
     @BindView(R.id.nickname)
-    TextView        mNickname;
+    TextView mNickname;
     @BindView(R.id.nickLayout)
-    RelativeLayout  mNickLayout;
+    RelativeLayout mNickLayout;
     @BindView(R.id.my_pwd)
-    RelativeLayout  mMyPwd;
+    RelativeLayout mMyPwd;
     @BindView(R.id.ll_head_logo)
-    RelativeLayout  mLlHeadLogo;
+    RelativeLayout mLlHeadLogo;
     @BindView(R.id.f5)
-    TextView        mF5;
+    TextView mF5;
     @BindView(R.id.arrowTip1)
-    ImageView       mArrowTip1;
+    ImageView mArrowTip1;
 
-    private int imgsign  = -1;
+    private int imgsign = -1;
     private int infoSign = -1;
-    private Uri     imageUri;
-    private String  imagePath;
-    private String  imString;
+    private Uri imageUri;
+    private String imagePath;
+    private String imString;
     private boolean isClickCamera;
     private boolean isUpdateImage;
     private String uploadResult = "";
-    private Handler            mHandler;
-    private Context            mContext;
+    private Handler mHandler;
+    private Context mContext;
     private PermissionsChecker mPermissionsChecker; // 权限检测器
-    private static final int REQUEST_PICK_IMAGE  = 0x001; //相册选取
-    private static final int REQUEST_CAPTURE     = 0x002;  //拍照
+    private static final int REQUEST_PICK_IMAGE = 0x001; //相册选取
+    private static final int REQUEST_CAPTURE = 0x002;  //拍照
     private static final int REQUEST_PICTURE_CUT = 0x003;  //剪裁图片
-    private static final int REQUEST_PERMISSION  = 0x004;  //权限请求
-    private String           mLogo;
-    private String           mMobile;
-    private String           mNickName;
-    private long             mLoginType;
+    private static final int REQUEST_PERMISSION = 0x004;  //权限请求
+    private static final int REQUEST_PERMISSION_PICK = 0x008;  //权限请求
+    private static final int REQUEST_UPDATE = 0x005;  //权限请求
+    private static final int PSW_UPDATE = 0x006;  //权限请求
+    private String mLogo;
+    private String mMobile;
+    private String mNickName;
+    private long mLoginType;
     private RadiusButtonView mBtnSynchronousWxData;
     private String mWecharNickname;
     private String mWecharLogo;
     private Long mMemberId;
     private String mUrl;
     private boolean syncWx = false;
-
+    private Member memberInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +156,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-        Member memberInfo = (Member) bundle.getSerializable("memberInfo");
+        memberInfo = (Member) bundle.getSerializable("memberInfo");
         if (memberInfo != null) {
             mLogo = memberInfo.getLogo();
             mMobile = memberInfo.getMobile();
@@ -214,7 +225,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
     @Override
     public void initPresenter() {
-        mPresenter.setVM(this,mModel);
+        mPresenter.setVM(this, mModel);
     }
 
     @Override
@@ -229,26 +240,28 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 Bundle bundle = new Bundle();
                 bundle.putInt("sign", 1);
                 bundle.putString("info", mNickName);
-                Constants.toActivity(PersonalDataActivity.this, EditPersonalActivity.class, bundle);
+                Constants.toActivityForR(PersonalDataActivity.this, EditPersonalActivity.class, bundle, REQUEST_UPDATE);
                 break;
             case R.id.my_pwd:
                 MobclickAgent.onEvent(mContext, UMengKey.count_changepassword);
-                Constants.toActivity(PersonalDataActivity.this, UpdatePwdActivity.class, null);
+                Constants.toActivityForR(PersonalDataActivity.this, UpdatePwdActivity.class, null, PSW_UPDATE);
                 break;
             //同步微信信息
-            case R.id.btn_synchronousWxData:
+//            case R.id.btn_synchronousWxData:
+            case R.id.radius_button_text:
                 syncWx = true;
-                mPresenter.modifyLogo(mMemberId,"logo",mWecharLogo);
-                mPresenter.modifyNickName(mMemberId,"nickName",mWecharNickname);
+                mPresenter.modifyLogo(mMemberId, "logo", mWecharLogo);
+                mPresenter.modifyNickName(mMemberId, "nickName", mWecharNickname);
                 break;
         }
     }
 
-    private      String[] items       = new String[]{"选择本地图片", "拍照"};
+    private String[] items = new String[]{"选择本地图片", "拍照"};
     //需要申请的权限数组
     static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA};
+    static final String[] PERMISSIONS_PICK = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     private void showImageDialog() {
 
@@ -262,8 +275,18 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
                         switch (which) {
                             case 0:
-                                startActivityForResult(PhotosGallery.gotoPhotosGallery(),
-                                        REQUEST_PICK_IMAGE);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    if (mPermissionsChecker.lacksPermissions(PERMISSIONS_PICK)) {
+                                        PermissionsActivity.startActivityForResult(PersonalDataActivity.this, REQUEST_PERMISSION_PICK,
+                                                PERMISSIONS_PICK);
+                                    } else {
+                                        startActivityForResult(PhotosGallery.gotoPhotosGallery(),
+                                                REQUEST_PICK_IMAGE);
+                                    }
+                                } else {
+                                    startActivityForResult(PhotosGallery.gotoPhotosGallery(),
+                                            REQUEST_PICK_IMAGE);
+                                }
                                 isClickCamera = false;
                                 break;
                             case 1:
@@ -316,6 +339,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_PICK_IMAGE://从相册选择
+                if (data == null) {
+                    return;
+                }
                 if (Build.VERSION.SDK_INT >= 19) {
                     handleImageOnKitKat(data);
                 } else {
@@ -361,6 +387,24 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     }
                 }
                 break;
+            case REQUEST_PERMISSION_PICK:
+                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                    PersonalDataActivity.this.finish();
+                } else {
+                    startActivityForResult(PhotosGallery.gotoPhotosGallery(),
+                            REQUEST_PICK_IMAGE);
+                }
+                break;
+            case REQUEST_UPDATE:
+                if (data != null) {
+                    String nickname = data.getStringExtra(EditPersonalActivity.NICK_NAME);
+                    mNickname.setText(nickname);
+                }
+                synchWjdsData();
+                break;
+            case PSW_UPDATE:
+                synchWjdsData();
+                break;
         }
         // super.onActivityResult(requestCode, resultCode, data);
     }
@@ -374,12 +418,12 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 .subscribe(new Action1<File>() {
                     @Override
                     public void call(File file) {
-                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, "http://api.test.cloudm.com/member/kindEditorUpload",mHandler);
+                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, "http://api.test.cloudm.com/member/kindEditorUpload", mHandler);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        ToastUtils.error(throwable.getMessage(),true);
+                        ToastUtils.error(throwable.getMessage(), true);
                     }
                 });
     }
@@ -396,6 +440,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
     /**
      * 19之前版本
+     *
      * @param intent
      */
     private void handleImageBeforeKitKat(Intent intent) {
@@ -411,6 +456,10 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         if (DocumentsContract.isDocumentUri(PersonalDataActivity.this, imageUri)) {
             //如果是document类型的uri,则通过document id处理
             String docId = DocumentsContract.getDocumentId(imageUri);
+            AppLog.print("imageUri:" + imageUri + ", imgeUri authority____" + imageUri.getAuthority() + "___scheme__" + imageUri.getScheme());
+//            imageUri:content://com.android.externalstorage.documents/document/primary%3APhoto_LJ%2F1493098068425.JPEG,
+// imgeUri authority____com.android.externalstorage.documents___scheme__content
+
             if ("com.android.providers.media.documents".equals(imageUri.getAuthority())) {
                 String id = docId.split(":")[1];//解析出数字格式的id
                 String selection = MediaStore.Images.Media._ID + "=" + id;
@@ -418,6 +467,14 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
             } else if ("com.android.downloads.documents".equals(imageUri.getAuthority())) {
                 Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
                 imagePath = getImagePath(contentUri, null);
+            } else if ("com.android.externalstorage.documents".equalsIgnoreCase(imageUri.getAuthority())) {
+                String path = imageUri.getPath();
+                if (path != null) {
+                    if (path.contains(":")) {
+                        String name = path.split(":")[1];
+                        imagePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + name;
+                    }
+                }
             }
         } else if ("content".equalsIgnoreCase(imageUri.getScheme())) {
             //如果是content类型的Uri，则使用普通方式处理
@@ -432,6 +489,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
     /**
      * 通过Uri和selection获取真实的图片路径
+     *
      * @param uri
      * @param selection
      * @return
@@ -473,6 +531,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
     /**
      * 将图片保存到sd卡
+     *
      * @param bitmap
      * @return
      */
@@ -535,9 +594,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 break;
             case Constants.HANDLER_UPLOAD_SUCCESS:
                 mUrl = (String) msg.obj;
-                Constants.MyLog("上传照片得到的图片地址"+ mUrl);
+                Constants.MyLog("上传照片得到的图片地址" + mUrl);
                 if (mUrl != null) {
-                    mPresenter.modifyLogo(mMemberId,"logo", mUrl);
+                    mPresenter.modifyLogo(mMemberId, "logo", mUrl);
                 }
                 break;
             case Constants.HANDLER_UPLOAD_FAILD:
@@ -568,6 +627,45 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     .error(R.drawable.default_img)
                     .into(mHeadIamge);
         }
-
+        synchWjdsData();
     }
+
+
+    private void synchWjdsData() {
+        if (memberInfo == null) {
+            return;
+        }
+        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(memberInfo.getId())
+                .compose(RxHelper.<UserInfo>handleResult())
+                .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
+                    @Override
+                    protected void _onNext(UserInfo userInfo) {
+
+                        if (userInfo != null) {
+                            ExcamMasterInfo info = userInfo.userinfo;
+                            if (info != null) {
+                                AppLog.print("挖机大师数据同步开始同步");
+                                Long wjdsId = info.id;
+                                Long status = info.status;
+                                Long role_id = info.role_id;
+                                memberInfo.setWjdsId(wjdsId);
+                                memberInfo.setWjdsStatus(status);
+                                memberInfo.setWjdsRole_id(role_id);
+                                memberInfo.setNum(2L);
+                                MemeberKeeper.saveOAuth(memberInfo, mContext);
+                                AppLog.print("挖机大师数据同步同步成功");
+                            }
+
+                        }
+
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+
+                    }
+                }));
+    }
+
+
 }
