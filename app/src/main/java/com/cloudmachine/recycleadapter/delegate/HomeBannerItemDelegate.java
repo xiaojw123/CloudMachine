@@ -26,7 +26,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  */
 
 public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, Banner.OnBannerClickListener {
-
+    private static final String GET_BOX_TITLE="我要云盒子";
     private static final String TAG = "HomeHeaderItemDelegate";
 
     private Context mContext;
@@ -56,7 +56,13 @@ public class HomeBannerItemDelegate implements ItemViewDelegate<HomePageType>, B
 
     @Override
     public void OnBannerClick(int position) {
-        if (mHomeBannerTransfer.ids.get(position) == 46) {
+//        if (mHomeBannerTransfer.ids.get(position) == 46) {
+//            Intent wanaBoxIntent = new Intent(mContext, WanaCloudBox.class);
+//            wanaBoxIntent.putExtra(Constants.P_WebView_Url, mHomeBannerTransfer.jumpLinks.get(position));
+//            mContext.startActivity(wanaBoxIntent);
+//            return;
+//        }
+        if (GET_BOX_TITLE.equals(mHomeBannerTransfer.titles.get(position))) {
             Intent wanaBoxIntent = new Intent(mContext, WanaCloudBox.class);
             wanaBoxIntent.putExtra(Constants.P_WebView_Url, mHomeBannerTransfer.jumpLinks.get(position));
             mContext.startActivity(wanaBoxIntent);

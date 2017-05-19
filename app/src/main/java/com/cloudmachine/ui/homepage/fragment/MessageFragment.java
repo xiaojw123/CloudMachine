@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -218,9 +219,12 @@ public class MessageFragment extends Fragment implements Callback, IXListViewLis
 //                            bundle.putString(Constants.P_WebView_Title, bo.getTitle());
 //                            bundle.putBoolean(Constants.P_WebView_With_Title,false);
 //                            Constants.toActivity(getActivity(), WebviewActivity.class, bundle);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("url", bo.getUrl());
-                            Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle);
+                            String url = bo.getUrl();
+                            if (!TextUtils.isEmpty(url)) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("url", url);
+                                Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle);
+                            }
                         }
                     }
                 }

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.net.task.MessageUpdateStatusAsync;
 import com.cloudmachine.struc.MessageBO;
@@ -118,8 +119,24 @@ public class MessageAdapter extends BaseAdapter {
                 viewHolder.messageOhterTv.setVisibility(View.GONE);
                 viewHolder.messageCommonLayout.setVisibility(View.VISIBLE);
                 viewHolder.imageView.setImageResource(R.drawable.ic_ask_question);
+                viewHolder.nickNameTv.setVisibility(View.VISIBLE);
+                viewHolder.tv2.setVisibility(View.VISIBLE);
+                viewHolder.tv3.setVisibility(View.VISIBLE);
+                viewHolder.tv4.setVisibility(View.VISIBLE);
+                viewHolder.dividerBottom.setVisibility(View.VISIBLE);
+                viewHolder.dividerBottom.setVisibility(View.VISIBLE);
+                viewHolder.nickNameTv.setText(item.getInviterNickname());
+                viewHolder.tv2.setText("回复了\"");
+//            viewHolder.tv3.setText("\"" + item.getContent() + "\" ，点击查看");
+                viewHolder.tv3.setText(item.getContent());
+                viewHolder.tv4.setText("\" ，点击查看");
+                viewHolder.invite_name.setText(item.getTitle());
+                viewHolder.time.setText(item.getInviteTime());
             } else {
-                viewHolder.imageView.setImageResource(R.drawable.mc_default_icon);
+                Glide.with(mContext).load(item.getImgpath())
+                        .error(R.drawable.mc_default_icon)
+                        .into(viewHolder.imageView);
+//                viewHolder.imageView.setImageResource(R.drawable.mc_default_icon);
                 String text = null;
                 switch (status) {
                     case 1:
@@ -137,6 +154,7 @@ public class MessageAdapter extends BaseAdapter {
                         }
                         break;
                     case 3:
+                    case 4:
                         if (messageType == 1) {
                             text = "邀请你共享<font color=\"#29a1f7\">\"" + deviceName + "\"</font>该设备的数据，已接受\"";
                         } else {
@@ -144,7 +162,6 @@ public class MessageAdapter extends BaseAdapter {
                         }
                         break;
                 }
-                viewHolder.info_inv.setVisibility(View.VISIBLE);
                 viewHolder.messageOhterTv.setVisibility(View.VISIBLE);
                 viewHolder.messageCommonLayout.setVisibility(View.GONE);
                 viewHolder.invite_name.setText(nickName);
@@ -152,26 +169,13 @@ public class MessageAdapter extends BaseAdapter {
                     viewHolder.messageOhterTv.setText(Html.fromHtml(text));
                 }
             }
-
-            viewHolder.nickNameTv.setVisibility(View.VISIBLE);
-            viewHolder.info_inv.setVisibility(View.GONE);
-            viewHolder.tv2.setVisibility(View.VISIBLE);
-            viewHolder.tv3.setVisibility(View.VISIBLE);
-            viewHolder.tv4.setVisibility(View.VISIBLE);
-            viewHolder.dividerBottom.setVisibility(View.VISIBLE);
             if (item.getStatus() == 1) {
                 viewHolder.messageOval.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.messageOval.setVisibility(View.GONE);
             }
-            viewHolder.dividerBottom.setVisibility(View.VISIBLE);
-            viewHolder.nickNameTv.setText(item.getInviterNickname());
-            viewHolder.tv2.setText("回复了\"");
-//            viewHolder.tv3.setText("\"" + item.getContent() + "\" ，点击查看");
-            viewHolder.tv3.setText(item.getContent());
-            viewHolder.tv4.setText("\" ，点击查看");
-            viewHolder.invite_name.setText(item.getTitle());
-            viewHolder.time.setText(item.getInviteTime());
+
+
 
 
 //

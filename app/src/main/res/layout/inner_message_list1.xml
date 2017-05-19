@@ -81,7 +81,6 @@
                     android:layout_marginTop="@dimen/detecting_item_leftmargin4"
                     android:singleLine="true"
                     android:textColor="@color/oval_message_color2"
-                    android:visibility="gone"
                     />
                 <LinearLayout
                     android:id="@+id/rl_bottom"
@@ -89,6 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detecting_item_leftmargin4"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     >
 
 

@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:textColor="@color/mc_state2"
-            android:text="合计: ¥1499"
+            android:text="合计: ¥0"
             />
 
         <Button

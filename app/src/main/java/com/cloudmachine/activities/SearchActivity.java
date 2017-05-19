@@ -357,9 +357,13 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
 		long dId = info.getId();
 		
 		Intent intent = new Intent(mContext,DeviceMcActivity.class);
-		intent.putExtra(Constants.P_DEVICEID, dId);
-		intent.putExtra(Constants.P_DEVICENAME, info.getName());
-		intent.putExtra(Constants.P_DEVICEMAC, info.getMacAddress());
+//		intent.putExtra(Constants.P_DEVICEID, dId);
+//		intent.putExtra(Constants.P_DEVICENAME, info.getName());
+//		intent.putExtra(Constants.P_DEVICEMAC, info.getMacAddress());
+ 		intent.putExtra("deviceId", dId);
+		intent.putExtra("deviceName", info.getName());
+		intent.putExtra("deviceMac", info.getMacAddress());
+		intent.putExtra("deviceWorkState",info.getWorkStatus());
 		startActivity(intent);
 		
 		

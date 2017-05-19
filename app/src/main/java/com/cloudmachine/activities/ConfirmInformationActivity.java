@@ -731,7 +731,7 @@ public class ConfirmInformationActivity extends BaseAutoLayoutActivity implement
             case Constants.HANDLER_GETPAYPRICE_SUCCESS:
                 PayPriceInfo payPriceInfo = (PayPriceInfo) msg.obj;
                 amount = payPriceInfo.getAmount();
-                if (TextUtils.isEmpty(amount)) {
+                if (!TextUtils.isEmpty(amount)) {
                     tvPayPrice.setText("合计: ¥"+amount);
                 }
                 break;
