@@ -46,11 +46,13 @@ import com.cloudmachine.ui.homepage.fragment.HomePageFragment;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.personal.fragment.PersonalFragment;
 import com.cloudmachine.ui.repair.fragment.RepairFragment;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.VerisonCheckSP;
+import com.cloudmachine.utils.VersionU;
 import com.github.mikephil.charting.utils.AppLog;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.umeng.analytics.MobclickAgent;
@@ -359,8 +361,12 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 				if (vInfo.getMustUpdate() == -1) {
 					// Constants.MyToast(vInfo.getMessage());
 				} else if (vInfo.getMustUpdate() == 0) {
-					Constants.updateVersion(MainActivity.this, mHandler,
-							vInfo.getMessage(), vInfo.getLink());
+					boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), vInfo.getVersion());
+					if (isUpdate) {
+						Constants.updateVersion(MainActivity.this, mHandler,
+								vInfo.getMessage(), vInfo.getLink());
+					}
+
 				}
 			}
 			break;

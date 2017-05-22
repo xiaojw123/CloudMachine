@@ -7,7 +7,7 @@ import android.util.Log;
  */
 
 public class AppLog {
-    private static final boolean isOnline = true;
+    private static final boolean isOnline = false;
 
     public static void print(String message) {
         if (!isOnline) {

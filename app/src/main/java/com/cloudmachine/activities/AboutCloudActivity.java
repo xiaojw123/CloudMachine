@@ -18,6 +18,7 @@ import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.task.GetVersionAsync;
 import com.cloudmachine.struc.VersionInfo;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.VersionU;
 
@@ -122,11 +123,14 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
                         mTvCanbeUpdate.setVisibility(View.GONE);
                         Constants.MyToast(vInfo.getMessage());
                     } else if (vInfo.getMustUpdate() == 0) {
-                        mTvUpdateIcon.setVisibility(View.VISIBLE);
-                        mTvCanbeUpdate.setVisibility(View.VISIBLE);
-                        if (updateVersion) {
-                            Constants.updateVersion(AboutCloudActivity.this, mHandler,
-                                    vInfo.getMessage(), vInfo.getLink());
+                        boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), vInfo.getVersion());
+                        if (isUpdate) {
+                            mTvUpdateIcon.setVisibility(View.VISIBLE);
+                            mTvCanbeUpdate.setVisibility(View.VISIBLE);
+                            if (updateVersion) {
+                                Constants.updateVersion(AboutCloudActivity.this, mHandler,
+                                        vInfo.getMessage(), vInfo.getLink());
+                            }
                         }
                     }
                 }
@@ -145,6 +149,9 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
         }
         return false;
     }
+
+
+
 
     private void getIntentData() {
         Intent intent = this.getIntent();
@@ -185,7 +192,7 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
                 updateVersion = true;
                 break;
             case R.id.use_help:
-                Constants.toActivity(AboutCloudActivity.this,UseHelpActivity.class,null);
+                Constants.toActivity(AboutCloudActivity.this, UseHelpActivity.class, null);
                 break;
             default:
                 break;
