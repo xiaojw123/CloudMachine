@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f6f6f9"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.cloudmachine.ui.home.activity.TrackHistoryActivity">
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/track_history_titleview"
+        app:common_title_name="历史"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/track_history_item_rlv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:layout_below="@+id/track_history_titleview"
+        android:layout_above="@+id/track_history_query_btn"
+        />
+
+    <com.cloudmachine.autolayout.widgets.RadiusButtonView
+        android:id="@+id/track_history_query_btn"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"
+        app:rbtn_fillColor_dw="@color/public_b_20"
+        app:rbtn_fillColor_nm="@color/public_blue_bg"
+        app:rbtn_strokeColor="@color/public_blue_bg"
+        app:rbtn_text="@string/query_by_time"
+        app:rbtn_textColor="@color/public_white"
+        app:rbtn_textSize="@dimen/public_textsize1" />
+
+</RelativeLayout>

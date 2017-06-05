@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/blue"
+    >
+    <RelativeLayout
+        android:id="@+id/rl_device_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:background="@color/white"
+        >
+        <ImageView
+            android:id="@+id/device_loc_img"
+            android:layout_width="@dimen/detect_report_iconsize"
+            android:layout_height="@dimen/detect_report_iconsize"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/device_location"/>
+
+        <TextView
+            android:id="@+id/tv_device_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="机器位置"
+            android:layout_toRightOf="@+id/device_loc_img"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/public_color_black"
+            android:textSize="@dimen/public_textsize1"/>
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_device_location"
+            android:layout_alignLeft="@+id/tv_device_location"
+            android:layout_marginTop="@dimen/public_text_margintop"
+            android:textColor="@color/public_text_grey1"
+            android:textSize="@dimen/public_textsize2"/>
+
+        <TextView
+            android:id="@+id/work_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/repair_item_text_margrtop4"
+            android:layout_toLeftOf="@id/arrow_right"
+            android:text="工作中"
+            android:textColor="@color/green"
+            android:textSize="@dimen/public_textsize2"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/arrow_right"
+            android:layout_width="@dimen/arrow_next_width"
+            android:layout_height="@dimen/arrow_next_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/public_title_margin"
+            android:src="@drawable/arrow_next"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/public_divider_vertical_height"
+        android:background="@color/white"
+        android:layout_marginTop="10dp"
+        >
+        <View
+            android:id="@+id/mid_line"
+            android:layout_width="@dimen/public_line_wh"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/oil_marginRight"
+            android:layout_marginRight="@dimen/oil_marginRight"
+            android:background="@color/public_line"
+            />
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/mid_line"
+            >
+
+            <TextView
+                android:id="@+id/o_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="剩余油位"
+                android:textColor="@color/public_color_black"
+                android:textSize="@dimen/public_textsize3"/>
+
+            <com.cloudmachine.autolayout.widgets.DynamicWave
+                android:id="@+id/iv_residual_oil"
+                android:layout_width="@dimen/oil_level_size"
+                android:layout_height="@dimen/oil_level_size"
+                android:layout_above="@id/o_text1"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/mid_line"
+            >
+
+            <TextView
+                android:id="@+id/o_text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="今日工作时长"
+                android:textColor="@color/public_color_black"
+                android:textSize="@dimen/public_textsize3"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@id/o_text2"
+                android:layout_alignParentTop="true"
+                >
+
+                <com.cloudmachine.utils.widgets.TextProgressBar
+                    android:id="@+id/work_hours"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="@dimen/work_hour_width"
+                    android:layout_height="@dimen/work_hour_height"
+                    android:layout_gravity="center_vertical"
+                    android:progressDrawable="@drawable/progress"
+                    />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/repair_record"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/detect_report_height"
+        android:background="@drawable/bg_list_item"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        >
+
+        <ImageView
+            android:layout_width="@dimen/detect_report_iconsize"
+            android:layout_height="@dimen/detect_report_iconsize"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/public_title_margin"
+            android:src="@drawable/inspection"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_repair_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/public_title_margin">
+
+            <TextView
+                android:id="@+id/tv_repair_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repair_record"
+                android:textColor="@color/public_color_black"
+                android:textSize="@dimen/public_textsize1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_repair_report"
+                android:layout_marginTop="@dimen/public_text_margintop"
+                android:text="@string/history_repair_record"
+                android:textColor="@color/public_text_grey1"
+                android:textSize="@dimen/public_textsize2"/>
+
+            <ImageView
+                android:layout_width="@dimen/arrow_next_width"
+                android:layout_height="@dimen/arrow_next_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/public_title_margin"
+                android:src="@drawable/arrow_next"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/device_fence_layout"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="@color/white"
+        android:layout_marginTop="10dp"
+        >
+        <TextView
+            android:id="@+id/device_fence"
+            android:text="电子围栏"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="管理成员组成共享设备数据"
+            android:layout_below="@+id/device_fence"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/device_path_layout"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="轨迹统计"
+            android:layout_centerInParent="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="一键检测, 实时获取设备最新数据"
+            />
+    </RelativeLayout>
+
+</LinearLayout>

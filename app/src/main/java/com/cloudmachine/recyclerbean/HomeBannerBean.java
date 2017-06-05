@@ -29,6 +29,9 @@ public class HomeBannerBean implements Serializable,HomePageType {
     //微信分享的地址
     public String adsLink;
 
+    public int skipType;
+    public int adsMidSort;
+
 
     @Override
     public String toString() {
@@ -40,6 +43,8 @@ public class HomeBannerBean implements Serializable,HomePageType {
                 ", id=" + id +
                 ", shareAddress='" + shareAddress + '\'' +
                 ", adsLink='" + adsLink + '\'' +
+                ", skipType='" + skipType + '\'' +
+                ", adsMidSort='" + adsMidSort + '\'' +
                 '}';
     }
 }

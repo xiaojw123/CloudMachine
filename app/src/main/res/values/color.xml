@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="color_f6f6f9">#f6f6f9</color>
+    <color name="color_66">#666666</color>
+    <color name="color_f9761e">#f9761e</color>
+    <color name="color_9b">#9b9b9b</color>
+    <color name="color_ee2607">#ee2607</color>
+    <color name="color_a6e09e">#a6e09e</color>
+    <color name="color_92">#929292</color>
+    <color name="color_f5">#f5f5f5</color>
     <color name="main_color">#169ADA</color>
     <color name="topOfShare">#59b8f7</color>
     <color name="nullVew">#f8f8f8</color>

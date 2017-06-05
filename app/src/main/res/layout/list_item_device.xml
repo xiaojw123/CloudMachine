@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="18dp"
+    android:paddingBottom="15dp"
+    >
+
+    <TextView
+        android:id="@+id/item_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_16_sp"
+        android:textColor="@color/black"
+        android:text="银河137" />
+
+    <TextView
+        android:id="@+id/item_device_fuelcus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_device_name"
+        android:drawableLeft="@drawable/icon_fuel"
+        android:textSize="@dimen/text_size_14_sp"
+        android:textColor="@color/color_92"
+        android:drawablePadding="9dp"
+        android:layout_marginTop="11dp"
+        android:text="10%" />
+
+    <TextView
+        android:id="@+id/item_device_worktime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/item_device_fuelcus"
+        android:layout_marginLeft="31dp"
+        android:layout_toRightOf="@+id/item_device_fuelcus"
+        android:text="3.2h时" />
+
+    <TextView
+        android:id="@+id/itme_deives_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_12_sp"
+        android:textColor="@color/color_a6e09e"
+        android:layout_alignTop="@+id/item_device_fuelcus"
+        android:text="工作中"
+        android:layout_toLeftOf="@+id/item_arrow_right"
+        android:layout_marginRight="7dp"
+        />
+    <ImageView
+        android:id="@+id/item_arrow_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_next"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/item_device_fuelcus"
+        />
+
+    <TextView
+        android:id="@+id/item_device_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_device_fuelcus"
+        android:textSize="@dimen/text_size_13_sp"
+        android:layout_marginTop="11dp"
+        android:singleLine="true"
+        android:text="滨江区海创基地" />
+</RelativeLayout>

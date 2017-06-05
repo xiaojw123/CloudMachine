@@ -12,6 +12,6 @@
         app:lineSpacing="10dp"
         app:tagSpacing="15dp" 
         />
-    
+
 
 </LinearLayout>

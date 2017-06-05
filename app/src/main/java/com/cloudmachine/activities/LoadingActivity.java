@@ -13,8 +13,8 @@ import android.view.View;
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.struc.News;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 
@@ -95,7 +95,7 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
                 break;
             case Constants.HANDLER_SWITCH_MAINACTIVITY:
                 Intent intent = null;
-                intent = new Intent(this, MainActivity.class);
+                intent = new Intent(this, HomeActivity.class);
                 Bundle bundle = new Bundle();
                 ArrayList list = new ArrayList();
                 list.add(displaylist);

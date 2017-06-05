@@ -9,10 +9,16 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     int mSpace;
+    boolean singleDirection;
 
 
     public SpaceItemDecoration(Context context, int space) {
         this.mSpace = UIUtil.dip2px(context, space);
+    }
+
+    public SpaceItemDecoration(Context context, int space, boolean singleDirection) {
+        this.mSpace = UIUtil.dip2px(context, space);
+        this.singleDirection = singleDirection;
     }
 
     @Override
@@ -23,7 +29,9 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
         outRect.top = 0;
         outRect.bottom = mSpace;
 //        if (pos != (itemCount - 1)) {
+        if (!singleDirection) {
             outRect.right = mSpace;
+        }
 //        } else {
 //            outRect.right = 0;
 //        }

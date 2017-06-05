@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,8 +21,15 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -68,6 +76,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.android.api.JPushInterface;
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 import rx.android.schedulers.AndroidSchedulers;
@@ -253,6 +262,16 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 mPresenter.modifyLogo(mMemberId, "logo", mWecharLogo);
                 mPresenter.modifyNickName(mMemberId, "nickName", mWecharNickname);
                 break;
+            case R.id.bt_exitLogin:
+                mpopupWindow.dismiss();
+                Constants.isMcLogin = true;
+                JPushInterface.setAliasAndTags(getApplicationContext(), "", null, null);
+                MemeberKeeper.clearOauth(this);
+                finish();
+                break;
+            case R.id.bt_cancel:
+                mpopupWindow.dismiss();
+                break;
         }
     }
 
@@ -399,6 +418,8 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 if (data != null) {
                     String nickname = data.getStringExtra(EditPersonalActivity.NICK_NAME);
                     mNickname.setText(nickname);
+                    memberInfo.setNickname(nickname);
+                    MemeberKeeper.saveOAuth(memberInfo,this);
                 }
                 synchWjdsData();
                 break;
@@ -620,6 +641,8 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     .error(R.drawable.default_img)
                     .into(mHeadIamge);
         } else {
+            memberInfo.setLogo(mUrl);
+            MemeberKeeper.saveOAuth(memberInfo,this);
             Glide.with(mContext).load(mUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
@@ -666,6 +689,46 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     }
                 }));
     }
+
+    public void exitLogin(View view){
+        showPopMenu();
+    }
+
+    private void showPopMenu() {
+        View view = View.inflate(getApplicationContext(), R.layout.popup_menu, null);
+        Button bt_cancle = (Button) view.findViewById(R.id.bt_cancel);
+        Button bt_exitLogin = (Button) view.findViewById(R.id.bt_exitLogin);
+        bt_cancle.setOnClickListener(this);
+        bt_exitLogin.setOnClickListener(this);
+        view.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                mpopupWindow.dismiss();
+            }
+        });
+
+        view.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in));
+        LinearLayout ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
+        ll_popup.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.push_bottom_in));
+
+        if (mpopupWindow == null) {
+            mpopupWindow = new PopupWindow(this);
+            mpopupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            mpopupWindow.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            mpopupWindow.setBackgroundDrawable(new BitmapDrawable());
+
+            mpopupWindow.setFocusable(true);
+            mpopupWindow.setOutsideTouchable(true);
+            mpopupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
+
+        mpopupWindow.setContentView(view);
+        mpopupWindow.showAtLocation(view, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        mpopupWindow.update();
+    }
+    private PopupWindow mpopupWindow;
 
 
 }

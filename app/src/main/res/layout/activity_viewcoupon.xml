@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="@dimen/main_bar_image_padding"
-                android:text="失效"
+                android:text="不可用"
                 android:textColor="#29a1f7"
                 android:textSize="16sp"
                 />

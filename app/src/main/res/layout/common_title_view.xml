@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/public_title_height"
+    android:background="@color/public_blue_bg"
+    >
+    <TextView
+        android:id="@+id/common_titleview_back_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="@color/white"
+        android:text="@string/back"
+        android:gravity="center_vertical"
+        android:drawableLeft="@drawable/bg_btn_back"
+        android:drawablePadding="6dp"
+        android:textSize="@dimen/text_size_16_sp"
+        android:paddingLeft="@dimen/public_layout_padding_left"
+        android:paddingRight="@dimen/public_layout_padding_left"
+        />
+
+    <TextView
+        android:id="@+id/common_titleview_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/public_white"
+        android:textSize="@dimen/public_title_textsize"
+        android:singleLine="true"
+        android:maxEms="7"
+        />
+
+
+    <TextView
+        android:id="@+id/common_titleview_right_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16_sp"
+        android:gravity="center_vertical"
+        android:paddingRight="@dimen/public_layout_padding_left"
+        android:layout_gravity="right"
+        />
+
+
+</FrameLayout>

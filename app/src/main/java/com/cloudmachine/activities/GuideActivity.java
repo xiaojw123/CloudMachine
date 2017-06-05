@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.main.MainActivity;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.utils.Constants;
 
 import java.util.ArrayList;
@@ -105,7 +105,7 @@ public class GuideActivity extends BaseAutoLayoutActivity {
 			public void onClick(View v) {
 				//设置已经引导
 				
-				Constants.toActivity(GuideActivity.this, MainActivity.class, bData,true);
+				Constants.toActivity(GuideActivity.this, HomeActivity.class, bData,true);
 			}
 	    }; 
 	    

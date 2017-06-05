@@ -21,7 +21,7 @@
         android:id="@+id/empt_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="暂无失效优惠券"
+        android:text="暂无不可用优惠券"
         android:layout_gravity="center"
         android:visibility="gone"
         />

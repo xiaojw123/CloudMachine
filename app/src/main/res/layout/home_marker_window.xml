@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_marker_window_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    >
+    <!--android:background="@drawable/custom_info_bubble"-->
+    <RelativeLayout
+        android:layout_width="205dp"
+        android:layout_height="125dp"
+        android:paddingBottom="35dp"
+        android:paddingLeft="11dp"
+        android:paddingRight="11dp"
+        android:paddingTop="11dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/icon_pop_bg1"
+        >
+        <!--android:background="@color/white"-->
+
+        <TextView
+            android:id="@+id/marker_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:layout_toLeftOf="@+id/home_marker_window_arrow"
+            android:textSize="@dimen/text_size_14_sp" />
+
+        <TextView
+            android:id="@+id/marker_fuelconsume_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/marker_title_tv"
+            android:layout_marginTop="9dp"
+            android:drawableLeft="@drawable/icon_fuel"
+            android:drawablePadding="7dp"
+            android:text="油耗 2%"
+            android:textColor="@color/color_92"
+            android:textSize="@dimen/text_size_12_sp" />
+
+        <TextView
+            android:id="@+id/marker_timelen_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/marker_fuelconsume_tv"
+            android:layout_marginLeft="31dp"
+            android:layout_toRightOf="@+id/marker_fuelconsume_tv"
+            android:drawableLeft="@drawable/icon_time"
+            android:drawablePadding="7dp"
+            android:text="2.1h"
+            android:textColor="@color/color_92"
+            android:textSize="@dimen/text_size_12_sp" />
+
+        <TextView
+            android:id="@+id/marker_loc_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/marker_timelen_tv"
+            android:layout_marginTop="10dp"
+            android:singleLine="true"
+            android:textColor="@color/color_9b"
+            android:layout_alignRight="@+id/marker_title_tv"
+            android:textSize="@dimen/text_size_12_sp" />
+
+        <ImageView
+            android:id="@+id/home_marker_window_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="5dp"
+            android:layout_alignTop="@+id/marker_fuelconsume_tv"
+            android:src="@drawable/arrow_next" />
+    </RelativeLayout>
+
+</FrameLayout>

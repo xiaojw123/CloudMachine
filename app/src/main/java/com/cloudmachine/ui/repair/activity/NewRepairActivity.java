@@ -575,7 +575,11 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                     String fileName = String.valueOf(System.currentTimeMillis());
                     Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(i));
                     String filename = FileUtils.saveBitmap(smallBitmap, fileName);
-                    UploadPhotoUtils.getInstance(this).upLoadFile(filename, "http://api.test.cloudm.com/kindEditorUpload", mHandler);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        UploadPhotoUtils.getInstance(this).upLoadFile(fileName, "http://api.test.cloudm.com/kindEditorUpload", mHandler);
+                    } else {
+                        UploadPhotoUtils.getInstance(this).upLoadFile(filename, "http://api.test.cloudm.com/kindEditorUpload", mHandler);
+                    }
                 }
 
                 selectedPhotos.addAll(photos);

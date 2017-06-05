@@ -2,6 +2,7 @@ package com.cloudmachine.base;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         }
         this.initPresenter();
         AppManager.getAppManager().addActivity(this);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     /*********************子类实现*****************************/

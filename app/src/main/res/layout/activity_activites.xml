@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.cloudmachine.ui.home.activity.ActivitesActivity">
+
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="活动中心"
+        />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activities_item_rlv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:overScrollMode="never"
+        />
+
+
+</LinearLayout>

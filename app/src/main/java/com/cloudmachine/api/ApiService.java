@@ -8,6 +8,7 @@ import com.cloudmachine.recyclerbean.HomeIssueDetailBean;
 import com.cloudmachine.recyclerbean.HomeNewsBean;
 import com.cloudmachine.recyclerbean.MasterDailyBean;
 import com.cloudmachine.struc.LatestDailyEntity;
+import com.cloudmachine.struc.McDeviceBasicsInfo;
 import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.MessageBO;
@@ -38,6 +39,12 @@ import rx.Observable;
  */
 
 public interface ApiService {
+
+    @GET("device/getDevice")
+    Observable<BaseRespose<McDeviceBasicsInfo>> getDeviceInfo(@Query("deviceId") String deviceId,@Query("memberId") long memberId );
+
+    @GET("device/getDeviceByKey")
+    Observable<BaseRespose<List<McDeviceInfo>>> getDevices(@Query("osPlatform") String osPlatform,@Query("osVersion") String osVersion,@Query("memberId") long memberId,@Query("type") int type);
 
     /**
      * 测试获取设置详细信息

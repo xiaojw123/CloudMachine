@@ -26,4 +26,5 @@ public class UserHelper {
     public static boolean isLogin(Context context) {
         return MemeberKeeper.getOauth(context) != null;
     }
+
 }

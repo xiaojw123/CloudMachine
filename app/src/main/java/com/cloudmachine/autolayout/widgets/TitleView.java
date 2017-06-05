@@ -1,6 +1,7 @@
 package com.cloudmachine.autolayout.widgets;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -73,6 +74,12 @@ public class TitleView extends AutoRelativeLayout {
         } else if (null != right_drawable) {
             setRightImage(right_drawable);
         }
+        left_layout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Activity)v.getContext()).finish();
+            }
+        });
 
     }
 

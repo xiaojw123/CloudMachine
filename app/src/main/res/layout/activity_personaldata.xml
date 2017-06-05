@@ -33,8 +33,8 @@
         <de.hdodenhof.circleimageview.CircleImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/head_iamge"
-            android:layout_width="54dp"
             android:layout_height="54dp"
+            android:layout_width="54dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/arrow_next"
             android:layout_marginRight="10dp"
@@ -133,10 +133,21 @@
             style="@style/personal_arrow_image"/>
     </RelativeLayout>
 
-    <LinearLayout
-        style="@style/line_layout"
-        android:layout_marginLeft="@dimen/common_left_gap"
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:text="@string/exit_login"
+        android:layout_marginTop="14dp"
+        android:textColor="@color/color_ee2607"
+        android:textSize="@dimen/text_size_16_sp"
+        android:background="@color/white"
+        android:onClick="exitLogin"
         />
+
+    <!--<LinearLayout-->
+        <!--style="@style/line_layout"-->
+        <!--android:layout_marginLeft="@dimen/common_left_gap"-->
+        <!--/>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -158,5 +169,7 @@
             cloudm:rbtn_textColor="@color/public_white"
             cloudm:rbtn_textSize="@dimen/about_button_textsize" />
     </RelativeLayout>
+
+
 
 </LinearLayout>

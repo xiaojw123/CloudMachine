@@ -1,5 +1,17 @@
 package com.cloudmachine.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
+import android.text.Html;
+import android.text.TextUtils;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,19 +33,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import android.app.Activity;
-import android.content.Context;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.text.Html;
-import android.text.TextUtils;
-
-import com.github.mikephil.charting.utils.AppLog;
 
 /**
  * @fileName FileUtils.java
@@ -688,12 +687,14 @@ public class FileUtils {
 
 		    }
 		 
-		 public static String saveBitmap(Bitmap bm, String picName) {
+		 public static String saveBitmap(Context context,Bitmap bm, String picName) {
 				try {
 					File f = new File(SDPATH, picName + ".JPEG");
 					if (f.exists()) {
 						f.delete();
 					}
+					Uri uri= FileProvider.getUriForFile(context,"com.cloudmachine.fileprovider",f);
+
 					FileOutputStream out = new FileOutputStream(f);
 					bm.compress(Bitmap.CompressFormat.JPEG, 90, out);
 					out.flush();
@@ -706,6 +707,25 @@ public class FileUtils {
 				}
 				return null;
 			}
+
+	public static String saveBitmap(Bitmap bm, String picName) {
+		try {
+			File f = new File(SDPATH, picName + ".JPEG");
+			if (f.exists()) {
+				f.delete();
+			}
+			FileOutputStream out = new FileOutputStream(f);
+			bm.compress(Bitmap.CompressFormat.JPEG, 90, out);
+			out.flush();
+			out.close();
+			return f.getPath();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public static File saveBitmap2File(Bitmap bm, String picName) {
 		try {

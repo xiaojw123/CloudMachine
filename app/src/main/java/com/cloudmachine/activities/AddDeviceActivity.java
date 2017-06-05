@@ -23,6 +23,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -54,7 +55,7 @@ import com.umeng.analytics.MobclickAgent;
  * 查看页面基本信息
  */
 public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener {
-
+    public static final String DEVICE_SHOW = "device_show";
     private static final int TAKE_PICTURE = 0x000001;
     private final static int SCANNIN_GREQUEST_CODE = 678;
     private Context mContext;
@@ -81,6 +82,8 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     private String nameImagePath, engineImagePath;
     private McDeviceBasicsInfo mcDeviceBasicsInfo;
     private RadiusButtonView change_owner;
+    private FrameLayout memberLayout;
+    private boolean showDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             try {
+                showDevice = bundle.getBoolean(DEVICE_SHOW);
                 mcDeviceBasicsInfo = (McDeviceBasicsInfo) bundle.getSerializable(Constants.P_MCDEVICEBASICSINFO);
                 if (null != mcDeviceBasicsInfo) {
                     deviceId = mcDeviceBasicsInfo.getId();
@@ -180,6 +184,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     }
 
     private void initAddDeviceItemView() {
+        memberLayout = (FrameLayout) findViewById(R.id.deivce_member);
         device_name = (CanBeEditItemView) findViewById(R.id.device_name);
         device_type = (CanBeEditItemView) findViewById(R.id.device_type);
         device_brand1 = (CanBeEditItemView) findViewById(R.id.device_brand1);
@@ -200,10 +205,10 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
             device_rackId.setContent(mcDeviceBasicsInfo.getRackId());
             device_workTime.setContent(String.valueOf(mcDeviceBasicsInfo.getWorkTime()) + "时");
         }
-
+        memberLayout.setOnClickListener(this);
         device_name.setOnClickListener(this);
             /*device_type.setOnClickListener(this);
-			device_brand1.setOnClickListener(this);
+            device_brand1.setOnClickListener(this);
 			device_model.setOnClickListener(this);
 			device_year.setOnClickListener(this);
 			device_card.setOnClickListener(this);
@@ -211,7 +216,9 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
 			device_phone_number.setOnClickListener(this);*/
 
 //			device_name.isEdit(true);
-
+        if (showDevice) {
+            memberLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initPhotoGridView() {
@@ -291,7 +298,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                     Constants.displayDeviceImageOptions, null);
         } else {
         }
-		/*noScrollgridview.setOnItemClickListener(new OnItemClickListener() {
+        /*noScrollgridview.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
@@ -322,7 +329,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
-       // MobclickAgent.onPageEnd(UMengKey.time_machine_info);
+        // MobclickAgent.onPageEnd(UMengKey.time_machine_info);
         super.onPause();
         try {
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(AddDeviceActivity.this.getCurrentFocus().getWindowToken(), 0);
@@ -336,6 +343,16 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         // TODO Auto-generated method stub
 
         switch (v.getId()) {
+
+            case R.id.deivce_member:
+                Bundle bundle_member = new Bundle();
+                bundle_member.putLong(Constants.P_DEVICEID, deviceId);
+                if (null != mcDeviceBasicsInfo)
+                    bundle_member.putInt(Constants.P_DEVICETYPE,
+                            mcDeviceBasicsInfo.getType());
+                Constants.toActivity(this, DeviceMcMemberActivity.class, bundle_member);
+
+                break;
             case R.id.device_name:
                 //MobclickAgent.onEvent(mContext,UMengKey.time_machine_info_edit);
                 gotoEditActivity(device_name, Constants.E_DEVICE_TEXT, Constants.E_ITEMS_deviceName);
@@ -397,7 +414,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 break;
             case R.id.engine_image:
                 Constants.gotoImageBrowerType(this, 1, new String[]{engine_image_url}, false, 0);
-                MobclickAgent.onEvent(mContext,UMengKey.count_machine_watch_lardgeimage);
+                MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
 //			addImageType = 2;
 //			photo();
                 break;
@@ -414,7 +431,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     public boolean handleMessage(Message msg) {
         // TODO Auto-generated method stub
         switch (msg.what) {
-		/*case Constants.HANDLER_SAVEDEVICE_SUCCESS:
+        /*case Constants.HANDLER_SAVEDEVICE_SUCCESS:
 			DeviceInfo deviceInfo = (DeviceInfo)msg.obj;
 			if(null == deviceInfo){
 				deviceInfo = this.deviceInfo;

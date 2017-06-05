@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="164dp"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <ImageView
+            android:id="@+id/item_trackhistory_icon1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp"
+            android:src="@drawable/location_start" />
+
+        <TextView
+            android:id="@+id/item_trackhistory_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/item_trackhistory_len"
+            android:layout_toRightOf="@+id/item_trackhistory_icon1"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:layout_marginTop="17dp"
+            android:text="1月21 周一 18fdfasfasfasfafafaf"
+            android:textSize="@dimen/text_size_16_sp" />
+
+        <TextView
+            android:id="@+id/item_trackhistory_locaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/item_trackhistory_time"
+            android:layout_alignRight="@+id/item_trackhistory_time"
+            android:layout_below="@+id/item_trackhistory_time"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="15dp"
+            android:singleLine="true"
+            android:text="未来科技城海创园dddddddddddddddddsafgasfdasfasfasfafasdfasfddasfddasdfasfdaSfdd"
+            android:textColor="@color/color_66"
+            android:textSize="@dimen/text_size_14_sp" />
+
+        <View
+            style="@style/CommonLandscapeLine"
+            android:layout_alignLeft="@+id/item_trackhistory_locaction"
+            android:layout_alignParentBottom="true"
+            android:layout_alignRight="@+id/item_trackhistory_locaction" />
+
+
+        <TextView
+            android:id="@+id/item_trackhistory_len"
+            android:layout_width="79dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginBottom="5dp"
+            android:text="57小时"
+            android:textSize="@dimen/text_size_14_sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/item_trackhistory_icon2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp"
+            android:src="@drawable/location_end" />
+
+        <TextView
+            android:id="@+id/item_trackhistory_end_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="1月21 周一 18fdfasfasfasfafafaf"
+            android:textSize="@dimen/text_size_16_sp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/black"
+            android:layout_toRightOf="@+id/item_trackhistory_icon2"
+            android:layout_toLeftOf="@+id/item_len_text"
+            />
+
+        <TextView
+            android:id="@+id/item_trackhistory_end_locaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/item_trackhistory_end_time"
+            android:layout_alignRight="@+id/item_trackhistory_end_time"
+            android:layout_below="@+id/item_trackhistory_end_time"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="15dp"
+            android:singleLine="true"
+            android:text="未来科技城海创园dddddddddddddddddsafgasfdasfasfasfafasdfasfddasfddasdfasfdaSfdd"
+            android:textColor="@color/color_66"
+            android:textSize="@dimen/text_size_14_sp" />
+
+
+        <TextView
+            android:id="@+id/item_len_text"
+            android:layout_width="79dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="-30dp"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="工作时长" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

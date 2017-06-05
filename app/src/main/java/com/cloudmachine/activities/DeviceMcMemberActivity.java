@@ -8,6 +8,7 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.MemberSlideAdapter;
@@ -19,6 +20,7 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.task.DevicesMemberListAsync;
 import com.cloudmachine.struc.MemberInfo;
 import com.cloudmachine.struc.MemberInfoSlide;
+import com.cloudmachine.ui.home.activity.RemarkInfoActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UMengKey;
 import com.umeng.analytics.MobclickAgent;
@@ -26,7 +28,7 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener{
+public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener, AdapterView.OnItemClickListener {
 
 	private Context mContext;
 	private Handler mHandler;
@@ -90,6 +92,7 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 		empty_layout  = findViewById(R.id.empty_layout);
 		pAdapter = new MemberSlideAdapter(dataResult,deviceId, deviceType, mContext,mHandler);
 		member_listview =  (ListViewCompat)findViewById(R.id.member_listview);
+		member_listview.setOnItemClickListener(this);
 		member_listview.setAdapter(pAdapter);
 		
 		add_member = (RadiusButtonView)findViewById(R.id.add_member);
@@ -193,28 +196,30 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 		}
 		return false;
 	}
-/*
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
+							long id) {
+		Intent intent=new Intent(this, RemarkInfoActivity.class);
+		startActivity(intent);
 		// TODO Auto-generated method stub
-		
-		MemberInfo memberInfo = dataResult.get(position);
-		Intent intent_h = new Intent(this, PermissionActivity.class);
-		overridePendingTransition(R.anim.slide_right_in,
-				R.anim.slide_left_out);
-		intent_h.putExtra(Constants.P_DEVICEID, deviceId);
-		intent_h.putExtra(Constants.P_DEVICETYPE, deviceType);
-		intent_h.putExtra(Constants.P_PERMISSIONTYPE, 0);
-		intent_h.putExtra(Constants.P_MERMBERINFO, memberInfo);
-		
-		intent_h.putExtra(Constants.P_MERMBERID, memberInfo.getMemberId());
-		intent_h.putExtra(Constants.P_MERMBERNAME, memberInfo.getName());
-		intent_h.putExtra(Constants.P_MERMBERROLE, memberInfo.getRole());
-		intent_h.putExtra(Constants.P_MERMBERROLEREMARK, memberInfo.getRoleRemark());
-		intent_h.putExtra(Constants.P_MERMBERPERMISSION, memberInfo.getPermissName());
-		startActivityForResult(intent_h,0);
-	}*/
+//
+//		MemberInfoSlide memberInfo = dataResult.get(position);
+//		Intent intent_h = new Intent(this, PermissionActivity.class);
+//		overridePendingTransition(R.anim.slide_right_in,
+//				R.anim.slide_left_out);
+//		intent_h.putExtra(Constants.P_DEVICEID, deviceId);
+//		intent_h.putExtra(Constants.P_DEVICETYPE, deviceType);
+//		intent_h.putExtra(Constants.P_PERMISSIONTYPE, 0);
+//		intent_h.putExtra(Constants.P_MERMBERINFO, memberInfo);
+//
+//		intent_h.putExtra(Constants.P_MERMBERID, memberInfo.getMemberId());
+//		intent_h.putExtra(Constants.P_MERMBERNAME, memberInfo.getName());
+//		intent_h.putExtra(Constants.P_MERMBERROLE, memberInfo.getRole());
+//		intent_h.putExtra(Constants.P_MERMBERROLEREMARK, memberInfo.getRoleRemark());
+//		intent_h.putExtra(Constants.P_MERMBERPERMISSION, memberInfo.getPermissName());
+//		startActivityForResult(intent_h,0);
+	}
 	private void getMemberList(){
 //		if(deviceId != Constants.MC_Simulation_DeviceId){
 //			new DevicesMemberListAsync(deviceId,mContext,mHandler).execute();

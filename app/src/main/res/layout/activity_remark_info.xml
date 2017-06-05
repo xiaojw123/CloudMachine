@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/public_bg"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.cloudmachine.autolayout.widgets.TitleView
+            android:id="@+id/remarkinfo_titleview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:right_text="保存"
+            app:text="备注信息" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/nickname"
+            android:textColor="@color/public_black_9"
+            android:textSize="@dimen/text_size_13_sp" />
+
+        <EditText
+            android:id="@+id/nickname_edt"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@color/white"
+            android:editable="false"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="挖机王子"
+            android:textSize="@dimen/text_size_16_sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/remark_name"
+            android:textColor="@color/public_black_9"
+            android:textSize="@dimen/text_size_13_sp" />
+
+        <EditText
+            android:id="@+id/remarkname_edt"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="lu.李"
+            android:textSize="@dimen/text_size_16_sp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/role"
+            android:textColor="@color/public_black_9"
+            android:textSize="@dimen/text_size_13_sp" />
+
+        <FrameLayout
+            android:id="@+id/role_container"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@color/white"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:id="@+id/remarkinfo_role_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/manager"
+                android:textSize="@dimen/text_size_16_sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:src="@drawable/arrow_next" />
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/remarkinfo_roleselect_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/white"
+            >
+            <TextView
+                android:id="@+id/remarkinfo_wheelview_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/common_cancel" />
+
+            <TextView
+                android:id="@+id/remarkinfo_wheelview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:text="请选择角色" />
+
+            <TextView
+                android:id="@+id/remarkinfo_wheelview_determine"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/common_determine" />
+
+        </FrameLayout>
+
+        <com.cloudmachine.utils.widgets.wheelview.WheelView
+            android:id="@+id/remarkinfo_wlv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
+    </LinearLayout>
+
+
+
+
+</FrameLayout>
+

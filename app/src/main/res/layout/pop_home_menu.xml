@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80000000"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="293dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/pop_device_list_bg"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="21dp"
+        android:paddingRight="21dp">
+
+        <TextView
+            android:id="@+id/pop_devie_num_tv"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="设备(0)" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/common_line" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pop_device_list_rlv"
+            android:layout_width="match_parent"
+            android:overScrollMode="never"
+            android:layout_height="372dp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/pop_device_close_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/icon_close" />
+</LinearLayout>

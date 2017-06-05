@@ -235,7 +235,7 @@ public class Constants {
     public static final int HANDLER_GETUSERMSG_SUCCESS = HANDLER_GETACCESSTOKEN_SUCCESS + 1;
     public static final int HANDLER_UPLOAD_SUCCESS = HANDLER_GETUSERMSG_SUCCESS + 1;
     public static final int HANDLER_UPLOAD_FAILD = HANDLER_UPLOAD_SUCCESS + 1;
-
+    public static final String OS_PLATFORM = "Android";
     public static final String URL_H5_ARGUMENT = "http://www.cloudm.com/agreement";
     public static final String URL_LOGOCLOUDM = "https://f1.cloudm.com/logocloudm.png";
     //修改全局ip地址
@@ -950,7 +950,9 @@ public class Constants {
     public static final void toActivityForR(Activity activity, Class cl,
                                             Bundle bundle) {
         Intent intent = new Intent(activity, cl);
-        intent.putExtras(bundle);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
         activity.startActivityForResult(intent, 0);
         activity.overridePendingTransition(R.anim.slide_right_in,
                 R.anim.slide_left_out);
@@ -1206,7 +1208,7 @@ public class Constants {
         alertDialog.setPositiveText("稍后");
 
 		/*alertDialog = new AlertDialog.Builder(context).setTitle("版本更新")
-				.setMessage(message)
+                .setMessage(message)
 				// .setIcon(R.drawable.ic_launcher)
 				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 					@Override
@@ -1433,7 +1435,7 @@ public class Constants {
     public static final boolean isMobileNO(String mobiles) {
 
 		/*
-		 * Pattern p = Pattern
+         * Pattern p = Pattern
 		 * .compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$"); Matcher m =
 		 * p.matcher(mobiles); return m.matches();
 		 */
@@ -1464,4 +1466,9 @@ public class Constants {
             return null != str ? str : "";
         return null != str ? str : dev;
     }
+
+    public static final String MC_DEVICEINFO = "McDeviceInfo";
+    public static final String MC_LOC_NOW = "McLocNow";
+    public static final int RESULT_QUERY_BY_TIME = 0x34;
+    public static final int ANIMATION_DURACTION=800;
 }

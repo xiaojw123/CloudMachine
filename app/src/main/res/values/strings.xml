@@ -97,5 +97,22 @@
 
     <!--一键加测-->
     <string name="detect_now">一键检测</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="my_message">我的消息</string>
+    <string name="my_ask">我的提问</string>
+    <string name="repair_history">维修记录</string>
+    <string name="card_coupon">卡券</string>
+    <string name="qr_code">二维码</string>
+    <string name="about_and_help">关于和帮助</string>
+    <string name="share_app">分享APP</string>
+    <string name="exit_login">退出登录</string>
+    <string name="nickname">昵称</string>
+    <string name="remark_name">备注名</string>
+    <string name="role">角色</string>
+    <string name="manager">管理者</string>
+    <string name="query_by_time">按时间查询</string>
 
 </resources>

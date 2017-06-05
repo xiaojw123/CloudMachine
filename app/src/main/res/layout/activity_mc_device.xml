@@ -12,7 +12,9 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -84,20 +86,24 @@
                         android:paddingBottom="1dp"
                         android:visibility="visible">
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/public_view_height1"
+                            android:background="@color/public_view_color"/>
+
                         <LinearLayout
                             android:id="@+id/test_report"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/detect_report_height"
                             android:background="@drawable/bg_list_item"
-                            android:orientation="horizontal"
-                            >
+                            android:orientation="horizontal">
 
                             <ImageView
                                 android:layout_width="@dimen/detect_report_iconsize"
                                 android:layout_height="@dimen/detect_report_iconsize"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="@dimen/public_title_margin"
-                                android:src="@drawable/detect_report"/>
+                                android:src="@drawable/detect_report" />
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -111,7 +117,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="@string/detect_report"
                                     android:textColor="@color/public_color_black"
-                                    android:textSize="@dimen/public_textsize1"/>
+                                    android:textSize="@dimen/public_textsize1" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -120,7 +126,7 @@
                                     android:layout_marginTop="@dimen/public_text_margintop"
                                     android:text="@string/get_newdata"
                                     android:textColor="@color/public_text_grey1"
-                                    android:textSize="@dimen/public_textsize2"/>
+                                    android:textSize="@dimen/public_textsize2" />
 
                                 <ImageView
                                     android:layout_width="@dimen/arrow_next_width"
@@ -128,14 +134,9 @@
                                     android:layout_alignParentRight="true"
                                     android:layout_centerVertical="true"
                                     android:layout_marginRight="@dimen/public_title_margin"
-                                    android:src="@drawable/arrow_next"/>
+                                    android:src="@drawable/arrow_next" />
                             </RelativeLayout>
                         </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/public_view_height1"
-                            android:background="@color/public_view_color"/>
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -173,7 +174,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/public_divider_vertical_height"
                                 android:layout_centerVertical="true"
-                                >
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true">
 
                                 <View
                                     android:id="@+id/mid_line"

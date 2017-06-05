@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cloudmachine">
-    <!--android:installLocation="preferExternal"-->
+
+    <!-- android:installLocation="preferExternal" -->
 
     <permission
         android:name="com.cloudmachine.permission.JPUSH_MESSAGE"
@@ -147,11 +148,13 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
         <activity
             android:name="cn.sharesdk.framework.ShareSDKUIShell"
@@ -428,8 +431,8 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <!-- 设置微信登录页面为透明 -->
-        <!--android:launchMode="singleTask"-->
-        <!--android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"-->
+        <!-- android:launchMode="singleTask" -->
+        <!-- android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" -->
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
@@ -437,13 +440,14 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustPan|adjustUnspecified|stateHidden">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
 
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-
         <activity
             android:name=".activities.UseHelpActivity"
             android:screenOrientation="portrait"
@@ -669,6 +673,16 @@
         <activity
             android:name=".activities.BigPicActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.home.activity.HomeActivity"/>
+        <activity android:name=".ui.home.activity.ActivitesActivity" />
+        <activity android:name=".ui.home.activity.DeviceDetailActivity" />
+        <activity android:name=".ui.home.activity.BaseMapActivity" />
+        <activity android:name=".ui.home.activity.RemarkInfoActivity" />
+        <activity android:name=".ui.home.activity.MaintenanceSupervisorActivity" />
+        <activity android:name=".ui.home.activity.HistoricalTrackNewActivity" />
+        <activity android:name=".ui.home.activity.TrackHistoryActivity" />
+        <activity android:name=".ui.home.activity.RepairRecordActivity" />
+        <activity android:name=".ui.home.activity.RepairRecordNewActivity"></activity>
     </application>
 
 </manifest>

@@ -67,7 +67,8 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
     private RadiusButtonView login_btn;
     private LoadingDialog progressDialog;
     private TextView forget_pw_tv;
-    private int flag = 2;
+//    private int flag = 2;
+    private int flag;
     private View left_layout, right_layout;
     private CircleTextImageView userImage;
     private RelativeLayout mPwdSwitch;
@@ -321,8 +322,9 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
                     finish();
+                }else{
+                    finish();
                 }
-
                 MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,0);
                 Constants.isMcLogin = true;
                 //调用JPush API设置Alias

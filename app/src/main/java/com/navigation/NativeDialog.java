@@ -215,16 +215,9 @@ public class NativeDialog extends Dialog {
     private View.OnClickListener weblistener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-        	
 
         	NaviParaOption para = new NaviParaOption().startPoint(MyDistanceUtil.entity2Baidu(loc_now)).endPoint(MyDistanceUtil.entity2Baidu(loc_end));
         	BaiduMapNavigation.openWebBaiduMapNavi(para, context);
-
-        	
-        	
-
-        	
-        	
         	NativeDialog.this.dismiss();
         }
     };

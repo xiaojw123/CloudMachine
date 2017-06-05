@@ -102,7 +102,37 @@
 		    	cloudm:last="true"
 		    	android:visibility="gone"
                 />
-            <LinearLayout 
+
+			<FrameLayout
+				android:id="@+id/deivce_member"
+				android:layout_width="match_parent"
+				android:layout_height="44dp"
+				android:background="@color/white"
+				android:layout_marginTop="10dp"
+				android:layout_marginBottom="3dp"
+				android:paddingLeft="15dp"
+				android:paddingRight="10dp"
+				android:visibility="gone"
+				>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/mc_members"
+					android:textColor="@color/black"
+					android:textSize="@dimen/text_size_16_sp"
+					android:layout_gravity="center_vertical"
+					/>
+
+				<ImageView
+					android:layout_gravity="right|center_vertical"
+					android:src="@drawable/mc_arrow_r"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content" />
+
+
+			</FrameLayout>
+
+			<LinearLayout
                 android:id="@+id/image_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -123,6 +153,7 @@
                     />
                     
             </LinearLayout>
+
             
             <LinearLayout 
                 android:layout_width="match_parent"
