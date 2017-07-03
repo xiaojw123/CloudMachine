@@ -2,8 +2,8 @@ package com.cloudmachine.ui.homepage.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,6 +11,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.ui.homepage.fragment.MessageFragment;
+
 
 /**
  * 项目名称：CloudMachine
@@ -76,7 +77,7 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity implements View.
             Fragment to = mFragments[n];
             if (mContentFragment != to) {
                 FragmentTransaction fragmentTransaction = this
-                        .getSupportFragmentManager().beginTransaction();
+                        .getFragmentManager().beginTransaction();
                 if (mContentFragment != null) {
                     if (!to.isAdded()) { // 先判断是否被add过
                         fragmentTransaction.hide(mContentFragment)

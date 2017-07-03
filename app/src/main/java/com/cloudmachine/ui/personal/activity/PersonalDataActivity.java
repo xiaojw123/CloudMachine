@@ -52,6 +52,7 @@ import com.cloudmachine.net.task.UpdateMemberInfoAsync;
 import com.cloudmachine.struc.ExcamMasterInfo;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.UserInfo;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.personal.contract.PersonalDataContract;
 import com.cloudmachine.ui.personal.model.PersonalDataModel;
 import com.cloudmachine.ui.personal.presenter.PersonalDataPresenter;
@@ -263,10 +264,13 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 mPresenter.modifyNickName(mMemberId, "nickName", mWecharNickname);
                 break;
             case R.id.bt_exitLogin:
+                MobclickAgent.onEvent(this,UMengKey.count_logout);
                 mpopupWindow.dismiss();
                 Constants.isMcLogin = true;
                 JPushInterface.setAliasAndTags(getApplicationContext(), "", null, null);
                 MemeberKeeper.clearOauth(this);
+                Intent intent=new Intent(this, LoginActivity.class);
+                startActivity(intent);
                 finish();
                 break;
             case R.id.bt_cancel:

@@ -1,12 +1,12 @@
 package com.cloudmachine.struc;
 
-import java.io.Serializable;
-
 import com.cloudmachine.autolayout.widgets.SlideView;
+
+import java.io.Serializable;
 
 
 public class MemberInfoSlide implements Serializable{
-	
+	private int  id;
 	private String name;
 	private String role;
 	private int memberId;
@@ -44,7 +44,17 @@ public class MemberInfoSlide implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getRole() {
+
 		return role;
 	}
 	public void setRole(String role) {

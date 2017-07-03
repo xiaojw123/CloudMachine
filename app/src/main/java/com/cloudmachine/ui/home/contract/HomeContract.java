@@ -31,7 +31,8 @@ public interface HomeContract {
     interface Model extends BaseModel {
         Observable<BaseRespose<UnReadMessage>> getMessageUntreatedCount(long memberId);
 
-        Observable<BaseRespose<List<McDeviceInfo>>> getDevices(long memberId, int type);
+        Observable<List<McDeviceInfo>> getDevices(long memberId, int type);
+        Observable<List<McDeviceInfo>> getDevices(int type);
         Observable<BaseRespose<ArrayList<HomeBannerBean>>> getPromotionModel();
 
     }
@@ -40,6 +41,7 @@ public interface HomeContract {
         public abstract void updateUnReadMessage(long memberId);
 
         public abstract void getDevices(long memberId, int type);
+        public abstract void getDevices(int type);
 
         public abstract void getPromotionInfo();
 

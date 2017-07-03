@@ -3,14 +3,14 @@ package com.cloudmachine.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.AutoLayoutFragmentActivity;
 import com.cloudmachine.R;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UMengKey;
 import com.umeng.analytics.MobclickAgent;
@@ -25,7 +25,7 @@ import com.umeng.analytics.MobclickAgent;
  * 修改备注：
  */
 
-public class WorkHoursActivity extends AutoLayoutFragmentActivity implements View.OnClickListener {
+public class WorkHoursActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
 
     private Context mContext;
     private View[] linearLayouts = new View[2];
@@ -46,6 +46,11 @@ public class WorkHoursActivity extends AutoLayoutFragmentActivity implements Vie
         getIntentData();
         initViews();
         initFragmentS(); // 初始化fragment
+    }
+
+    @Override
+    public void initPresenter() {
+
     }
 
     private void getIntentData() {
@@ -127,7 +132,7 @@ public class WorkHoursActivity extends AutoLayoutFragmentActivity implements Vie
             Fragment to = mFragments[n];
             if (mContentFragment != to) {
                 FragmentTransaction fragmentTransaction = this
-                        .getSupportFragmentManager().beginTransaction();
+                        .getFragmentManager().beginTransaction();
                 if (mContentFragment != null) {
                     if (!to.isAdded()) { // 先判断是否被add过
                         fragmentTransaction.hide(mContentFragment)

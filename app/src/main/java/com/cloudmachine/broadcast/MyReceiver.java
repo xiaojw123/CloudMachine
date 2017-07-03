@@ -11,7 +11,9 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.DeviceMcActivity;
 import com.cloudmachine.activities.WanaCloudBox;
 import com.cloudmachine.main.MainActivity;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.homepage.activity.ViewMessageActivity;
 import com.cloudmachine.utils.Constants;
 
 import org.json.JSONException;
@@ -82,7 +84,7 @@ public class MyReceiver extends BroadcastReceiver {
 
     //send msg to MainActivity
     private void processCustomMessage(Context context, Bundle bundle) {
-        if (MainActivity.isForeground) {
+        if (HomeActivity.isForeground) {
             String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
             String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
             Intent msgIntent = new Intent(MainActivity.MESSAGE_RECEIVED_ACTION);
@@ -90,11 +92,11 @@ public class MyReceiver extends BroadcastReceiver {
             if (!TextUtils.isEmpty(extras)) {
                 try {
                     JSONObject extraJson = new JSONObject(extras);
-                    if (null != extraJson && extraJson.length() > 0) {
-                        msgIntent.putExtra(MainActivity.KEY_EXTRAS, extras);
+                    if (extraJson.length() > 0) {
+                        msgIntent.putExtra(HomeActivity.KEY_EXTRAS, extras);
                     }
                 } catch (JSONException e) {
-
+                    e.printStackTrace();
                 }
 
             }
@@ -107,37 +109,28 @@ public class MyReceiver extends BroadcastReceiver {
         if (!TextUtils.isEmpty(extras)) {
             try {
                 JSONObject extraJson = new JSONObject(extras);
-                Log.d(TAG, "notifaction__Result__" + extras.toString());
-                if (null != extraJson && extraJson.has("type")) {
+                if (extraJson.has("type")) {
                     String type = extraJson.getString("type");
                     int iType = Integer.valueOf(type);
                     switch (iType) {//1,邀请消息  2,报警消息 3,版本消息  4,电子围栏 5,问卷调查
                         case 1:
                         case 5:
                             //打开自定义的Activity    //MessageActivity
-                            Intent i1 = new Intent(context, MainActivity.class);
-                            Bundle bd = new Bundle();
-                            bd.putInt(Constants.P_MainActivity_Fragment_Id, 1);
-                            i1.putExtras(bd);
+                            Intent i1 = new Intent(context, ViewMessageActivity.class);
                             i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(i1);
                             return;
                         case 2:
-                            try {
-                                if (extraJson.has("deviceId") && extraJson.has("nickName")) {
-                                    String deviceIdStr = extraJson.getString("deviceId");
-                                    String nickNameStr = extraJson.getString("nickName");
-                                    Intent i2 = new Intent(context, DeviceMcActivity.class);
-                                    i2.putExtra(Constants.P_DEVICEID, Long.valueOf(deviceIdStr));
-                                    i2.putExtra(Constants.P_DEVICENAME, nickNameStr);
-                                    //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    i2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i2);
-                                }
-                            } catch (Exception e) {
-
+                            if (extraJson.has("deviceId") && extraJson.has("nickName")) {
+                                String deviceIdStr = extraJson.getString("deviceId");
+                                String nickNameStr = extraJson.getString("nickName");
+                                Intent i2 = new Intent(context, DeviceMcActivity.class);
+                                i2.putExtra(Constants.P_DEVICEID, Long.valueOf(deviceIdStr));
+                                i2.putExtra(Constants.P_DEVICENAME, nickNameStr);
+                                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                i2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                context.startActivity(i2);
                             }
-
                             return;
                         case 3:
                             Intent i3 = new Intent(context, AboutCloudActivity.class);
@@ -161,12 +154,12 @@ public class MyReceiver extends BroadcastReceiver {
                             context.startActivity(notifyIntent);
                             break;
                         default:
-                            Intent i2 = new Intent(context, MainActivity.class);
+                            Intent i2 = new Intent(context, HomeActivity.class);
                             i2.putExtras(bundle);
                             //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             i2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(i2);
-                            return;
+                            break;
                     }
                 }
             } catch (JSONException e) {

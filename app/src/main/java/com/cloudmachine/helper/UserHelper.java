@@ -26,5 +26,8 @@ public class UserHelper {
     public static boolean isLogin(Context context) {
         return MemeberKeeper.getOauth(context) != null;
     }
+    public static long getMemberId(Context context){
+        return MemeberKeeper.getOauth(context).getId();
+    }
 
 }

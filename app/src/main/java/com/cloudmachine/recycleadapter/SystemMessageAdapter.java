@@ -55,8 +55,6 @@ public class SystemMessageAdapter extends RecyclerView.Adapter<SystemMessageAdap
                 ||item.getMessageType() == Constants.MESSAGETYPE[5]){//系统消息
             holder.tv2.setVisibility(View.GONE);
             holder.tv3.setVisibility(View.GONE);
-            holder.dividerBottom.setVisibility(View.GONE);
-            holder.dividerTop.setVisibility(View.VISIBLE);
             holder.llDetail.setOnClickListener(new ActionClickListener(3, position, item.getId(), item.getInviterId()));
 
             switch(item.getStatus()){
@@ -82,13 +80,11 @@ public class SystemMessageAdapter extends RecyclerView.Adapter<SystemMessageAdap
         }else{
             holder.tv2.setVisibility(View.VISIBLE);
             holder.tv3.setVisibility(View.VISIBLE);
-            holder.dividerBottom.setVisibility(View.VISIBLE);
             if (item.getStatus()==1){
                 holder.messageOval.setVisibility(View.VISIBLE);
             }else{
                 holder.messageOval.setVisibility(View.GONE);
             }
-            holder.dividerBottom.setVisibility(View.VISIBLE);
             holder.info_inv.setText(item.getInviterNickname());
             holder.tv2.setText("回复了");
             holder.tv3.setText(item.getMessage() + ", 点击查看");
@@ -142,7 +138,6 @@ public class SystemMessageAdapter extends RecyclerView.Adapter<SystemMessageAdap
         private ImageView imageView;
         private TextView     time;//时间复用
 //        private LinearLayout llSelect; //下半部分，接受或者拒绝布局
-        private View         dividerBottom;    //底部分割线
         private LinearLayout llDetail; //上半部分，消息详情布局
         private View         messageOval;  //小圆点，标识是否阅读过消息
         private TextView     invite_name;//邀请人昵称，消息页面中标识消息状态
@@ -151,14 +146,12 @@ public class SystemMessageAdapter extends RecyclerView.Adapter<SystemMessageAdap
 //        private LinearLayout llrefuse;
         private TextView     tv2; //昵称下面的文字，第二段
         private TextView     tv3; //昵称下面的文字，第三段
-        private View         dividerTop;
 
         public SystemMessageHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.message_body);//照片
             time = (TextView) itemView.findViewById(R.id.message_time);//系统通知时间
 //            llSelect = (LinearLayout) itemView.findViewById(R.id.ll_select);
-            dividerBottom = itemView.findViewById(R.id.divider2);
             llDetail = (LinearLayout) itemView.findViewById(R.id.ll_detail);
             messageOval = itemView.findViewById(R.id.message_oval);
             invite_name = (TextView) itemView.findViewById(R.id.invite_name);
@@ -167,7 +160,6 @@ public class SystemMessageAdapter extends RecyclerView.Adapter<SystemMessageAdap
 //            llaccept = (LinearLayout) itemView.findViewById(R.id.ll_accept);
             tv2 = (TextView) itemView.findViewById(R.id.device_name_message);
             tv3 = (TextView) itemView.findViewById(R.id.tv3);
-            dividerTop = itemView.findViewById(R.id.divider1);
         }
     }
 }

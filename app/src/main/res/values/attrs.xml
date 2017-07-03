@@ -151,13 +151,13 @@
         <attr name="title" format="string"/>
         <attr name="title_size" format="dimension"/>
         <attr name="isShowNotify" format="boolean"/>
-
     </declare-styleable>
     
     <declare-styleable name="NotfyImgView">
             <attr name="point_center_x" format="integer"/>
             <attr name="point_center_y" format="integer"/>
             <attr name="point_radius" format="integer"/>
+            <attr name="isNotifyVisbile" format="boolean"/>
     </declare-styleable>
     
 </resources>

@@ -50,8 +50,9 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 		mHandler = new Handler(this);
 		getIntentData();
 		initView();
-		getMemberList();
 	}
+
+
 
 	@Override
 	public void initPresenter() {
@@ -75,6 +76,7 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 	@Override
 	protected void onResume() {
 		super.onResume();
+		getMemberList();
 	}
 
 	@Override
@@ -166,6 +168,8 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 				dataResult.clear();
 				for(int i=0; i<tM.size(); i++){
 					MemberInfoSlide minfo = new MemberInfoSlide();
+					minfo.setId(tM.get(i).getId());
+					minfo.setRoleIdS(tM.get(i).getRoleIdS());
 					minfo.setMemberId(tM.get(i).getMemberId());
 					minfo.setName(tM.get(i).getName());
 					minfo.setRoleRemark(tM.get(i).getRoleRemark());
@@ -200,7 +204,10 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 							long id) {
+		MemberInfoSlide memberInfo= (MemberInfoSlide) view.getTag(R.id.id_RemarkInfo);
 		Intent intent=new Intent(this, RemarkInfoActivity.class);
+		intent.putExtra(RemarkInfoActivity.REMARK_INFO,memberInfo);
+		intent.putExtra(Constants.P_DEVICEID,deviceId);
 		startActivity(intent);
 		// TODO Auto-generated method stub
 //
@@ -230,14 +237,14 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
-		switch (resultCode)
-		{
-		case RESULT_OK:
-				Bundle bundle=data.getExtras();  
-				if(bundle.getBoolean(Constants.P_ISDELETEMERMBER))
-					getMemberList();
-			break;
-		}
+//		switch (resultCode)
+//		{
+//		case RESULT_OK:
+//				Bundle bundle=data.getExtras();
+//				if(bundle.getBoolean(Constants.P_ISDELETEMERMBER))
+//					getMemberList();
+//			break;
+//		}
 	}
 	
 

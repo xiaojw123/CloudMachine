@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/color_f6f6f9"
+              android:orientation="vertical">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="报修详情"
+        />
+
+
+    <LinearLayout
+        android:id="@+id/order_detail_item_container1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/order_detail_layout1"
+        android:background="@color/white"
+        android:divider="@drawable/divider_line_black"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen_size_16"
+        android:paddingRight="@dimen/dimen_size_16"
+        android:showDividers="middle" />
+
+    <TextView
+        android:id="@+id/order_detail_item_container2_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_36"
+        android:text="耗件详情"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/text_size_14_sp"
+        android:layout_below="@+id/order_detail_item_container2"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/dimen_size_16"
+        />
+    <LinearLayout
+        android:id="@+id/order_detail_item_container2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/order_detail_item_container1"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen_size_16"
+        android:paddingRight="@dimen/dimen_size_16"
+        android:visibility="gone"
+        />
+
+
+
+    <LinearLayout
+        android:id="@+id/order_detail_item_container3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/order_detail_item_container2"
+        android:background="@color/white"
+        android:divider="@drawable/divider_line_black"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp"
+        android:paddingLeft="@dimen/dimen_size_16"
+        android:paddingRight="@dimen/dimen_size_16"
+        android:showDividers="middle" />
+
+</LinearLayout>

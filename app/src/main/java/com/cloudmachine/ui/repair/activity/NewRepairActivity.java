@@ -35,8 +35,8 @@ import com.cloudmachine.activities.SearchPoiActivity;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.helper.DeviceHelper;
 import com.cloudmachine.listener.RecyclerItemClickListener;
 import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.MachineTypesListAsync;
@@ -77,8 +77,8 @@ import static com.cloudmachine.R.id.recycler_view;
  */
 public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter, NewRepairModel> implements
         Callback, OnClickListener, NewRepairContract.View {
+    public static final String DEFAULT_LOCAITOIN = "defualt_location";
     private static final int REQUEST_PERMISSION_PICK = 0x008;  //权限请求
-    private TitleView title_layout;
     private Context mContext;
     private Handler mHandler;
     private static final int REQUEST_CODE_DEVICENAME = 0x001;
@@ -130,6 +130,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     List<String> photos = null;
     private ArrayList<String> selectPhotos;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -139,6 +140,9 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         setContentView(R.layout.activity_new_repair);
         mContext = this;
         mHandler = new Handler(this);
+        if (mPermissionsChecker == null) {
+            mPermissionsChecker = new PermissionsChecker(this);
+        }
         getIntentData();
         initView();
         initLocation();
@@ -164,7 +168,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     }
 
     private void initView() {
-        initTitleView();
         initNewReapirView();
         Constants.MyLog(MainActivity.deviceMacList.toString());
         deviceMacList = MainActivity.deviceMacList; // 获取所有机器
@@ -178,6 +181,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         if (bundle != null) {
             try {
                 mcDeviceInfo = (McDeviceInfo) bundle.getSerializable(Constants.P_DEVICEINFO_MY);
+                vworkaddress = bundle.getString(DEFAULT_LOCAITOIN);
                 // deviceId = 100;
             } catch (Exception e) {
                 Constants.MyLog(e.getMessage());
@@ -267,88 +271,115 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         cetContactDesc = (ClearEditTextView) findViewById(R.id.et_des);
         et_rackIdname = (ClearEditTextView) findViewById(R.id.et_rackIdname);
 
-        cetContactName.setText(MyApplication.getInstance().getTempMember().getNickname());
-        cetContactMobile.setText(MyApplication.getInstance().getTempMember().getMobile());
-
+        NewRepairInfo repairInfo = DeviceHelper.getRepairInfo(this);
+        if (repairInfo != null) {
+            cetContactName.setText(repairInfo.getVmacopname());
+            cetContactMobile.setText(repairInfo.getVmacoptel());
+            tvType.setText(repairInfo.getPk_prod_def());
+            et_rackIdname.setText(repairInfo.getVmachinenum());
+            PK_BRAND=repairInfo.getPk_brand();
+            PK_VHCL_MATERIAL=repairInfo.getPk_vhcl_material();
+            setTextToView(tvModel, repairInfo.getModelname());
+            setTextToView(tvBrand, repairInfo.getBrandname());
+        } else {
+            cetContactName.setText(MyApplication.getInstance().getTempMember().getNickname());
+            cetContactMobile.setText(MyApplication.getInstance().getTempMember().getMobile());
+        }
         macopType.setOnClickListener(this);
         macopBrand.setOnClickListener(this);
         macopModel.setOnClickListener(this);
         macopAddress.setOnClickListener(this);
-        checkMac.setOnClickListener(new OnClickListener() {
+        checkMac.setOnClickListener(checkMacListener);
+        btnSubmitNow.setOnClickListener(btnSubmitListener);
 
-            @Override
-            public void onClick(View arg0) {
-                Bundle b = new Bundle();
-                b.putSerializable(Constants.P_MAC_DEVICE, ownDeviceInfos);
-                // Constants.toActivity(NewRepairActivity.this,
-                // CheckMachineActivity.class, b,false);
-                Constants.toActivityForR(NewRepairActivity.this,
-                        CheckMachineActivity.class, b, Constants.REQUEST_ToSearchDeviceActivity);
+    }
+    private OnClickListener checkMacListener=new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+        checkMac();
+        }
+    };
+    private OnClickListener btnSubmitListener=new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+       submitRepairInfo();
+        }
+    };
+
+    private void checkMac() {
+        Bundle b = new Bundle();
+        b.putSerializable(Constants.P_MAC_DEVICE, ownDeviceInfos);
+        // Constants.toActivity(NewRepairActivity.this,
+        // CheckMachineActivity.class, b,false);
+        Constants.toActivityForR(NewRepairActivity.this,
+                CheckMachineActivity.class, b, Constants.REQUEST_ToSearchDeviceActivity);
+    }
+
+    private void submitRepairInfo() {
+        NewRepairInfo newRepairInfo = new NewRepairInfo();
+        MobclickAgent.onEvent(mContext, UMengKey.count_submit_repair_now);
+        vmacopname = cetContactName.getText().toString().trim();
+        vmacoptel = cetContactMobile.getText().toString().trim();
+        pk_prod_def = PK_PROD_DEF;
+        pk_brand = PK_BRAND;
+        pk_vhcl_materia = PK_VHCL_MATERIAL;
+        String modelName = tvModel.getText().toString();
+        String brandName=tvBrand.getText().toString();
+        vmachinenum = et_rackIdname.getText().toString().trim();
+
+        vservicetype = "1";
+        vdiscription = cetContactDesc.getText().toString();
+        if (vworkaddress != null) {
+            vworkaddress = vworkaddress.trim();
+        }
+        newRepairInfo.setModelname(modelName);
+        newRepairInfo.setBrandname(brandName);
+        newRepairInfo.setVmacopname(vmacopname);
+        newRepairInfo.setVmacoptel(vmacoptel);
+        newRepairInfo.setPk_prod_def(pk_prod_def);
+        newRepairInfo.setPk_brand(pk_brand);
+        newRepairInfo.setPk_vhcl_material(pk_vhcl_materia);
+        newRepairInfo.setVmachinenum(vmachinenum);
+        newRepairInfo.setVdiscription(vdiscription);
+        newRepairInfo.setVservicetype(vservicetype);
+        newRepairInfo.setVworkaddress(vworkaddress);
+        newRepairInfo.setProvince(province);
+        newRepairInfo.setDeviceId(deviceId);
+
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < selectPhotos.size(); i++) {
+            if (i < selectPhotos.size() - 1) {
+                sb.append(selectPhotos.get(i)).append(",");
             }
-        });
-        btnSubmitNow.setOnClickListener(new OnClickListener() {// 立即提交
-
-            @Override
-            public void onClick(View arg0) {
-
-                NewRepairInfo newRepairInfo = new NewRepairInfo();
-                MobclickAgent.onEvent(mContext, UMengKey.count_submit_repair_now);
-                vmacopname = cetContactName.getText().toString().trim();
-                vmacoptel = cetContactMobile.getText().toString().trim();
-                pk_prod_def = PK_PROD_DEF;
-                pk_brand = PK_BRAND;
-                pk_vhcl_materia = PK_VHCL_MATERIAL;
-                vmachinenum = et_rackIdname.getText().toString().trim();
-
-                vservicetype = "1";
-                vdiscription = cetContactDesc.getText().toString().trim();
-
-                newRepairInfo.setVmacopname(vmacopname);
-                newRepairInfo.setVmacoptel(vmacoptel);
-                newRepairInfo.setPk_prod_def(pk_prod_def);
-                newRepairInfo.setPk_brand(pk_brand);
-                newRepairInfo.setPk_vhcl_material(pk_vhcl_materia);
-                newRepairInfo.setVmachinenum(vmachinenum);
-                newRepairInfo.setVdiscription(vdiscription);
-                newRepairInfo.setVservicetype(vservicetype);
-                newRepairInfo.setVworkaddress(vworkaddress);
-                newRepairInfo.setProvince(province);
-                newRepairInfo.setDeviceId(deviceId);
-
-                StringBuffer sb = new StringBuffer();
-                for (int i = 0; i < selectPhotos.size(); i++) {
-                    if (i < selectPhotos.size() - 1) {
-                        sb.append(selectPhotos.get(i)).append(",");
-                    }
-                    if (i == selectPhotos.size() - 1) {
-                        sb.append(selectPhotos.get(i));
-                    }
-                }
-                newRepairInfo.setLogo_address(sb.toString());
-                if (TextUtils.isEmpty(vmacopname)) {
-                    Constants.MyToast("联系人不能为空！");
-                } else if (TextUtils.isEmpty(vmacoptel)) {
-                    Constants.MyToast("联系手机号码不能为空！");
-                } else if (TextUtils.isEmpty(pk_prod_def)) {
-                    Constants.MyToast("机器类型不能为空！");
-                } else if (TextUtils.isEmpty(pk_brand)) {
-                    Constants.MyToast("机器品牌不能为空！");
-                } else if (TextUtils.isEmpty(pk_vhcl_materia)) {
-                    Constants.MyToast("机器型号不能为空！");
-                } else if (TextUtils.isEmpty(vmachinenum)) {
-                    Constants.MyToast("机器铭牌号码不能为空！");
-                } else if (TextUtils.isEmpty(vdiscription)) {
-                    Constants.MyToast("故障描述不能为空！");
-                } else if (TextUtils.isEmpty(province)) {
-                    Constants.MyToast("机器位置信息不能为空！");
-                } else {
-
-                    showDialog(newRepairInfo);
-                }
-
+            if (i == selectPhotos.size() - 1) {
+                sb.append(selectPhotos.get(i));
             }
-        });
+        }
+        newRepairInfo.setLogo_address(sb.toString());
+        String locAddress = text_address.getText().toString();
+        if (TextUtils.isEmpty(vmacopname)) {
+            Constants.MyToast("联系人不能为空！");
+        } else if (TextUtils.isEmpty(vmacoptel)) {
+            Constants.MyToast("联系手机号码不能为空！");
+        } else if (TextUtils.isEmpty(pk_prod_def)) {
+            Constants.MyToast("机器类型不能为空！");
+        } else if (TextUtils.isEmpty(pk_brand)) {
+            Constants.MyToast("机器品牌不能为空！");
+        } else if (TextUtils.isEmpty(pk_vhcl_materia)) {
+            Constants.MyToast("机器型号不能为空！");
+        } else if (TextUtils.isEmpty(vmachinenum)) {
+            Constants.MyToast("机器铭牌号码不能为空！");
+        }
+//                else if (TextUtils.isEmpty(vdiscription)) {
+//                    Constants.MyToast("故障描述不能为空！");
+//                }
 
+        else if (TextUtils.isEmpty(locAddress)) {
+            Constants.MyToast("机器位置信息不能为空！");
+        } else {
+
+            showDialog(newRepairInfo);
+        }
     }
 
     private void pickCamera() {
@@ -360,22 +391,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 .start(NewRepairActivity.this);
     }
 
-    private void initTitleView() {
-
-
-        title_layout = (TitleView) findViewById(R.id.title_layout);
-        title_layout.setTitle(getResources().getString(R.string.new_repair));
-        title_layout.setLeftOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                finish();
-            }
-        });
-
-
-    }
 
     private void showDialog(final NewRepairInfo newRepairInfo) {
         CustomDialog.Builder builder = new CustomDialog.Builder(NewRepairActivity.this);
@@ -409,8 +424,9 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private static final int REQUEST_PERMISSION = 0x00141;  //权限请求
 
     private void initLocation() {
-        if (mPermissionsChecker == null) {
-            mPermissionsChecker = new PermissionsChecker(this);
+        if (!TextUtils.isEmpty(vworkaddress)) {
+            setTextToView(text_address, vworkaddress);
+            return;
         }
         // 初始化client
         locationClient = new AMapLocationClient(this.getApplicationContext());
@@ -575,11 +591,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                     String fileName = String.valueOf(System.currentTimeMillis());
                     Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(i));
                     String filename = FileUtils.saveBitmap(smallBitmap, fileName);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        UploadPhotoUtils.getInstance(this).upLoadFile(fileName, "http://api.test.cloudm.com/kindEditorUpload", mHandler);
-                    } else {
-                        UploadPhotoUtils.getInstance(this).upLoadFile(filename, "http://api.test.cloudm.com/kindEditorUpload", mHandler);
-                    }
+                    UploadPhotoUtils.getInstance(this).upLoadFile(filename, "http://api.test.cloudm.com/kindEditorUpload", mHandler);
                 }
 
                 selectedPhotos.addAll(photos);
@@ -663,8 +675,8 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private void showMyDeviceInfo() {
         if (null != mcDeviceInfo) {
             PK_PROD_DEF = mcDeviceInfo.getPk_PROD_DEF();
-            PK_BRAND = mcDeviceInfo.getPk_BRAND();
-            PK_VHCL_MATERIAL = mcDeviceInfo.getPk_VHCL_MATERIAL();
+//            PK_BRAND = mcDeviceInfo.getPk_BRAND();
+//            PK_VHCL_MATERIAL = mcDeviceInfo.getPk_VHCL_MATERIAL();
             vmachinenum = mcDeviceInfo.getRackId();
             et_rackIdname.setText(vmachinenum);
             vworkaddress = mcDeviceInfo.getLocation().getPosition();
@@ -682,6 +694,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
             case R.id.iv_type:
                 // Intent typeIntent = new
                 // Intent(NewRepairActivity.this,MachineTypeActivity.class);

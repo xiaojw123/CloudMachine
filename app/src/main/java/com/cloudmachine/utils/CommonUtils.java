@@ -8,6 +8,21 @@ import android.text.TextUtils;
 
 public class CommonUtils {
 
+
+    public static String formartPrice(String price) {
+        if (!TextUtils.isEmpty(price)) {
+            if (price.contains(".")) {
+                int index = price.indexOf(".");
+                int len = price.length();
+                if (index == len - 2 && (price.charAt(len - 1) == '0')) {
+                    return price.substring(0, index);
+                }
+            }
+            return price;
+        }
+        return "0";
+    }
+
     public static boolean checVersion(String curVerision, String onlineVersion) {
         if (TextUtils.isEmpty(onlineVersion) || TextUtils.isEmpty(curVerision)) {
             return false;

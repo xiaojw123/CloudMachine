@@ -14,7 +14,9 @@ import com.cloudmachine.activities.WanaCloudBox;
 import com.cloudmachine.activities.WebviewActivity;
 import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.UMengKey;
 import com.github.mikephil.charting.utils.AppLog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,7 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
 
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(v.getContext(), UMengKey.count_ad_click);
             HomeBannerBean bean = (HomeBannerBean) v.getTag();
             if (bean != null) {
                 String url= !TextUtils.isEmpty(bean.adsLink)?bean.adsLink:bean.picUrl;

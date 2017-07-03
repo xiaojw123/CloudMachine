@@ -5,97 +5,6 @@
     android:background="@color/public_bg"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.cloudmachine.autolayout.widgets.TitleView
-            android:id="@+id/remarkinfo_titleview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:right_text="保存"
-            app:text="备注信息" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/nickname"
-            android:textColor="@color/public_black_9"
-            android:textSize="@dimen/text_size_13_sp" />
-
-        <EditText
-            android:id="@+id/nickname_edt"
-            android:layout_width="match_parent"
-            android:layout_height="43dp"
-            android:background="@color/white"
-            android:editable="false"
-            android:gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:text="挖机王子"
-            android:textSize="@dimen/text_size_16_sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/remark_name"
-            android:textColor="@color/public_black_9"
-            android:textSize="@dimen/text_size_13_sp" />
-
-        <EditText
-            android:id="@+id/remarkname_edt"
-            android:layout_width="match_parent"
-            android:layout_height="43dp"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:text="lu.李"
-            android:textSize="@dimen/text_size_16_sp" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/role"
-            android:textColor="@color/public_black_9"
-            android:textSize="@dimen/text_size_13_sp" />
-
-        <FrameLayout
-            android:id="@+id/role_container"
-            android:layout_width="match_parent"
-            android:layout_height="43dp"
-            android:background="@color/white"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp">
-
-            <TextView
-                android:id="@+id/remarkinfo_role_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/manager"
-                android:textSize="@dimen/text_size_16_sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
-                android:src="@drawable/arrow_next" />
-
-        </FrameLayout>
-
-
-    </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/remarkinfo_roleselect_layout"
@@ -147,7 +56,99 @@
             android:layout_gravity="bottom" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <com.cloudmachine.autolayout.widgets.TitleView
+            android:id="@+id/remarkinfo_titleview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:right_text="保存"
+            app:text="备注信息" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/nickname"
+            android:textColor="@color/public_black_9"
+            android:textSize="@dimen/text_size_13_sp" />
+
+        <EditText
+            android:id="@+id/nickname_edt"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@color/white"
+            android:editable="false"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="挖机王子"
+            android:textSize="@dimen/text_size_16_sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/remark_name"
+            android:textColor="@color/public_black_9"
+            android:textSize="@dimen/text_size_13_sp" />
+
+
+        <com.cloudmachine.utils.widgets.ClearEditTextView
+            android:id="@+id/remarkname_edt"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:hint="请输入备注名"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:padding="10dp"
+            android:textSize="@dimen/text_size_16_sp"
+            />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/role"
+            android:textColor="@color/public_black_9"
+            android:textSize="@dimen/text_size_13_sp" />
+
+        <FrameLayout
+            android:id="@+id/role_container"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@color/white"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:id="@+id/remarkinfo_role_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/text_size_16_sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:src="@drawable/arrow_next" />
+
+        </FrameLayout>
+
+
+    </LinearLayout>
 
 
 </FrameLayout>

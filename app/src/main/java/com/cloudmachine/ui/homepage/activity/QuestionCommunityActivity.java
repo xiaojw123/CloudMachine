@@ -97,7 +97,6 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questioncommunity);
-        AppLog.print("QuestionCommunityActivity onceate");
         ButterKnife.bind(this);
         mPermissionsCheck = new PermissionsChecker(this);
         initJsBridgeManager();
@@ -105,17 +104,6 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         initWebView();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AppLog.print("QuestionCommunityActivity onStart");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        AppLog.print("QuestionCommunityActivity onResume");
-    }
 
 
     private void initJsBridgeManager() {
@@ -201,7 +189,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         }
         if (mMyid != null) {
             mWvQuestions.loadUrl(URLString + "?myid=" + mMyid + "&hideback=1");
-            Constants.MyLog("QuestionCommunityActivity链接" + URLString + "?myid=" + mMyid + "&hideback=1");
+            AppLog.print("QuestionCommunityActivity链接" + URLString + "?myid=" + mMyid + "&hideback=1");
         } else {
             mWvQuestions.loadUrl(URLString);
         }
@@ -478,8 +466,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     public void call(File file) {   //http:///excamaster
                         Long wjdxId = UserHelper.getWjdxID(mContext);
                         if (wjdxId != null) {
-//                            UploadPhotoUtils.getInstance(mContext).upLoadForH5File(file, "http://121.40.130.218:8980/excamaster/yjxapi/uploadpicture?pictype=1&?myid=" + wjdxId, mHandler);
                             UploadPhotoUtils.getInstance(mContext).upLoadForH5File(file, ApiConstants.XIEXIN_HOST+"excamaster/yjxapi/uploadpicture?pictype=1&?myid=" + wjdxId, mHandler);
+//                            UploadPhotoUtils.getInstance(mContext).upLoadForH5File(file, "http://121.40.130.218:8980/excamaster/yjxapi/uploadpicture?pictype=1&?myid=" + wjdxId, mHandler);
                         }
                     }
                 }, new Action1<Throwable>() {

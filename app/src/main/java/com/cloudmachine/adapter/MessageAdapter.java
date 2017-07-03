@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,10 +58,12 @@ public class MessageAdapter extends BaseAdapter {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.inner_message_list1, null);
+            viewHolder.selCotainer = (FrameLayout) convertView.findViewById(R.id.message_info_sel_cotainer);
+            viewHolder.accepTv = (TextView) convertView.findViewById(R.id.message_info_accept);
+            viewHolder.refuseTv = (TextView) convertView.findViewById(R.id.message_info_refuse);
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.message_body);//照片
             viewHolder.time = (TextView) convertView.findViewById(R.id.message_time);//系统通知时间
 //			viewHolder.llSelect = (LinearLayout) convertView.findViewById(R.id.ll_select);
-            viewHolder.dividerBottom = convertView.findViewById(R.id.divider2);
             viewHolder.llDetail = (LinearLayout) convertView.findViewById(R.id.ll_detail);
             viewHolder.messageOval = convertView.findViewById(R.id.message_oval);
             viewHolder.invite_name = (TextView) convertView.findViewById(R.id.invite_name);
@@ -69,7 +72,6 @@ public class MessageAdapter extends BaseAdapter {
             viewHolder.tv2 = (TextView) convertView.findViewById(R.id.device_name_message);
             viewHolder.tv3 = (TextView) convertView.findViewById(R.id.tv3);
             viewHolder.tv4 = (TextView) convertView.findViewById(R.id.tv4);
-            viewHolder.dividerTop = convertView.findViewById(R.id.divider1);
             viewHolder.messageOhterTv = (TextView) convertView.findViewById(R.id.message_info_other_tv);
             viewHolder.messageCommonLayout = (LinearLayout) convertView.findViewById(R.id.rl_bottom);
             convertView.setTag(viewHolder);
@@ -83,12 +85,12 @@ public class MessageAdapter extends BaseAdapter {
             viewHolder.messageCommonLayout.setVisibility(View.VISIBLE);
             viewHolder.messageOhterTv.setVisibility(View.GONE);
             viewHolder.nickNameTv.setVisibility(View.GONE);
+            viewHolder.selCotainer.setVisibility(View.GONE);
             viewHolder.info_inv.setVisibility(View.VISIBLE);
             viewHolder.tv2.setVisibility(View.GONE);
             viewHolder.tv3.setVisibility(View.GONE);
             viewHolder.tv4.setVisibility(View.GONE);
-            viewHolder.dividerBottom.setVisibility(View.GONE);
-            viewHolder.dividerTop.setVisibility(View.VISIBLE);
+            viewHolder.llDetail.setOnClickListener(new ActionClickListener(3, position, item.getId(), item.getInviterId()));
 
             switch (item.getStatus()) {
                 case 1:
@@ -119,12 +121,12 @@ public class MessageAdapter extends BaseAdapter {
                 viewHolder.messageOhterTv.setVisibility(View.GONE);
                 viewHolder.messageCommonLayout.setVisibility(View.VISIBLE);
                 viewHolder.imageView.setImageResource(R.drawable.ic_ask_question);
+                viewHolder.selCotainer.setVisibility(View.GONE);
                 viewHolder.nickNameTv.setVisibility(View.VISIBLE);
                 viewHolder.tv2.setVisibility(View.VISIBLE);
                 viewHolder.tv3.setVisibility(View.VISIBLE);
                 viewHolder.tv4.setVisibility(View.VISIBLE);
-                viewHolder.dividerBottom.setVisibility(View.VISIBLE);
-                viewHolder.dividerBottom.setVisibility(View.VISIBLE);
+                viewHolder.llDetail.setOnClickListener(new ActionClickListener(3, position, item.getId(), item.getInviterId()));
                 viewHolder.nickNameTv.setText(item.getInviterNickname());
                 viewHolder.tv2.setText("回复了\"");
 //            viewHolder.tv3.setText("\"" + item.getContent() + "\" ，点击查看");
@@ -133,6 +135,7 @@ public class MessageAdapter extends BaseAdapter {
                 viewHolder.invite_name.setText(item.getTitle());
                 viewHolder.time.setText(item.getInviteTime());
             } else {
+
                 Glide.with(mContext).load(item.getImgpath())
                         .error(R.drawable.mc_default_icon)
                         .into(viewHolder.imageView);
@@ -140,6 +143,8 @@ public class MessageAdapter extends BaseAdapter {
                 String text = null;
                 switch (status) {
                     case 1:
+                    case 4:
+                        viewHolder.selCotainer.setVisibility(View.VISIBLE);
                         if (messageType == 1) {
                             text = "邀请你共享<font color=\"#29a1f7\">\"" + deviceName + "\"</font>该设备的数据";
                         } else {
@@ -147,6 +152,7 @@ public class MessageAdapter extends BaseAdapter {
                         }
                         break;
                     case 2:
+                        viewHolder.selCotainer.setVisibility(View.GONE);
                         if (messageType == 1) {
                             text = "邀请你共享<font color=\"#29a1f7\">\"" + deviceName + "\"</font>该设备的数据，已拒绝";
                         } else {
@@ -154,7 +160,7 @@ public class MessageAdapter extends BaseAdapter {
                         }
                         break;
                     case 3:
-                    case 4:
+                        viewHolder.selCotainer.setVisibility(View.GONE);
                         if (messageType == 1) {
                             text = "邀请你共享<font color=\"#29a1f7\">\"" + deviceName + "\"</font>该设备的数据，已接受\"";
                         } else {
@@ -174,8 +180,6 @@ public class MessageAdapter extends BaseAdapter {
             } else {
                 viewHolder.messageOval.setVisibility(View.GONE);
             }
-
-
 
 
 //
@@ -226,12 +230,8 @@ public class MessageAdapter extends BaseAdapter {
 //            }
 //
         }
-        viewHolder.llDetail.setOnClickListener(new ActionClickListener(3, position, item.getId(), item.getInviterId()));
-
-//		viewHolder.llaccept.setOnClickListener(new ActionClickListener(1, position, item.getId(), item.getInviterId()));//点击事件
-//		viewHolder.llrefuse.setOnClickListener(new ActionClickListener(2, position, item.getId(), item.getInviterId()));
-
-
+        viewHolder.accepTv.setOnClickListener(new ActionClickListener(1, position, item.getId(), item.getInviterId()));//点击事件
+        viewHolder.refuseTv.setOnClickListener(new ActionClickListener(2, position, item.getId(), item.getInviterId()));
         return convertView;
     }
 
@@ -263,6 +263,7 @@ public class MessageAdapter extends BaseAdapter {
             }
             if (null != data) {
                 if (data.get(position).getMessageType() != Constants.MESSAGETYPE[5])
+                    //更新消息状态
                     new MessageUpdateStatusAsync(type, itemId, inviteId, position, mContext, myHandler).execute();
             }
         }
@@ -273,7 +274,6 @@ public class MessageAdapter extends BaseAdapter {
         private ImageView imageView;
 
         private TextView time;//时间复用
-        private View dividerBottom;    //底部分割线
         private LinearLayout llDetail; //上半部分，消息详情布局
         private View messageOval;  //小圆点，标识是否阅读过消息
         private TextView invite_name;//邀请人昵称，消息页面中标识消息状态
@@ -283,9 +283,11 @@ public class MessageAdapter extends BaseAdapter {
         private TextView tv2; //昵称下面的文字，第二段
         private TextView tv3; //昵称下面的文字，第三段
         private TextView tv4;
-        private View dividerTop;
         private TextView nickNameTv;
         private TextView messageOhterTv;
         private LinearLayout messageCommonLayout;
+        private FrameLayout selCotainer;
+        private TextView accepTv;
+        private TextView refuseTv;
     }
 }

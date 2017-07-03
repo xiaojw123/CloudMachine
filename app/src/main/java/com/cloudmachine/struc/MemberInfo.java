@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 public class MemberInfo implements Serializable{
-	
+	private int id;
 	private String name;
 	private String role;
 	private int memberId;
@@ -15,6 +15,15 @@ public class MemberInfo implements Serializable{
 	private int sex;
 	private String dataTree;
 	private String mobi;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	private String roleRemark;
 
 	public int getMemberId() {

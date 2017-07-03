@@ -114,7 +114,7 @@ public class RepairListAdapter extends BaseAdapter {
                     .getDopportunity());
             RepairHistoryInfo historyInfo = historyInfos.get(position);
             int type = historyInfo.getNloanamount_TYPE();
-            String price = type==1 ? historyInfo.getNloanamount():historyInfo.getPrice();
+            String price = type == 1 ? historyInfo.getNloanamount() : historyInfo.getPrice();
             if (null != price &&
                     !price.startsWith("0")) {
                 holder.price.setVisibility(View.VISIBLE);

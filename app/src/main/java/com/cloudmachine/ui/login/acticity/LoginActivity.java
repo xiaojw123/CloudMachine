@@ -39,6 +39,7 @@ import com.cloudmachine.ui.login.model.LoginModel;
 import com.cloudmachine.ui.login.presenter.LoginPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.AppMsg;
@@ -57,7 +58,7 @@ import java.util.Set;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
-public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginModel> implements OnClickListener, Callback ,LoginContract.View{
+public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginModel> implements OnClickListener, Callback, LoginContract.View {
 
     private static final int MSG_SET_ALIAS = 1001;
     private Context mContext;
@@ -67,15 +68,15 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
     private RadiusButtonView login_btn;
     private LoadingDialog progressDialog;
     private TextView forget_pw_tv;
-//    private int flag = 2;
+    //    private int flag = 2;
     private int flag;
     private View left_layout, right_layout;
     private CircleTextImageView userImage;
     private RelativeLayout mPwdSwitch;
     //是否是明文显示 默认为密文
     private boolean isExpress = false;
-    private ImageView mIvVisible,mIvUnVisible;
-    private Member    mMember;
+    private ImageView mIvVisible, mIvUnVisible;
+    private Member mMember;
 
 
     //flag等于3跳转问答社区页面
@@ -94,13 +95,13 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-          flag = bundle.getInt("flag");
+            flag = bundle.getInt("flag");
         }
     }
 
     @Override
     public void initPresenter() {
-        mPresenter.setVM(this,mModel);
+        mPresenter.setVM(this, mModel);
     }
 
 
@@ -176,7 +177,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
         });
         forget_pw_tv.setOnClickListener(this);
         /*person_regist.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -234,7 +235,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
             case R.id.forget_pw_tv:
                 MobclickAgent.onEvent(mContext, UMengKey.count_forgotpassword);
                 it = new Intent(this, FindPasswordActivity.class);
-                it.putExtra(FindPasswordActivity.HASINVITATIONCODE,true);
+                it.putExtra(FindPasswordActivity.HASINVITATIONCODE, true);
                 it.putExtra("type", 1);
                 startActivity(it);
                 break;
@@ -257,7 +258,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
 
     //跳转微信登录授权
     private void loginToWeiXin() {
-        IWXAPI mApi = WXAPIFactory.createWXAPI(this,Constants.APP_ID, true);
+        IWXAPI mApi = WXAPIFactory.createWXAPI(this, Constants.APP_ID, true);
         mApi.registerApp(Constants.APP_ID);
         AppLog.print("loginToWeiXin_____");
         if (mApi != null && mApi.isWXAppInstalled()) {
@@ -302,34 +303,9 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
                 mMember = (Member) msg.obj;
                 if (mMember != null) {
                     excamMaster(mMember.getId());
+                } else {
+                    jumpNextPage();
                 }
-                Constants.MyLog("云机械登录获取到的账号信息"+ mMember.getWjdsId());
-                MemeberKeeper.saveOAuth(mMember, LoginActivity.this);
-                Member m = MemeberKeeper.getOauth(this);
-                Constants.MyLog("云机械登录获取到的账号信息  数据库"+ m.getWjdsId());
-
-                MyApplication.getInstance().setLogin(true);
-                MyApplication.getInstance().setFlag(true);
-                if (flag == 2) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                } else if (flag == 1) {
-                } else if (flag == 3) {
-                    Intent intent = new Intent(LoginActivity.this, QuestionCommunityActivity.class);
-                    Bundle bundle = new Bundle();
-//                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
-                    bundle.putString("url", ApiConstants.H5_HOST+"n/ask_qlist");
-                    intent.putExtras(bundle);
-                    mContext.startActivity(intent);
-                    finish();
-                }else{
-                    finish();
-                }
-                MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type,0);
-                Constants.isMcLogin = true;
-                //调用JPush API设置Alias
-                mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
-                MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));
                 break;
             case Constants.HANDLER_LOGIN_FAIL:
                 disMiss();
@@ -343,32 +319,65 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginMo
         return false;
     }
 
+    private void jumpNextPage() {
+        Constants.MyLog("云机械登录获取到的账号信息" + mMember.getWjdsId());
+        MemeberKeeper.saveOAuth(mMember, LoginActivity.this);
+        Member m = MemeberKeeper.getOauth(this);
+        Constants.MyLog("云机械登录获取到的账号信息  数据库" + m.getWjdsId());
+
+        MyApplication.getInstance().setLogin(true);
+        MyApplication.getInstance().setFlag(true);
+        if (flag == 2) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        } else if (flag == 1) {
+        } else if (flag == 3) {
+            Intent intent = new Intent(LoginActivity.this, QuestionCommunityActivity.class);
+            Bundle bundle = new Bundle();
+//                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
+            bundle.putString("url", ApiConstants.H5_HOST + "n/ask_qlist");
+            intent.putExtras(bundle);
+            mContext.startActivity(intent);
+            finish();
+        } else {
+            finish();
+        }
+        MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 0);
+        Constants.isMcLogin = true;
+        //调用JPush API设置Alias
+        mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
+        MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));
+    }
+
     private void excamMaster(Long id) {
 
         mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(id)
-        .compose(RxHelper.<UserInfo>handleResult())
-        .subscribe(new RxSubscriber<UserInfo>(mContext,false) {
-            @Override
-            protected void _onNext(UserInfo userInfo) {
-                Long wjdsId = userInfo.userinfo.id;
-                Long status = userInfo.userinfo.status;
-                Long role_id = userInfo.userinfo.role_id;
-                mMember.setWjdsId(wjdsId);
-                mMember.setWjdsStatus(status);
-                mMember.setWjdsRole_id(role_id);
-                mMember.setNum(2L);
+                .compose(RxHelper.<UserInfo>handleResult())
+                .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
+                    @Override
+                    protected void _onNext(UserInfo userInfo) {
+                        Long wjdsId = userInfo.userinfo.id;
+                        Long status = userInfo.userinfo.status;
+                        Long role_id = userInfo.userinfo.role_id;
+                        mMember.setWjdsId(wjdsId);
+                        mMember.setWjdsStatus(status);
+                        mMember.setWjdsRole_id(role_id);
+                        mMember.setNum(2L);
 
-                MemeberKeeper.saveOAuth(mMember,mContext);
-                Constants.MyLog("从当前页面拿到的挖机大师id" + MemeberKeeper.getOauth(LoginActivity.this).getWjdsId());
-                Constants.MyLog("从当前页面拿到的numId"+MemeberKeeper.getOauth(LoginActivity.this).getNum());
-                LoginActivity.this.finish();
-            }
+                        MemeberKeeper.saveOAuth(mMember, mContext);
+                        AppLog.print("从当前页面拿到的挖机大师id" + MemeberKeeper.getOauth(LoginActivity.this).getWjdsId());
+                        AppLog.print("从当前页面拿到的numId" + MemeberKeeper.getOauth(LoginActivity.this).getNum());
+//                        LoginActivity.this.finish();
+                        jumpNextPage();
+                    }
 
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
+                    @Override
+                    protected void _onError(String message) {
+                        AppLog.print("_onError");
+                        ToastUtils.showToast(LoginActivity.this,"挖机大师数同步失败");
+                        jumpNextPage();
+                    }
+                }));
     }
 
     private final TagAliasCallback mAliasCallback = new TagAliasCallback() {

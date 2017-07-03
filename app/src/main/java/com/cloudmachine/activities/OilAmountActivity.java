@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.DynamicWave;
-import com.cloudmachine.base.BaseActivity;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.task.GetOilLevelListAsync;
 import com.cloudmachine.struc.ScanningOilLevelInfo;
 import com.cloudmachine.struc.ScanningOilLevelInfoArray;
@@ -24,7 +24,6 @@ import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.mpchart.DrawTimerTask;
 import com.cloudmachine.utils.mpchart.MyMarkerView;
 import com.cloudmachine.utils.widgets.RadiusButtonView;
-import com.cloudmachine.utils.widgets.TitleView;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.Legend.LegendForm;
@@ -42,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 
 
-public class OilAmountActivity extends BaseActivity implements OnClickListener,Callback,
+public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClickListener,Callback,
 OnChartValueSelectedListener{
 
 	private static final int ANIMATETIME = 2000;
@@ -53,7 +52,6 @@ OnChartValueSelectedListener{
 	private String deviceName;
 	private ScanningOilLevelInfo[] oilLeve;
 	private ScanningOilLevelInfo lastLevel;
-	private TitleView title_layout;
 	private LineChart mChart;
 	private Typeface mTf;
 	private int[] VORDIPLOM_COLORS = new int[2];
@@ -71,11 +69,15 @@ OnChartValueSelectedListener{
 		this.mContext = this;
 		mHandler = new Handler(this);
 		getIntentData();
-		initTitleLayout();
 		initView();
 		new GetOilLevelListAsync(deviceId,mContext,mHandler).execute();
 	}
-	
+
+	@Override
+	public void initPresenter() {
+
+	}
+
 	private void getIntentData(){
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
@@ -142,20 +144,6 @@ OnChartValueSelectedListener{
 				oil_proportion_last.setText(ResV.getString(R.string.amount_text2));
 			}
 		}
-	}
-	private void initTitleLayout(){
-		
-		title_layout = (TitleView)findViewById(R.id.title_layout);
-		title_layout.setTitle("油位");
-		
-		title_layout.setLeftImage(-1, new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				 finish(); 
-			}
-		});
 	}
 	private void initChart(){
 		VORDIPLOM_COLORS[0] = getResources().getColor(R.color.oil_amount_proportion_last_text);

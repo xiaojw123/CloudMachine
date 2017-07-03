@@ -1,7 +1,7 @@
 package com.jsbridge.module.impl;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 
 import com.cloudmachine.activities.WanaCloudBox;
@@ -29,7 +29,7 @@ import org.json.JSONObject;
 
 public class UIInteractiveModel implements IModule {
 
-    public static void showBuyBtn(AppCompatActivity activity, WebView webView, JSONObject params, final JsCallback callback) {
+    public static void showBuyBtn(Activity activity, WebView webView, JSONObject params, final JsCallback callback) {
         try {
             String action = params.getString("action");
             WanaCloudBox wanaCloudBoxActivity = (WanaCloudBox) activity;
@@ -46,7 +46,7 @@ public class UIInteractiveModel implements IModule {
         }
     }
 
-    public static void showBackBtn(AppCompatActivity activity, WebView webView, JSONObject params, final JsCallback callback) {
+    public static void showBackBtn(Activity activity, WebView webView, JSONObject params, final JsCallback callback) {
         try {
             String action = params.getString("action");
             WanaCloudBox wanaCloudBoxActivity = (WanaCloudBox) activity;
@@ -63,7 +63,7 @@ public class UIInteractiveModel implements IModule {
         }
     }
 
-    public static void backPage(AppCompatActivity activity, WebView webView, JSONObject params, final JsCallback callback) {
+    public static void backPage(Activity activity, WebView webView, JSONObject params, final JsCallback callback) {
         try {
             String action = params.getString("action");
             InsuranceActivity insuranceActivity = (InsuranceActivity) activity;
@@ -78,7 +78,7 @@ public class UIInteractiveModel implements IModule {
         }
     }
 
-    public static void goLoginPage(AppCompatActivity activity, WebView webView, JSONObject params, final JsCallback callback) {
+    public static void goLoginPage(Activity activity, WebView webView, JSONObject params, final JsCallback callback) {
         try {
             String action = params.getString("action");
             QuestionCommunityActivity questionCommunityActivity = (QuestionCommunityActivity) activity;
@@ -93,7 +93,7 @@ public class UIInteractiveModel implements IModule {
         }
     }
 
-    public static void closeAskPage(AppCompatActivity activity, WebView webView, JSONObject params, final JsCallback callback) {
+    public static void closeAskPage(Activity activity, WebView webView, JSONObject params, final JsCallback callback) {
         try {
             String action = params.getString("action");
 
@@ -121,7 +121,7 @@ public class UIInteractiveModel implements IModule {
     }
 
 
-    public static void goWebViewMyqPage(AppCompatActivity activity, WebView webView, JSONObject params, final JsCallback callback) {
+    public static void goWebViewMyqPage(Activity activity, WebView webView, JSONObject params, final JsCallback callback) {
         try {
             String action = params.getString("action");
             QuestionActivity questionActivity = (QuestionActivity) activity;

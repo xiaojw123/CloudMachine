@@ -11,11 +11,12 @@ package com.cloudmachine.api;
  */
 
 public class ApiConstants {
+
 /* 测试环境*/
    public static final String CLOUDM_HOST = "http://api.test.cloudm.com/";
     public static final String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3/";
     public static final String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3/";
-    public static final String XIEXIN_HOST = "http://121.40.130.218:8980/";
+    public static final String XIEXIN_HOST = "http://ask.test.cloudm.com/";
     public static final String H5_HOST = "http://h5.test.cloudm.com/";
 
 /*线上环境*/

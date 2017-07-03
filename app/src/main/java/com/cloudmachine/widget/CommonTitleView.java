@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.github.mikephil.charting.utils.AppLog;
 
 /**
  * Created by xiaojw on 2017/6/1.
@@ -45,6 +46,7 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
         a.recycle();
     }
 
+
     public void setTitleNmae(String name) {
         titleTv.setText(name);
     }
@@ -55,7 +57,8 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
             rightTv.setOnClickListener(listener);
         }
     }
-    public void setRightTextVisible(int visibility){
+
+    public void setRightTextVisible(int visibility) {
         rightTv.setVisibility(visibility);
     }
 
@@ -71,7 +74,11 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
 
         switch (v.getId()) {
             case R.id.common_titleview_back_tv:
-                ((Activity) v.getContext()).finish();
+                Context context = v.getContext();
+                AppLog.print("context____" + context);
+                if (context instanceof Activity) {
+                    ((Activity) context).finish();
+                }
                 break;
         }
     }

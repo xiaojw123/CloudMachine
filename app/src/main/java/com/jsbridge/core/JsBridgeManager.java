@@ -1,6 +1,7 @@
 package com.jsbridge.core;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,10 +48,10 @@ public class JsBridgeManager {
     public static Map<String, Map<Class<? extends IModule>, String>> registerMethods = new HashMap<>();
     private final ExecutorService executorService;  // 执行Native线程池
     public static ArrayList<String> actionNames = new ArrayList<String>();
-    private AppCompatActivity activity;
+    private Activity activity;
 
 
-    public JsBridgeManager(AppCompatActivity activity) {
+    public JsBridgeManager(Activity activity) {
         jsBridge = new JsBridge();
         this.activity = activity;
         executorService = Executors.newCachedThreadPool();

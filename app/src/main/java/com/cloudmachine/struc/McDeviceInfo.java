@@ -6,6 +6,25 @@ public class McDeviceInfo implements Serializable{
 	/**
 	 * 
 	 */
+	private int oilLave;
+	private float workTime;
+
+	public double getOilLave() {
+		return oilLave;
+	}
+
+	public void setOilLave(int oilLave) {
+		this.oilLave = oilLave;
+	}
+
+	public float getWorkTime() {
+		return workTime;
+	}
+
+	public void setWorkTime(float workTime) {
+		this.workTime = workTime;
+	}
+
 	private long id;
 	private String name;
 	private String category;

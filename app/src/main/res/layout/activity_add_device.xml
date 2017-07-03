@@ -168,7 +168,8 @@
                     <ImageView 
                         android:id="@+id/decive_image"
                         android:layout_width="@dimen/device_info_images_height"
-                		android:layout_height="@dimen/device_info_images_height"
+                		android:layout_height="match_parent"
+						android:scaleType="fitXY"
                         />
                     <TextView 
                         android:layout_width="@dimen/device_info_images_height"
@@ -189,10 +190,12 @@
                     >
                     <ImageView 
                         android:id="@+id/name_image"
+                		android:layout_height="match_parent"
                         android:layout_width="@dimen/device_info_images_height"
-                		android:layout_height="@dimen/device_info_images_height"
+						android:scaleType="fitXY"
                         />
-                    <TextView 
+                        <!--android:layout_width="@dimen/device_info_images_height"-->
+                    <TextView
                         android:layout_width="@dimen/device_info_images_height"
                 		android:layout_height="@dimen/device_info_text_height"
                 		android:background="@color/public_transparent_50"
@@ -212,7 +215,8 @@
                     <ImageView 
                         android:id="@+id/engine_image"
                         android:layout_width="@dimen/device_info_images_height"
-                		android:layout_height="@dimen/device_info_images_height"
+                		android:layout_height="match_parent"
+						android:scaleType="fitXY"
                         />
                     <TextView 
                         android:layout_width="@dimen/device_info_images_height"

@@ -18,10 +18,29 @@ public class NewRepairInfo implements Serializable {
     private String vdiscription;
     private String vservicetype;
     private String vworkaddress;
+
+    public String getModelname() {
+        return modelname;
+    }
+
+    public void setModelname(String modelname) {
+        this.modelname = modelname;
+    }
+
+    public String getBrandname() {
+        return brandname;
+    }
+
+    public void setBrandname(String brandname) {
+        this.brandname = brandname;
+    }
+
     private String memberId;
     private String province;
     private String deviceId;
     private String logo_address;
+    private String modelname;
+    private String brandname;
 
     public String getLogo_address() {
         return logo_address;

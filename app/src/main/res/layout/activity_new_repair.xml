@@ -6,11 +6,11 @@
               android:layout_height="match_parent"
               android:background="@color/public_view_color"
               android:orientation="vertical">
-
-    <com.cloudmachine.autolayout.widgets.TitleView
-        android:id="@+id/title_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+    <com.cloudmachine.widget.CommonTitleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        cloudm:common_title_name="@string/new_repair"
+        />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -362,7 +362,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/new_repair_btn_marginleft3"
                     android:background="@null"
-                    android:hint="详细描述故障信息有利于技师更好的诊断"
+                    android:hint="详细描述故障信息有利于技师更好的诊断(选填)"
                     android:maxLines="16"
                     android:padding="10dp"
                     android:textColor="@color/black"

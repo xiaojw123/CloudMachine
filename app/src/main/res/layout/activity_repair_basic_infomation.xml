@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/public_white"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:background="@color/public_white"
+              android:orientation="vertical">
 
-    <com.cloudmachine.autolayout.widgets.TitleView
-        android:id="@+id/title_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+    <com.cloudmachine.widget.CommonTitleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="@string/detail"
+        />
 
     <ScrollView
         android:layout_width="match_parent"

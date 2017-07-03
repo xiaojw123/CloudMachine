@@ -54,7 +54,7 @@ import com.umeng.analytics.MobclickAgent;
 /**
  * 查看页面基本信息
  */
-public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener {
+public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener{
     public static final String DEVICE_SHOW = "device_show";
     private static final int TAKE_PICTURE = 0x000001;
     private final static int SCANNIN_GREQUEST_CODE = 678;
@@ -935,6 +935,4 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
 		intent.putExtra(Constants.P_CODE_TYPE, codeType);
 		startActivityForResult(intent, SCANNIN_GREQUEST_CODE);*/
     }
-
-
 }

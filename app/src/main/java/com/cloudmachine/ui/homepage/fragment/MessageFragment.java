@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -185,7 +185,6 @@ public class MessageFragment extends Fragment implements Callback, IXListViewLis
                 //添加设备成功，通知刷新设备页面
                 RxBus.getInstance().post(RxConstants.REFRESH_DEVICE_FRAGMENT, "");
                 Constants.isChangeDevice = true;
-                Constants.isAddDevice = true;
                 UIHelper.ToastMessage(mContext, "已经同意该邀请");
                 dataList.get(msg.arg1).setStatus(3);
                 adapter.notifyDataSetChanged();

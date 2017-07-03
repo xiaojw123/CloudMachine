@@ -23,29 +23,30 @@ import com.cloudmachine.struc.RepairHistoryInfo;
 import com.cloudmachine.struc.RepairListInfo;
 import com.cloudmachine.struc.UnfinishedBean;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
+import com.cloudmachine.ui.repair.activity.RepairFinishDetailActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.widgets.XListView;
 
 import java.util.ArrayList;
 
-public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements Handler.Callback,XListView.IXListViewListener, AdapterView.OnItemClickListener {
+public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements Handler.Callback, XListView.IXListViewListener, AdapterView.OnItemClickListener {
 
     private Handler mHandler;
     private View noRepairRecord, have_repair_records;
     private RadiusButtonView btnRepairNow;
     private XListView xlvComplete;
     // private View completedHeaderView;
-    private View             uncompleteView;
+    private View uncompleteView;
     // private XListView xlvUnComplete;
 
     private RepairListAdapter repairListAdapter;
     private RelativeLayout rlRepairNow;
-    private RadiusButtonView  btnBottomRepair;
+    private RadiusButtonView btnBottomRepair;
     private TitleView title_layout;
     private RepairListInfo repairListInfo;
-    private ArrayList<FinishBean>        finishBeans     = new ArrayList<>(); // 已完成集合
-    private ArrayList<UnfinishedBean>    unfinishedBeans = new ArrayList<>();// 未完成集合
-    private ArrayList<RepairHistoryInfo> repairList      = new ArrayList<>();// 合并两个集合
+    private ArrayList<FinishBean> finishBeans = new ArrayList<>(); // 已完成集合
+    private ArrayList<UnfinishedBean> unfinishedBeans = new ArrayList<>();// 未完成集合
+    private ArrayList<RepairHistoryInfo> repairList = new ArrayList<>();// 合并两个集合
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
         initTitleLayout();
         noRepairRecord = findViewById(R.id.no_repair_records); // 无维修记录布局
         have_repair_records = findViewById(R.id.have_repair_records); // 有维修记录布局
-        btnRepairNow = (RadiusButtonView)findViewById(R.id.btn_repair_now); // 立刻报修
+        btnRepairNow = (RadiusButtonView) findViewById(R.id.btn_repair_now); // 立刻报修
         btnRepairNow.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -73,17 +74,17 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
                 Constants.toActivity(RepairRecordNewActivity.this, NewRepairActivity.class, null);
             }
         });
-        xlvComplete = (XListView)findViewById(R.id.xlv_complete); // 已完成的listview
+        xlvComplete = (XListView) findViewById(R.id.xlv_complete); // 已完成的listview
         repairListAdapter = new RepairListAdapter(RepairRecordNewActivity.this, repairList);
         xlvComplete.setPullRefreshEnable(true);
         xlvComplete.setPullLoadEnable(false);
         xlvComplete.setXListViewListener(this);
         xlvComplete.setAdapter(repairListAdapter);
         xlvComplete.setOnItemClickListener(this);
-        rlRepairNow = (RelativeLayout)findViewById(
+        rlRepairNow = (RelativeLayout) findViewById(
                 R.id.rl_repair_now);
 
-        btnBottomRepair = (RadiusButtonView)findViewById(
+        btnBottomRepair = (RadiusButtonView) findViewById(
                 R.id.btn_bottom_repair);
         btnBottomRepair.setOnClickListener(new View.OnClickListener() {
 
@@ -100,7 +101,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
 
     private void initTitleLayout() {
 
-        title_layout = (TitleView)findViewById(R.id.title_layout);
+        title_layout = (TitleView) findViewById(R.id.title_layout);
         title_layout.setTitle(getResources().getString(
                 R.string.main3_title_text));
         title_layout.setLeftOnClickListener(new View.OnClickListener() {
@@ -138,11 +139,12 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
                     noRepairRecord.setVisibility(View.GONE);
                     xlvComplete.setVisibility(View.VISIBLE);
                     repairListInfo = (RepairListInfo) msg.obj;
+//                    TestCode();
                     ArrayList<FinishBean> finish = repairListInfo.getFinish();
                     ArrayList<UnfinishedBean> unfinished = repairListInfo
                             .getUnfinished();
                 /*int finishLen = finish.size();
-				for(int f=0; f<finishLen; f++){
+                for(int f=0; f<finishLen; f++){
 					finishBeans.add(finish.get(finishLen-1-f));
 				}
 				int ufinishLen = unfinished.size();
@@ -245,6 +247,45 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
         return false;
     }
 
+//    private void TestCode() {
+//        ArrayList<FinishBean> finishBeens = new ArrayList<>();
+//        FinishBean bean1 = new FinishBean();
+//        bean1.setVbrandname("何苗");
+//        bean1.setVprodname("挖掘机");
+//        bean1.setNloanamount("10");
+//        bean1.setVprodname("12390131");
+//        bean1.setLogo_flag("1");
+//        bean1.setFlag("1");
+//        bean1.setNstatus("12");
+//        bean1.setVmacoptel("15268168675");
+//        bean1.setIs_EVALUATE("Y");
+//        bean1.setDopportunity("fafasfajlasuioruwd");
+//        bean1.setPrice("100");
+//        bean1.setNloanamount_TYPE(1);
+//        bean1.setOrderNum("131341241234");
+//        bean1.setVmachinenum("23333");
+//        bean1.setVmacopname("dfasfas");
+//        finishBeens.add(bean1);
+//        FinishBean bean2 = new FinishBean();
+//        bean2.setVbrandname("li mid");
+//        bean2.setVprodname("挖掘机");
+//        bean2.setNloanamount("1012");
+//        bean2.setVprodname("12390112331");
+//        bean2.setLogo_flag("1");
+//        bean2.setFlag("1");
+//        bean2.setNstatus("12");
+//        bean2.setVmacoptel("15268168675");
+//        bean2.setIs_EVALUATE("N");
+//        bean2.setDopportunity("fafasfajlasuioruwd");
+//        bean2.setPrice("100");
+//        bean2.setNloanamount_TYPE(1);
+//        bean2.setOrderNum("131341241234");
+//        bean2.setVmachinenum("23333");
+//        bean2.setVmacopname("dfasfas");
+//        finishBeens.add(bean2);
+//        repairListInfo.setFinish(finishBeens);
+//    }
+
     @Override
     public void onResume() {
         // TODO Auto-generated method stub
@@ -298,7 +339,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
                                 Bundle b = new Bundle();
                                 b.putString("orderNum", orderNum);
                                 b.putString("flag", flag);
-                                Constants.toActivity(RepairRecordNewActivity.this,RepairDetailsActivity.class,b,false);
+                                Constants.toActivity(RepairRecordNewActivity.this, RepairDetailsActivity.class, b, false);
                             } else {
                                 if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
                                     //	nStatusString = "待评价";
@@ -322,6 +363,11 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
                     Intent intent = new Intent(RepairRecordNewActivity.this, EvaluationActivity.class);
                     intent.putExtra("orderNum", finishBeans.get(p).getOrderNum());
                     intent.putExtra("tel", finishBeans.get(p).getVmacoptel());
+                    startActivity(intent);
+                }else{
+                    Intent intent=new Intent(RepairRecordNewActivity.this, RepairFinishDetailActivity.class);
+                    intent.putExtra("orderNum",finishBeans.get(p).getOrderNum());
+                    intent.putExtra("flag",finishBeans.get(p).getFlag());
                     startActivity(intent);
                 }
             }

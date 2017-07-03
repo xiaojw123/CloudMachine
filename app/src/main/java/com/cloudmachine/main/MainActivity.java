@@ -12,8 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -489,13 +489,13 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 		switchContent(0);
 		mFragments[0].onResume();
 		mFragments[1].onDestroyView();
-		this.getSupportFragmentManager().beginTransaction()
+		this.getFragmentManager().beginTransaction()
 				.remove(mFragments[1]).commit();
 		mFragments[2].onDestroyView();
-		this.getSupportFragmentManager().beginTransaction()
+		this.getFragmentManager().beginTransaction()
 				.remove(mFragments[2]).commit();
 		mFragments[3].onDestroyView();
-		this.getSupportFragmentManager().beginTransaction()
+		this.getFragmentManager().beginTransaction()
 				.remove(mFragments[3]).commit();
 	}
 
@@ -553,7 +553,7 @@ public class MainActivity extends BaseAutoLayoutActivity implements OnClickListe
 			}
 			if (mContentFragment != to) {
 				FragmentTransaction fragmentTransaction = this
-						.getSupportFragmentManager().beginTransaction();
+						.getFragmentManager().beginTransaction();
 				if (mContentFragment != null) {
 					if (!to.isAdded()) { // 先判断是否被add过
 						fragmentTransaction.hide(mContentFragment)

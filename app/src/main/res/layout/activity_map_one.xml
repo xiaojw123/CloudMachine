@@ -12,9 +12,11 @@
 	         android:layout_height="wrap_content"
         >
     </com.cloudmachine.utils.widgets.TitleView>
+
     <com.amap.api.maps2d.MapView
         android:id="@+id/map"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+
 
 </LinearLayout>

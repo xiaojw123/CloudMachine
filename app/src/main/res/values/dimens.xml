@@ -1,4 +1,8 @@
 <resources>
+    <!--<dimen name="read_point_width">4dp</dimen>-->
+    <dimen name="order_detail_toalprice_tv_height">48dp</dimen>
+    <dimen name="dimen_size_36">24dp</dimen>
+    <dimen name="dimen_size_16">11dp</dimen>
     <dimen name="home_title_icon_width">48dp</dimen>
     <dimen name="home_title_icon1_width">24dp</dimen>
     <dimen name="home_title_icon_height">40dp</dimen>

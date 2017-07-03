@@ -10,18 +10,20 @@ import android.content.SharedPreferences;
 public class SwitchHelper {
     private static final String SWITCH_INFO = "switch_info";
     private static SharedPreferences switchSp;
-    private static final String KEY_SWITCH_AD = "key_switch_ad";
+    private static final String KEY_SWITCH_AD_TIME = "key_switch_ad_time";
 
-    public static void setSwitchPromotionAd(Context context, boolean flag) {
+    public static void setSwitchPromotionAdTime(Context context, long time) {
         initSP(context);
         SharedPreferences.Editor editor = switchSp.edit();
-        editor.putBoolean(KEY_SWITCH_AD, flag);
+        editor.putLong(KEY_SWITCH_AD_TIME, time);
         editor.commit();
     }
 
-    public static boolean isAdShowed(Context context) {
+
+    public static boolean isAdShowed(Context context,long time) {
         initSP(context);
-        return switchSp.getBoolean(KEY_SWITCH_AD, false);
+        long lastTiime=switchSp.getLong(KEY_SWITCH_AD_TIME,0);
+        return time==lastTiime;
     }
 
     private static void initSP(Context context) {

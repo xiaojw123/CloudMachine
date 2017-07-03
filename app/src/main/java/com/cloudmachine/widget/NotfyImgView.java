@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.utils.DensityUtil;
 
 /**
  * Created by xiaojw on 2017/6/5.
@@ -29,11 +30,14 @@ public class NotfyImgView extends ImageView {
 
     public NotfyImgView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.NotifyTextView);
-        centerX = (int) ta.getDimension(R.styleable.NotfyImgView_point_center_x, 0);
-        centerY = (int) ta.getDimension(R.styleable.NotfyImgView_point_center_y, 25);
-        radius = (int) ta.getDimension(R.styleable.NotfyImgView_point_radius, 10);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.NotfyImgView);
+        isNotifyVisbile = ta.getBoolean(R.styleable.NotfyImgView_isNotifyVisbile, false);
+        int raudis=DensityUtil.dip2px(getContext(),3);
+        centerX = (int) ta.getDimension(R.styleable.NotfyImgView_point_center_x, raudis);
+        centerY = (int) ta.getDimension(R.styleable.NotfyImgView_point_center_y, raudis);
+        radius = (int) ta.getDimension(R.styleable.NotfyImgView_point_radius, raudis);
         ta.recycle();
+        setPadding(getPaddingLeft(), DensityUtil.dip2px(getContext(),3),DensityUtil.dip2px(getContext(),5),DensityUtil.dip2px(getContext(),3));
     }
 
     @Override
@@ -43,7 +47,7 @@ public class NotfyImgView extends ImageView {
             Paint paint = new Paint();
             paint.setColor(getResources().getColor(R.color.oval_message_color));
             Drawable drawable = getDrawable();
-            canvas.drawCircle(drawable.getIntrinsicWidth() - centerX, centerY, radius, paint);
+            canvas.drawCircle(drawable.getIntrinsicWidth() + getPaddingRight() - centerX, centerY, radius, paint);
         }
     }
 

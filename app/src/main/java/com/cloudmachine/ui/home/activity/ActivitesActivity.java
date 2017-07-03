@@ -13,7 +13,9 @@ import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.ui.home.contract.ActivitesContract;
 import com.cloudmachine.ui.home.model.ActvitiesModel;
 import com.cloudmachine.ui.home.presenter.ActivitiesPresenter;
+import com.cloudmachine.utils.UMengKey;
 import com.github.mikephil.charting.utils.AppLog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,7 @@ public class ActivitesActivity extends BaseAutoLayoutActivity<ActivitiesPresente
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activites);
         initView();
+        MobclickAgent.onEvent(this, UMengKey.time_ad_page);
     }
 
     @Override

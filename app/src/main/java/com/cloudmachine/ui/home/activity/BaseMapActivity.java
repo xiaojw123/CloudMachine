@@ -4,20 +4,20 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.text.TextUtils;
+import android.view.View;
 
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.LocationSource;
+import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
-import com.amap.api.maps2d.model.MyLocationStyle;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
@@ -29,8 +29,8 @@ import com.cloudmachine.utils.ToastUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseModel> extends BaseAutoLayoutActivity<T, E> implements AMap.OnMarkerClickListener, AMap.OnMapClickListener, LocationSource {
-    private static final int ZOOM_DEFAULT = 17;
+public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseModel> extends BaseAutoLayoutActivity<T, E> implements AMap.InfoWindowAdapter, AMap.OnMapClickListener, AMap.OnMarkerClickListener {
+    protected static final float ZOOM_DEFAULT = 16;
     protected boolean isFirstLoc = true;
     private final int REQ_FINE_LOCATION = 0x12;
     @BindView(R.id.home_mapview)
@@ -39,6 +39,8 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
     protected AMapLocationClient mlocClient;
     protected AMapLocationClientOption mLocOption;
     PermissionsChecker permissionsChecker;
+    protected Marker curMarker;
+    boolean isHidenAble = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,15 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
         setContentView(getLayoutResID());
         ButterKnife.bind(this);
         initMap(savedInstanceState);
+    }
+
+    public void setinfoWIndowHiden(boolean isHidenAble) {
+        this.isHidenAble = isHidenAble;
+    }
+
+    @Override
+    public void initPresenter() {
+
     }
 
     @Override
@@ -75,37 +86,28 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
     protected void initAMap() {
     }
 
+    protected void setMapZoomTo(float zoomPixel) {
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(zoomPixel));
+    }
+
 
     private void initMap(Bundle savedInstanceState) {
         mMapView.onCreate(savedInstanceState);
         mMapView.setDrawingCacheEnabled(true);
         if (aMap == null) {
             aMap = mMapView.getMap();
-            aMap.setMyLocationEnabled(true);
         }
-//        aMap.moveCamera(CameraUpdateFactory.zoomTo(ZOOM_DEFAULT));
+//        aMap.setInfoWindowAdapter(this);
+//        aMap.setOnMapClickListener(this);
+//        aMap.setOnMarkerClickListener(this);
         initAMap();
         //设置显示定位按钮 并且可以点击
         UiSettings settings = aMap.getUiSettings();
         settings.setZoomControlsEnabled(false);
         settings.setMyLocationButtonEnabled(false);
-        //设置定位监听
-        aMap.setLocationSource(this);
-        // 是否可触发定位并显示定位层
-        aMap.setMyLocationEnabled(true);
-        //定位的小图标 默认是蓝点 这里自定义一团火，其实就是一张图片
-        MyLocationStyle myLocationStyle = new MyLocationStyle();
-//        myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
-        myLocationStyle.radiusFillColor(android.R.color.transparent);
-        myLocationStyle.strokeColor(android.R.color.transparent);
-        aMap.setMyLocationStyle(myLocationStyle);
-        if (permissionsChecker.lacksPermissions(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            PermissionsActivity.startActivityForResult(this,
-                    REQ_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION);
-        }
     }
 
-    private void startlocaction(AMapLocationListener listener) {
+    protected void startlocaction(AMapLocationListener listener) {
         mLocOption = new AMapLocationClientOption();
         mLocOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         mLocOption.setInterval(2000);
@@ -113,7 +115,12 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
         mlocClient.setLocationOption(mLocOption);
         mlocClient.setLocationListener(listener);
         permissionsChecker = new PermissionsChecker(this);
-        mlocClient.startLocation();
+        if (permissionsChecker.lacksPermissions(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            PermissionsActivity.startActivityForResult(this,
+                    REQ_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION);
+        } else {
+            mlocClient.startLocation();
+        }
     }
 
 
@@ -125,50 +132,69 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
         if (requestCode == REQ_FINE_LOCATION) {
             if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
                 ToastUtils.showToast(this, "权限被拒绝");
+            } else {
+                mlocClient.startLocation();
             }
         }
     }
 
-    protected MarkerOptions getMarkerOptions(double lat, double lng, int resid) {
-        MarkerOptions options = new MarkerOptions();
-        ImageView img = new ImageView(this);
-        img.setImageResource(resid);
-        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        options.icon(BitmapDescriptorFactory.fromView(img));
-        options.title("mark");
-        //位置
-        options.position(new LatLng(lat, lng));
-
-
-        return options;
-    }
-
     protected MarkerOptions getMarkerOptions(LatLng latLng, int resid) {
         MarkerOptions options = new MarkerOptions();
-        ImageView img = new ImageView(this);
-        img.setImageResource(resid);
-        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        options.icon(BitmapDescriptorFactory.fromView(img));
+        options.icon(BitmapDescriptorFactory.fromResource(resid));
         options.title("mark");
-        //位置
         options.position(latLng);
-
-
         return options;
     }
 
+    protected MarkerOptions getMarkerOptions(LatLng latLng, int resid, String title) {
+        MarkerOptions options = new MarkerOptions();
+        options.icon(BitmapDescriptorFactory.fromResource(resid));
+        options.title("mark");
+        options.position(latLng);
+        return options;
+    }
     protected MarkerOptions getMarkerOptions(double lat, double lng, int resid, String title) {
         MarkerOptions options = new MarkerOptions();
-        ImageView img = new ImageView(this);
-        img.setImageResource(resid);
-        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        options.icon(BitmapDescriptorFactory.fromView(img));
-        options.title(title);
-        //位置
+        options.icon(BitmapDescriptorFactory.fromResource(resid));
+        if (!TextUtils.isEmpty(title)) {
+            options.title(title);
+        }
         options.position(new LatLng(lat, lng));
-
-
         return options;
     }
 
+    @Override
+    public View getInfoWindow(Marker marker) {
+        curMarker = marker;
+        return getMarkerInfoView(marker);
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return getInfoWindow(marker);
+    }
+
+    public View getMarkerInfoView(Marker marker) {
+
+        return null;
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if (!isHidenAble) {
+            return;
+        }
+        if (curMarker != null && curMarker.isInfoWindowShown()) {
+            curMarker.hideInfoWindow();
+        }
+
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (!marker.isInfoWindowShown()) {
+            marker.showInfoWindow();
+        }
+        return false;
+    }
 }

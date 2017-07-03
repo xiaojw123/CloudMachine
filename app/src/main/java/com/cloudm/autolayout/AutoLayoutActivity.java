@@ -1,14 +1,16 @@
 package com.cloudm.autolayout;
 
+import android.app.Activity;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.github.mikephil.charting.utils.AppLog;
 
 /**
  * Created by zhy on 15/11/19.
  */
-public class AutoLayoutActivity extends AppCompatActivity
+public class AutoLayoutActivity extends Activity
 {
     private static final String LAYOUT_LINEARLAYOUT = "LinearLayout";
     private static final String LAYOUT_FRAMELAYOUT = "FrameLayout";
@@ -18,6 +20,7 @@ public class AutoLayoutActivity extends AppCompatActivity
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs)
     {
+        AppLog.print("AppCompatActivity  onCreateView");
         View view = null;
         if (name.equals(LAYOUT_FRAMELAYOUT))
         {

@@ -1,10 +1,12 @@
 package com.cloudmachine.ui.home.presenter;
 
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.recyclerbean.HomeBannerBean;
 import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.UnReadMessage;
 import com.cloudmachine.ui.home.contract.HomeContract;
+import com.github.mikephil.charting.utils.AppLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,28 +51,37 @@ public class HomePresenter extends HomeContract.Presenter {
 
     @Override
     public void getDevices(long memberId, int type) {
-        mModel.getDevices(memberId, type)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<BaseRespose<List<McDeviceInfo>>>() {
-                    @Override
-                    public void onCompleted() {
+        mRxManage.add(mModel.getDevices(memberId, type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
+            @Override
+            protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
+                AppLog.print("onNext____"+mcDeviceInfos);
+                mView.updateDevices(mcDeviceInfos);
+            }
 
-                    }
+            @Override
+            protected void _onError(String message) {
+                AppLog.print("_onError____"+message);
 
-                    @Override
-                    public void onError(Throwable e) {
+            }
+        }));
 
-                    }
-
-                    @Override
-                    public void onNext(BaseRespose<List<McDeviceInfo>> devices) {
-                        if (devices != null) {
-                            mView.updateDevices(devices.getResult());
-                        }
-                    }
-                });
     }
+
+    @Override
+    public void getDevices(int type) {
+        mRxManage.add(mModel.getDevices(type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
+            @Override
+            protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
+                mView.updateDevices(mcDeviceInfos);
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+    }
+
 
     @Override
     public void getPromotionInfo() {

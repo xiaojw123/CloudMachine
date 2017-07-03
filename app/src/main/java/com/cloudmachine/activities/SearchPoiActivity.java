@@ -152,11 +152,6 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
         finish();
 	}
 	@Override
-	public void onPoiItemDetailSearched(PoiItemDetail arg0, int arg1) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
 	public void onPoiSearched(PoiResult result, int rCode) {
 		// TODO Auto-generated method stub
 		if (rCode == 0) {
@@ -206,7 +201,13 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
 //			ToastUtil.show(PoiKeywordSearchActivity.this, getString(R.string.error_other) + rCode);
 		}
 	}
-	
+
+	@Override
+	public void onPoiItemDetailSearched(PoiItemDetail poiItemDetail, int i) {
+
+	}
+
+
 	private void showSuggestCity(List<SuggestionCity> cities) {
 
 	}

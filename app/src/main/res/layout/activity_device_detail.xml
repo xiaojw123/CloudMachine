@@ -12,7 +12,9 @@
         android:layout_height="wrap_content"
         app:common_title_name="斗山一号"
         app:common_right_text="基本信息"
-        />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
     <com.amap.api.maps2d.MapView
@@ -69,7 +71,7 @@
                 android:textSize="@dimen/public_textsize2" />
 
             <TextView
-                android:id="@+id/work_status"
+                android:id="@+id/work_status_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -78,17 +80,9 @@
                 android:text="工作中"
                 android:textColor="@color/green"
                 android:textSize="@dimen/public_textsize2"
+                android:layout_alignParentRight="true"
                 android:visibility="gone"
                 />
-
-            <ImageView
-                android:id="@+id/arrow_right"
-                android:layout_width="@dimen/arrow_next_width"
-                android:layout_height="@dimen/arrow_next_height"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/arrow_next" />
         </RelativeLayout>
 
         <LinearLayout
@@ -103,6 +97,7 @@
             android:showDividers="middle">
 
             <LinearLayout
+                android:id="@+id/oil_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -110,9 +105,10 @@
                 android:orientation="vertical">
 
                 <com.cloudmachine.autolayout.widgets.DynamicWave
-                    android:id="@+id/device_detail_residual_oil"
+                    android:id="@+id/devicedetail_oil"
                     android:layout_width="@dimen/oil_level_size"
-                    android:layout_height="@dimen/oil_level_size" />
+                    android:layout_height="@dimen/oil_level_size"
+                    />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -123,19 +119,26 @@
 
             </LinearLayout>
 
+            <View
+                style="@style/CommonVerticalLine"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+/>
             <LinearLayout
+                android:id="@+id/worklen_layout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <com.cloudmachine.utils.widgets.TextProgressBar
-                    android:id="@+id/work_hours"
+                    android:id="@+id/devicedetail_worklen_tpb"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="@dimen/work_hour_width"
                     android:layout_height="@dimen/work_hour_height"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15dp"
                     android:progress="13"
                     android:progressDrawable="@drawable/progress" />
 
@@ -253,7 +256,7 @@
                 android:layout_alignLeft="@+id/elec_title"
                 android:layout_below="@+id/elec_title"
                 android:layout_marginTop="@dimen/public_text_margintop"
-                android:text="管理成员组成共享设备数据"
+                android:text="超出挖机工作范围，立即提醒您"
                 android:textColor="@color/public_text_grey1"
                 android:textSize="@dimen/public_textsize2"
                 />
@@ -288,7 +291,7 @@
                 android:layout_alignTop="@+id/path_icon"
                 android:layout_marginLeft="30dp"
                 android:layout_toRightOf="@+id/path_icon"
-                android:text="轨迹统计"
+                android:text="历史轨迹"
                 android:textColor="@color/public_color_black"
                 android:textSize="@dimen/public_textsize1" />
 
@@ -299,7 +302,7 @@
                 android:layout_alignLeft="@+id/path_title"
                 android:layout_below="@+id/path_title"
                 android:layout_marginTop="@dimen/public_text_margintop"
-                android:text="一键检测, 实时获取设备最新数据"
+                android:text="选定时间范围，回放运行轨迹"
                 android:textColor="@color/public_text_grey1"
                 android:textSize="@dimen/public_textsize2" />
 

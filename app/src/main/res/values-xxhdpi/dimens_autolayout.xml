@@ -41,7 +41,7 @@
     <dimen name="public_layout_height2">260px</dimen>
     <dimen name="public_divider_vertical_height">210px</dimen>
     <!--油位悬浮球宽高-->
-    <dimen name="oil_level_size">154px</dimen>
+    <dimen name="oil_level_size">145px</dimen>
     <dimen name="oil_text_margintop">24px</dimen>
     <dimen name="oil_marginRight">137px</dimen>
     
@@ -57,8 +57,8 @@
 
 
     <!-- 公共 -->
-	<dimen name="public_layout_padding_left">42px</dimen>
-	<dimen name="public_layout_padding_left_m">21px</dimen>
+	<dimen name="public_layout_padding_left">14dp</dimen>
+	<dimen name="public_layout_padding_left_m">7px</dimen>
 	<dimen name="public_zero">0px</dimen>
 	<dimen name="public_line_wh">1px</dimen>
 	<dimen name="arrow_image_width">25px</dimen>
@@ -171,11 +171,11 @@
 	<!--<dimen name="guide_image_guide4_width">790px</dimen>-->
 	<!--<dimen name="guide_image_guide4_height">713px</dimen>-->
 	<dimen name="guide_image_guide4_width">862px</dimen>
-	<dimen name="guide_image_guide4_height">624px</dimen>
+	<dimen name="guide_image_guide4_height">606px</dimen>
 	<!--<dimen name="guide_image_text4_width">537px</dimen>-->
 	<!--<dimen name="guide_image_text4_height">165px</dimen>-->
-	<dimen name="guide_image_text4_width">515px</dimen>
-	<dimen name="guide_image_text4_height">170px</dimen>
+	<dimen name="guide_image_text4_width">410px</dimen>
+	<dimen name="guide_image_text4_height">169px</dimen>
 	<dimen name="guide_button_marginBottom">246px</dimen>
 	<dimen name="radius_button_width">576px</dimen>
 	<dimen name="radius_button_height">124px</dimen>
@@ -186,8 +186,8 @@
 	<dimen name="radius_button_text_size">52px</dimen>
 	
 	<!-- title-->
-	<dimen name="public_title_height">146px</dimen>
-	<dimen name="public_title_textsize">52px</dimen>
+	<dimen name="public_title_height">49dp</dimen>
+	<dimen name="public_title_textsize">17dp</dimen>
 	<dimen name="public_title_left_textsize">46px</dimen>
 	<dimen name="public_title_back_image_width">48px</dimen>
 	

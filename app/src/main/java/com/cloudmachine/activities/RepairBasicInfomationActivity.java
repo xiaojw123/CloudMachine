@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.PhotoListAdapter;
 import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.task.GetWorkDetailAsync;
 import com.cloudmachine.struc.BOInfo;
@@ -39,7 +37,6 @@ public class RepairBasicInfomationActivity extends BaseAutoLayoutActivity
 
     private Handler mHandler;
     private Context mContext;
-    private TitleView title_layout;
     private String orderNum, flag;
     private TextView repair_basic_text1, repair_basic_text2, repair_basic_text3, repair_basic_text4,
             repair_basic_text5, repair_basic_text6, repair_basic_text7, repair_basic_text8;
@@ -75,7 +72,6 @@ public class RepairBasicInfomationActivity extends BaseAutoLayoutActivity
     }
 
     private void initView() {
-        initTitleLayout();
         repair_loc_layout = (LinearLayout) findViewById(R.id.repair_basic_loc_layout);
         location_tv = (TextView) findViewById(R.id.repair_basic_loc);
         repair_basic_text1 = (TextView) findViewById(R.id.repair_basic_text1);
@@ -99,19 +95,6 @@ public class RepairBasicInfomationActivity extends BaseAutoLayoutActivity
 
     }
 
-    private void initTitleLayout() {
-
-        title_layout = (TitleView) findViewById(R.id.title_layout);
-        title_layout.setTitle(getResources().getString(R.string.detail));
-        title_layout.setLeftOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                finish();
-            }
-        });
-    }
 
     private void setItemText(String str1, String str2, String str3, String str4,
                              String str5, String str6, String str7, String str8) {

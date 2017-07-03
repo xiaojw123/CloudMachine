@@ -6,6 +6,7 @@
 
 
 
+
     <com.cloudmachine.widget.CommonTitleView
         android:id="@+id/maintenance_sup_titleview"
         android:layout_width="match_parent"
@@ -19,6 +20,71 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/maintenance_sup_titleview"
         />
+
+    <RelativeLayout
+        android:id="@+id/maintenance_order_container"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_below="@+id/maintenance_sup_titleview"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rect_black_bg"
+        android:padding="10dp"
+        android:visibility="gone"
+        >
+        <TextView
+            android:text="斗山"
+            android:id="@+id/maintenance_brand_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:text="131341"
+            android:layout_toRightOf="@+id/maintenance_brand_tv"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/maintenance_model_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/maintenance_date_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/maintenance_model_tv"
+            android:text="2013-12-33"
+            android:layout_marginLeft="20dp"
+
+            />
+        <TextView
+            android:id="@+id/maintenance_desc_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="无故障"
+            android:layout_marginTop="10dp"
+            android:layout_alignLeft="@+id/maintenance_brand_tv"
+            android:layout_below="@+id/maintenance_brand_tv"
+            />
+
+        <TextView
+            android:id="@+id/maintenance_status_tv"
+            android:layout_toLeftOf="@+id/maintenance_arrow_img"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+
+        <ImageView
+            android:id="@+id/maintenance_arrow_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_next"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
+
+        </RelativeLayout>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

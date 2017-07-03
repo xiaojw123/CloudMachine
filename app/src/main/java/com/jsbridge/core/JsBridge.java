@@ -1,7 +1,7 @@
 package com.jsbridge.core;
 
+import android.app.Activity;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 
 import com.jsbridge.bean.JsRequestBean;
@@ -24,7 +24,7 @@ public class JsBridge {
      * @param webView webView的代理类
      * @param requestBean 请求对象
      */
-    public void jsCallJava(AppCompatActivity activity,WebView webView, JsRequestBean requestBean) {
+    public void jsCallJava(Activity activity, WebView webView, JsRequestBean requestBean) {
         try {
             Class<? extends IModule> targetClass = (Class<? extends IModule>) Class.forName(requestBean.clazz);
             Method[] targetMethods = targetClass.getDeclaredMethods();
@@ -41,7 +41,7 @@ public class JsBridge {
     /**
      * @desc: 在主线程执行Native方法
     */
-    public void doInMainThread(AppCompatActivity activity,Method method, WebView webView, JsRequestBean requestBean){
+    public void doInMainThread(Activity activity,Method method, WebView webView, JsRequestBean requestBean){
 
         Looper.prepare();
         try {

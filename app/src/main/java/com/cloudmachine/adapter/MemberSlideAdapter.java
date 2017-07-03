@@ -95,6 +95,7 @@ public class MemberSlideAdapter extends BaseAdapter implements OnSlideListener{
         
         //回退的效果
         MemberInfoSlide dInfo = dataResult.get(position);
+		slideView.setTag(R.id.id_RemarkInfo,dInfo);
         if(!Constants.isNoEditInMcMember(deviceId, deviceType)){
         	if(position !=0){
             	dInfo.setSlideView(slideView);
@@ -105,7 +106,15 @@ public class MemberSlideAdapter extends BaseAdapter implements OnSlideListener{
 //        dInfo.getSlideView().shrink();
         
 		String imgString = dInfo.getMiddlelogo();
-		holder.title.setText(dInfo.getName()!=null?dInfo.getName():"");
+//		holder.title.setText(dInfo.getName()!=null?dInfo.getName():"");
+		String titleName;
+		String remarkName=dInfo.getRoleRemark();
+		if (!TextUtils.isEmpty(remarkName)){
+			titleName=remarkName;
+		}else{
+			titleName=dInfo.getName();
+		}
+		holder.title.setText(titleName);
 		if(null != MyApplication.getInstance().getTempMember()){
 			if(dInfo.getMemberId() == MyApplication.getInstance().getTempMember().getId()){
 				holder.title.setText("我");

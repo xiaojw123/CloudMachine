@@ -159,9 +159,10 @@ public class RepairRecordActivity extends BaseAutoLayoutActivity implements
         Bundle bundle = intent.getExtras();
         if(bundle != null){
         	try{
-        		deviceId =bundle.getLong(Constants.P_DEVICEID); 
-        		deviceType =bundle.getInt(Constants.P_DEVICETYPE); 
         		mcDeviceInfo = (McDeviceInfo)bundle.getSerializable(Constants.P_DEVICEINFO_MY);
+				deviceType=mcDeviceInfo.getType();
+        		deviceId =bundle.getLong(Constants.P_DEVICEID);
+//        		deviceType =bundle.getInt(Constants.P_DEVICETYPE);
         	}catch(Exception e){
         		Constants.MyLog(e.getMessage());
         	}

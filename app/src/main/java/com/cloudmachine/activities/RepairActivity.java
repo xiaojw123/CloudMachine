@@ -71,7 +71,7 @@ public class RepairActivity extends Fragment implements Callback,
         } else {
                 viewParent = inflater.inflate(R.layout.activity_main_device_repair, null);
             // 控件初始化
-            mActivity = (MainActivity) getActivity();
+            mActivity = (MainActivity) getContext();
             initView();
         }
         return viewParent;

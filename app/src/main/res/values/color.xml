@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="c_5">#555555</color>
+    <color name="c_f95020">#f95020</color>
+    <color name="c_9">#999999</color>
+    <color name="c_e">#eeeeee</color>
     <color name="color_f6f6f9">#f6f6f9</color>
     <color name="color_66">#666666</color>
     <color name="color_f9761e">#f9761e</color>

@@ -1,11 +1,15 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.AMapUtils;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
@@ -17,26 +21,64 @@ import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cloudmachine.R;
+import com.cloudmachine.activities.RepairBasicInfomationActivity;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.struc.UnfinishedBean;
+import com.cloudmachine.ui.home.contract.MSupervisorContract;
+import com.cloudmachine.ui.home.model.MSupervisorModel;
+import com.cloudmachine.ui.home.model.SiteBean;
+import com.cloudmachine.ui.home.presenter.MSupervisorPresenter;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.UMengKey;
 import com.github.mikephil.charting.utils.AppLog;
+import com.umeng.analytics.MobclickAgent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MaintenanceSupervisorActivity extends BaseMapActivity implements AMapLocationListener, AMap.OnCameraChangeListener, GeocodeSearch.OnGeocodeSearchListener {
+public class MaintenanceSupervisorActivity extends BaseMapActivity<MSupervisorPresenter, MSupervisorModel> implements MSupervisorContract.View, AMapLocationListener, AMap.OnCameraChangeListener, GeocodeSearch.OnGeocodeSearchListener {
     private static final String CURRENT_LOC = "当前位置";
     @BindView(R.id.repair_btn)
     RadiusButtonView repairBtn;
     @BindView(R.id.maintence_cur_location)
     TextView curLocTv;
+    @BindView(R.id.maintenance_order_container)
+    RelativeLayout orderRl;
+    @BindView(R.id.maintenance_brand_tv)
+    TextView brandTv;
+    @BindView(R.id.maintenance_model_tv)
+    TextView modelTv;
+    @BindView(R.id.maintenance_date_tv)
+    TextView dateTv;
+    @BindView(R.id.maintenance_desc_tv)
+    TextView descTv;
+    @BindView(R.id.maintenance_status_tv)
+    TextView statusTv;
+
+
     Marker centerMarker;
     GeocodeSearch geocoderSearch;
+    LatLng lastLatLng;
+    UnfinishedBean unfinishedBean;
+    List<Marker> markerList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MobclickAgent.onEvent(this, UMengKey.time_repair_soldiers);
+        startlocaction(this);
+        initGeocoder();
+        setinfoWIndowHiden(false);
+        mPresenter.getRepairItemView(UserHelper.getMemberId(this));
+    }
+
+    private void initGeocoder() {
         geocoderSearch = new GeocodeSearch(this);
         geocoderSearch.setOnGeocodeSearchListener(this);
     }
@@ -44,18 +86,15 @@ public class MaintenanceSupervisorActivity extends BaseMapActivity implements AM
 
     @Override
     public void initPresenter() {
-
+        mPresenter.setVM(this, mModel);
     }
 
     @Override
     protected void initAMap() {
+        setMapZoomTo(ZOOM_DEFAULT);
         aMap.setOnCameraChangeListener(this);
     }
 
-    @Override
-    protected void initLocationClient() {
-        mlocClient.setLocationListener(this);
-    }
 
     @Override
     public int getLayoutResID() {
@@ -64,79 +103,119 @@ public class MaintenanceSupervisorActivity extends BaseMapActivity implements AM
 
 
     @Override
-    public void onMapClick(LatLng latLng) {
-
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        return false;
-    }
-
-    @Override
-    public void activate(OnLocationChangedListener onLocationChangedListener) {
-
-    }
-
-    @Override
-    public void deactivate() {
-
-    }
-
-    @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation.getErrorCode() == 0) {
             AppLog.print("onLocationChanged___lat:" + aMapLocation.getLatitude() + "，  lng:" + aMapLocation.getLongitude() + ", address:" + aMapLocation.getAddress());
-            LatLng latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-            if (isFirstLoc) {
-                aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
-                centerMarker = aMap.addMarker(getMarkerOptions(aMapLocation.getLatitude(), aMapLocation.getLongitude(), R.drawable.icon_cur_repair_loc, CURRENT_LOC));
-                aMap.addMarker(getMarkerOptions(30.194103, 120.198859, R.drawable.icon_station));
-                aMap.addMarker(getMarkerOptions(30.177613, 120.177134, R.drawable.icon_work_order));
-                aMap.addMarker(getMarkerOptions(30.252763, 120.194813, R.drawable.icon_work_order));
-                aMap.addMarker(getMarkerOptions(30.268235, 120.101748, R.drawable.icon_work_order));
-                aMap.addMarker(getMarkerOptions(30.324301, 120.109294, R.drawable.icon_work_order));
-                aMap.addMarker(getMarkerOptions(30.13227, 120.26718, R.drawable.icon_work_order));
-                aMap.addMarker(getMarkerOptions(30.263244, 120.21321, R.drawable.icon_work_order));
-                isFirstLoc = false;
-            }
             mlocClient.stopLocation();
+            double lat = aMapLocation.getLatitude();
+            double lng = aMapLocation.getLongitude();
+            LatLng loclatLng = new LatLng(lat, lng);
+            aMap.moveCamera(CameraUpdateFactory.changeLatLng(loclatLng));
         }
     }
 
-
-    @OnClick(R.id.repair_btn)
-    public void onClick() {
-        Constants.toActivity(this, NewRepairActivity.class, null);
-    }
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-        LatLng lat = cameraPosition.target;
+        AppLog.print("onCameraChange______");
         if (centerMarker != null) {
-            centerMarker.setPosition(lat);
+            centerMarker.setPosition(cameraPosition.target);
+        } else {
+            centerMarker = aMap.addMarker(getMarkerOptions(cameraPosition.target, R.drawable.icon_cur_repair_loc, CURRENT_LOC));
         }
+    }
+
+    @Override
+    public void onCameraChangeFinish(CameraPosition cameraPosition) {
+        AppLog.print("onCameraChangeFinish______");
+        LatLng lat = cameraPosition.target;
+        if (lastLatLng == null) {
+            lastLatLng = lat;
+        } else {
+            float distance = AMapUtils.calculateLineDistance(lastLatLng, lat);
+            if (distance > 500) {
+                lastLatLng = lat;
+                AppLog.print("开始请求站点。。。distance=" + distance);
+                for (Marker marker : markerList) {
+                    marker.remove();
+                }
+                if (markerList.size() > 0) {
+                    markerList.clear();
+                }
+                mPresenter.updateStationView(lat.longitude, lat.latitude);
+            }
+        }
+
         LatLonPoint point = new LatLonPoint(lat.latitude, lat.longitude);
         RegeocodeQuery query = new RegeocodeQuery(point, 200,
                 GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
         geocoderSearch.getFromLocationAsyn(query);
 
-
-    }
-
-    @Override
-    public void onCameraChangeFinish(CameraPosition cameraPosition) {
-
     }
 
     @Override
     public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
-        RegeocodeAddress address=regeocodeResult.getRegeocodeAddress();
-        curLocTv.setText(address.getFormatAddress());
+        AppLog.print("onRegeocodeSearched___");
+        RegeocodeAddress address = regeocodeResult.getRegeocodeAddress();
+        if (address != null) {
+            String formartAddress = address.getFormatAddress();
+            String city = address.getTownship();
+            String describeAddress = formartAddress.substring(formartAddress.indexOf(city) + city.length());
+            curLocTv.setText(describeAddress);
+        }
     }
 
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
 
+    }
+
+
+    @Override
+    public void returnStationView(SiteBean siteBean) {
+        if (siteBean != null) {
+            List<SiteBean.RepairStationListBean> repairsStatiionList = siteBean.getRepairStationList();
+            List<SiteBean.RepairStationListBean> serviceStatiionList = siteBean.getServiceSiteList();
+            for (SiteBean.RepairStationListBean bean : repairsStatiionList) {
+                Marker siteMarker = aMap.addMarker(getMarkerOptions(bean.getLat(), bean.getLng(), R.drawable.icon_work_order, null));
+                markerList.add(siteMarker);
+            }
+            for (SiteBean.RepairStationListBean bean : serviceStatiionList) {
+                Marker stationMarker = aMap.addMarker(getMarkerOptions(bean.getLat(), bean.getLng(), R.drawable.icon_station, null));
+                markerList.add(stationMarker);
+            }
+        }
+    }
+
+    @Override
+    public void returnRepairItemView(UnfinishedBean bean, String status) {
+        orderRl.setVisibility(View.VISIBLE);
+        unfinishedBean = bean;
+        statusTv.setText(status);
+        brandTv.setText(bean.getVbrandname());
+        modelTv.setText(bean.getVmaterialname());
+        dateTv.setText(bean.getDopportunity());
+        descTv.setText(bean.getVdiscription());
+
+    }
+
+    @OnClick({R.id.maintenance_order_container, R.id.radius_button_text})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.maintenance_order_container:
+                if (unfinishedBean == null) {
+                    return;
+                }
+                Intent intent = new Intent(this, RepairBasicInfomationActivity.class);
+                intent.putExtra("orderNum", unfinishedBean.getOrderNum());
+                intent.putExtra("flag", unfinishedBean.getFlag());
+                startActivity(intent);
+                break;
+            case R.id.radius_button_text:
+                Bundle bundle = new Bundle();
+                bundle.putString(NewRepairActivity.DEFAULT_LOCAITOIN, curLocTv.getText().toString());
+                Constants.toActivity(this, NewRepairActivity.class, bundle);
+                break;
+        }
     }
 }

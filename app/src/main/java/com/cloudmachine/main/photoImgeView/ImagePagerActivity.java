@@ -10,8 +10,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +18,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.base.SupportBaseAutoActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.photo.util.Bimp;
 import com.cloudmachine.utils.photo.util.ImageItem;
@@ -28,7 +28,7 @@ import com.cloudmachine.utils.widgets.TitleView;
 
 import java.util.ArrayList;
 
-public class ImagePagerActivity extends AppCompatActivity implements Callback,OnClickListener{
+public class ImagePagerActivity extends SupportBaseAutoActivity implements Callback,OnClickListener{
 	private static final String STATE_POSITION = "STATE_POSITION";
 	public static final String EXTRA_IMAGE_INDEX = "image_index";
 	public static final String EXTRA_IMAGE_ITEM = "image_item";
@@ -63,7 +63,12 @@ public class ImagePagerActivity extends AppCompatActivity implements Callback,On
 		initView(savedInstanceState);
 		changeNum();
 	}
-	
+
+	@Override
+	public void initPresenter() {
+
+	}
+
 	private void getIntentData(){
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
@@ -111,7 +116,7 @@ public class ImagePagerActivity extends AppCompatActivity implements Callback,On
 		
 		mPager.setAdapter(mAdapter);
 		// 更新下标
-				mPager.setOnPageChangeListener(new OnPageChangeListener() {
+				mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 					@Override
 					public void onPageScrollStateChanged(int arg0) {
@@ -170,7 +175,7 @@ public class ImagePagerActivity extends AppCompatActivity implements Callback,On
 			return fileList == null ? 0 : fileList.size();
 		}
 
-		@Override
+
 		public Fragment getItem(int position) {
 			ImageItem item = fileList.get(position);
 			String url = "";

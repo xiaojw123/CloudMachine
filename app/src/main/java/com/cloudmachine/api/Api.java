@@ -46,9 +46,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Api {
 
-    public static final int READ_TIME_OUT    = 7676;
+    public static final int READ_TIME_OUT    = 57676;
     //连接时长，单位：毫秒
-    public static final int CONNECT_TIME_OUT = 7676;
+//    public static final int CONNECT_TIME_OUT = 7676;
+    public static final int CONNECT_TIME_OUT = 57676;
     public Retrofit   retrofit;
     public ApiService movieService;
 
@@ -92,7 +93,7 @@ public class Api {
     public Api(int hostType) {
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         //设置拦截日志，拦截请求体
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
         //缓存
         File cacheFile = new File(MyApplication.getAppContext().getCacheDir(), "cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb

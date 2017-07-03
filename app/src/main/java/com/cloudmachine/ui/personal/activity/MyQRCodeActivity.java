@@ -141,7 +141,8 @@ public class MyQRCodeActivity extends BaseAutoLayoutActivity {
                     initLocation();
                 } else {
                     //用户拒绝授权
-                    Toast.makeText(this, "您已禁止该权限，需要重新开启。", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "无法生成二维码, 您已禁止该权限，需要重新开启。", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
                 break;
         }

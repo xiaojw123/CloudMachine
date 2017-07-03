@@ -1469,6 +1469,7 @@ public class Constants {
 
     public static final String MC_DEVICEINFO = "McDeviceInfo";
     public static final String MC_LOC_NOW = "McLocNow";
+    public static final String MEMBER_ID="memberid";
     public static final int RESULT_QUERY_BY_TIME = 0x34;
     public static final int ANIMATION_DURACTION=800;
 }

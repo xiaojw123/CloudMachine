@@ -28,6 +28,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     public E mModel;
     public Context mContext;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -47,6 +48,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         AppManager.getAppManager().addActivity(this);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
+
 
     /*********************子类实现*****************************/
     //简单页面无需mvp就不用管此方法即可,完美兼容各种实际场景的变通

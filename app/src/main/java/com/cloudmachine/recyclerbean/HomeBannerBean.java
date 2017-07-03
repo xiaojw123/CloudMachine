@@ -31,6 +31,7 @@ public class HomeBannerBean implements Serializable,HomePageType {
 
     public int skipType;
     public int adsMidSort;
+    public long gmtModified;
 
 
     @Override
@@ -45,6 +46,7 @@ public class HomeBannerBean implements Serializable,HomePageType {
                 ", adsLink='" + adsLink + '\'' +
                 ", skipType='" + skipType + '\'' +
                 ", adsMidSort='" + adsMidSort + '\'' +
+                ", gmtModified='" + gmtModified + '\'' +
                 '}';
     }
 }

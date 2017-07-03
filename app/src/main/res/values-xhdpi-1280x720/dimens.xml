@@ -14,5 +14,7 @@
     <dimen name="mc_info_window_h">66dp</dimen>
     <dimen name="mc_info_window_icon_l">7dp</dimen>
     <dimen name="mc_info_window_icon_r">12dp</dimen> -->
+    <dimen name="read_point_width">1dp</dimen>
+
 
 </resources>

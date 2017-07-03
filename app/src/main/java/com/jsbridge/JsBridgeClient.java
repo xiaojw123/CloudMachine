@@ -1,6 +1,6 @@
 package com.jsbridge;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 
 import com.jsbridge.core.JsBridgeManager;
 import com.jsbridge.module.impl.DeliverMethodModel;
@@ -14,7 +14,7 @@ public class JsBridgeClient {
 
     private static JsBridgeManager jsBridgeManager;
 
-    public static JsBridgeManager getJsBridgeManager(AppCompatActivity activity) {
+    public static JsBridgeManager getJsBridgeManager(Activity activity) {
         jsBridgeManager = new JsBridgeManager(activity);
         registerNativeMethod();
         return jsBridgeManager;

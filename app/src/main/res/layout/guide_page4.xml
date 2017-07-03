@@ -14,7 +14,7 @@
         <ImageView
             android:layout_width="@dimen/guide_image_guide4_width"
             android:layout_height="@dimen/guide_image_guide4_height"
-            android:background="@drawable/guide_iamge4" />
+            android:background="@drawable/guide_iamge2" />
     </LinearLayout>
 
         <!--android:layout_width="@dimen/guide_image_text4_width"-->
@@ -24,7 +24,7 @@
         android:layout_below="@id/image_layout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/guide_text_marginTop"
-        android:background="@drawable/guide_text4" />
+        android:background="@drawable/guide_text2" />
 
     <LinearLayout
         android:layout_width="wrap_content"

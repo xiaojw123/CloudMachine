@@ -8,16 +8,17 @@ import android.util.Log;
 
 public class AppLog {
     private static final boolean isOnline = false;
+    private static final String LOG_TAG="cloudm";
 
     public static void print(String message) {
         if (!isOnline) {
-            Log.d("xjwTest", message);
+            Log.d(LOG_TAG, message);
         }
     }
 
     public static void printError(String message) {
         if (!isOnline) {
-            Log.d("xjwTest", message);
+            Log.d(LOG_TAG, message);
         }
 
     }

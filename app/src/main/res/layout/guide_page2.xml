@@ -13,14 +13,14 @@
         <ImageView 
         android:layout_width="@dimen/guide_image_guide2_width"
         android:layout_height="@dimen/guide_image_guide2_height"
-        android:background="@drawable/guide_iamge2"
+        android:background="@drawable/guide_iamge1"
         />
     </LinearLayout>
     <ImageView 
         android:layout_width="@dimen/guide_image_text2_width"
         android:layout_height="@dimen/guide_image_text2_height"
         android:layout_below="@id/image_layout"
-        android:background="@drawable/guide_text2"
+        android:background="@drawable/guide_text1"
         android:layout_marginTop="@dimen/guide_text_marginTop"
         android:layout_centerHorizontal="true"
         />
