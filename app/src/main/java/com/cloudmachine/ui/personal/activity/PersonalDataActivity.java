@@ -40,6 +40,7 @@ import com.cloudmachine.activities.EditPersonalActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.UpdatePwdActivity;
 import com.cloudmachine.api.Api;
+import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.api.HostType;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.autolayout.widgets.TitleView;
@@ -387,7 +388,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     // iv.setImageBitmap(bitmap);
                     if (imgsign == 2) {
                         //Bitmap photo = extras.getParcelable("data");
-                        mHeadIamge.setImageBitmap(bitmap);//展示到当前页面
+//                        mHeadIamge.setImageBitmap(bitmap);//展示到当前页面
                         imString = savePhotoToSDCard(bitmap);
                         isUpdateImage = true;
                         compressPicture(imString);
@@ -443,7 +444,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 .subscribe(new Action1<File>() {
                     @Override
                     public void call(File file) {
-                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, "http://api.test.cloudm.com/member/kindEditorUpload", mHandler);
+                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, ApiConstants.CLOUDM_HOST+"member/kindEditorUpload", mHandler);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -625,7 +626,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 }
                 break;
             case Constants.HANDLER_UPLOAD_FAILD:
+                ToastUtils.showToast(this,"头像上传失败");
                 break;
+
         }
         return false;
     }

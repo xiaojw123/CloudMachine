@@ -13,27 +13,18 @@ package com.cloudmachine.api;
 public class ApiConstants {
 
 /* 测试环境*/
-   public static final String CLOUDM_HOST = "http://api.test.cloudm.com/";
-    public static final String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3/";
-    public static final String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3/";
-    public static final String XIEXIN_HOST = "http://ask.test.cloudm.com/";
-    public static final String H5_HOST = "http://h5.test.cloudm.com/";
+//   public static final String CLOUDM_HOST = "http://api.test.cloudm.com/cloudm3/yjx/";
+//    public static final String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3/";
+//    public static final String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3/";
+//    public static final String XIEXIN_HOST = "http://ask.test.cloudm.com/";
+//    public static final String H5_HOST = "http://h5.test.cloudm.com/";
 
 /*线上环境*/
-//    public static final String CLOUDM_HOST = "http://api.cloudm.com/";
-//    public static final String GUOSHUAI_HOST = "http://api.cloudm.com/cloudm3/";
-//    public static final String CAITINGTING_HOST = "http://api.cloudm.com/cloudm3/";
-//    public static final String XIEXIN_HOST = "http://ask.cloudm.com/";
-//    public static final String H5_HOST = "http://h5.cloudm.com/";
-
-@Deprecated
-//    public static final String  ZHIHU_HOST = "http://news-at.zhihu.com/api/4/";
-//    public static final String LIZHAOHUA_HOST = "http://192.168.31.165:8091/bus-web/";
-
-
-    /*"http://api.test.cloudm.com/"*/
-    /*"http://192.168.1.13:8083/"*/
-
+    public static final String CLOUDM_HOST = "http://api.cloudm.com/cloudm3/yjx/";
+    public static final String GUOSHUAI_HOST = "http://api.cloudm.com/cloudm3/";
+    public static final String CAITINGTING_HOST = "http://api.cloudm.com/cloudm3/";
+    public static final String XIEXIN_HOST = "http://ask.cloudm.com/";
+    public static final String H5_HOST = "http://h5.cloudm.com/";
     /**
      * 获取对应的host
      *

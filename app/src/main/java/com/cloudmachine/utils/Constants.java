@@ -244,80 +244,80 @@ public class Constants {
 
     public static final String URL_IMAGE_HOST = URL_MAIN;// 文件上传地址
     public static final String URL_MyDevices = URL_MAIN
-            + "/device/getDeviceByKey"; // 获取设备列表
+            + "device/getDeviceByKey"; // 获取设备列表
     public static final String URL_DevicesInfo = URL_MAIN
-            + "/device/getDeviceInfo";// 一键检测设备历史
-    public static final String URL_DevicesCheck = URL_MAIN + "/device/getCheck";// 一键检测设备实时信息
+            + "device/getDeviceInfo";// 一键检测设备历史
+    public static final String URL_DevicesCheck = URL_MAIN + "device/getCheck";// 一键检测设备实时信息
     // Device
     public static final String URL_CHECKREPORT = URL_MAIN
-            + "/device/getCheckReport";// 新版本获取一键设备事实信息
-    public static final String URL_Devices = URL_MAIN + "/device/getDevice";// 获取设备基本信息
-    public static final String URL_MEMBERLIST = URL_MAIN + "/device/member";// 获取设备成员列表
-    public static final String URL_OILLEVELIST = URL_MAIN + "/device/oilLevelList";// 获取油位列表
-    public static final String URL_WORKTIMELIST = URL_MAIN + "/device/whdList";// 获取工作时长列表
+            + "device/getCheckReport";// 新版本获取一键设备事实信息
+    public static final String URL_Devices = URL_MAIN + "device/getDevice";// 获取设备基本信息
+    public static final String URL_MEMBERLIST = URL_MAIN + "device/member";// 获取设备成员列表
+    public static final String URL_OILLEVELIST = URL_MAIN + "device/oilLevelList";// 获取油位列表
+    public static final String URL_WORKTIMELIST = URL_MAIN + "device/whdList";// 获取工作时长列表
     public static final String URL_DELETEMEMBER = URL_MAIN
-            + "/device/deleteMember";// 删除设备成员
-    public static final String URL_ADDFENCE = URL_MAIN + "/device/addFence";// 上传围栏
+            + "device/deleteMember";// 删除设备成员
+    public static final String URL_ADDFENCE = URL_MAIN + "device/addFence";// 上传围栏
     public static final String URL_DELETEFENCE = URL_MAIN
-            + "/device/deleteFence";// 删除围栏
-    public static final String URL_SEARCHMEMBER = URL_MAIN + "/device/search";// 搜索设备成员
+            + "device/deleteFence";// 删除围栏
+    public static final String URL_SEARCHMEMBER = URL_MAIN + "device/search";// 搜索设备成员
     // mobi
     public static final String URL_GIVEPERMISSION = URL_MAIN
-            + "/device/givePermission";// 添加成员
+            + "device/givePermission";// 添加成员
     public static final String URL_GETROOTNODES = URL_MAIN
-            + "/member/getRootNodes";// 获取角色岗位名称
+            + "member/getRootNodes";// 获取角色岗位名称
     public static final String URL_UPDATEDEVICEINFOBYKEY = URL_MAIN
-            + "/device/updateDeviceInfoByKey";// 获取角色岗位名称
-    public static final String URL_DEVICESSAVE = URL_MAIN + "/device/save";// 新增机器
-    public static final String URL_DELETEDEVICE = URL_MAIN + "/device/delete";// 删除机器
+            + "device/updateDeviceInfoByKey";// 获取角色岗位名称
+    public static final String URL_DEVICESSAVE = URL_MAIN + "device/save";// 新增机器
+    public static final String URL_DELETEDEVICE = URL_MAIN + "device/delete";// 删除机器
     public static final String URL_GETPERMISSIONS = URL_MAIN
-            + "/member/getPermissions";// 获取权限列表
+            + "member/getPermissions";// 获取权限列表
     public static final String URL_GETMACHINETYPES = URL_MAIN
-            + "/device/getMachineTypesNC";// 获取机器种类列表
+            + "device/getMachineTypesNC";// 获取机器种类列表
     public static final String URL_GETMACHINEBRAND = URL_MAIN
-            + "/device/getMachineBrandNC";// 获取机器品牌列表
+            + "device/getMachineBrandNC";// 获取机器品牌列表
     public static final String URL_GETMACHINEMODEL = URL_MAIN
-            + "/device/getMachineModelNC";// 获取机器型号列表
+            + "device/getMachineModelNC";// 获取机器型号列表
     public static final String URL_UPDATEDEVICEINFO = URL_MAIN
-            + "/device/updateDeviceInfo";// 获取机器型号列表
+            + "device/updateDeviceInfo";// 获取机器型号列表
     public static final String URL_UPDATEPERMISSION = URL_MAIN
-            + "/device/updatePermission";// 更新机器某成员权限
+            + "device/updatePermission";// 更新机器某成员权限
     public static final String URL_GETVERSION = URL_MAIN
-            + "/version/getVersion";// 软件更新
+            + "version/getVersion";// 软件更新
     public static final String URL_GETSENSORPOSITION = URL_MAIN
-            + "/device/getSensor";// 获取传感器安装位置
+            + "device/getSensor";// 获取传感器安装位置
     public static final String URL_GETSENSORLIST = URL_MAIN
-            + "/device/getDeviceSensor";// 获取设备传感器列表
+            + "device/getDeviceSensor";// 获取设备传感器列表
     public static final String URL_SAVESENSOR = URL_MAIN
-            + "/device/saveDeviceSensor";// 添加传感器或车牌
+            + "device/saveDeviceSensor";// 添加传感器或车牌
     public static final String URL_DELETESENSOR = URL_MAIN
-            + "/device/deleteDeviceSensor";// 添加传感器或车牌
-    public static final String URL_UPCLIENTID = URL_MAIN + "/push/upclientid";// 上传个推clientid
-    public final static String UPLOAD_IMG_PATH = URL_MAIN + "/kindEditorUpload";
+            + "device/deleteDeviceSensor";// 添加传感器或车牌
+    public static final String URL_UPCLIENTID = URL_MAIN + "push/upclientid";// 上传个推clientid
+    public final static String UPLOAD_IMG_PATH = URL_MAIN + "kindEditorUpload";
     public final static String UPLOAD_IMG_MEMBER_PATH = URL_MAIN
-            + "/member/kindEditorUpload";
+            + "member/kindEditorUpload";
     public static final String URL_DAILYWORKDITAILS = URL_MAIN
-            + "/device/dailyWorkDitails";// 当日工作区间分布
+            + "device/dailyWorkDitails";// 当日工作区间分布
     public static final String URL_MACHINE_DETAIL = URL_MAIN
-            + "/device/getDeviceNowData";
+            + "device/getDeviceNowData";
     public static final String URL_GETMACHINETYPE = URL_MAIN  //获取机器类型
-            + "/device/getMachineTypesNC";
+            + "device/getMachineTypesNC";
     public static final String URL_SAVEVBUSINESS = URL_MAIN +    //上传新增维修
-            "/device/saveVbusiness";
+            "device/saveVbusiness";
     public static final String URL_SAVEEVALUATE = URL_MAIN
-            + "/device/saveEvaluate";
+            + "device/saveEvaluate";
     public static final String URL_ADDCIRCLEFENCH = URL_MAIN
-            + "/device/addCricleFence";
-    public static final String URL_GETCOUPON = URL_MAIN + "/pay/myCoupon";
-    public static final String URL_GETDELIVERYMETHOD = URL_MAIN + "/pay/deliveryMethod";
-    public static final String URL_GETSETUPTIME = URL_MAIN + "/pay/setupTime";
-    public static final String URL_GETINFOS = URL_MAIN + "/pay/getInfos";
-    public static final String URL_YUNBOXPAY = URL_MAIN + "/pay/yunBoxPay";
-    public static final String URL_GETPAYPRICE = URL_MAIN + "/pay/payPrice";
-    public static final String URL_CWPAY = URL_MAIN + "/pay/cwPay";
-    public static final String URL_CHECK_PAY = URL_MAIN + "/pay/checkPay";
-    public static final String URL_YUNBOXSTOREVOLUME = URL_MAIN + "/pay/yunBoxStoreVolume";
-    public static final String URL_SAVEARRIVALNOTICE = URL_MAIN + "/pay/saveArrivalNotice";
+            + "device/addCricleFence";
+    public static final String URL_GETCOUPON = URL_MAIN + "pay/myCoupon";
+    public static final String URL_GETDELIVERYMETHOD = URL_MAIN + "pay/deliveryMethod";
+    public static final String URL_GETSETUPTIME = URL_MAIN + "pay/setupTime";
+    public static final String URL_GETINFOS = URL_MAIN + "pay/getInfos";
+    public static final String URL_YUNBOXPAY = URL_MAIN + "pay/yunBoxPay";
+    public static final String URL_GETPAYPRICE = URL_MAIN + "pay/payPrice";
+    public static final String URL_CWPAY = URL_MAIN + "pay/cwPay";
+    public static final String URL_CHECK_PAY = URL_MAIN + "pay/checkPay";
+    public static final String URL_YUNBOXSTOREVOLUME = URL_MAIN + "pay/yunBoxStoreVolume";
+    public static final String URL_SAVEARRIVALNOTICE = URL_MAIN + "pay/saveArrivalNotice";
 
     public static final String P_ID = "Id";
     public static final String P_MAC_DEVICE = "MacDevice";
