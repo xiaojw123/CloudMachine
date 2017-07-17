@@ -20,6 +20,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.EditText;
@@ -66,6 +67,7 @@ import com.cloudmachine.struc.McDeviceBasicsInfo;
 import com.cloudmachine.struc.McDeviceCircleFence;
 import com.cloudmachine.struc.McDeviceLocation;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.widgets.MapMarkerView;
 import com.cloudmachine.utils.widgets.TitleView;
@@ -88,7 +90,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
 
     private static final int zoomMin = 3;
     private static final int zoomMax = 20;
-    private static final int zoomDefault = 14;
+    private static final int zoomDefault = 16;
 
     private static final int MapBoundsPadding = 0;
     private static final double MapBoundsLatLng = 0.0;
@@ -152,13 +154,11 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
         setContentView(R.layout.activity_map_one);
         this.mContext = this;
         mHandler = new Handler(this);
-
         mapView = (MapView) findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
         getIntentData();
         initView();
         initMap();
-        Constants.MyLog("页面初始化围栏");
         initFencn();
         // init();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -251,7 +251,9 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
         //是否有圆形的围栏
         McDeviceCircleFence circleFence = mcDeviceBasicsInfo.getCircleFence();
         if (null != circleFence && deviceId != -1) {
-            title_layout.setRightText(-1, CHANGESET);
+            if (deviceId != 0) {
+                title_layout.setRightText(-1, CHANGESET);
+            }
             //重新初始化围栏
             finishDraw();
 
@@ -409,7 +411,6 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
                         .decodeResource(getResources(),
                                 R.drawable.location_marker))).anchor(
                 (float) 0.5, (float) 0.5));
-
         aMap.setOnMapLoadedListener(this);// 设置amap加载成功事件监听器
         aMap.setOnMarkerClickListener(this);// 设置点击marker事件监听器
         aMap.setOnInfoWindowClickListener(this);// 设置点击infoWindow事件监听器
@@ -473,12 +474,24 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
             if (null != imageUrl && imageUrl.length > 0) {
                 markerOption.snippet(imageUrl[0]);
             }
-            if (mWorkStatus == 0) {
+            ImageView img=new ImageView(this);
+            img.setScaleType(ImageView.ScaleType.FIT_XY);
+            img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(this,Constants.MACHINE_ICON_WIDTH),DensityUtil.dip2px(this,Constants.MACHINE_ICON_HEIGHT)));
+            if (deviceId == 0) {
+                img.setImageResource(R.drawable.icon_machine_experience);
                 markerOption.icon(BitmapDescriptorFactory
-                        .fromResource(R.drawable.mc_workstatus_0));
+                        .fromView(img));
             } else {
-                markerOption.icon(BitmapDescriptorFactory
-                        .fromResource(R.drawable.mc_workstatus_1));
+                if (mWorkStatus == 1) {
+                    img.setImageResource(R.drawable.icon_machine_work);
+                    markerOption.icon(BitmapDescriptorFactory
+                            .fromView(img));
+                } else {
+                    img.setImageResource(R.drawable.icon_machine_unwork);
+                    markerOption.icon(BitmapDescriptorFactory
+                            .fromView(img));
+                }
+
             }
 
             /*markerOption.icon(BitmapDescriptorFactory
@@ -492,7 +505,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
             if (null != myMarker.getPosition())
                 aMap.moveCamera(CameraUpdateFactory
                         .newCameraPosition(new CameraPosition(myMarker
-                                .getPosition(), zoomDefault, 0, 30)));// 18
+                                .getPosition(), zoomDefault, 0, 0)));// 18
             scaleMap();
 
         }
@@ -966,8 +979,8 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
                         - MapBoundsLatLng));
                 bu.include(new LatLng(latMin - MapBoundsLatLng, lngMax
                         + MapBoundsLatLng));
-                aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bu.build(),
-                        MapBoundsPadding));
+//                aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bu.build(),
+//                        MapBoundsPadding));
             }
         }
     }
@@ -976,7 +989,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
      * marker点击时跳动一下
      */
     public void jumpPoint(final Marker marker) {
-        aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
+//        aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
         String str = mcDeviceBasicsInfo.getDeviceName();
         if (null != listPoint && listPoint.size() > 0) {
             str = "长按围栏边界点拖动可改变范围";
@@ -1022,6 +1035,9 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements OnClickLis
 
     @Override
     public void onMapLongClick(LatLng arg0) {
+        if (deviceId == 0) {
+            return;
+        }
         // TODO Auto-generated method stub
         Constants.MyLog("LongClick");
         Message msg = Message.obtain();

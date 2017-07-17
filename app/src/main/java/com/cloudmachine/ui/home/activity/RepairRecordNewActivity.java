@@ -17,11 +17,13 @@ import com.cloudmachine.adapter.RepairListAdapter;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.net.task.AllRepairHistoryAsync;
 import com.cloudmachine.struc.FinishBean;
 import com.cloudmachine.struc.RepairHistoryInfo;
 import com.cloudmachine.struc.RepairListInfo;
 import com.cloudmachine.struc.UnfinishedBean;
+import com.cloudmachine.ui.home.contract.RepairHistoryContract;
+import com.cloudmachine.ui.home.model.RepairHistoryModel;
+import com.cloudmachine.ui.home.presenter.RepairHistoryPresenter;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.ui.repair.activity.RepairFinishDetailActivity;
 import com.cloudmachine.utils.Constants;
@@ -29,7 +31,7 @@ import com.cloudmachine.utils.widgets.XListView;
 
 import java.util.ArrayList;
 
-public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements Handler.Callback, XListView.IXListViewListener, AdapterView.OnItemClickListener {
+public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistoryPresenter, RepairHistoryModel> implements RepairHistoryContract.View, Handler.Callback, XListView.IXListViewListener, AdapterView.OnItemClickListener {
 
     private Handler mHandler;
     private View noRepairRecord, have_repair_records;
@@ -47,6 +49,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
     private ArrayList<FinishBean> finishBeans = new ArrayList<>(); // 已完成集合
     private ArrayList<UnfinishedBean> unfinishedBeans = new ArrayList<>();// 未完成集合
     private ArrayList<RepairHistoryInfo> repairList = new ArrayList<>();// 合并两个集合
+    private long deviceId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
 
     @Override
     public void initPresenter() {
-
+        mPresenter.setVM(this, mModel);
     }
 
     protected void initView() {
@@ -94,8 +97,11 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
             }
 
         });
-
         showData();
+        deviceId = getIntent().getLongExtra(Constants.MC_DEVICEID, Constants.INVALID_DEVICE_ID);
+        if (deviceId == Constants.INVALID_DEVICE_ID) {
+            rlRepairNow.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -130,112 +136,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case Constants.HANDLER_GET_REPAIRHISTORY_SUCCESS:
-                xlvComplete.stopRefresh();
-                xlvComplete.stopLoadMore();
-                finishBeans.clear();
-                unfinishedBeans.clear();
-                repairList.clear();
-                if (null != msg.obj) {
-                    noRepairRecord.setVisibility(View.GONE);
-                    xlvComplete.setVisibility(View.VISIBLE);
-                    repairListInfo = (RepairListInfo) msg.obj;
-//                    TestCode();
-                    ArrayList<FinishBean> finish = repairListInfo.getFinish();
-                    ArrayList<UnfinishedBean> unfinished = repairListInfo
-                            .getUnfinished();
-                /*int finishLen = finish.size();
-                for(int f=0; f<finishLen; f++){
-					finishBeans.add(finish.get(finishLen-1-f));
-				}
-				int ufinishLen = unfinished.size();
-				for(int uf=0; uf<ufinishLen; uf++){
-					unfinishedBeans.add(unfinished.get(ufinishLen-1-uf));
-				}*/
-                    if (null != finish) {
-                        finishBeans.addAll(finish);
-                    }
-                    if (null != unfinished) {
-                        unfinishedBeans.addAll(unfinished);
-                    }
-
-                    int count = finishBeans.size() + unfinishedBeans.size();
-                    int finishCount = 0;
-                    for (int i = 0; i < count; i++) {
-                        RepairHistoryInfo historyInfo = new RepairHistoryInfo();
-                        if (i < unfinishedBeans.size()) {
-                            historyInfo.setLogo_flag(unfinishedBeans.get(i).getLogo_flag());
-                            historyInfo.setFlag(unfinishedBeans.get(i).getFlag());
-                            historyInfo.setPrice(unfinishedBeans.get(i).getPrice());
-                            historyInfo.setDopportunity(unfinishedBeans.get(i)
-                                    .getDopportunity());
-                            historyInfo.setVmachinenum(unfinishedBeans.get(i)
-                                    .getVmachinenum());
-                            historyInfo.setVbrandname(unfinishedBeans.get(i)
-                                    .getVbrandname());
-                            historyInfo.setVmaterialname(unfinishedBeans.get(i)
-                                    .getVmaterialname());
-                            historyInfo.setVmacopname(unfinishedBeans.get(i)
-                                    .getVmacopname());
-                            historyInfo.setVdiscription(unfinishedBeans.get(i)
-                                    .getVdiscription());
-                            historyInfo.setIs_EVALUATE(unfinishedBeans.get(i)
-                                    .getIs_EVALUATE());
-                            historyInfo.setVprodname(unfinishedBeans.get(i)
-                                    .getVprodname());
-                            historyInfo.setVmacoptel(unfinishedBeans.get(i)
-                                    .getVmacoptel());
-                            historyInfo.setNstatus(unfinishedBeans.get(i)
-                                    .getNstatus());
-                            historyInfo.setOrderNum(unfinishedBeans.get(i)
-                                    .getOrderNum());
-                            historyInfo.setNloanamount(unfinishedBeans.get(i).getNloanamount());
-                            historyInfo.setNloanamount_TYPE(unfinishedBeans.get(i).getNloanamount_TYPE());
-                            //Constants.MyLog(historyInfo.toString());
-                        } else {
-                            historyInfo.setLogo_flag(finishBeans.get(finishCount).getLogo_flag());
-                            historyInfo.setFlag(finishBeans.get(finishCount)
-                                    .getFlag());
-                            historyInfo.setPrice(finishBeans.get(finishCount)
-                                    .getPrice());
-                            historyInfo.setDopportunity(finishBeans
-                                    .get(finishCount).getDopportunity());
-                            historyInfo.setVmachinenum(finishBeans.get(finishCount)
-                                    .getVmachinenum());
-                            historyInfo.setVbrandname(finishBeans.get(finishCount)
-                                    .getVbrandname());
-                            historyInfo.setVmaterialname(finishBeans.get(
-                                    finishCount).getVmaterialname());
-                            historyInfo.setVmacopname(finishBeans.get(finishCount)
-                                    .getVmacopname());
-                            historyInfo.setVdiscription(finishBeans
-                                    .get(finishCount).getVdiscription());
-                            historyInfo.setIs_EVALUATE(finishBeans.get(finishCount)
-                                    .getIs_EVALUATE());
-                            historyInfo.setVprodname(finishBeans.get(finishCount)
-                                    .getVprodname());
-                            historyInfo.setVmacoptel(finishBeans.get(finishCount)
-                                    .getVmacoptel());
-                            historyInfo.setNstatus(finishBeans.get(finishCount)
-                                    .getNstatus());
-                            historyInfo.setOrderNum(finishBeans.get(finishCount)
-                                    .getOrderNum());
-                            historyInfo.setNloanamount_TYPE(finishBeans.get(finishCount).getNloanamount_TYPE());
-                            historyInfo.setNloanamount(finishBeans.get(finishCount).getNloanamount());
-                            finishCount++;
-
-                        }
-                        repairList.add(historyInfo);
-
-                    }
-                    showData();
-                    repairListAdapter.setUnFinishedNum(unfinishedBeans.size());
-                    repairListAdapter.notifyDataSetChanged();
-                } else {
-                    xlvComplete.setVisibility(View.GONE);
-                    noRepairRecord.setVisibility(View.VISIBLE);
-                    btnBottomRepair.setVisibility(View.GONE);
-                }
-
+//                updateView(msg);
                 break;
             case Constants.HANDLER_GET_REPAIRHISTORY_FAILD:
                 showData();
@@ -245,6 +146,10 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
         }
 
         return false;
+    }
+
+    private void updateView(RepairListInfo info) {
+
     }
 
 //    private void TestCode() {
@@ -291,9 +196,10 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
         // TODO Auto-generated method stub
         super.onResume();
         // Constants.MyLog("获取焦点");
-        new AllRepairHistoryAsync(RepairRecordNewActivity.this, mHandler).execute();
+//        new AllRepairHistoryAsync(RepairRecordNewActivity.this, mHandler).execute();
         //MobclickAgent.onPageStart(this.getClass().getName());
         //MobclickAgent.onPageStart(UMengKey.time_repair_history);
+        mPresenter.getRepairList(deviceId);
     }
 
     @Override
@@ -364,10 +270,10 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
                     intent.putExtra("orderNum", finishBeans.get(p).getOrderNum());
                     intent.putExtra("tel", finishBeans.get(p).getVmacoptel());
                     startActivity(intent);
-                }else{
-                    Intent intent=new Intent(RepairRecordNewActivity.this, RepairFinishDetailActivity.class);
-                    intent.putExtra("orderNum",finishBeans.get(p).getOrderNum());
-                    intent.putExtra("flag",finishBeans.get(p).getFlag());
+                } else {
+                    Intent intent = new Intent(RepairRecordNewActivity.this, RepairFinishDetailActivity.class);
+                    intent.putExtra("orderNum", finishBeans.get(p).getOrderNum());
+                    intent.putExtra("flag", finishBeans.get(p).getFlag());
                     startActivity(intent);
                 }
             }
@@ -378,7 +284,8 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
 
     @Override
     public void onRefresh() {
-        new AllRepairHistoryAsync(RepairRecordNewActivity.this, mHandler).execute();
+//        new AllRepairHistoryAsync(RepairRecordNewActivity.this, mHandler).execute();
+        mPresenter.getRepairList(deviceId);
 
     }
 
@@ -387,4 +294,117 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity implements H
 
     }
 
+    @Override
+    public void returnGetRepairList(RepairListInfo info) {
+        xlvComplete.stopRefresh();
+        xlvComplete.stopLoadMore();
+        finishBeans.clear();
+        unfinishedBeans.clear();
+        repairList.clear();
+        if (null != info) {
+            repairListInfo = info;
+            noRepairRecord.setVisibility(View.GONE);
+            xlvComplete.setVisibility(View.VISIBLE);
+//                    TestCode();
+            ArrayList<FinishBean> finish = repairListInfo.getFinish();
+            ArrayList<UnfinishedBean> unfinished = repairListInfo
+                    .getUnfinished();
+        /*int finishLen = finish.size();
+        for(int f=0; f<finishLen; f++){
+            finishBeans.add(finish.get(finishLen-1-f));
+        }
+        int ufinishLen = unfinished.size();
+        for(int uf=0; uf<ufinishLen; uf++){
+            unfinishedBeans.add(unfinished.get(ufinishLen-1-uf));
+        }*/
+            if (null != finish) {
+                finishBeans.addAll(finish);
+            }
+            if (null != unfinished) {
+                unfinishedBeans.addAll(unfinished);
+            }
+
+            int count = finishBeans.size() + unfinishedBeans.size();
+            int finishCount = 0;
+            for (int i = 0; i < count; i++) {
+                RepairHistoryInfo historyInfo = new RepairHistoryInfo();
+                if (i < unfinishedBeans.size()) {
+                    historyInfo.setLogo_flag(unfinishedBeans.get(i).getLogo_flag());
+                    historyInfo.setFlag(unfinishedBeans.get(i).getFlag());
+                    historyInfo.setPrice(unfinishedBeans.get(i).getPrice());
+                    historyInfo.setDopportunity(unfinishedBeans.get(i)
+                            .getDopportunity());
+                    historyInfo.setVmachinenum(unfinishedBeans.get(i)
+                            .getVmachinenum());
+                    historyInfo.setVbrandname(unfinishedBeans.get(i)
+                            .getVbrandname());
+                    historyInfo.setVmaterialname(unfinishedBeans.get(i)
+                            .getVmaterialname());
+                    historyInfo.setVmacopname(unfinishedBeans.get(i)
+                            .getVmacopname());
+                    historyInfo.setVdiscription(unfinishedBeans.get(i)
+                            .getVdiscription());
+                    historyInfo.setIs_EVALUATE(unfinishedBeans.get(i)
+                            .getIs_EVALUATE());
+                    historyInfo.setVprodname(unfinishedBeans.get(i)
+                            .getVprodname());
+                    historyInfo.setVmacoptel(unfinishedBeans.get(i)
+                            .getVmacoptel());
+                    historyInfo.setNstatus(unfinishedBeans.get(i)
+                            .getNstatus());
+                    historyInfo.setOrderNum(unfinishedBeans.get(i)
+                            .getOrderNum());
+                    historyInfo.setNloanamount(unfinishedBeans.get(i).getNloanamount());
+                    historyInfo.setNloanamount_TYPE(unfinishedBeans.get(i).getNloanamount_TYPE());
+                    //Constants.MyLog(historyInfo.toString());
+                } else {
+                    historyInfo.setLogo_flag(finishBeans.get(finishCount).getLogo_flag());
+                    historyInfo.setFlag(finishBeans.get(finishCount)
+                            .getFlag());
+                    historyInfo.setPrice(finishBeans.get(finishCount)
+                            .getPrice());
+                    historyInfo.setDopportunity(finishBeans
+                            .get(finishCount).getDopportunity());
+                    historyInfo.setVmachinenum(finishBeans.get(finishCount)
+                            .getVmachinenum());
+                    historyInfo.setVbrandname(finishBeans.get(finishCount)
+                            .getVbrandname());
+                    historyInfo.setVmaterialname(finishBeans.get(
+                            finishCount).getVmaterialname());
+                    historyInfo.setVmacopname(finishBeans.get(finishCount)
+                            .getVmacopname());
+                    historyInfo.setVdiscription(finishBeans
+                            .get(finishCount).getVdiscription());
+                    historyInfo.setIs_EVALUATE(finishBeans.get(finishCount)
+                            .getIs_EVALUATE());
+                    historyInfo.setVprodname(finishBeans.get(finishCount)
+                            .getVprodname());
+                    historyInfo.setVmacoptel(finishBeans.get(finishCount)
+                            .getVmacoptel());
+                    historyInfo.setNstatus(finishBeans.get(finishCount)
+                            .getNstatus());
+                    historyInfo.setOrderNum(finishBeans.get(finishCount)
+                            .getOrderNum());
+                    historyInfo.setNloanamount_TYPE(finishBeans.get(finishCount).getNloanamount_TYPE());
+                    historyInfo.setNloanamount(finishBeans.get(finishCount).getNloanamount());
+                    finishCount++;
+
+                }
+                repairList.add(historyInfo);
+
+            }
+            showData();
+            repairListAdapter.setUnFinishedNum(unfinishedBeans.size());
+            repairListAdapter.notifyDataSetChanged();
+        } else {
+            xlvComplete.setVisibility(View.GONE);
+            noRepairRecord.setVisibility(View.VISIBLE);
+            btnBottomRepair.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void returnGetRepairError() {
+        showData();
+    }
 }

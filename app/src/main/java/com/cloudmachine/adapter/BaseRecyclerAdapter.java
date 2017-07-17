@@ -31,6 +31,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter{
 
     public void updateItems(List<T> items) {
         mItems = items;
+        notifyDataSetChanged();
     }
 
 

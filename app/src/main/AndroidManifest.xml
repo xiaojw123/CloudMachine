@@ -176,25 +176,9 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
-            android:name=".main.SwitchViewActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.NoTitleBar"/>
-        <activity
-            android:name=".main.MainActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.MainMapActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
             android:name=".ui.login.acticity.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".main.NoticeInfoActivity"
-            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.InputPhoneNum"
             android:screenOrientation="portrait"
@@ -216,20 +200,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize"/>
         <activity
-            android:name=".main.NewBlogActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
-        <activity
             android:name=".activities.FindPasswordActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
-        <activity
-            android:name=".ui.personal.fragment.UpdateInfoActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
-        <activity
-            android:name=".main.DeviceActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateUnchanged"/>
         <activity
@@ -355,10 +326,6 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".activities.MessageContentActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.BeginnerGuideActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 

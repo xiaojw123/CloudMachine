@@ -38,7 +38,6 @@ import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.helper.DeviceHelper;
 import com.cloudmachine.listener.RecyclerItemClickListener;
-import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.MachineTypesListAsync;
 import com.cloudmachine.net.task.SubmitRepairAsync;
 import com.cloudmachine.recycleadapter.PhotoAdapter;
@@ -98,7 +97,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private LinearLayout macopTel;
     private LinearLayout discription;
 
-    private ArrayList<McDeviceInfo> deviceMacList;// 整体设备列表
+    private ArrayList<McDeviceInfo> deviceMacList=new ArrayList<>();// 整体设备列表
     private ArrayList<McDeviceInfo> ownDeviceInfos;// 自己的机器
 
     private RelativeLayout showButton;
@@ -169,8 +168,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
     private void initView() {
         initNewReapirView();
-        Constants.MyLog(MainActivity.deviceMacList.toString());
-        deviceMacList = MainActivity.deviceMacList; // 获取所有机器
         getOwnerMac(); // 获取自己拥有的机器
         showData(); // 控制按钮选择机器的显示影藏
     }

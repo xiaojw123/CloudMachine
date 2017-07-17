@@ -154,7 +154,7 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
     private boolean isFirstEnter(Context context, String className) {
         if (context == null || className == null || "".equalsIgnoreCase(className)) return false;
         String mResultStr = context.getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_WORLD_READABLE)
-                .getString(KEY_GUIDE_ACTIVITY, "");//取得所有类名 如 com.my.Ω`MainActivity
+                .getString(KEY_GUIDE_ACTIVITY, "");//取得所有类名
         if (mResultStr.equalsIgnoreCase("false"))
             return false;
         else

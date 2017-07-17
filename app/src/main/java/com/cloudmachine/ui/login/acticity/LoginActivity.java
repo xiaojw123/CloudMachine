@@ -29,10 +29,10 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.LoginAsync;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.UserInfo;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.login.contract.LoginContract;
 import com.cloudmachine.ui.login.model.LoginModel;
@@ -244,11 +244,9 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                 switchPwd(isExpress);
                 break;
             case R.id.weixin_login:
-                AppLog.print("weixin_login click");
                 loginToWeiXin();
                 break;
             case R.id.rl_weixin_login:
-                AppLog.print("rl_weixin_login click");
                 loginToWeiXin();
                 break;
             default:
@@ -260,13 +258,11 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     private void loginToWeiXin() {
         IWXAPI mApi = WXAPIFactory.createWXAPI(this, Constants.APP_ID, true);
         mApi.registerApp(Constants.APP_ID);
-        AppLog.print("loginToWeiXin_____");
-        if (mApi != null && mApi.isWXAppInstalled()) {
+        if (mApi.isWXAppInstalled()) {
             SendAuth.Req req = new SendAuth.Req();
             req.scope = "snsapi_userinfo";
             req.state = "wechat_sdk_demo_test_neng";
             mApi.sendReq(req);
-            AppLog.print("senReq___");
             finish();
         } else
             Toast.makeText(this, "用户未安装微信", Toast.LENGTH_SHORT).show();
@@ -278,7 +274,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_DOWN && flag == 1) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
             LoginActivity.this.finish();
             return true;
@@ -328,7 +324,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         MyApplication.getInstance().setLogin(true);
         MyApplication.getInstance().setFlag(true);
         if (flag == 2) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
         } else if (flag == 1) {
         } else if (flag == 3) {

@@ -60,6 +60,7 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.ShareDialog;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.VerisonCheckSP;
 import com.cloudmachine.utils.VersionU;
@@ -68,11 +69,13 @@ import com.cloudmachine.widget.NotfyImgView;
 import com.rey.material.widget.FloatingActionButton;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.functions.Action1;
 
 public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> implements Handler.Callback, HomeContract.View, AMap.OnMarkerClickListener, AMap.OnMapClickListener, BaseRecyclerAdapter.OnItemClickListener, View.OnClickListener {
     public static boolean isForeground = false;
@@ -131,6 +134,8 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
     NotfyImgView itmeMessageNimg;
 
     PopupWindow menuPop;
+    TextView devicesNumTv;
+    DeviceListAdpater deviceListAdpater;
     List<McDeviceInfo> mDeviceList;
     ImageView promotionImg;
     PopupWindow promotionPop;
@@ -147,10 +152,26 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        initPromotionView();
+//        BadgeUtil.sendMiuiAppUnreadNotificationNumber(getApplicationContext(), 15);
         MobclickAgent.enableEncrypt(true); // 友盟统计
         MobclickAgent.onEvent(this, UMengKey.time_home_map);
         mHandler = new Handler(this);
         registerMessageReceiver();
+        registerRxEvent();
+
+    }
+
+    private void registerRxEvent() {
+        mRxManager.on(Constants.UPDATE_DEVICE_LIST, new Action1<String>() {
+            @Override
+            public void call(String o) {
+                if (UserHelper.isLogin(HomeActivity.this)) {
+                    mPresenter.getDevices(UserHelper.getMemberId(HomeActivity.this), Constants.MC_DevicesList_AllType);
+                } else {
+                    mPresenter.getDevices(Constants.MC_DevicesList_AllType);
+                }
+            }
+        });
     }
 
     public void registerMessageReceiver() {
@@ -233,14 +254,14 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
         Member member = MemeberKeeper.getOauth(this);
         if (member != null) {
             long memberId = member.getId();
+            Glide.with(this).load(member.getLogo()).error(R.drawable.default_img).into(homeHeadImg);
+            homeNicknameTv.setText(member.getNickName());
             mPresenter.updateUnReadMessage(memberId);
             if (lasMemberId == memberId) {
                 return;
             }
             aMap.clear();
             aMap.invalidate();
-            Glide.with(this).load(member.getLogo()).error(R.drawable.default_img).into(homeHeadImg);
-            homeNicknameTv.setText(member.getNickName());
             mPresenter.getDevices(memberId, Constants.MC_DevicesList_AllType);
             lasMemberId = memberId;
         } else {
@@ -285,6 +306,9 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
     @OnClick({R.id.home_menu_btn, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_card_coupon, R.id.item_qr_code, R.id.item_about, R.id.item_share_app, R.id.home_me_img, R.id.home_box_img, R.id.home_actvite_img, R.id.home_question_ans, R.id.home_flush, R.id.home_repair_btn})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.pop_device_close_img:
+                menuPop.dismiss();
+                break;
             case R.id.home_marker_content:
                 gotoDeviceDetail(view);
                 break;
@@ -348,6 +372,8 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
                         Bundle askBundle = new Bundle();
                         askBundle.putString("url", ApiConstants.H5_HOST + "n/ask_myq?myid=" + wjdsId);
                         Constants.toActivity(this, QuestionCommunityActivity.class, askBundle, false);
+                    }else{
+                        ToastUtils.showToast(this,"没有挖机数据!");
                     }
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
@@ -412,23 +438,20 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
         }
         if (menuPop == null) {
             View contentView = LayoutInflater.from(this).inflate(R.layout.pop_home_menu, null);
-            TextView devicesNumTv = (TextView) contentView.findViewById(R.id.pop_devie_num_tv);
+            devicesNumTv = (TextView) contentView.findViewById(R.id.pop_devie_num_tv);
             RecyclerView devicesListRlv = (RecyclerView) contentView.findViewById(R.id.pop_device_list_rlv);
             devicesListRlv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
             ImageView deviceCloseImg = (ImageView) contentView.findViewById(R.id.pop_device_close_img);
-            deviceCloseImg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    menuPop.dismiss();
-                }
-            });
-            devicesNumTv.setText("设备(" + mDeviceList.size() + ")");
+            deviceCloseImg.setOnClickListener(this);
             devicesListRlv.setLayoutManager(new LinearLayoutManager(this));
-            DeviceListAdpater adpater = new DeviceListAdpater(this, mDeviceList);
-            adpater.setOnItemClickListener(this);
-            devicesListRlv.setAdapter(adpater);
+            deviceListAdpater = new DeviceListAdpater(this, mDeviceList);
+            deviceListAdpater.setOnItemClickListener(this);
+            devicesListRlv.setAdapter(deviceListAdpater);
             menuPop = getAnimPop(contentView);
+        } else {
+            deviceListAdpater.updateItems(mDeviceList);
         }
+        devicesNumTv.setText("设备(" + mDeviceList.size() + ")");
         menuPop.showAtLocation(getWindow().getDecorView(), Gravity.FILL, 0, 0);
     }
 
@@ -464,40 +487,45 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
 
     @Override
     public void updateDevices(List<McDeviceInfo> deviceList) {
-        int size = deviceList.size();
-        if (size > 1) {
-            menuBtn.setVisibility(View.VISIBLE);
-        } else {
-            menuBtn.setVisibility(View.GONE);
-        }
-        mDeviceList = deviceList;
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        mDeviceList = new ArrayList<>(deviceList);
         for (McDeviceInfo info : deviceList) {
             Marker marker;
             McDeviceLocation location = info.getLocation();
             double lat = location.getLat();
             double lng = location.getLng();
+            if (lat == 0 || lng == 0) {
+                mDeviceList.remove(info);
+                continue;
+            }
             LatLng latLng = new LatLng(lat, lng);
             builder.include(latLng);
-            if (info.getWorkStatus() == 1) {
-                if (info.getId() == 0) {
-                    marker = aMap.addMarker(getMarkerOptions(latLng, R.drawable.icon_machine_experience));
-                } else {
-                    marker = aMap.addMarker(getMarkerOptions(latLng, R.drawable.icon_machine_work));
-                }
+            if (info.getId() == 0) {
+                marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_experience));
             } else {
-                marker = aMap.addMarker(getMarkerOptions(latLng, R.drawable.icon_machine_unwork));
+                if (info.getWorkStatus() == 1) {
+                    marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_work));
+                } else {
+                    marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_unwork));
+                }
+
             }
             marker.setObject(info);
             curMarker = marker;
         }
         LatLngBounds bounds = builder.build();
-        aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
-        if (deviceList.size() == 1) {
-            if (curMarker != null) {
+        int size = mDeviceList.size();
+        if (size > 1) {
+            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+            menuBtn.setVisibility(View.VISIBLE);
+        } else {
+            if (size == 1 && curMarker != null) {
+                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curMarker.getPosition(), ZOOM_DEFAULT));
                 curMarker.showInfoWindow();
             }
+            menuBtn.setVisibility(View.GONE);
         }
+
     }
 
     @Override

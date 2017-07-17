@@ -1,7 +1,7 @@
 package com.cloudmachine.ui.home.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,7 +21,6 @@ import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cloudmachine.R;
-import com.cloudmachine.activities.RepairBasicInfomationActivity;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.struc.UnfinishedBean;
@@ -59,6 +58,9 @@ public class MaintenanceSupervisorActivity extends BaseMapActivity<MSupervisorPr
     TextView descTv;
     @BindView(R.id.maintenance_status_tv)
     TextView statusTv;
+    @BindView(R.id.maintence_cardview)
+    CardView curLocCv;
+
 
 
     Marker centerMarker;
@@ -76,6 +78,11 @@ public class MaintenanceSupervisorActivity extends BaseMapActivity<MSupervisorPr
         initGeocoder();
         setinfoWIndowHiden(false);
         mPresenter.getRepairItemView(UserHelper.getMemberId(this));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void initGeocoder() {
@@ -121,7 +128,7 @@ public class MaintenanceSupervisorActivity extends BaseMapActivity<MSupervisorPr
         if (centerMarker != null) {
             centerMarker.setPosition(cameraPosition.target);
         } else {
-            centerMarker = aMap.addMarker(getMarkerOptions(cameraPosition.target, R.drawable.icon_cur_repair_loc, CURRENT_LOC));
+            centerMarker = aMap.addMarker(getNormalMarkerOptions(this,cameraPosition.target, R.drawable.icon_cur_repair_loc, CURRENT_LOC));
         }
     }
 
@@ -199,17 +206,20 @@ public class MaintenanceSupervisorActivity extends BaseMapActivity<MSupervisorPr
 
     }
 
-    @OnClick({R.id.maintenance_order_container, R.id.radius_button_text})
+    @OnClick({R.id.maintence_cardview,R.id.maintenance_order_container, R.id.radius_button_text})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.maintence_cardview:
+                break;
             case R.id.maintenance_order_container:
                 if (unfinishedBean == null) {
                     return;
                 }
-                Intent intent = new Intent(this, RepairBasicInfomationActivity.class);
-                intent.putExtra("orderNum", unfinishedBean.getOrderNum());
-                intent.putExtra("flag", unfinishedBean.getFlag());
-                startActivity(intent);
+//                Intent intent = new Intent(this, RepairBasicInfomationActivity.class);
+//                intent.putExtra("orderNum", unfinishedBean.getOrderNum());
+//                intent.putExtra("flag", unfinishedBean.getFlag());
+//                startActivity(intent);
+                Constants.toActivity(this,RepairRecordNewActivity.class,null);
                 break;
             case R.id.radius_button_text:
                 Bundle bundle = new Bundle();

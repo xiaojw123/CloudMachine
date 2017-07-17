@@ -252,11 +252,6 @@
                     android:layout_gravity="center_vertical"
                     android:text="消息" />
                 </LinearLayout>
-
-                    <!--android:drawableLeft="@drawable/icon_message"-->
-
-
-                <!--android:drawableLeft="@drawable/icon_message"-->
             </FrameLayout>
 
 
@@ -270,16 +265,6 @@
                     android:text="@string/my_ask" />
             </FrameLayout>
 
-
-            <!--<View-->
-            <!--android:id="@+id/home_ask_view"-->
-            <!--android:layout_width="6dp"-->
-            <!--android:layout_height="6dp"-->
-            <!--android:layout_marginLeft="3dp"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--android:layout_toRightOf="@+id/home_ask_tv"-->
-            <!--android:background="@drawable/red_cricle_point"-->
-            <!--android:visibility="invisible" />-->
 
 
         </LinearLayout>

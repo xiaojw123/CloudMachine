@@ -1,12 +1,12 @@
 package com.cloudmachine.ui.homepage.fragment;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,6 @@ import com.cloudmachine.api.Api;
 import com.cloudmachine.api.HostType;
 import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.base.baserx.RxBus;
-import com.cloudmachine.base.baserx.RxConstants;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.net.task.AllMessagesListAsync;
 import com.cloudmachine.net.task.QuestionMessageAsync;
@@ -169,11 +168,6 @@ public class MessageFragment extends Fragment implements Callback, IXListViewLis
                     questionMessage.setMessageType(5);
                     dataList.add(0, questionMessage);
                     adapter.notifyDataSetChanged();
-                /*if(null != getActivity())
-                    ((MainActivity)getActivity()).updateQuestion(true);*/
-                } else {
-                /*if(null != getActivity())
-                    ((MainActivity)getActivity()).updateQuestion(false);*/
                 }
                 break;
             case Constants.HANDLER_QUESTION_FAIL:
@@ -181,9 +175,8 @@ public class MessageFragment extends Fragment implements Callback, IXListViewLis
                 ((MainActivity)getActivity()).updateQuestion(false);*/
                 break;
             case Constants.HANDLER_MESSAGEACCEPTE_SUCCESS:
-            /*((MainActivity)getActivity()).updateDevice();*/
                 //添加设备成功，通知刷新设备页面
-                RxBus.getInstance().post(RxConstants.REFRESH_DEVICE_FRAGMENT, "");
+                RxBus.getInstance().post(Constants.UPDATE_DEVICE_LIST, "");
                 Constants.isChangeDevice = true;
                 UIHelper.ToastMessage(mContext, "已经同意该邀请");
                 dataList.get(msg.arg1).setStatus(3);

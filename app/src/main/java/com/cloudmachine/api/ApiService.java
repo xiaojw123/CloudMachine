@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.RequestBody;
 import retrofit2.http.GET;
@@ -34,6 +35,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -48,20 +50,25 @@ import rx.Observable;
 
 public interface ApiService {
     @GET("device/queryWorkDetail")
-    Observable<BaseRespose<BOInfo>> getBOInfo(@Query("memberId") long memberId,@Query("orderNum") String orderNum,@Query("flag") String flag);
+    Observable<BaseRespose<BOInfo>> getBOInfo(@QueryMap Map<String,String> map);
     @GET("device/queryWorkDetail")
-    Observable<BaseRespose<CWInfo>> getCWInfo(@Query("memberId") long memberId, @Query("orderNum") String orderNum, @Query("flag") String flag);
+    Observable<BaseRespose<CWInfo>> getCWInfo(@QueryMap Map<String,String> map);
 
 //TODO: 2017/7/10  以下三个接口迁移修改 device-->repairStation
     @GET("repairStation/updateMemberRemark")
-    Observable<BaseRespose<JSONObject>> updateMemberRemark(@Query("fid") long fid, @Query("memberId") long memberId, @Query("deviceId") long deviceId, @Query("remark") String remark, @Query("roleId") long roleId);
+    Observable<BaseRespose<String>> updateMemberRemark(@Query("fid") long fid, @Query("memberId") long memberId, @Query("deviceId") long deviceId, @Query("remark") String remark, @Query("roleId") long roleId);
     @GET("repairStation/getRoleTypeList")
     Observable<BaseRespose<List<RoleBean>>> getRoleList();
     @GET("repairStation/favoriteSites")
     Observable<BaseRespose<SiteBean>> getSitesInfo(@Query("lng") double lng, @Query("lat") double lat);
 
     @GET("device/getRepairList")
+    Observable<BaseRespose<RepairListInfo>> getRepairList(@QueryMap Map<String,String> map);
+
+    @GET("device/getRepairList")
     Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId);
+    @GET("device/getRepairList")
+    Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId,@Query("deviceId") long deviceId);
 
     @GET("device/getDevice")
     Observable<BaseRespose<McDeviceBasicsInfo>> getDeviceInfo(@Query("deviceId") String deviceId, @Query("memberId") long memberId);

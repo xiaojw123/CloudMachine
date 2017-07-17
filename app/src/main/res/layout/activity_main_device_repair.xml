@@ -59,7 +59,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/repair_bottom_height"
                 android:layout_alignParentBottom="true"
-                android:background="@color/public_white" >
+                android:background="@color/public_white"
+				android:visibility="gone"
+				>
 
                 <com.cloudmachine.autolayout.widgets.RadiusButtonView
                     android:id="@+id/btn_bottom_repair"

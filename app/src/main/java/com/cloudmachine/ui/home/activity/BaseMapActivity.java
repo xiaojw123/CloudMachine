@@ -1,11 +1,14 @@
 package com.cloudmachine.ui.home.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -23,6 +26,8 @@ import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
 
@@ -31,6 +36,7 @@ import butterknife.ButterKnife;
 
 public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseModel> extends BaseAutoLayoutActivity<T, E> implements AMap.InfoWindowAdapter, AMap.OnMapClickListener, AMap.OnMarkerClickListener {
     protected static final float ZOOM_DEFAULT = 16;
+    protected static final float ZOOM_BIG=22;
     protected boolean isFirstLoc = true;
     private final int REQ_FINE_LOCATION = 0x12;
     @BindView(R.id.home_mapview)
@@ -138,18 +144,28 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
         }
     }
 
-    protected MarkerOptions getMarkerOptions(LatLng latLng, int resid) {
+
+    protected MarkerOptions getMarkerOptions(Context context,LatLng latLng, int resid) {
+        return getMarkerOptions(context,latLng,resid,"mark");
+    }
+
+
+    protected MarkerOptions getMarkerOptions(Context context,LatLng latLng, int resid, String title) {
         MarkerOptions options = new MarkerOptions();
-        options.icon(BitmapDescriptorFactory.fromResource(resid));
-        options.title("mark");
+        ImageView img=new ImageView(context);
+        img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(context, Constants.MACHINE_ICON_WIDTH),DensityUtil.dip2px(context,Constants.MACHINE_ICON_HEIGHT)));
+        img.setScaleType(ImageView.ScaleType.FIT_XY);
+        img.setImageResource(resid);
+        options.icon(BitmapDescriptorFactory.fromView(img));
+        options.title(title);
         options.position(latLng);
         return options;
     }
 
-    protected MarkerOptions getMarkerOptions(LatLng latLng, int resid, String title) {
+    protected MarkerOptions getNormalMarkerOptions(Context context,LatLng latLng, int resid, String title) {
         MarkerOptions options = new MarkerOptions();
         options.icon(BitmapDescriptorFactory.fromResource(resid));
-        options.title("mark");
+        options.title(title);
         options.position(latLng);
         return options;
     }

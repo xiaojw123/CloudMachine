@@ -1,5 +1,7 @@
 package com.cloudmachine.struc;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 public class McDeviceLocation implements Serializable{
@@ -9,6 +11,9 @@ public class McDeviceLocation implements Serializable{
 	private long deviceId;
 	private String province;
 	public String getPosition() {
+		if (TextUtils.isEmpty(position)){
+			position="暂无";
+		}
 		return position;
 	}
 	public long getDeviceId() {

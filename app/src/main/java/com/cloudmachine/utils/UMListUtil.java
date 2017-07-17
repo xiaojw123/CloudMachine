@@ -49,7 +49,6 @@ public class UMListUtil {
     public  List<String> stru2 = new ArrayList<>();
 
     private  void initCustomList() {
-        customMap.put("MainMapActivity", "time_machine_map");
         customMap.put("DeviceMcActivity", "time_machine_detection");
         customMap.put("FaultDitailsActivity", "time_machine_report");
         customMap.put("FaultDitailsListActivity", "time_machine_report_warning");
@@ -61,7 +60,6 @@ public class UMListUtil {
         customMap.put("MapOneActivity", "time_machine_fence");
         customMap.put("HistoricalTrackActivity", "time_machine_historylocus");
         customMap.put("SearchActivity", "time_search");
-        customMap.put("BeginnerGuideActivity", "time_machine_experience");
         customMap.put("RepairActivity", "time_repair_history");
         customMap.put("NewRepairActivity", "time_repair_create");
         customMap.put("EditLayoutActivity", "time_repair_create_attribute");
@@ -73,7 +71,6 @@ public class UMListUtil {
         customMap.put("MessageContentActivity", "time_message_detail");
         customMap.put("LoginActivity", "time_login");
         customMap.put("UpdatePwdActivity", "time_changepassword");
-        customMap.put("UpdateInfoActivity", "time_profile");
         customMap.put("EditPersonalActivity", "time_profile_edit");
         customMap.put("SuggestBackActivity", "time_setting_feedback");
         customMap.put("QrCodeActivity", "time_setting_rqcode");

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.github.mikephil.charting.utils.AppLog;
-
 /**
  * Created by zhy on 15/11/19.
  */
@@ -20,7 +18,6 @@ public class AutoLayoutActivity extends Activity
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs)
     {
-        AppLog.print("AppCompatActivity  onCreateView");
         View view = null;
         if (name.equals(LAYOUT_FRAMELAYOUT))
         {

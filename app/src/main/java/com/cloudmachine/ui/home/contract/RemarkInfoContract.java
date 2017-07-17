@@ -5,8 +5,6 @@ import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
 import com.cloudmachine.ui.home.model.RoleBean;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 import rx.Observable;
@@ -24,7 +22,7 @@ public interface RemarkInfoContract {
 
     interface Model extends BaseModel {
         Observable<List<RoleBean>> getRoleList();
-        Observable<JSONObject>  updateRemarkInfo(long fid, long memberId, long deviceId, String remark, long roleId);
+        Observable<String>  updateRemarkInfo(long fid, long memberId, long deviceId, String remark, long roleId);
 
     }
 

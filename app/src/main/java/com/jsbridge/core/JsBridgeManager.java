@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.webkit.WebView;
 
@@ -63,8 +62,9 @@ public class JsBridgeManager {
      * @param methodName  Native接口名称
      * @desc: register Native Method,只有register的Native Method才可以被调用
      */
-    public void registerMethod(String action, Class<? extends IModule> ModuleClass, String methodName) {
+    public  void registerMethod(String action, Class<? extends IModule> ModuleClass, String methodName) {
         Constants.MyLog("方法没有执行");
+        AppLog.print("registerMethod___");
         // 注册信息的合法性校验
         if (TextUtils.isEmpty(action) && ModuleClass == null && TextUtils.isEmpty(methodName)) {
             return;
@@ -83,10 +83,11 @@ public class JsBridgeManager {
                     // 方法遵循的规则二:
                     if (parameterTypes != null && parameterTypes.length == 4) {
                         // 方法遵循的规则三:
-                        if (parameterTypes[0] == AppCompatActivity.class && parameterTypes[1] == WebView.class && parameterTypes[2] == JSONObject.class && parameterTypes[3] == JsCallback.class) {
+                        if (parameterTypes[0] == Activity.class && parameterTypes[1] == WebView.class && parameterTypes[2] == JSONObject.class && parameterTypes[3] == JsCallback.class) {
                             Map<Class<? extends IModule>, String> map = new HashMap<>();
                             map.put(ModuleClass, methodName);
                             // 注册方法
+                            AppLog.print("putAction___action="+action);
                             registerMethods.put(action, map);
                         }
                     }
@@ -102,6 +103,7 @@ public class JsBridgeManager {
      */
     public boolean invokeNative(WebView webView, String url) {
         Constants.MyLog("进入拦截协议第1步url__" + url);
+        AppLog.print("invokeNative___");
         // 是否是指定的协议
         if (!url.startsWith("cloudm://")) {
             Constants.MyLog("进入拦截协议第1步url__" + url.startsWith("tel:"));
@@ -149,12 +151,10 @@ public class JsBridgeManager {
         if (!checkUrl(url)) {
             return false;
         }
-        Constants.MyLog("进入拦截协议第4步");
         // action是否注册
         Uri uriRequest = Uri.parse(url);
         String action = uriRequest.getHost();
-        Constants.MyLog("拿到的action是" + action);
-
+        AppLog.print("action=="+action+"   action is container__" + registerMethods.containsKey(action));
         if (!registerMethods.containsKey(action)) {
             return false;
         }

@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.struc.MemberInfoSlide;
 import com.cloudmachine.ui.home.contract.RemarkInfoContract;
 import com.cloudmachine.ui.home.model.RemarkInfoModel;
 import com.cloudmachine.ui.home.model.RoleBean;
@@ -19,7 +19,6 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
 import com.cloudmachine.utils.widgets.wheelview.WheelView;
 import com.cloudmachine.utils.widgets.wheelview.adapter.ArrayWheelAdapter;
-import com.github.mikephil.charting.utils.AppLog;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +29,12 @@ import butterknife.OnClick;
 
 public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresenter, RemarkInfoModel> implements RemarkInfoContract.View, OnWheelScrollListener {
     public static final String REMARK_INFO = "remark_info";
+    public static final String ROLEIDS = "roleIdS";
+    public static final String ID = "id";
+    public static final String NAME = "name";
+    public static final String ROLEREMARK = "roleRemark";
+    public static final String ROLE = "role";
+    public static final String MEMBER_ID = "memberId";
     @BindView(R.id.nickname_edt)
     EditText nicknameEdt;
     @BindView(R.id.remarkname_edt)
@@ -51,11 +56,10 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
     @BindView(R.id.remarkinfo_role_name)
     TextView roleNameTv;
     int selectIndex;
-    String[] items;
     List<RoleBean> mRoleList;
-    MemberInfoSlide memberInfo;
     HashMap<String, Long> mRoleMap = new HashMap<>();
     long deviceId;
+    String items[];
 
 
     @Override
@@ -67,8 +71,8 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
         mPresenter.updateRoleListView();
     }
 
+
     private void initView() {
-        memberInfo = (MemberInfoSlide) getIntent().getSerializableExtra(REMARK_INFO);
         deviceId = getIntent().getLongExtra(Constants.P_DEVICEID, 0);
         remarkinfoTitleview.setLeftOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +80,13 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
                 finish();
             }
         });
+        Intent intent = getIntent();
+        final long id = intent.getLongExtra(ID, 0);
+        final long memberId = intent.getLongExtra(MEMBER_ID,0);
+        String name = intent.getStringExtra(NAME);
+        String role = intent.getStringExtra(ROLE);
+        String roleRemark = intent.getStringExtra(ROLEREMARK);
+        final long rolesIds = intent.getLongExtra(ROLEIDS, 0);
         remarkinfoTitleview.setRightOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,17 +95,15 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
                 long roleId;
                 if (mRoleMap.containsKey(roleName)) {
                     roleId = mRoleMap.get(roleName);
-                }else{
-                    roleId=memberInfo.getRoleIdS();
+                } else {
+                    roleId = rolesIds;
                 }
-                long id=memberInfo.getId();
-                AppLog.print("updateRemarkInfo id___"+id+", memberid_"+memberInfo.getMemberId()+", deviceId_"+deviceId+", remark"+remark+", roleId"+roleId);
-                mPresenter.updateRemarkInfo(id, memberInfo.getMemberId(), deviceId, remark, roleId);
+                mPresenter.updateRemarkInfo(id, memberId, deviceId, remark, roleId);
             }
         });
-        nicknameEdt.setText(memberInfo.getName());
-        remarknameEdt.setText(memberInfo.getRoleRemark());
-        roleNameTv.setText(memberInfo.getRole());
+        nicknameEdt.setText(name);
+        remarknameEdt.setText(roleRemark);
+        roleNameTv.setText(role);
     }
 
     @Override

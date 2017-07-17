@@ -1,5 +1,7 @@
 package com.cloudmachine.ui.repair.contract;
 
+import android.content.Context;
+
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
@@ -20,15 +22,15 @@ public interface RepairFinishContract {
 
     interface Model extends BaseModel {
 
-        Observable<BOInfo> getBoInfo(long memberId, String orderNum);
+        Observable<BOInfo> getBoInfo(Context context, String orderNum,String flag);
 
-        Observable<CWInfo> getCWInfo(long memberId, String orderNum);
+        Observable<CWInfo> getCWInfo(Context context, String orderNum,String flag);
 
     }
 
     abstract class Presenter extends BasePresenter<RepairFinishContract.View,RepairFinishContract.Model> {
 
-        public abstract void updateRepairFinishDetail(long memberId, String orderNum, String flag);
+        public abstract void updateRepairFinishDetail(String orderNum, String flag);
 
     }
 

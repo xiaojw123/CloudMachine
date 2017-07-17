@@ -21,7 +21,6 @@ public class PersonalDataPresenter extends PersonalDataContract.Presenter{
         .subscribe(new RxSubscriber<String>(mContext,false) {
             @Override
             protected void _onNext(String s) {
-                ToastUtils.success(s,true);
                 mView.returnModifyNickName();
             }
 
@@ -38,7 +37,6 @@ public class PersonalDataPresenter extends PersonalDataContract.Presenter{
         .subscribe(new RxSubscriber<String>(mContext,false) {
             @Override
             protected void _onNext(String s) {
-                ToastUtils.success(s,true);
                 mView.returnModifyLogo();
             }
 

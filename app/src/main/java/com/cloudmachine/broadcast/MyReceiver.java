@@ -8,9 +8,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cloudmachine.activities.AboutCloudActivity;
-import com.cloudmachine.activities.DeviceMcActivity;
 import com.cloudmachine.activities.WanaCloudBox;
-import com.cloudmachine.main.MainActivity;
+import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.homepage.activity.ViewMessageActivity;
@@ -82,13 +81,13 @@ public class MyReceiver extends BroadcastReceiver {
         return sb.toString();
     }
 
-    //send msg to MainActivity
+    //send msg to HomeActivity
     private void processCustomMessage(Context context, Bundle bundle) {
         if (HomeActivity.isForeground) {
             String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
             String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
-            Intent msgIntent = new Intent(MainActivity.MESSAGE_RECEIVED_ACTION);
-            msgIntent.putExtra(MainActivity.KEY_MESSAGE, message);
+            Intent msgIntent = new Intent(HomeActivity.MESSAGE_RECEIVED_ACTION);
+            msgIntent.putExtra(HomeActivity.KEY_MESSAGE, message);
             if (!TextUtils.isEmpty(extras)) {
                 try {
                     JSONObject extraJson = new JSONObject(extras);
@@ -124,7 +123,7 @@ public class MyReceiver extends BroadcastReceiver {
                             if (extraJson.has("deviceId") && extraJson.has("nickName")) {
                                 String deviceIdStr = extraJson.getString("deviceId");
                                 String nickNameStr = extraJson.getString("nickName");
-                                Intent i2 = new Intent(context, DeviceMcActivity.class);
+                                Intent i2 = new Intent(context, DeviceDetailActivity.class);
                                 i2.putExtra(Constants.P_DEVICEID, Long.valueOf(deviceIdStr));
                                 i2.putExtra(Constants.P_DEVICENAME, nickNameStr);
                                 //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

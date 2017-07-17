@@ -18,11 +18,11 @@ import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.net.task.GetAccessTokenAsync;
 import com.cloudmachine.net.task.GetUserMsgAsync;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.UserInfo;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.login.acticity.VerifyPhoneNumActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
@@ -59,7 +59,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
     private int mSex;
     private String mUnionid;
     private String mOpenId;
-    private Member mMember;
     private Member member;
 
     @Override
@@ -206,21 +205,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                             } catch (Exception e) {
                                 Constants.MyLog("WXEntryActivity" + e.toString());
                             }
-
                             if (member != null) {
                                 excamMaster(member.getId());
                             }
-                            MemeberKeeper.saveOAuth(member, WXEntryActivity.this);
-                            MyApplication.getInstance().setLogin(true);
-                            MyApplication.getInstance().setFlag(true);
-                            Intent intent = new Intent(WXEntryActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                            MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
-                            Constants.isMcLogin = true;
-                            //调用JPush API设置Alias
-                            mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
-                            MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
                         } else {
                             AppLog.print("set 3");
                             JsonElement messageElement = jsonObject.get("message");
@@ -230,6 +217,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                         }
 
                     }
+
+
 
                     @Override
                     protected void _onError(String message) {
@@ -287,7 +276,20 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
     public void onBackPressed() {
         super.onBackPressed();
         Constants.MyLog("执行了");
-        Constants.toActivity(WXEntryActivity.this, MainActivity.class, null, true);
+        Constants.toActivity(WXEntryActivity.this, HomeActivity.class, null, true);
+    }
+    private void loginComplete() {
+        MemeberKeeper.saveOAuth(member, WXEntryActivity.this);
+        MyApplication.getInstance().setLogin(true);
+        MyApplication.getInstance().setFlag(true);
+        Intent intent = new Intent(WXEntryActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
+        MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
+        Constants.isMcLogin = true;
+        //调用JPush API设置Alias
+        mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, member.getId() + ""));
+        MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
     }
 
     private void excamMaster(Long id) {
@@ -297,18 +299,22 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                 .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
                     @Override
                     protected void _onNext(UserInfo userInfo) {
+                        AppLog.print("_onNext___userinfo"+userInfo+"___mUserinfo___"+userInfo.userinfo);
                         Long wjdsId = userInfo.userinfo.id;
                         Long status = userInfo.userinfo.status;
                         Long role_id = userInfo.userinfo.role_id;
-                        mMember.setWjdsId(wjdsId);
-                        mMember.setWjdsStatus(status);
-                        mMember.setWjdsRole_id(role_id);
-                        MemeberKeeper.saveOAuth(mMember, mContext);
-                        WXEntryActivity.this.finish();
+                        member.setWjdsId(wjdsId);
+                        member.setWjdsStatus(status);
+                        member.setWjdsRole_id(role_id);
+//                        MemeberKeeper.saveOAuth(member, mContext);
+                        loginComplete();
                     }
 
                     @Override
                     protected void _onError(String message) {
+                        AppLog.print("_onError___"+message);
+                        ToastUtils.showToast(WXEntryActivity.this,"挖机数据同步失败！"+message);
+                        loginComplete();
 
                     }
                 }));

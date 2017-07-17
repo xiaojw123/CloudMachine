@@ -135,7 +135,7 @@ public class WebviewActivity extends BaseAutoLayoutActivity implements
         this.webview = (WebView) findViewById(R.id.test_webview);
         // 设置可以自动加载图片
         webview.getSettings().setLoadsImagesAutomatically(true);
-        webview.getSettings().setBuiltInZoomControls(true);
+        webview.getSettings().setBuiltInZoomControls(false);
         webview.getSettings().setJavaScriptEnabled(true);
         webview.getSettings().setUseWideViewPort(true);
         webview.getSettings().setLoadWithOverviewMode(true);

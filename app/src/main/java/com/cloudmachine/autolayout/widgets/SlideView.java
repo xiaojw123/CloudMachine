@@ -14,7 +14,7 @@ import com.cloudm.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
 
 
-public class SlideView extends AutoLinearLayout {
+public class SlideView extends AutoLinearLayout{
 
     private static final String TAG = "SlideView";
 

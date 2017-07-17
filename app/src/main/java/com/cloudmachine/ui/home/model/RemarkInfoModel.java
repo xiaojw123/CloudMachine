@@ -5,8 +5,6 @@ import com.cloudmachine.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.ui.home.contract.RemarkInfoContract;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 import rx.Observable;
@@ -23,7 +21,7 @@ public class RemarkInfoModel implements RemarkInfoContract.Model {
     }
 
     @Override
-    public Observable<JSONObject> updateRemarkInfo(long fid, long memberId, long deviceId, String remark, long roleId) {
-        return Api.getDefault(HostType.CLOUDM_HOST).updateMemberRemark(fid,memberId,deviceId,remark,roleId).compose(RxHelper.<JSONObject>handleResult());
+    public Observable<String> updateRemarkInfo(long fid, long memberId, long deviceId, String remark, long roleId) {
+        return Api.getDefault(HostType.CLOUDM_HOST).updateMemberRemark(fid,memberId,deviceId,remark,roleId).compose(RxHelper.<String>handleResult());
     }
 }

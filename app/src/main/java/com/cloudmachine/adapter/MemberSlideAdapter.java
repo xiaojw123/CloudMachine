@@ -130,7 +130,8 @@ public class MemberSlideAdapter extends BaseAdapter implements OnSlideListener{
 		}else{
 			holder.title.setTextColor(context.getResources().getColor(R.color.public_black));
 		}
-		holder.summary.setText(dInfo.getRoleRemark()!=null?dInfo.getRoleRemark():dInfo.getRole());
+//		holder.summary.setText(dInfo.getRoleRemark()!=null?dInfo.getRoleRemark():dInfo.getRole());
+		holder.summary.setText(dInfo.getRole());
 		ImageLoader.getInstance().displayImage(imgString, holder.info_img,
 				displayImageOptions, commImageLoadingLis);
 		holder.deleteHolder.setOnClickListener(new llClick(position));

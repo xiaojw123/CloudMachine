@@ -647,9 +647,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     .crossFade()
                     .error(R.drawable.default_img)
                     .into(mHeadIamge);
+            memberInfo.setLogo(mWecharLogo);
         } else {
             memberInfo.setLogo(mUrl);
-            MemeberKeeper.saveOAuth(memberInfo,this);
             Glide.with(mContext).load(mUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
@@ -657,6 +657,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     .error(R.drawable.default_img)
                     .into(mHeadIamge);
         }
+        MemeberKeeper.saveOAuth(memberInfo,this);
         synchWjdsData();
     }
 

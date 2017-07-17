@@ -54,7 +54,6 @@ public class ActivitesActivity extends BaseAutoLayoutActivity<ActivitiesPresente
 
     @Override
     public void returnHomeBannerInfo(ArrayList<HomeBannerBean> homeBannerBeen) {
-        AppLog.print("returnHomeBannerInfo___");
         mActivitesAdapter.updateItems(homeBannerBeen);
     }
 

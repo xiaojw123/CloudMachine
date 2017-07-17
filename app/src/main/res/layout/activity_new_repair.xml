@@ -394,7 +394,9 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/public_textsize3"
+                >
 
                 <com.cloudmachine.autolayout.widgets.RadiusButtonView
                     android:id="@+id/btn_bottom_repair"

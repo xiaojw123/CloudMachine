@@ -32,6 +32,7 @@ import com.cloudmachine.net.task.SearchMemberAsync;
 import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.struc.MemberInfo;
 import com.cloudmachine.struc.News;
+import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UIHelper;
 import com.cloudmachine.utils.UMListUtil;
@@ -356,7 +357,7 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
 		McDeviceInfo info = mAdapter.getItem(position-1);
 		long dId = info.getId();
 		
-		Intent intent = new Intent(mContext,DeviceMcActivity.class);
+		Intent intent = new Intent(mContext,DeviceDetailActivity.class);
 //		intent.putExtra(Constants.P_DEVICEID, dId);
 //		intent.putExtra(Constants.P_DEVICENAME, info.getName());
 //		intent.putExtra(Constants.P_DEVICEMAC, info.getMacAddress());

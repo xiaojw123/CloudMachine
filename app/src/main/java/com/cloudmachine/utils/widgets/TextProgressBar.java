@@ -34,7 +34,6 @@ public class TextProgressBar extends ProgressBar {
 
 	public TextProgressBar(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		// mActivity = (MainActivity) context;
 		initText();
 	}
 

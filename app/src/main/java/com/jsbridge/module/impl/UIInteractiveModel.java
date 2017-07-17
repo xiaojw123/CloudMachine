@@ -6,7 +6,7 @@ import android.webkit.WebView;
 
 import com.cloudmachine.activities.WanaCloudBox;
 import com.cloudmachine.api.ApiConstants;
-import com.cloudmachine.main.MainActivity;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.homepage.activity.InsuranceActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.personal.activity.AskMyQuestionActicity;
@@ -110,7 +110,7 @@ public class UIInteractiveModel implements IModule {
                         AskMyQuestionActicity askMyQuestionActicity = (AskMyQuestionActicity) activity;
                         Bundle bundle = new Bundle();
                         bundle.putInt(Constants.P_MainActivity_Fragment_Id,3);
-                        Constants.toActivity(askMyQuestionActicity, MainActivity.class,bundle,true);
+                        Constants.toActivity(askMyQuestionActicity, HomeActivity.class,bundle,true);
                         break;
                 }
             }

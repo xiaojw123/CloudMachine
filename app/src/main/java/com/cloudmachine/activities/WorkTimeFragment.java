@@ -102,7 +102,7 @@ public class WorkTimeFragment extends Fragment implements View.OnClickListener,C
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
       super.onCreateView(inflater, container, savedInstanceState);
-        UMListUtil.getUMListUtil().sendStruEvent("WorkTimeFragment",getContext());
+        UMListUtil.getUMListUtil().sendStruEvent("WorkTimeFragment",getActivity());
         if (null != viewParent) {
             ViewGroup parent = (ViewGroup) viewParent.getParent();
             if (null != parent) {

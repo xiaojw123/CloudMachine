@@ -14,36 +14,18 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
-import com.github.mikephil.charting.utils.AppLog;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-
-import java.util.concurrent.ExecutionException;
 
 import static com.cloudmachine.utils.WeChatShareUtil.weChatShareUtil;
 
 
-public class ShareDialog extends Dialog {
-
-    private final View      view;
-    private       ImageView ivSession;
-    private       ImageView ivTimeline;
-    private       Button    btnCancel;
-
+public class ShareDialog extends Dialog implements View.OnClickListener {
+    private final View view;
     private String webpageUrl;
     private String msgTitle;
     private String msgDesc;
-    private Bitmap msgBitmap;
-    private boolean result = true;
     private Context mContext;
-    private String  sessionTitle;
-    private String  sessionDescription;
-    private String  sessionUrl;
-    private Bitmap  sessionThumb;
-    private String  title;
-    private String  description;
-    private String  url;
     private int imageSource = -1;
-    private Bitmap mThumb;
     private String iconUrl;
 
     public ShareDialog(Context context, String webpageUrl, String msgTitle, String msgDesc, int resource) {
@@ -59,7 +41,6 @@ public class ShareDialog extends Dialog {
         setContentView(view);
         initWindow();
         initView();
-        initData();
     }
 
     public ShareDialog(Context context, String webpageUrl, String msgTitle, String msgDesc, String icon) {
@@ -75,7 +56,6 @@ public class ShareDialog extends Dialog {
         setContentView(view);
         initWindow();
         initView();
-        initData();
     }
 
     /**
@@ -92,80 +72,40 @@ public class ShareDialog extends Dialog {
     }
 
     private void initView() {
-        ivSession = (ImageView) view.findViewById(R.id.iv_session);
-        ivTimeline = (ImageView) view.findViewById(R.id.iv_timeline);
-        btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        if (weChatShareUtil == null) {
+            weChatShareUtil = WeChatShareUtil.getInstance(mContext);
+        }
+        ImageView ivSession = (ImageView) view.findViewById(R.id.iv_session);
+        ImageView ivTimeline = (ImageView) view.findViewById(R.id.iv_timeline);
+        Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(this);
+        ivSession.setOnClickListener(this);
+        ivTimeline.setOnClickListener(this);
+
     }
 
-    private void initData() {
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_cancel:
                 dismiss();
-            }
-        });
-
-        // 分享给微信朋友
-        ivSession.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (null != webpageUrl) {
-                    sessionUrl = webpageUrl;
+                break;
+            case R.id.iv_session:  // 分享给微信朋友
+                boolean result1 = true;
+                try {
+                    result1 = weChatShareUtil.shareUrl(webpageUrl, msgTitle, null, msgDesc, SendMessageToWX.Req.WXSceneSession);
+                } catch (Exception e) {
+                    result1 = false;
                 }
-                if (null != msgTitle) {
-                    sessionTitle = msgTitle;
-                }
-                if (null != msgDesc) {
-                    sessionDescription = msgDesc;
-                }
-
-                if (imageSource != -1) {
-                    sessionThumb = BitmapFactory.decodeResource(mContext.getResources(), imageSource);
-                } else {
-                    sessionThumb = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.corner);
-                }
-                if (iconUrl != null) {
-                    try {
-                        sessionThumb = Glide.with(mContext)
-                                .load(iconUrl)
-                                .asBitmap()
-                                .centerCrop()
-                                .into(20, 20)
-                                .get();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (weChatShareUtil==null){
-                    weChatShareUtil=WeChatShareUtil.getInstance(mContext);
-                }
-                AppLog.print("sheredUtl__"+weChatShareUtil+"___sessionUrl__"+sessionUrl+"，sessionTitle");
-                result = weChatShareUtil.shareUrl(sessionUrl, sessionTitle, null, sessionDescription, SendMessageToWX.Req.WXSceneSession);
-                if (!result) {
+                if (!result1) {
                     Toast.makeText(mContext, "分享失败!", Toast.LENGTH_SHORT).show();
                 }
                 dismiss();
-            }
-        });
-
-        // 分享到朋友圈
-        ivTimeline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+                break;
+            case R.id.iv_timeline: // 分享到朋友圈
+                boolean result2 = true;
                 if (weChatShareUtil.isSupportWX()) {
-                    if (null != webpageUrl) {
-                        url = webpageUrl;
-                    }
-                    if (null != msgTitle) {
-                        title = msgTitle;
-                    }
-                    if (null != msgDesc) {
-                        description = msgDesc;
-                    }
+                    Bitmap mThumb;
                     if (imageSource != -1) {
                         mThumb = BitmapFactory.decodeResource(mContext.getResources(), imageSource);
                     } else {
@@ -180,60 +120,26 @@ public class ShareDialog extends Dialog {
                                     .centerCrop()
                                     .into(20, 20)
                                     .get();
-                        } catch (InterruptedException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
+                            result2 = false;
                         }
                     }
-
-                    result = weChatShareUtil.shareUrl(url, title, mThumb, description, SendMessageToWX.Req.WXSceneTimeline);
+                    try {
+                        result2 = weChatShareUtil.shareUrl(webpageUrl, msgTitle, mThumb, msgDesc, SendMessageToWX.Req.WXSceneTimeline);
+                    } catch (Exception e) {
+                        result2 = false;
+                    }
                 } else {
                     Toast.makeText(mContext, "手机上微信版本不支持分享到朋友圈", Toast.LENGTH_SHORT).show();
                 }
-                if (!result) {
+                if (!result2) {
                     Toast.makeText(mContext, "没有检测到微信", Toast.LENGTH_SHORT).show();
                 }
                 dismiss();
-            }
-        });
+                break;
+        }
+
+
     }
-
-
 }
-
-
-/**
- * 测试阶段发起微信分享
- */
-   /* private void shareTest(int type){
-        String webpageUrl = "http://baidu.com";
-        String msgTitle = "狗粮";
-        String msgDesc = "吃狗粮";
-        Bitmap msgBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.close);
-        share(webpageUrl,msgTitle,msgDesc,type,msgBitmap);
-    }*/
-
-
-/**
- * 发起微信分享
- * @param webpageUrl 分享url
- * @param msgTitle  分享title
- * @param msgDesc   分享desc
- * @param type  分享类型,Session微信好友/Timeline朋友圈
- */
-    /*private void share(String webpageUrl,String msgTitle,String msgDesc,int type,Bitmap msgBitmap){
-        WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = webpageUrl;
-        WXMediaMessage msg = new WXMediaMessage(webpage);
-
-        msg.title = msgTitle;
-        msg.description = msgDesc;
-        Bitmap thumb = msgBitmap;
-        msg.setThumbImage(thumb);
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = String.valueOf(System.currentTimeMillis());
-        req.message = msg;
-        req.scene = type;
-        //MyApplication.instance.wxapi.sendReq(req);
-    }*/

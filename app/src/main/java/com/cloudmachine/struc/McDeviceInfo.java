@@ -135,7 +135,7 @@ public class McDeviceInfo implements Serializable{
 		return "McDeviceInfo [id=" + id + ", name=" + name + ", model=" + model
 				+ ", brand=" + brand + ", image=" + image + ", macAddress="
 				+ macAddress + ", checkStatus=" + checkStatus + ", workStatus="
-				+ workStatus + ", type=" + type + ", location=" + location
+				+ workStatus + ", type=" + type + ", location=" + location+ ", workTime=" + workTime
 				+ "]";
 	}
 	

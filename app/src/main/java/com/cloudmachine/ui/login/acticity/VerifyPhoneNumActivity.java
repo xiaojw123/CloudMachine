@@ -22,10 +22,10 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.main.MainActivity;
 import com.cloudmachine.recyclerbean.CheckNumBean;
 import com.cloudmachine.struc.Member;
 import com.cloudmachine.struc.UserInfo;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.login.contract.VerifyPhoneNumContract;
 import com.cloudmachine.ui.login.model.VerifyPhoneNumModel;
 import com.cloudmachine.ui.login.presenter.VerifyPhoneNumPresenter;
@@ -292,7 +292,7 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                 excamMaster(mMember.getId());
             }
 
-            Intent intent = new Intent(VerifyPhoneNumActivity.this, MainActivity.class);
+            Intent intent = new Intent(VerifyPhoneNumActivity.this, HomeActivity.class);
             startActivity(intent);
             MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
 

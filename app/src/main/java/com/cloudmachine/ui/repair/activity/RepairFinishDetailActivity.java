@@ -20,7 +20,6 @@ import com.cloudmachine.R;
 import com.cloudmachine.activities.WebviewActivity;
 import com.cloudmachine.api.ApiConstants;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.struc.BOInfo;
 import com.cloudmachine.struc.CWInfo;
 import com.cloudmachine.struc.WorkDetailBean;
@@ -57,7 +56,7 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
         ButterKnife.bind(this);
         String orderNum = getIntent().getStringExtra("orderNum");
         String flag = getIntent().getStringExtra("flag");
-        mPresenter.updateRepairFinishDetail(UserHelper.getMemberId(this), orderNum, flag);
+        mPresenter.updateRepairFinishDetail(orderNum, flag);
     }
 
     @Override

@@ -19,7 +19,6 @@ import com.cloudmachine.activities.AddDeviceActivity;
 import com.cloudmachine.activities.HistoricalTrackActivity;
 import com.cloudmachine.activities.MapOneActivity;
 import com.cloudmachine.activities.OilAmountActivity;
-import com.cloudmachine.activities.RepairRecordActivity;
 import com.cloudmachine.activities.WorkHoursActivity;
 import com.cloudmachine.autolayout.widgets.DynamicWave;
 import com.cloudmachine.helper.UserHelper;
@@ -86,46 +85,56 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         startlocaction(this);
         if (UserHelper.isLogin(this)) {
             mPresenter.getDeviceInfo(String.valueOf(deviceId), UserHelper.getMemberId(this));
-        }else{
+        } else {
             mPresenter.getDeviceInfo(String.valueOf(deviceId));
         }
     }
 
     private void initView() {
         initBottomAnim();
-        mcDeviceInfo = (McDeviceInfo) getIntent().getSerializableExtra(Constants.MC_DEVICEINFO);
-        if (mcDeviceInfo != null) {
-            oilValue=(int) mcDeviceInfo.getOilLave();
-            oilWave.setLave(oilValue);
-            float time = mcDeviceInfo.getWorkTime();
-            workLenTpb.setProgress((int) time);
-            workLenTpb.setText(ValueFormatUtil.getWorkTime(time, "0时"));
-            deviceId = mcDeviceInfo.getId();
-            deviceName = mcDeviceInfo.getName();
-            mTitleView.setTitleNmae(deviceName);
-            mTitleView.setRightText(this);
-            mcDeviceLoc = mcDeviceInfo.getLocation();
-            mLocTv.setText(mcDeviceLoc.getPosition());
-            if (mcDeviceInfo.getWorkStatus()==1){
-                workStatusTv.setVisibility(View.VISIBLE);
-            }else{
-                workStatusTv.setVisibility(View.GONE);
-            }
-            LatLng latLng = new LatLng(mcDeviceLoc.getLat(), mcDeviceLoc.getLng());
-            aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
-            Marker marker;
-            if (mcDeviceInfo.getId()==0){
-                marker = aMap.addMarker(getMarkerOptions(latLng, R.drawable.icon_machine_experience));
-            }else{
-            if (mcDeviceInfo.getWorkStatus() == 1) {
-                marker = aMap.addMarker(getMarkerOptions(latLng, R.drawable.icon_machine_work));
-            } else {
-                marker = aMap.addMarker(getMarkerOptions(latLng, R.drawable.icon_machine_unwork));
-            }
-            }
-            marker.showInfoWindow();
-            mcDeviceInfo.getId();
+        Bundle bundle = getIntent().getExtras();
+        mcDeviceInfo = (McDeviceInfo) bundle.getSerializable(Constants.MC_DEVICEINFO);
+        if (mcDeviceInfo == null) {
+            mcDeviceInfo = new McDeviceInfo();
+            String position = bundle.getString("devicePosition");
+            mcDeviceInfo.setName(bundle.getString("deviceName"));
+            mcDeviceInfo.setId(bundle.getLong("deviceId"));
+            mcDeviceInfo.setWorkStatus(bundle.getInt("deviceWorkState"));
+            McDeviceLocation loc = new McDeviceLocation();
+            loc.setPosition(position);
+            mcDeviceInfo.setLocation(loc);
         }
+        oilValue = (int) mcDeviceInfo.getOilLave();
+        oilWave.setLave(oilValue);
+        float time = mcDeviceInfo.getWorkTime();
+        workLenTpb.setProgress((int) time);
+        workLenTpb.setText(ValueFormatUtil.getWorkTime(time, "0时"));
+        deviceId = mcDeviceInfo.getId();
+        deviceName = mcDeviceInfo.getName();
+        mTitleView.setTitleNmae(deviceName);
+        mTitleView.setRightText(this);
+        mcDeviceLoc = mcDeviceInfo.getLocation();
+        mLocTv.setText(mcDeviceLoc.getPosition());
+        if (mcDeviceInfo.getWorkStatus() == 1) {
+            workStatusTv.setVisibility(View.VISIBLE);
+        } else {
+            workStatusTv.setVisibility(View.GONE);
+        }
+        LatLng latLng = new LatLng(mcDeviceLoc.getLat(), mcDeviceLoc.getLng());
+        aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
+        Marker marker;
+
+        if (mcDeviceInfo.getId() == 0) {
+            marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_experience));
+        } else {
+            if (mcDeviceInfo.getWorkStatus() == 1) {
+                marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_work));
+            } else {
+                marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_unwork));
+            }
+
+        }
+        marker.showInfoWindow();
     }
 
     private void initBottomAnim() {
@@ -193,9 +202,8 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 break;
             case R.id.device_detail_repair_record:
                 Bundle bundle_repair = new Bundle();
-                bundle_repair.putSerializable(Constants.P_DEVICEINFO_MY, mcDeviceInfo);
-                bundle_repair.putLong(Constants.P_DEVICEID, deviceId);
-                Constants.toActivity(this, RepairRecordActivity.class, bundle_repair);
+                bundle_repair.putLong(Constants.MC_DEVICEID, deviceId);
+                Constants.toActivity(this, RepairRecordNewActivity.class, bundle_repair);
                 break;
             case R.id.device_fence_layout:
                 Constants.toActivity(this, MapOneActivity.class, mBundle);
@@ -235,8 +243,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     private ValueAnimator.AnimatorUpdateListener bottomAnimListener = new ValueAnimator.AnimatorUpdateListener() {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
-            int h = (Integer) animation.getAnimatedValue();
-            bottomParams.height = h;
+            bottomParams.height = (Integer) animation.getAnimatedValue();
             bottomLayout.setLayoutParams(bottomParams);
         }
     };

@@ -5,8 +5,6 @@ import com.cloudmachine.ui.home.contract.RemarkInfoContract;
 import com.cloudmachine.ui.home.model.RoleBean;
 import com.cloudmachine.utils.ToastUtils;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 /**
@@ -31,9 +29,21 @@ public class RemarkInfoPresenter extends RemarkInfoContract.Presenter {
 
     @Override
     public void updateRemarkInfo(long fid, long memberId, long deviceId, String remark, long roleId) {
-        mRxManage.add(mModel.updateRemarkInfo(fid,memberId,deviceId,remark,roleId).subscribe(new RxSubscriber<JSONObject>(mContext,false) {
+//        mRxManage.add(mModel.updateRemarkInfo(fid,memberId,deviceId,remark,roleId).subscribe(new RxSubscriber<JSONObject>(mContext,false) {
+//            @Override
+//            protected void _onNext(JSONObject jsonObjectBaseRespose) {
+//                mView.updateRemarkSuccess();
+//            }
+//
+//            @Override
+//            protected void _onError(String message) {
+////                ToastUtils.showToast(mContext,message);
+//                mView.updateRemarkFailed();
+//            }
+//        }));
+        mRxManage.add(mModel.updateRemarkInfo(fid,memberId,deviceId,remark,roleId).subscribe(new RxSubscriber<String>(mContext,false) {
             @Override
-            protected void _onNext(JSONObject jsonObjectBaseRespose) {
+            protected void _onNext(String result) {
                 mView.updateRemarkSuccess();
             }
 
@@ -43,6 +53,7 @@ public class RemarkInfoPresenter extends RemarkInfoContract.Presenter {
                 mView.updateRemarkFailed();
             }
         }));
+
     }
 
 }

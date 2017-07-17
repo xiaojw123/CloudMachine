@@ -81,7 +81,7 @@ public class StatisticsFragment extends Fragment implements Handler.Callback, Vi
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
          super.onCreateView(inflater, container, savedInstanceState);
-        UMListUtil.getUMListUtil().sendStruEvent("StatisticsFragment",getContext());
+        UMListUtil.getUMListUtil().sendStruEvent("StatisticsFragment",getActivity());
         if (null != viewParent) {
             ViewGroup parent = (ViewGroup) viewParent.getParent();
             if (null != parent) {

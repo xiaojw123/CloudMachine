@@ -34,9 +34,7 @@ public class RxHelper {
                 return tObservable.flatMap(new Func1<BaseRespose<T>, Observable<T>>() {
                     @Override
                     public Observable<T> call(BaseRespose<T> result) {
-
                         if (result.success()) {
-
                             return createData(result.result);
                         } else {
                             return Observable.error(new ServerException(result.getMessage()));

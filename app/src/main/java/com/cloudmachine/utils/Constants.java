@@ -57,7 +57,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1468,8 +1470,21 @@ public class Constants {
     }
 
     public static final String MC_DEVICEINFO = "McDeviceInfo";
+    public static final String MC_DEVICEID = "McDeviceId";
     public static final String MC_LOC_NOW = "McLocNow";
     public static final String MEMBER_ID="memberid";
     public static final int RESULT_QUERY_BY_TIME = 0x34;
-    public static final int ANIMATION_DURACTION=800;
+    public static final int ANIMATION_DURACTION=200;
+    public static final int MACHINE_ICON_WIDTH=25;
+    public static final int MACHINE_ICON_HEIGHT=18;
+    public static final int INVALID_DEVICE_ID=-1;
+    public static final String UPDATE_DEVICE_LIST="updateDeviceList";
+
+    public static Map<String,String> getBasePraramsMap(){
+        Map<String,String> map=new HashMap<>();
+        map.put("osPlatform",Constants.OS_PLATFORM);
+        map.put("osVersion",VersionU.getVersionName());
+        return map;
+    }
+
 }

@@ -5,22 +5,6 @@
                 android:background="@color/public_blue_bg"
     >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        >
-
-        <TextView
-            android:id="@+id/title_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/public_white"
-            android:textSize="@dimen/public_title_textsize"
-            />
-    </LinearLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -54,6 +38,20 @@
                 />
         </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/title_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/public_white"
+            android:textSize="@dimen/public_title_textsize"
+            android:singleLine="true"
+            android:maxEms="10"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/left_layout"
+            android:layout_toLeftOf="@+id/right_layout"
+            />
+
         <RelativeLayout
             android:id="@+id/right_layout"
             android:layout_width="wrap_content"
@@ -68,7 +66,8 @@
                 android:id="@+id/title_right_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                />
 
             <TextView
                 android:id="@+id/title_right_text"

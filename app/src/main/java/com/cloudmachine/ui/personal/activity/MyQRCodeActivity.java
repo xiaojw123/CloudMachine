@@ -23,7 +23,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.ui.personal.fragment.PersonalFragment;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.utils.ToastUtils;
 import com.github.mikephil.charting.utils.AppLog;
 
@@ -210,7 +210,7 @@ public class MyQRCodeActivity extends BaseAutoLayoutActivity {
     }
 
     private void createQrcode() {
-        String memberId = getIntent().getStringExtra(PersonalFragment.MEMBER_ID);
+        String memberId = String.valueOf(UserHelper.getMemberId(this));
         long time = System.currentTimeMillis();
         StringBuffer sb = new StringBuffer();
         sb.append("lat=" + lat)
