@@ -1,11 +1,14 @@
 package com.cloudmachine.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -13,11 +16,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudmachine.R;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.net.task.ForgetPwdAsync;
 import com.cloudmachine.net.task.GetMobileCodeAsync;
+import com.cloudmachine.net.task.LoginAsync;
 import com.cloudmachine.net.task.RegisterNewAsync;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.UserInfo;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.UMengKey;
@@ -29,7 +40,7 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnClickListener, Callback {
+public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnClickListener, Callback, TextWatcher {
     public static final String HASINVITATIONCODE = "hasInvitationCode";
     private Context mContext;
     private Handler mHandler;
@@ -40,8 +51,6 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
     private ClearEditTextView phone_string;
     private ClearEditTextView validate_code;
     private ClearEditTextView pwd_string;
-    private ClearEditTextView pwd_new_string;
-    private ClearEditTextView pwd_new2_string;
     private RadiusButtonView find_btn;
 
     private TextView validate_text;
@@ -56,11 +65,13 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
     private int type;
 
     private View left_layout, validate_layout,
-            pwd_layout, pwd_new_layout, agreement_layout;
+            pwd_layout, agreement_layout;
     private ClearEditTextView cet_invitationCode;
     private String inviteCode = "-1";
     LinearLayout invaiteCodeContainer;
     boolean hasInvatiteCode;
+    private String phone;
+    private String pwdStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,54 +109,52 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
         validate_layout = findViewById(R.id.validate_layout);
         validate_layout.setOnClickListener(this);
         pwd_layout = findViewById(R.id.pwd_layout);
-        pwd_new_layout = findViewById(R.id.pwd_new_layout);
-
         pwd_string = (ClearEditTextView) findViewById(R.id.pwd_string);
-        pwd_new_string = (ClearEditTextView) findViewById(R.id.pwd_new_string);
-        pwd_new2_string = (ClearEditTextView) findViewById(R.id.pwd_new2_string);
+        phone_string.addTextChangedListener(this);
+        validate_code.addTextChangedListener(this);
+        pwd_string.addTextChangedListener(this);
         if (hasInvatiteCode) {
             invaiteCodeContainer.setVisibility(View.GONE);
         }
-        switch (type) {
-            case 1:
-                title_text.setText("忘记密码");
-                pwd_layout.setVisibility(View.GONE);
-                pwd_new_layout.setVisibility(View.VISIBLE);
-                agreement_layout.setVisibility(View.GONE);
-                cet_invitationCode.setVisibility(View.GONE);
-                break;
-            case 2:
-                title_text.setText("修改密码");
-                pwd_layout.setVisibility(View.GONE);
-                pwd_new_layout.setVisibility(View.VISIBLE);
-                agreement_layout.setVisibility(View.GONE);
-                cet_invitationCode.setVisibility(View.GONE);
-                break;
-            case 3:
-                MobclickAgent.onPageStart(UMengKey.time_register);
-                title_text.setText("新用户注册");
-                pwd_layout.setVisibility(View.VISIBLE);
-                pwd_new_layout.setVisibility(View.GONE);
-                agreement_layout.setVisibility(View.VISIBLE);
-                cet_invitationCode.setVisibility(View.VISIBLE);
-                break;
-            default:
-                title_text.setText("新用户注册");
-                pwd_layout.setVisibility(View.VISIBLE);
-                pwd_new_layout.setVisibility(View.GONE);
-                agreement_layout.setVisibility(View.VISIBLE);
-                break;
-        }
-
         find_btn = (RadiusButtonView) findViewById(R.id.find_btn);
         find_btn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 savePwd();
             }
         });
+
+        switch (type) {
+            case 1:
+                title_text.setText("忘记密码");
+                find_btn.setText("提交");
+                pwd_layout.setVisibility(View.VISIBLE);
+                agreement_layout.setVisibility(View.GONE);
+                cet_invitationCode.setVisibility(View.GONE);
+                break;
+            case 2:
+                title_text.setText("修改密码");
+                pwd_layout.setVisibility(View.VISIBLE);
+                agreement_layout.setVisibility(View.GONE);
+                cet_invitationCode.setVisibility(View.GONE);
+                break;
+            case 3:
+                MobclickAgent.onPageStart(UMengKey.time_register);
+                title_text.setText("输入手机号，快速注册");
+                find_btn.setText("注册");
+                pwd_layout.setVisibility(View.VISIBLE);
+                agreement_layout.setVisibility(View.VISIBLE);
+                cet_invitationCode.setVisibility(View.VISIBLE);
+                break;
+            default:
+                find_btn.setText("注册");
+                title_text.setText("输入手机号，快速注册");
+                pwd_layout.setVisibility(View.VISIBLE);
+                agreement_layout.setVisibility(View.VISIBLE);
+                break;
+        }
+
 
         if (MemeberKeeper.getOauth(FindPasswordActivity.this) != null) {
             phone_string.setText(MemeberKeeper.getOauth(FindPasswordActivity.this).getMobile());
@@ -191,10 +200,9 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 break;
             case R.id.agreement_text:
                 Bundle bundle = new Bundle();
-                bundle.putString(Constants.P_WebView_Url, Constants.URL_H5_ARGUMENT);
-//			bundle.putString(Constants.P_WebView_Title, agreement_text.getText().toString());
-                bundle.putString(Constants.P_WebView_Title, "协议条款");
-                Constants.toActivity(this, WebviewActivity.class, bundle);
+                bundle.putString(QuestionCommunityActivity.H5_URL, Constants.URL_H5_ARGUMENT);
+                bundle.putString(QuestionCommunityActivity.H5_TITLE, "协议条款");
+                Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
                 break;
             default:
                 break;
@@ -203,10 +211,8 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 
     private void savePwd() {
         String code = validate_code.getText().toString().trim();
-        String phone = phone_string.getText().toString().trim();
-        String pwdStr = pwd_string.getText().toString().trim();
-        String newpwd1 = pwd_new_string.getText().toString().trim();
-        String newpwd2 = pwd_new2_string.getText().toString().trim();
+        phone = phone_string.getText().toString().trim();
+        pwdStr = pwd_string.getText().toString().trim();
         if (type == 3) {
             if (TextUtils.isEmpty(phone)) {
                 Constants.ToastAction("请输入手机号码");
@@ -230,18 +236,12 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 Constants.ToastAction("请输入手机号码");
             } else if (TextUtils.isEmpty(code)) {
                 Constants.ToastAction("请输入验证码");
-            } else if (TextUtils.isEmpty(newpwd1)) {
-                Constants.ToastAction("请输入新密码");
-            } else if (newpwd1.length() < 6) {
+            } else if (pwdStr.length() < 6) {
                 Constants.ToastAction("新密码长度必须大于6位");
-            } else if (TextUtils.isEmpty(newpwd2)) {
-                Constants.ToastAction("请再次输入新密码");
-            } else if (!newpwd1.equals(newpwd2)) {
-                Constants.ToastAction("两次密码输入不一样");
             } else {
 //				if(type == 1){
                 new ForgetPwdAsync(phone,
-                        Utils.getPwdStr(newpwd1),
+                        Utils.getPwdStr(pwdStr),
                         code, mContext, mHandler).execute();
 //				}else if(type == 2){
                     /*new UpdatePwdAsync(Utils.getPwdStr(old_password.getText().toString()),
@@ -251,6 +251,37 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
             }
         }
 
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String str1 = phone_string.getText().toString();
+        String str2 = validate_code.getText().toString();
+        String str3 = pwd_string.getText().toString();
+        String text = validate_text.getText().toString();
+        if ("获取验证码".equals(text)) {
+            if (str1.length() > 0) {
+                validate_text.setEnabled(true);
+            } else {
+                validate_text.setEnabled(false);
+            }
+        }
+
+        if (str1.length() > 0 && str2.length() > 0 && str3.length() > 0) {
+            find_btn.setTextColor(getResources().getColor(R.color.cor15));
+        } else {
+            find_btn.setTextColor(getResources().getColor(R.color.cor2015));
+        }
     }
 
     class ListenerTimerTask extends TimerTask {
@@ -269,14 +300,17 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
         // TODO Auto-generated method stub
         switch (msg.what) {
             case Constants.HANDLER_TIMER:
-                Constants.MyLog("HANDLER_TIMER:" + validate_num);
                 validate_num++;
                 if ((VALIDATENUM - validate_num) < 0) {
+                    validate_text.setEnabled(true);
                     myTimer.cancel();
                     myTimer = null;
                     validate_num = 0;
                     validate_text.setText("获取验证码");
                 } else {
+                    if (validate_text.isEnabled()) {
+                        validate_text.setEnabled(false);
+                    }
                     validate_text.setText("获取验证码(" + (VALIDATENUM - validate_num) + ")");
                 }
                 break;
@@ -307,20 +341,69 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
             case Constants.HANDLER_REGISTER_FAIL:
                 disMiss();
                 Toast.makeText(this, (String) msg.obj, Toast.LENGTH_SHORT).show();
-                pwd_new2_string.setText("");
-                pwd_new_string.setText("");
                 pwd_string.setText("");
                 validate_code.setText("");
                 break;
             case Constants.HANDLER_REGISTER_SUCCESS:
-                disMiss();
+//                Map<String, String> paramsMap = new HashMap<>();
+//                paramsMap.put(phone, pwdStr);
+//                mRxManager.post(LoginActivity.RX_LOGIN, paramsMap);
                 Toast.makeText(FindPasswordActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-                finish();
+                new LoginAsync(phone, pwdStr, mContext, mHandler).execute();
                 break;
+            case Constants.HANDLER_LOGIN_SUCCESS:
+                Constants.isGetScore = true;
+                mMember = (Member) msg.obj;
+                if (mMember != null) {
+                    excamMaster(mMember.getId());
+                } else {
+                    loginBack();
+                }
+                break;
+            case Constants.HANDLER_LOGIN_FAIL:
+                loginBack();
+                break;
+
+
         }
         return false;
     }
 
+    Member mMember;
+
+    private void excamMaster(Long id) {
+
+        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(id)
+                .compose(RxHelper.<UserInfo>handleResult())
+                .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
+                    @Override
+                    protected void _onNext(UserInfo userInfo) {
+                        Long wjdsId = userInfo.userinfo.id;
+                        Long status = userInfo.userinfo.status;
+                        Long role_id = userInfo.userinfo.role_id;
+                        mMember.setWjdsId(wjdsId);
+                        mMember.setWjdsStatus(status);
+                        mMember.setWjdsRole_id(role_id);
+                        mMember.setNum(2L);
+                        MemeberKeeper.saveOAuth(mMember, mContext);
+                        loginBack();
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+                        MemeberKeeper.saveOAuth(mMember, mContext);
+                        loginBack();
+                    }
+                }));
+    }
+
+    public void loginBack() {
+        disMiss();
+        Intent intent=new Intent();
+        intent.putExtra(Constants.MC_MEMBER,mMember);
+        setResult(FP_LOGIN,intent);
+        finish();
+    }
 
     @Override
     protected void onPause() {
@@ -337,6 +420,8 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
             myTimer = null;
         }
     }
+
+    public static final int FP_LOGIN = 0x891;
 
 
 }

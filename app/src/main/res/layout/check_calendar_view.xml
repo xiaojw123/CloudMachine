@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
         <ListView
             android:dividerHeight="@dimen/divider_height"
-            android:divider="@color/list_divider_color"
+            android:divider="@color/cor12"
             android:layout_gravity="center_horizontal"
             android:id="@+id/lv_calendar"
             android:layout_width="@dimen/popmenu_width"

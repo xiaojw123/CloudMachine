@@ -20,14 +20,14 @@ import android.widget.TextView;
 
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.core.SuggestionCity;
-import com.amap.api.services.poisearch.PoiItemDetail;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.SearchPoiListAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.struc.ResidentAddressInfo;
+import com.cloudmachine.bean.ResidentAddressInfo;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UMListUtil;
 import com.cloudmachine.utils.UMengKey;
@@ -82,7 +82,7 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
 		city_layout.setOnClickListener(this);
 		right_text.setOnClickListener(this);
 		site_edit.addTextChangedListener(this);
-		adapter = new SearchPoiListAdapter(dataResult,mContext,mHandler);
+		adapter = new SearchPoiListAdapter(dataResult,mContext);
 		search_listview = (ListView)findViewById(R.id.search_listview);
 		search_listview.setOnItemClickListener(this);
 		search_listview.setAdapter(adapter);
@@ -97,7 +97,7 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
 		case R.id.city_layout:
 			Bundle bundle=new Bundle();
 			bundle.putString(Constants.P_CITYNAME, city_text.getText().toString());
-			Constants.toActivityForR(this, CityActivity.class, bundle,Constants.REQUEST_SELECTCITY);
+			Constants.toActivityForR(this,CityActivity.class, bundle,Constants.REQUEST_SELECTCITY);
 			break;
 		case R.id.map_choose_layout:
 //			Constants.toActivityForR(this, MapChooseActivity.class, null,Constants.REQUEST_MAPCHOOSE);
@@ -154,7 +154,8 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
 	@Override
 	public void onPoiSearched(PoiResult result, int rCode) {
 		// TODO Auto-generated method stub
-		if (rCode == 0) {
+		AppLog.print("onPoiSearched_____"+result+",   code__"+rCode);
+		if (rCode == 1000) {
 			if (result != null && result.getQuery() != null) {// 搜索poi的结果
 				if (result.getQuery().equals(query)) {// 是否是同一条
 					poiResult = result;
@@ -170,6 +171,7 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
 						for(int i=0; i<len; i++){
 							ResidentAddressInfo info = new ResidentAddressInfo();
 							PoiItem item = poiItems.get(i);
+							AppLog.print("onPoiSearched____item title_"+item.getTitle());
 							info.setTitle(item.getTitle());
 							info.setPosition(!TextUtils.isEmpty(item.getSnippet())?item.getSnippet():item.getTitle());
 							info.setLng(item.getLatLonPoint().getLongitude());
@@ -203,9 +205,10 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
 	}
 
 	@Override
-	public void onPoiItemDetailSearched(PoiItemDetail poiItemDetail, int i) {
+	public void onPoiItemSearched(PoiItem poiItem, int i) {
 
 	}
+
 
 
 	private void showSuggestCity(List<SuggestionCity> cities) {
@@ -213,6 +216,7 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
 	}
 	
 	protected void doSearchQuery(String keyWord) {
+		AppLog.print("doSearchQuery___"+keyWord);
 		currentPage = 0;
 		query = new PoiSearch.Query(keyWord, "", city_text.getText().toString());// 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
 		query.setPageSize(20);// 设置每页最多返回多少条poiitem

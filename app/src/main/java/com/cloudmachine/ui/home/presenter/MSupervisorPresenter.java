@@ -1,8 +1,8 @@
 package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.struc.RepairListInfo;
-import com.cloudmachine.struc.UnfinishedBean;
+import com.cloudmachine.bean.RepairListInfo;
+import com.cloudmachine.bean.UnfinishedBean;
 import com.cloudmachine.ui.home.contract.MSupervisorContract;
 import com.cloudmachine.ui.home.model.SiteBean;
 import com.cloudmachine.utils.Constants;
@@ -57,29 +57,27 @@ public class MSupervisorPresenter extends MSupervisorContract.Preseneter {
 
 
     public String getStatusStr(UnfinishedBean info) {
-        String statusStr = "已报修";
+        String statusStr = "等待接单";
         String isEvalue = info.getIs_EVALUATE();
         String nsStatus = info.getNstatus();
         int type = info.getNloanamount_TYPE();
         if ("0".equals(nsStatus)) {
-            statusStr = "已下单";
+            statusStr = "等待接单";
         } else if ("1".equals(nsStatus)) {
-            statusStr = "已派工";
+            statusStr = "进行中";
         } else if ("2".equals(nsStatus)) {
-            statusStr = "已技师确认";
+            statusStr = "进行中";
         } else if ("3".equals(nsStatus)) {
-            statusStr = "已预约";
+            statusStr = "进行中";
         } else if ("4".equals(nsStatus)) {
-            statusStr = "已出发";
+            statusStr = "进行中";
         } else if ("5".equals(nsStatus)) {
-            statusStr = "已到达";
+            statusStr = "进行中";
         } else if ("6".equals(nsStatus)) {
-            statusStr = "已客户确认";
+            statusStr = "进行中";
+
         } else if ("7".equals(nsStatus)) {
-            statusStr = "已结算";
-            if ("N".equals(isEvalue)) {
-                statusStr = "待评价";
-            }
+            statusStr = "进行中";
         } else if ("8".equals(nsStatus)) {
             switch (type) {
                 case 0://正常状态(已付款,直接判断是否评价)
@@ -93,7 +91,7 @@ public class MSupervisorPresenter extends MSupervisorContract.Preseneter {
                 case -1://未知状态
                     try {
                         if (Double.parseDouble(info.getNloanamount()) > 0.0) {
-                            statusStr = "待付款";
+                            statusStr = "待支付";
                         } else {
                             if ("N".equals(isEvalue)) {
                                 statusStr = "待评价";
@@ -119,7 +117,7 @@ public class MSupervisorPresenter extends MSupervisorContract.Preseneter {
                     break;
             }
         } else if ("9".equals(nsStatus)) {
-            statusStr = "已返程";
+            statusStr = "已完工";
             if ("N".equals(isEvalue)) {
                 statusStr = "待评价";
             }

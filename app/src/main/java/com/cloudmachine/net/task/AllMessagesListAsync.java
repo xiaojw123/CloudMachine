@@ -4,17 +4,17 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-import com.cloudmachine.app.MyApplication;
+import com.cloudmachine.MyApplication;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.BaseBO;
-import com.cloudmachine.struc.MessageBO;
+import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.URLs;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.chart.utils.AppLog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

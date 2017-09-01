@@ -2,11 +2,14 @@ package com.cloudmachine.net.task;
 
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.URLs;
+import com.google.gson.Gson;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -17,14 +20,11 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-
-import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.URLs;
-import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 	
 public class ImageUploadAsync extends AsyncTask<String, String, String>{
 	
@@ -57,7 +57,6 @@ public class ImageUploadAsync extends AsyncTask<String, String, String>{
 			}
 			
 		}
-		Constants.MyLog(content);
 		 if (content != null && content.length() > 10) {
 			 Gson gson = new Gson();
 			 UploadResult uploadResult = gson.fromJson(content,
@@ -108,7 +107,6 @@ public class ImageUploadAsync extends AsyncTask<String, String, String>{
 				return inputStreamToString(inputStream);
 			}
 		} catch (Exception e) {
-			Constants.MyLog(e.getLocalizedMessage());
 		}
 		return null;
 	}

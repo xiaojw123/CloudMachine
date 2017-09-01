@@ -1,78 +1,32 @@
 package com.cloudmachine.ui.home.presenter;
 
+import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.recyclerbean.HomeBannerBean;
-import com.cloudmachine.struc.McDeviceInfo;
-import com.cloudmachine.struc.UnReadMessage;
+import com.cloudmachine.bean.UnReadMessage;
 import com.cloudmachine.ui.home.contract.HomeContract;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.ui.home.model.PopItem;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by xiaojw on 2017/5/22.
  */
 
 public class HomePresenter extends HomeContract.Presenter {
+
+
     @Override
     public void updateUnReadMessage(long memberId) {
-        mModel.getMessageUntreatedCount(memberId).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<BaseRespose<UnReadMessage>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(BaseRespose<UnReadMessage> unReadMessageBaseRespose) {
-                        if (unReadMessageBaseRespose == null) {
-                            return;
-                        }
-                        if (unReadMessageBaseRespose.result == null) {
-                            return;
-                        }
-                        mView.updateMessageCount(unReadMessageBaseRespose.result.getCount());
-                    }
-                });
-
-    }
-
-    @Override
-    public void getDevices(long memberId, int type) {
-        mRxManage.add(mModel.getDevices(memberId, type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
+        mRxManage.add(mModel.getMessageUntreatedCount(memberId).subscribe(new RxSubscriber<UnReadMessage>(mContext, false) {
             @Override
-            protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
-                AppLog.print("onNext____"+mcDeviceInfos);
-                mView.updateDevices(mcDeviceInfos);
-            }
-
-            @Override
-            protected void _onError(String message) {
-                AppLog.print("_onError____"+message);
-
-            }
-        }));
-
-    }
-
-    @Override
-    public void getDevices(int type) {
-        mRxManage.add(mModel.getDevices(type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
-            @Override
-            protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
-                mView.updateDevices(mcDeviceInfos);
+            protected void _onNext(UnReadMessage unReadMessage) {
+                if (unReadMessage == null) {
+                    return;
+                }
+                mView.updateMessageCount(unReadMessage.getCount());
             }
 
             @Override
@@ -80,39 +34,56 @@ public class HomePresenter extends HomeContract.Presenter {
 
             }
         }));
-    }
 
+
+    }
 
     @Override
-    public void getPromotionInfo() {
-        mModel.getPromotionModel().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<BaseRespose<ArrayList<HomeBannerBean>>>() {
-                    @Override
-                    public void onCompleted() {
+    public void getPromotionInfo(long memberId) {
 
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
+        mRxManage.add(mModel.getPromotionModel(memberId).subscribe(new RxSubscriber<List<PopItem>>(mContext, false) {
+            @Override
+            protected void _onNext(List<PopItem> items) {
+                ArrayList<PopItem> beanList = (ArrayList<PopItem>) items;
+                mView.updatePromotionInfo(beanList);
+            }
 
-                    }
+            @Override
+            protected void _onError(String message) {
 
-                    @Override
-                    public void onNext(BaseRespose<ArrayList<HomeBannerBean>> arrayListBaseRespose) {
-                        ArrayList<HomeBannerBean> beanList = arrayListBaseRespose.result;
-                        for (HomeBannerBean bean : beanList) {
-                            if (bean.adsMidSort == 1) {
-                                mView.updatePromotionInfo(bean);
-                                return;
-                            }
-                        }
-
-                    }
-                });
-
+            }
+        }));
 
     }
 
+    @Override
+    public void getH5ConfigInfo() {
+        mRxManage.add(mModel.getH5ConfigInfo().subscribe(new RxSubscriber<JSONObject>(mContext, false) {
+            @Override
+            protected void _onNext(JSONObject jsonObject) {
+                if (jsonObject != null) {
+                    JSONObject pageJobj = jsonObject.optJSONObject("pages");
+                    if (pageJobj != null) {
+                        ApiConstants.AppBoxDetail = pageJobj.optString("AppBoxDetail");
+                        ApiConstants.AppCouponHelper = pageJobj.optString("AppCouponHelper");
+                        ApiConstants.AppCommunity = pageJobj.optString("AppCommunity");
+                        ApiConstants.AppASKQuestion = pageJobj.optString("AppASKQuestion");
+                        ApiConstants.AppMyQuestion = pageJobj.optString("AppMyQuestion");
+                        ApiConstants.AppUseHelper = pageJobj.optString("AppUseHelper");
+                        ApiConstants.AppWorkTimeStatistics = pageJobj.optString("AppWorkTimeStatistics");
+                        ApiConstants.AppOrderList = pageJobj.optString("AppOrderList");
+                    }
+                }
+
+
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+    }
 
 }

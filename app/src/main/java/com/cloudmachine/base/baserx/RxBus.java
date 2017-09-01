@@ -1,7 +1,7 @@
 package com.cloudmachine.base.baserx;
 
 import android.support.annotation.NonNull;
-import com.cloudmachine.utils.Constants;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -74,7 +74,6 @@ public class RxBus {
         }
         Subject<T, T> subject;
         subjectList.add(subject = PublishSubject.create());
-        Constants.MyLog("register"+tag + "  size:" + subjectList.size());
         return subject;
     }
 
@@ -103,7 +102,6 @@ public class RxBus {
             subjects.remove((Subject<?, ?>) observable);
             if (isEmpty(subjects)) {
                 subjectMapper.remove(tag);
-                Constants.MyLog("unregister"+ tag + "  size:" + subjects.size());
             }
         }
         return getInstance();
@@ -120,12 +118,10 @@ public class RxBus {
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void post(@NonNull Object tag, @NonNull Object content) {
-        Constants.MyLog("post"+ "eventName: " + tag);
         List<Subject> subjectList = subjectMapper.get(tag);
         if (!isEmpty(subjectList)) {
             for (Subject subject : subjectList) {
                 subject.onNext(content);
-                Constants.MyLog("onEvent"+ "eventName: " + tag);
             }
         }
     }

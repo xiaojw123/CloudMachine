@@ -2,7 +2,6 @@ package com.cloudmachine.adapter;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.activities.SearchActivity;
 import com.cloudmachine.listener.OnClickEffectiveListener;
-import com.cloudmachine.struc.MemberInfo;
-import com.cloudmachine.utils.Constants;
+import com.cloudmachine.bean.MemberInfo;
 import com.cloudmachine.utils.widgets.RadiusButtonView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -23,96 +22,99 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import java.util.List;
 
 public class McSearchMemberAdapter extends BaseAdapter {
+    private List<MemberInfo> dataResult;
+    private Context context;
+    private Handler handler;
+    private LayoutInflater layoutInflater;
+    private DisplayImageOptions displayImageOptions;
+    private ImageLoadingListener commImageLoadingLis;
+    private long deviceId;
+    private int searchListType;
 
-		private List<MemberInfo> dataResult;
-		private Context context;
-		private Handler handler;
-		private LayoutInflater layoutInflater;
-		private DisplayImageOptions displayImageOptions;
-		private ImageLoadingListener commImageLoadingLis;
-		private long deviceId;
-		private int searchListType;
+    public McSearchMemberAdapter(List<MemberInfo> dataResult, int searchListType, Context context, Handler mHandler, long deviceId) {
+        this.context = context;
+        this.handler = mHandler;
+        this.deviceId = deviceId;
+        this.dataResult = dataResult;
+        this.searchListType = searchListType;
+        this.layoutInflater = LayoutInflater.from(context);
+        displayImageOptions = new DisplayImageOptions.Builder()
+                .showImageOnFail(R.drawable.ic_default_head)
+                .showImageForEmptyUri(R.drawable.ic_default_head)
+                .showImageOnFail(R.drawable.ic_default_head).cacheInMemory(true)
+                .cacheOnDisc(true).displayer(new RoundedBitmapDisplayer(5))
+                .build();
+    }
 
-		public McSearchMemberAdapter(List<MemberInfo> dataResult,int searchListType, Context context, Handler mHandler, long deviceId) {
-			this.context = context;
-			this.handler = mHandler;
-			this.deviceId = deviceId;
-			this.dataResult = dataResult;
-			this.searchListType = searchListType;
-			this.layoutInflater = LayoutInflater.from(context);
-			displayImageOptions = new DisplayImageOptions.Builder()
-				.showImageOnFail(R.drawable.default_img)
-				.showImageForEmptyUri(R.drawable.default_img)
-				.showImageOnFail(R.drawable.default_img).cacheInMemory(true)
-				.cacheOnDisc(true).displayer(new RoundedBitmapDisplayer(5))
-				.build();
-		}
+    @Override
+    public int getCount() {
+        return dataResult.size();
+    }
 
-		@Override
-		public int getCount() {
-			return dataResult.size();
-		}
+    @Override
+    public MemberInfo getItem(int position) {
+        return dataResult.get(position);
+    }
 
-		@Override
-		public MemberInfo getItem(int position) {
-			return dataResult.get(position);
-		}
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
+    /**
+     * inner_classifyleft_listview classifyleft_img classifyleft_text
+     */
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder = null;
+        if (convertView == null) {
+            convertView = layoutInflater.inflate(
+                    R.layout.mc_search_listview, null);
+            viewHolder = new ViewHolder();
+            viewHolder.info_img = (ImageView) convertView
+                    .findViewById(R.id.info_img);
+            viewHolder.arrow = (ImageView) convertView.findViewById(R.id.arrow);
+            viewHolder.title = (TextView) convertView
+                    .findViewById(R.id.title);
+            viewHolder.summary = (TextView) convertView
+                    .findViewById(R.id.summary);
+            viewHolder.arrow_add = (RadiusButtonView) convertView.findViewById(R.id.arrow_add);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        if (searchListType == 3) {
+            viewHolder.arrow_add.setText("添加");
+        }
+        final MemberInfo dInfo = dataResult.get(position);
+        String imgString = dInfo.getMiddlelogo();
+        viewHolder.title.setText(dInfo.getName());
+        viewHolder.summary.setText(dInfo.getMobi());
+        ImageLoader.getInstance().displayImage(imgString, viewHolder.info_img,
+                displayImageOptions, commImageLoadingLis);
+        viewHolder.arrow.setVisibility(View.GONE);
+        viewHolder.arrow_add.setVisibility(View.VISIBLE);
+//				if(searchListType == 1){
+//					viewHolder.arrow_add.setText("添加");
+//				}else{
+//					viewHolder.arrow_add.setText("移交");
+//				}
+        viewHolder.arrow_add.setOnClickListener(new llClick(position));
+        return convertView;
+    }
 
-		/**
-		 * inner_classifyleft_listview classifyleft_img classifyleft_text
-		 * 
-		 */
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			ViewHolder viewHolder = null;
-			if (convertView == null) {
-				convertView = layoutInflater.inflate(
-						R.layout.mc_search_listview, null);
-				viewHolder = new ViewHolder();
-				viewHolder.info_img =  (ImageView) convertView
-						.findViewById(R.id.info_img);
-				viewHolder.arrow  = (ImageView)convertView.findViewById(R.id.arrow);
-				viewHolder.title = (TextView) convertView
-						.findViewById(R.id.title);
-				viewHolder.summary = (TextView) convertView
-						.findViewById(R.id.summary);
-				viewHolder.arrow_add = (RadiusButtonView)convertView.findViewById(R.id.arrow_add);
-				convertView.setTag(viewHolder);
-			} else {
-				viewHolder = (ViewHolder) convertView.getTag();
-			}
-			final MemberInfo dInfo = dataResult.get(position);
-			String imgString = dInfo.getMiddlelogo();
-			viewHolder.title.setText(dInfo.getName());
-			viewHolder.summary.setText(dInfo.getMobi());
-			ImageLoader.getInstance().displayImage(imgString, viewHolder.info_img,
-					displayImageOptions, commImageLoadingLis);
-				viewHolder.arrow.setVisibility(View.GONE);
-				viewHolder.arrow_add.setVisibility(View.VISIBLE);
-				if(searchListType == 1){
-					viewHolder.arrow_add.setText("添加");
-				}else{
-					viewHolder.arrow_add.setText("移交");
-				}
-			viewHolder.arrow_add.setOnClickListener(new llClick(position));
-			return convertView;
-		}
-		class llClick extends OnClickEffectiveListener{
-			private int position;
-			llClick(int position){
-				this.position = position;
-			}
-			
-			@Override
-			public void onClickEffective(View v) {
-				// TODO Auto-generated method stub
-				/*MemberInfo memberInfo = dataResult.get(position);
-				Intent intent_h = new Intent(context, PermissionActivity.class);
+    class llClick extends OnClickEffectiveListener {
+        private int position;
+
+        llClick(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void onClickEffective(View v) {
+            // TODO Auto-generated method stub
+                /*MemberInfo memberInfo = dataResult.get(position);
+                Intent intent_h = new Intent(context, PermissionActivity.class);
 				intent_h.putExtra(Constants.P_DEVICEID, deviceId);
 				intent_h.putExtra(Constants.P_PERMISSIONTYPE, 1);
 				intent_h.putExtra(Constants.P_MERMBERINFO, memberInfo);
@@ -121,25 +123,23 @@ public class McSearchMemberAdapter extends BaseAdapter {
 				intent_h.putExtra(Constants.P_MERMBERNAME, memberInfo.getName());
 				intent_h.putExtra(Constants.P_MERMBERROLE, memberInfo.getRole());
 				intent_h.putExtra(Constants.P_MERMBERPERMISSION, memberInfo.getPermissName());*/
-				
-				
-				Message message = Message.obtain();
-				message.obj = dataResult.get(position);
-				message.what = Constants.HANDLER_ADDMEMBER;
-				handler.sendMessage(message);
-				
-			}
-			
-		}
+                MemberInfo memberInfo = dataResult.get(position);
+            if (searchListType == 3) {
+                ((SearchActivity) context).addMember(memberInfo);
+            } else {
+                ((SearchActivity) context).showAlertView(memberInfo);
+            }
+        }
 
-		static class ViewHolder {
-			ImageView info_img;
-			ImageView arrow;
-			TextView title;
-			TextView summary;
-			RadiusButtonView arrow_add;
-		}
-		
+    }
+
+    static class ViewHolder {
+        ImageView info_img;
+        ImageView arrow;
+        TextView title;
+        TextView summary;
+        RadiusButtonView arrow_add;
+    }
 
 
-	}
+}

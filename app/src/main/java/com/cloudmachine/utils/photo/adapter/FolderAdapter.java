@@ -1,7 +1,5 @@
 package com.cloudmachine.utils.photo.adapter;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,12 +14,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cloudmachine.main.photo.AlbumActivity;
-import com.cloudmachine.main.photo.ShowAllPhoto;
+import com.cloudmachine.activities.AlbumActivity;
+import com.cloudmachine.activities.ShowAllPhoto;
 import com.cloudmachine.utils.photo.util.BitmapCache;
+import com.cloudmachine.utils.photo.util.BitmapCache.ImageCallback;
 import com.cloudmachine.utils.photo.util.ImageItem;
 import com.cloudmachine.utils.photo.util.Res;
-import com.cloudmachine.utils.photo.util.BitmapCache.ImageCallback;
+
+import java.util.ArrayList;
 
 /**
  * 这个是显示所有包含图片的文件夹的适配器

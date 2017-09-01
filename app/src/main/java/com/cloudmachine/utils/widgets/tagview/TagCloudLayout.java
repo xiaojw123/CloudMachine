@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 
 /**
  * 标签流容器
@@ -66,9 +65,14 @@ public class TagCloudLayout extends ViewGroup {
                     }
                 }
             });
+            view.setEnabled(flag);
             this.addView(view);
         }
     }
+    public void setItemEnable(boolean flag){
+        this.flag=flag;
+    }
+    boolean flag=true;
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

@@ -1,18 +1,18 @@
 package com.cloudmachine.activities;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.AutoLayoutFragmentActivity;
 import com.cloudmachine.R;
-import com.cloudmachine.api.ApiConstants;
-import com.cloudmachine.autolayout.widgets.TitleView;
-import com.cloudmachine.utils.Constants;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.widget.CommonTitleView;
 
 /**
  * 项目名称：CloudMachine
@@ -24,17 +24,16 @@ import com.cloudmachine.utils.Constants;
  * 修改备注：
  */
 
-public class ViewCouponActivity extends AutoLayoutFragmentActivity implements View.OnClickListener {
+public class ViewCouponActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
 
     private Context mContext;
     private  View[]     linearLayouts    = new View[2];
     private TextView[] textViews        = new TextView[2];
-    private  Fragment   mFragments[]     = new Fragment[2]; // 存储页面的数组
+    private Fragment mFragments[]     = new Fragment[2]; // 存储页面的数组
     private  boolean    isInitFragment[] = new boolean[2];
     private Fragment mContentFragment; // 当前fragment
     private int currentFragment = 0; // 当前Fragment的索引
-    private TitleView titleLayout;
-    private TitleView titleLayout1;
+    private CommonTitleView titleLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +42,11 @@ public class ViewCouponActivity extends AutoLayoutFragmentActivity implements Vi
         mContext = this;
         initViews();
         initFragmentS(); // 初始化fragment
+    }
+
+    @Override
+    public void initPresenter() {
+
     }
 
     private void initFragmentS() {
@@ -64,19 +68,18 @@ public class ViewCouponActivity extends AutoLayoutFragmentActivity implements Vi
                    // imageViews[i].setSelected(true);
                     linearLayouts[i].setSelected(false);
                     textViews[i].setTextColor(getResources().getColor(
-                            R.color.main_bar_text_dw));
+                            R.color.cor8));
                 } else {
                    // imageViews[i].setSelected(false);
                     linearLayouts[i].setSelected(false);
                     textViews[i].setTextColor(getResources().getColor(
-                            R.color.main_bar_text_nm));
+                            R.color.cor10));
                 }
             }
 
             Fragment to = mFragments[n];
             if (mContentFragment != to) {
-                FragmentTransaction fragmentTransaction = this
-                        .getSupportFragmentManager().beginTransaction();
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 if (mContentFragment != null) {
                     if (!to.isAdded()) { // 先判断是否被add过
                         fragmentTransaction.hide(mContentFragment)
@@ -97,46 +100,24 @@ public class ViewCouponActivity extends AutoLayoutFragmentActivity implements Vi
     }
 
     private void initViews() {
-
-        initTitleView();
         linearLayouts[0] = findViewById(R.id.tab_one_layout);
         linearLayouts[1] = findViewById(R.id.tab_two_layout);
         textViews[0] = (TextView) findViewById(R.id.tab_one_text);
         textViews[1] = (TextView) findViewById(R.id.tab_two_text);
         linearLayouts[0].setOnClickListener(this);
         linearLayouts[1].setOnClickListener(this);
-        titleLayout = (TitleView) findViewById(R.id.title_layout);
-        titleLayout.setLeftImage(-1, new View.OnClickListener() {
+        titleLayout = (CommonTitleView) findViewById(R.id.title_layout);
+        titleLayout.setRightImg(R.drawable.coupon_description_selector, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-            }
-        });
-        titleLayout.setTitle("卡券");
-    }
-
-    private void initTitleView() {
-
-
-        titleLayout = (TitleView) findViewById(R.id.title_layout);
-        titleLayout.setLeftImage(-1, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        titleLayout.setRightImage(R.drawable.coupon_description_selector, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Constants.MyLog("优惠券点击事件");
-                Intent intent = new Intent(mContext, WebviewActivity.class);
-                intent.putExtra(Constants.P_WebView_Title,"说明");
-                intent.putExtra(Constants.P_WebView_Url, ApiConstants.H5_HOST+"n/coupon_description");
+                Intent intent = new Intent(mContext, QuestionCommunityActivity.class);
+                intent.putExtra(QuestionCommunityActivity.H5_TITLE,"说明");
+                intent.putExtra(QuestionCommunityActivity.H5_URL, ApiConstants.AppCouponHelper);
                 startActivity(intent);
             }
         });
-        titleLayout.setTitle("卡券");
     }
+
 
     @Override
     public void onClick(View v) {

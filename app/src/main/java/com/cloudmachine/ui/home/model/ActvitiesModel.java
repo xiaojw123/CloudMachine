@@ -1,9 +1,9 @@
 package com.cloudmachine.ui.home.model;
 
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.recyclerbean.HomeBannerBean;
+import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.ui.home.contract.ActivitesContract;
 
 import java.util.ArrayList;

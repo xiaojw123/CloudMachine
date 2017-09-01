@@ -4,12 +4,11 @@
     android:layout_height="match_parent" 
     android:orientation="vertical"
     >
-    <com.cloudmachine.utils.widgets.TitleView
+    <com.cloudmachine.widget.CommonTitleView
         android:id="@+id/title_layout"
 	         android:layout_width="fill_parent"
 	         android:layout_height="wrap_content"
-        >
-	</com.cloudmachine.utils.widgets.TitleView>
+        />
 
 	<RelativeLayout
 	    android:layout_width="match_parent"
@@ -34,7 +33,7 @@
 	            android:paddingLeft="@dimen/photo_num_marginleft"
 	            android:text="@string/finish" />
 	    </RelativeLayout>
-	    <com.cloudmachine.main.photoImgeView.HackyViewPager
+	    <com.cloudmachine.widget.HackyViewPager
 	        android:id="@+id/pager"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"

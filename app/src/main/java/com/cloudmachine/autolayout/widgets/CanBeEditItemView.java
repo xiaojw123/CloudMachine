@@ -14,20 +14,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.utils.AutoUtils;
+import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
-import com.cloudmachine.utils.Constants;
 
 
 public class CanBeEditItemView extends RelativeLayout {
-	private Context context;
-    private TextView xing,ll_line,name_text,ctext_view;
-    private TextView bottom_line;
-    private ImageView arrowImage; 
+    private TextView xing,name_text,ctext_view;
+    private ImageView arrowImage;
     private EditText edit_view;
     private boolean required,edit,arrow;
-    private boolean isLast;
-    
+
     private String title_name = "";
     private String hint = " ";
     private String content = "";
@@ -53,7 +49,6 @@ public class CanBeEditItemView extends RelativeLayout {
         required = a.getBoolean(R.styleable.addDItem_view_required, false);
         edit = a.getBoolean(R.styleable.addDItem_view_edit, false);
         arrow = a.getBoolean(R.styleable.addDItem_view_arrow, false);
-        isLast = a.getBoolean(R.styleable.addDItem_view_last, false);
         titleTextSize = a.getDimension(R.styleable.addDItem_view_titleTextSize, titleTextSize);
         cTextSize = a.getDimension(R.styleable.addDItem_view_cTextSize, cTextSize);
         
@@ -64,20 +59,16 @@ public class CanBeEditItemView extends RelativeLayout {
         isEdit(edit);
         isRequired(required);
         isArrow(arrow);
-        isLastLine(isLast);
-        a.recycle(); 
+        a.recycle();
 
     }
 
     private void initView(Context context) {
-    	this.context = context;
         // 初始情况，设置下拉刷新view高度为0
     	LayoutInflater inflater=(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.view_adddevice_item, this);
 
-        bottom_line = (TextView) findViewById(R.id.bottom_line);
         xing = (TextView) findViewById(R.id.xing);
-        ll_line = (TextView) findViewById(R.id.ll_line);
         name_text = (TextView) findViewById(R.id.name_text);
         ctext_view = (TextView) findViewById(R.id.ctext_view);
         arrowImage = (ImageView) findViewById(R.id.arrow);
@@ -87,7 +78,7 @@ public class CanBeEditItemView extends RelativeLayout {
     }
     public void setTitle(String title){
     	name_text.setText(title);
-    	ctext_view.setTextColor(getResources().getColor(R.color.public_black));
+    	ctext_view.setTextColor(getResources().getColor(R.color.cor20));
     	if(titleTextSize!=0){
     		name_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, AutoUtils.getPercentHeightSizeBigger((int)titleTextSize));
     	}
@@ -96,7 +87,7 @@ public class CanBeEditItemView extends RelativeLayout {
     public void setContent(String content){
     	ctext_view.setText(content);
     	this.content = content;
-    	ctext_view.setTextColor(getResources().getColor(R.color.public_black_4));
+    	ctext_view.setTextColor(getResources().getColor(R.color.cor20));
     	if(cTextSize!=0){
     		ctext_view.setTextSize(TypedValue.COMPLEX_UNIT_PX, AutoUtils.getPercentHeightSizeBigger((int)cTextSize));
     	}
@@ -143,17 +134,7 @@ public class CanBeEditItemView extends RelativeLayout {
 	   if(b){
 		   arrowImage.setVisibility(View.VISIBLE);
 	   }else{
-		   arrowImage.setVisibility(View.INVISIBLE);
-	   }
-   }
-   public void isLastLine(boolean b){
-	   isLast = b;
-	   if(b){
-		   bottom_line.setVisibility(View.GONE);
-		   ll_line.setVisibility(View.GONE);
-	   }else{
-		   bottom_line.setVisibility(View.GONE);
-		   ll_line.setVisibility(View.VISIBLE);
+		   arrowImage.setVisibility(View.GONE);
 	   }
    }
    public boolean getRequired(){
@@ -174,7 +155,6 @@ public class CanBeEditItemView extends RelativeLayout {
 	   public void onFocusChange(View v, boolean hasFocus) {
 		   if(hasFocus){
 //			   edit_view.setText(ctext_view.getText());
-			   Constants.MyLog("获取焦点");
 			   edit_view.setText(blankContent);
 		   }
 		   else{

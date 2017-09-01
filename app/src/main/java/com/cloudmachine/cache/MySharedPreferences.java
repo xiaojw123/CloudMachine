@@ -3,7 +3,7 @@ package com.cloudmachine.cache;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.cloudmachine.app.MyApplication;
+import com.cloudmachine.MyApplication;
 
 public class MySharedPreferences {
 	

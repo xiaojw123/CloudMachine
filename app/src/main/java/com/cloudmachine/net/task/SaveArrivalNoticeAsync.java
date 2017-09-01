@@ -7,7 +7,7 @@ import android.os.Message;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.BaseBO;
+import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.Utils;

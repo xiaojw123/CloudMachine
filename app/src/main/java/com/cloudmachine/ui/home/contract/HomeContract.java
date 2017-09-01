@@ -3,12 +3,11 @@ package com.cloudmachine.ui.home.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.recyclerbean.HomeBannerBean;
-import com.cloudmachine.struc.McDeviceInfo;
-import com.cloudmachine.struc.UnReadMessage;
+import com.cloudmachine.bean.UnReadMessage;
+import com.cloudmachine.ui.home.model.PopItem;
 
-import java.util.ArrayList;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import rx.Observable;
@@ -22,28 +21,26 @@ public interface HomeContract {
 
         void updateMessageCount(int count);
 
-        void updateDevices(List<McDeviceInfo> deviceList);
-        void updatePromotionInfo(HomeBannerBean promotionBean);
+
+        void updatePromotionInfo(List<PopItem> items);
 
 
     }
 
     interface Model extends BaseModel {
-        Observable<BaseRespose<UnReadMessage>> getMessageUntreatedCount(long memberId);
+        Observable<UnReadMessage> getMessageUntreatedCount(long memberId);
 
-        Observable<List<McDeviceInfo>> getDevices(long memberId, int type);
-        Observable<List<McDeviceInfo>> getDevices(int type);
-        Observable<BaseRespose<ArrayList<HomeBannerBean>>> getPromotionModel();
+        Observable<List<PopItem>> getPromotionModel(long memberId);
+        Observable<JSONObject>   getH5ConfigInfo();
 
     }
 
     public abstract class Presenter extends BasePresenter<HomeContract.View, HomeContract.Model> {
         public abstract void updateUnReadMessage(long memberId);
 
-        public abstract void getDevices(long memberId, int type);
-        public abstract void getDevices(int type);
 
-        public abstract void getPromotionInfo();
+        public abstract void getPromotionInfo(long memberId);
+        public abstract  void getH5ConfigInfo();
 
     }
 

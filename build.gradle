@@ -1,4 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+ext {
+    configuration = [
+            package          : "com.cloudmachine",
+            buildToolsVersion: "25.0.2",
+            compileVersion   : 25,
+            minSdk           : 16,
+            targetSdk        : 25,
+            version_code     : 135,
+            version_name     : "3.3.1"
+    ]
+    libraries = [
+            support: "25.2.0",
+    ]
+}
 
 buildscript {
     repositories {

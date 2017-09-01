@@ -1,26 +1,26 @@
 package com.cloudmachine.net.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.cloudmachine.app.MyApplication;
+import com.cloudmachine.MyApplication;
+import com.cloudmachine.bean.Permission;
 import com.cloudmachine.cache.LocationSerializable;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.Permission;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UIHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.apache.http.NameValuePair;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PermissionsListAsync extends ATask {
 

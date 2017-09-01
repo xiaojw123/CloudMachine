@@ -1,26 +1,21 @@
 package com.cloudmachine.activities;
 
 
-import android.content.Context;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.adapter.GetCouponAdapter;
+import com.cloudmachine.adapter.ValidCouponAdapter;
+import com.cloudmachine.bean.CouponInfo;
 import com.cloudmachine.net.task.GetCouponAsync;
-import com.cloudmachine.recycleadapter.ValidCouponAdapter;
-import com.cloudmachine.recycleadapter.decoration.GridSpacingItemDecoration;
-import com.cloudmachine.struc.CouponInfo;
 import com.cloudmachine.utils.Constants;
 
 import java.util.ArrayList;
@@ -38,11 +33,8 @@ import java.util.ArrayList;
 public class AvailableCouponsFragment extends Fragment implements Handler.Callback{
 
     private  View    viewParent;
-    private Context mContext;
     private  Handler mHandler;
-    private ListView lvAvavilableCoupon;
     private ArrayList<CouponInfo> dataList;
-    private GetCouponAdapter getCouponAdapter;
     private RecyclerView mRecyclerView;
     private ValidCouponAdapter mValidCouponAdapter;
     private View emptTv;
@@ -60,7 +52,6 @@ public class AvailableCouponsFragment extends Fragment implements Handler.Callba
             }
         } else {
             viewParent = inflater.inflate(R.layout.fragment_available_coupons, null);
-            mContext = getActivity();
             mHandler = new Handler(this);
             initView();
 
@@ -75,8 +66,7 @@ public class AvailableCouponsFragment extends Fragment implements Handler.Callba
         new GetCouponAsync(mHandler, "0", null, viewCouponActivity).execute();
         emptTv=viewParent.findViewById(R.id.empt_tv);
         mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, getActivity().getResources().getDimensionPixelSize(R.dimen.padding_middle), true));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setHasFixedSize(true);
         mValidCouponAdapter = new ValidCouponAdapter(dataList, getActivity());
         mRecyclerView.setAdapter(mValidCouponAdapter);

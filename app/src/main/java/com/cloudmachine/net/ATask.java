@@ -3,8 +3,8 @@ package com.cloudmachine.net;
 import android.os.AsyncTask;
 
 import com.cloudmachine.R;
-import com.cloudmachine.app.MyApplication;
-import com.cloudmachine.struc.BaseBO;
+import com.cloudmachine.MyApplication;
+import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UIHelper;
 import com.google.gson.Gson;

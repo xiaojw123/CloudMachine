@@ -9,15 +9,12 @@ import org.apache.http.message.BasicNameValuePair;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 
-import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.BaseBO;
-import com.cloudmachine.struc.LocationXY;
-import com.cloudmachine.struc.News;
+import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.LocationXY;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.URLs;

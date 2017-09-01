@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-import com.cloudmachine.struc.UploadResult;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.bean.UploadResult;
+import com.cloudmachine.chart.utils.AppLog;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -26,8 +26,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 
-import static com.cloudmachine.api.Api.CONNECT_TIME_OUT;
-import static com.cloudmachine.api.Api.READ_TIME_OUT;
+import static com.cloudmachine.net.api.Api.CONNECT_TIME_OUT;
+import static com.cloudmachine.net.api.Api.READ_TIME_OUT;
 
 /**
  * 项目名称：CloudMachine
@@ -115,26 +115,21 @@ public class UploadPhotoUtils {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Constants.MyLog("到底有没有进来");
                 String result = response.body().string();
-                if (result != null) {
-                    Constants.MyLog(result.toString() + "2222222222");
-                    Gson gson = new Gson();
-                    UploadResult uploadResult = gson.fromJson(result,
-                            UploadResult.class);
+                Gson gson = new Gson();
+                UploadResult uploadResult = gson.fromJson(result,
+                        UploadResult.class);
 
-                    if (uploadResult.getError() == 0) {
-                        // 返回url
-                        url = uploadResult.getUrl();
-                        Constants.MyLog("拿到的图片id" + url);
-                        msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
-                        msg.obj = url;
-                    } else {
-                        msg.what = Constants.HANDLER_UPLOAD_FAILD;
-                        msg.obj = "图片上传失败";
-                    }
-                    mHandler.sendMessage(msg);
+                if (uploadResult.getError() == 0) {
+                    // 返回url
+                    url = uploadResult.getUrl();
+                    msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
+                    msg.obj = url;
+                } else {
+                    msg.what = Constants.HANDLER_UPLOAD_FAILD;
+                    msg.obj = "图片上传失败";
                 }
+                mHandler.sendMessage(msg);
             }
         });
 
@@ -197,7 +192,7 @@ public class UploadPhotoUtils {
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                AppLog.print("onFailure___e__"+e+", message__"+e.getMessage());
+                AppLog.print("onFailure___e__" + e + ", message__" + e.getMessage());
             }
 
             @Override

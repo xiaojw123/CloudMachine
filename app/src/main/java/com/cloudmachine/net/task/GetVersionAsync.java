@@ -1,30 +1,30 @@
 package com.cloudmachine.net.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.cloudmachine.MyApplication;
 import com.cloudmachine.R;
-import com.cloudmachine.app.MyApplication;
+import com.cloudmachine.bean.VersionInfo;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.VersionInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UIHelper;
 import com.cloudmachine.utils.VerisonCheckSP;
 import com.cloudmachine.utils.VersionU;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetVersionAsync extends ATask {
 
@@ -106,7 +106,6 @@ public class GetVersionAsync extends ATask {
 					}
 				
 			}catch(Exception e){
-				Constants.MyLog(e.getMessage());
 			}
 		} else {
 		}

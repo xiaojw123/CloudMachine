@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.cloudmachine.R;
-import com.cloudmachine.struc.Permission;
+import com.cloudmachine.bean.Permission;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.Utils;
 

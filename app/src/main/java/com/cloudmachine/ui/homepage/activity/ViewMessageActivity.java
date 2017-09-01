@@ -1,16 +1,32 @@
 package com.cloudmachine.ui.homepage.activity;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.cloudmachine.R;
-import com.cloudmachine.autolayout.widgets.TitleView;
+import com.cloudmachine.adapter.MessageListAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.ui.homepage.fragment.MessageFragment;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.listener.OnItemClickListener;
+import com.cloudmachine.bean.MessageBO;
+import com.cloudmachine.ui.home.contract.ViewMessageConract;
+import com.cloudmachine.ui.home.model.ViewMessageModel;
+import com.cloudmachine.ui.home.presenter.ViewMessagePresenter;
+import com.cloudmachine.utils.CommonUtils;
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.chart.utils.AppLog;
+import com.yanzhenjie.recyclerview.swipe.Closeable;
+import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 /**
@@ -23,127 +39,137 @@ import com.cloudmachine.ui.homepage.fragment.MessageFragment;
  * 修改备注：
  */
 
-public class ViewMessageActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
-    public static final  String FRAGMENT_TYPE_ALL="all_message";
-    public static final  String FRAGMENT_TYPE_SYSTEM="system_message";
-    private Context mContext;
-    private View[]     linearLayouts    = new View[2];
-    private TextView[] textViews        = new TextView[2];
-    private MessageFragment   mFragments[]     = new MessageFragment[2]; // 存储页面的数组
-    private boolean    isInitFragment[] = new boolean[2];
-    private Fragment mContentFragment; // 当前fragment
-    private int currentFragment = 0; // 当前Fragment的索引
-    private TitleView titleLayout;
+public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePresenter, ViewMessageModel> implements ViewMessageConract.View, OnItemClickListener {
+    public static final String FRAGMENT_TYPE_SYSTEM = "system_message";
+    @BindView(R.id.view_message_smrlv)
+    SwipeMenuRecyclerView messageRlv;
+    @BindView(R.id.view_message_empty)
+    View emptyMsgView;
+    MessageListAdapter mAdapter;
+    long memberId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_message);
+        ButterKnife.bind(this);
+        initRecyclerView();
         mContext = this;
-        initViews();
-        initFragmentS(); // 初始化fragment
+        memberId = UserHelper.getMemberId(this);
+        mPresenter.questionNeed(memberId);
     }
 
-    private void initFragmentS() {
+    private void initRecyclerView() {
+        messageRlv.setLayoutManager(new LinearLayoutManager(this));
 
-        mFragments[0] = new MessageFragment();
-        mFragments[0].setFragmentType(FRAGMENT_TYPE_ALL);
-        mFragments[1] = new MessageFragment();
-        mFragments[1].setFragmentType(FRAGMENT_TYPE_SYSTEM);
-        mContentFragment = null;
-        switchContent(currentFragment);
+        DividerItemDecoration did=new DividerItemDecoration(this, LinearLayout.VERTICAL);
+        did.setDrawable(getResources().getDrawable(R.drawable.divider_line_horztial));
+        messageRlv.addItemDecoration(did);
+        messageRlv.setSwipeMenuCreator(CommonUtils.getMenuCreator(this));
+        messageRlv.setSwipeMenuItemClickListener(menuItemClickListener);
+        mAdapter = new MessageListAdapter(this);
+        mAdapter.setOnItemClickListener(this);
+        mAdapter.setPresenter(mPresenter);
+        messageRlv.setAdapter(mAdapter);
     }
 
-    private void switchContent(int n) {
 
-        currentFragment = n;
-        int len = mFragments.length;
-        if (n < len && n >= 0) {
-            // int size = imageViews.length;
-            for (int i = 0; i < len; i++) {
-                if (i == n) {
-                    // imageViews[i].setSelected(true);
-                    linearLayouts[i].setSelected(false);
-                    textViews[i].setTextColor(getResources().getColor(
-                            R.color.main_bar_text_dw));
-                } else {
-                    // imageViews[i].setSelected(false);
-                    linearLayouts[i].setSelected(false);
-                    textViews[i].setTextColor(getResources().getColor(
-                            R.color.main_bar_text_nm));
-                }
-            }
 
-            Fragment to = mFragments[n];
-            if (mContentFragment != to) {
-                FragmentTransaction fragmentTransaction = this
-                        .getFragmentManager().beginTransaction();
-                if (mContentFragment != null) {
-                    if (!to.isAdded()) { // 先判断是否被add过
-                        fragmentTransaction.hide(mContentFragment)
-                                .add(R.id.frame_content, to).commit(); // 隐藏当前的fragment，add下一个到Activity中
-                    } else {
-                        fragmentTransaction.hide(mContentFragment).show(to)
-                                .commit(); // 隐藏当前的fragment，显示下一个
-                        if (to == mFragments[1]) {
-                            to.onResume();
-                        }
-                    }
-                } else {
-                    fragmentTransaction.add(R.id.frame_content, to).commit();
+    OnSwipeMenuItemClickListener menuItemClickListener = new OnSwipeMenuItemClickListener() {
+
+
+        @Override
+        public void onItemClick(Closeable closeable, int adapterPosition, int menuPosition, int direction) {
+            AppLog.print("onItemClick___");
+            if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
+                //删除item
+                MessageBO msgBo = mAdapter.getItem(adapterPosition);
+                if (msgBo != null) {
+                    AppLog.print("onItemClick___deleMsg__");
+                    closeable.smoothCloseLeftMenu();
+                    mPresenter.deleteMessage(memberId, msgBo);
                 }
-                mContentFragment = to;
+
             }
         }
-    }
+    };
 
-    private void initViews() {
-
-        initTitleView();
-        linearLayouts[0] = findViewById(R.id.tab_one_layout);
-        linearLayouts[1] = findViewById(R.id.tab_two_layout);
-        textViews[0] = (TextView) findViewById(R.id.tab_one_text);
-        textViews[1] = (TextView) findViewById(R.id.tab_two_text);
-        linearLayouts[0].setOnClickListener(this);
-        linearLayouts[1].setOnClickListener(this);
-        titleLayout = (TitleView) findViewById(R.id.title_layout);
-        titleLayout.setLeftImage(-1, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        titleLayout.setTitle("消息");
-    }
-
-    private void initTitleView() {
-
-
-        titleLayout = (TitleView) findViewById(R.id.title_layout);
-        titleLayout.setLeftImage(-1, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        titleLayout.setTitle("消息");
-    }
 
     @Override
     public void initPresenter() {
+        mPresenter.setVM(this, mModel);
+    }
 
+
+    @Override
+    public void returnAcceptMessage() {
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tab_one_layout:
-                switchContent(0);
-                break;
-            case R.id.tab_two_layout:
-                switchContent(1);
-                break;
-        }
+    public void returnRejectMessage() {
+        mAdapter.notifyDataSetChanged();
+    }
 
+    @Override
+    public void updateMsgStatus() {
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void returnGetSystemMsg(List<MessageBO> msgList) {
+        mAdapter.updateItems(msgList);
+    }
+
+    @Override
+    public void retrunGetAllMsg(List<MessageBO> msgList) {
+        AppLog.print("retrunGetAllMsg___");
+        mAdapter.updateItems(msgList);
+        List<MessageBO> messageBOs=mAdapter.getItems();
+        if (messageBOs!=null&&messageBOs.size() >0) {
+            messageRlv.setVisibility(View.VISIBLE);
+            emptyMsgView.setVisibility(View.GONE);
+        }else{
+            messageRlv.setVisibility(View.GONE);
+            emptyMsgView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void retrunQuestionNeed(MessageBO messageBO) {
+        AppLog.print("retrunQuestionNeed___");
+        mAdapter.updateItem(messageBO);
+    }
+
+    @Override
+    public void returnDeleteMessage(MessageBO messageBO) {
+        mAdapter.removeItem(messageBO);
+    }
+
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Object obj = view.getTag();
+        if (obj != null && obj instanceof MessageBO) {
+//                dasdfasdf
+            MessageBO msgBo = (MessageBO) obj;
+            if (msgBo.getStatus() == 1) {
+                mPresenter.updateMsgStatus(memberId, msgBo);
+            }
+            int messageType = msgBo.getMessageType();
+            String url = msgBo.getUrl();
+            String title = null;
+            if (messageType == 5) {
+                url = msgBo.getMessage();
+                title = "问卷调查";
+            }
+            if (!TextUtils.isEmpty(url)) {
+                Bundle bundle = new Bundle();
+                bundle.putString(QuestionCommunityActivity.H5_TITLE, title);
+                bundle.putString(QuestionCommunityActivity.H5_URL, url);
+                Constants.toActivity(ViewMessageActivity.this, QuestionCommunityActivity.class, bundle);
+            }
+        }
     }
 }

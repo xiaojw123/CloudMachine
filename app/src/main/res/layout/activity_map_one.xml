@@ -1,22 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#fafafa"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
-    <com.cloudmachine.utils.widgets.TitleView
+    <com.cloudmachine.widget.CommonTitleView
         android:id="@+id/title_layout"
 	         android:layout_width="fill_parent"
 	         android:layout_height="wrap_content"
-        >
-    </com.cloudmachine.utils.widgets.TitleView>
+        app:common_title_name="@string/elec_fence"
+        app:common_shodow_visible="false"
+        />
 
-    <com.amap.api.maps2d.MapView
+    <com.amap.api.maps.MapView
         android:id="@+id/map"
+        android:layout_below="@+id/title_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
 
-</LinearLayout>
+    <FrameLayout
+        android:id="@+id/mapone_loc_layout"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginBottom="@dimen/spa7"
+        android:layout_marginLeft="@dimen/dimen_size_8"
+        android:layout_marginRight="@dimen/dimen_size_8"
+        android:focusable="true"
+        android:layout_alignParentBottom="true"
+        android:focusableInTouchMode="true"
+        android:background="@drawable/bg_card"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/mapone_cur_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/icon_map_loc"
+            android:drawablePadding="@dimen/dimen_size_11"
+            android:maxEms="18"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/siz4"
+            android:singleLine="true" />
+
+
+    </FrameLayout>
+
+
+</RelativeLayout>

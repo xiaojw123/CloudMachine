@@ -1,11 +1,5 @@
 package com.cloudmachine.net.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -13,11 +7,17 @@ import android.os.Message;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.BaseBO;
+import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.URLs;
 import com.google.gson.Gson;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GivePermissionNewAsync extends ATask {
 
@@ -30,6 +30,9 @@ public class GivePermissionNewAsync extends ATask {
 		this.handler = handler;
 		this.toMemberId = toMemberId;
 		this.deviceIdS = deviceIdS;
+		if (messageType==3){
+			messageType=1;
+		}
 		this.messageType = messageType;
 		try{
 			memberId = String.valueOf(MemeberKeeper.getOauth(context).getId());
@@ -45,6 +48,7 @@ public class GivePermissionNewAsync extends ATask {
 		list.add(new BasicNameValuePair("fromMemberId", memberId));
 		list.add(new BasicNameValuePair("toMemberId", String.valueOf(toMemberId)));
 		list.add(new BasicNameValuePair("deviceIdS", String.valueOf(deviceIdS)));
+
 		list.add(new BasicNameValuePair("messageType", String.valueOf(messageType)));
 		String result = null;
 		try {

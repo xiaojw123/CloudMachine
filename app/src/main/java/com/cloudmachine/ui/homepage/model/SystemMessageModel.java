@@ -1,9 +1,9 @@
 package com.cloudmachine.ui.homepage.model;
 
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.struc.MessageBO;
+import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.ui.homepage.contract.SystemMessageContract;
 
 import java.util.List;

@@ -3,10 +3,10 @@
     android:shape="rectangle"
     >
     <size
-        android:width="1dp"
+        android:width="@dimen/dimen_size_1"
         />
     <solid
-        android:color="@color/list_divider_color"
+        android:color="@color/cor12"
         />
 
 </shape>

@@ -3,7 +3,7 @@ package com.cloudmachine.ui.homepage.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.struc.MessageBO;
+import com.cloudmachine.bean.MessageBO;
 
 import java.util.List;
 

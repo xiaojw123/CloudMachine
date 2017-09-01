@@ -5,10 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.cloudm.autolayout.AutoFrameLayout;
-import com.cloudm.autolayout.AutoLinearLayout;
-import com.cloudm.autolayout.AutoRelativeLayout;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.autolayout.AutoFrameLayout;
+import com.cloudmachine.autolayout.AutoLinearLayout;
+import com.cloudmachine.autolayout.AutoRelativeLayout;
+import com.cloudmachine.chart.utils.AppLog;
 
 public class SupportAutoLayoutActivity extends AppCompatActivity {
     private static final String LAYOUT_LINEARLAYOUT = "LinearLayout";

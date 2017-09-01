@@ -8,35 +8,60 @@
     android:orientation="vertical"
     >
 
-    <com.cloudmachine.autolayout.widgets.TitleView
-        android:id="@+id/title_layout"
+    <com.cloudmachine.widget.CommonTitleView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        cloudm:common_title_name="@string/comment"
+        />
 
     <ScrollView
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:scrollbars="none"
-        android:layout_marginLeft="135px"
-        android:layout_marginRight="135px"
         >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/dimen_size_54"
+            android:layout_marginRight="@dimen/dimen_size_54"
+            android:paddingTop="@dimen/dimen_size_30"
              >
-			
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/comment_head_img"
+                    android:layout_width="@dimen/dimen_size_60"
+                    android:layout_height="@dimen/dimen_size_60"
+                    android:src="@drawable/icon_head_technician"
+                    cloudm:civ_border_color="@color/cor12"
+                    cloudm:civ_border_width="@dimen/dimen_size_1"
+                    />
+
+
             <RatingBar
                 android:id="@+id/rb_rating_bar"
                 style="@style/roomRatingBar"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/rating_start_height"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/rating_bar_margintop"
+                android:layout_height="wrap_content"
                 android:numStars="5"
-                android:rating="5" 
-                android:padding="0dp"
+                android:rating="0"
+                android:layout_marginTop="@dimen/dimen_size_6"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_toRightOf="@+id/comment_head_img"
                 />
 			<!--android:layout_marginLeft="@dimen/rating_bar_marginleft"  -->
             <TextView
@@ -44,101 +69,102 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/rating_bar_text_margintop"
-                android:text="@string/rating_bar"
-                android:textColor="@color/history_text"
-                android:textSize="@dimen/public_textsize5" />
+                android:layout_below="@+id/rb_rating_bar"
+                android:layout_alignLeft="@+id/rb_rating_bar"
+                android:layout_marginTop="@dimen/dimen_size_14"
+                android:textColor="@color/cor10"
+                android:textSize="@dimen/siz6" />
 
-            <View
-                android:id="@+id/v_divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/public_line_wh"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/rating_bar_line_margintop"
-                android:background="@color/radius_button_fill_white_dw" />
-			<LinearLayout 
+            </RelativeLayout>
+			<LinearLayout
+                android:id="@+id/advantage_item_layout"
 			    android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/rating_bar_oval_margintop"
+                android:layout_marginTop="@dimen/dimen_size_49"
+                android:visibility="gone"
 			    >
-			    <View
-                android:id="@+id/view1"
-                android:layout_width="@dimen/rating_bar_oval_size"
-                android:layout_height="@dimen/rating_bar_oval_size"
-                android:background="@drawable/oval_black" 
-                android:layout_gravity="center_vertical"
-                />
-<!-- android:layout_marginLeft="@dimen/rating_bar_oval_marginleft" -->
+
+                <View
+                    android:background="@color/cor12"
+                    android:layout_width="@dimen/dimen_size_76"
+                    android:layout_height="@dimen/dimen_size_1"
+                    android:layout_gravity="center_vertical"
+                    />
+
+
             <TextView
                 android:id="@+id/tv_advantage"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dimen_size_106"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/v_divider"
-                android:layout_marginLeft="@dimen/radius_button_roundRadius"
-                android:layout_gravity="center_vertical"
                 android:text="@string/advantage"
-                android:textColor="@color/public_black_9"
-                android:textSize="@dimen/public_textsize5" />
+                android:gravity="center"
+                android:textColor="@color/cor10"
+                android:textSize="@dimen/siz6" />
+
+                <View
+                    android:background="@color/cor12"
+                    android:layout_width="@dimen/dimen_size_76"
+                    android:layout_height="@dimen/dimen_size_1"
+                    android:layout_gravity="center_vertical"
+                    />
 			</LinearLayout>
             
 <!-- android:layout_marginLeft="@dimen/radius_button_roundRadius" -->
             <com.cloudmachine.utils.widgets.tagview.TagCloudLayout
                 android:id="@+id/advantage"
-                android:layout_width="@dimen/taglayout_width"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/taglayout_margintop"
-                app:lineSpacing="@dimen/taglayout_spacing"
-                app:tagSpacing="@dimen/taglayout_spacing" />
+                android:layout_marginTop="@dimen/dimen_size_28"
+                app:lineSpacing="@dimen/dimen_size_10"
+                app:tagSpacing="@dimen/dimen_size_17"
+                android:visibility="gone"
+                />
 
-            <LinearLayout
-                android:id="@+id/rl_disadvantage"
-                android:layout_width="@dimen/taglayout_width"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/taglayout_margintop2"
-                android:orientation="vertical" >
+
 
                 <LinearLayout
+                    android:id="@+id/disadvantage_item_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_25"
+                    android:layout_marginBottom="@dimen/dimen_size_25"
+                    android:visibility="gone"
+                    >
 
                     <View
-                        android:id="@+id/view2"
-                        android:layout_width="@dimen/rating_bar_oval_size"
-                        android:layout_height="@dimen/rating_bar_oval_size"
+                        android:background="@color/cor12"
+                        android:layout_width="@dimen/dimen_size_76"
+                        android:layout_height="@dimen/dimen_size_1"
                         android:layout_gravity="center_vertical"
-                        android:background="@drawable/oval_black" />
+                        />
+
 
                     <TextView
                         android:id="@+id/tv_advance"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dimen_size_106"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/radius_button_roundRadius"
-                        android:layout_gravity="center_vertical"
                         android:text="@string/tag_advice"
-                        android:textColor="@color/public_black_9"
-                        android:textSize="@dimen/public_textsize5" />
+                        android:gravity="center"
+                        android:textColor="@color/cor10"
+                        android:textSize="@dimen/siz6" />
+
+                    <View
+                        android:background="@color/cor12"
+                        android:layout_width="@dimen/dimen_size_76"
+                        android:layout_height="@dimen/dimen_size_1"
+                        android:layout_gravity="center_vertical"
+                        />
                 </LinearLayout>
-                <!--
-     android:id="@+id/advantage"
-        android:layout_width="@dimen/taglayout_width"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_advantage"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/taglayout_margintop"
-        app:lineSpacing="@dimen/taglayout_spacing"
-        app:tagSpacing="@dimen/taglayout_spacing"
-                -->
 
                 <com.cloudmachine.utils.widgets.tagview.TagCloudLayout
                     android:id="@+id/disadvantage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/taglayout_margintop"
-                    app:lineSpacing="@dimen/taglayout_spacing"
-                    app:tagSpacing="@dimen/taglayout_spacing" />
-            </LinearLayout>
+                    app:lineSpacing="@dimen/dimen_size_10"
+                    app:tagSpacing="@dimen/dimen_size_17"
+                    android:visibility="gone"
+                    />
 
             <!-- <com.cloudmachine.utils.widgets.ClearEditTextView
                 android:id="@+id/et_other_ad"
@@ -156,37 +182,45 @@
                 <LinearLayout
                     android:id="@+id/et_other_ad"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/taglayout_height"
-                    android:layout_marginTop="34px"
+                    android:layout_height="@dimen/dimen_size_60"
+                    android:layout_marginTop="@dimen/dimen_size_10"
                     android:background="@drawable/radius_button_white_grey"
-                    android:padding="2dp"
+                    android:padding="@dimen/pad1"
                     >
-                    <EditText 
+                    <EditText
+                        android:id="@+id/comment_my_sbj"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text=""
-                        android:hint="其他建议"
+                        android:hint="我的建议"
                         android:gravity="top|left"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+
                         android:background="@null"
                         android:textSize="@dimen/public_textsize5" 
                         />
                     
                 </LinearLayout>
+        </LinearLayout>
 
             <com.cloudmachine.autolayout.widgets.RadiusButtonView
                 android:id="@+id/login_btn"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/novice_guide_button_height"
-                cloudm:rbtn_fillColor_dw="@color/public_b_20"
-                cloudm:rbtn_fillColor_nm="@color/public_blue_bg"
-                cloudm:rbtn_strokeColor="@color/public_blue_bg"
+                android:layout_height="@dimen/dimen_size_50"
+                cloudm:rbtn_fillColor_dw="@color/cor5"
+                cloudm:rbtn_fillColor_nm="@color/cor5"
+                cloudm:rbtn_strokeColor="@color/cor5"
                 cloudm:rbtn_text="@string/advice_now"
-                cloudm:rbtn_textColor="@color/public_white"
-                cloudm:rbtn_textSize="@dimen/about_button_textsize" 
-                android:layout_marginTop="80px"
-                android:layout_marginBottom="80px"
+                cloudm:rbtn_textColor="@color/cor15"
+                cloudm:rbtn_textSize="@dimen/siz3"
+                cloudm:rbtn_roundRadius="@dimen/dimen_size_2"
+                android:layout_marginTop="@dimen/dimen_size_22"
+                android:layout_marginLeft="@dimen/pad1"
+                android:layout_marginRight="@dimen/pad1"
+                android:layout_marginBottom="@dimen/dimen_size_22"
                 />
         </LinearLayout>
     </ScrollView>
+
 
 </LinearLayout>

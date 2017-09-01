@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <com.cloudmachine.autolayout.widgets.TitleView
-        android:id="@+id/title_layout"
+    <com.cloudmachine.widget.CommonTitleView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        ></com.cloudmachine.autolayout.widgets.TitleView>
+        app:common_title_name="查看优惠券"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        />
+
+
+    <TextView
+        android:id="@+id/vp_empt_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="无可用卡劵"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_18_sp"
+        android:visibility="gone"
+        />
 
 
 </LinearLayout>

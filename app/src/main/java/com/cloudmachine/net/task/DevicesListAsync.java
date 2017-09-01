@@ -8,8 +8,8 @@ import android.text.TextUtils;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.BaseBO;
-import com.cloudmachine.struc.McDeviceInfo;
+import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.google.gson.Gson;
@@ -36,7 +36,6 @@ public class DevicesListAsync extends ATask {
 		this.key = key;
 		try{
 			memid = String.valueOf(MemeberKeeper.getOauth(context).getId());
-			Constants.MyLog("拿到的id"+memid);
 		}catch(Exception ee){
 			
 		}

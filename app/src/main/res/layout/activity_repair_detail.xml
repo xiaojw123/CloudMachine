@@ -1,51 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical">
 
-    <com.cloudmachine.autolayout.widgets.TitleView
-        android:id="@+id/title_layout"
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/repair_detail_ctv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </com.cloudmachine.autolayout.widgets.TitleView>
+        android:layout_height="wrap_content"
+        app:common_title_name="等待支付" />
 
     <RelativeLayout
         android:id="@+id/to_pay"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/public_height_160"
+        android:layout_height="@dimen/dimen_size_60"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/btn_style_item"
-        >
+        android:background="@drawable/btn_style_item">
 
         <TextView
             android:id="@+id/tv_pay_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:text=""
-            android:textColor="@color/mc_state2"
-            android:textSize="16sp"
-            />
+            android:layout_marginLeft="@dimen/pad2"
+            android:layout_marginTop="@dimen/dimen_size_8"
+            android:text="实付：0"
+            android:textColor="@color/cor1"
+            android:textSize="@dimen/siz3" />
+
+        <TextView
+            android:id="@+id/tv_should_pay_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_pay_price"
+            android:layout_below="@+id/tv_pay_price"
+            android:layout_marginTop="@dimen/dimen_size_6"
+            android:text="应付: "
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/siz6" />
+
+        <TextView
+            android:id="@+id/tv_should_pay_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tv_should_pay_text"
+            android:layout_toRightOf="@+id/tv_should_pay_text"
+            android:text="0"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/siz6" />
 
         <Button
             android:id="@+id/btn_topay"
-            android:layout_width="120dp"
+            android:layout_width="@dimen/dimen_size_140"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:background="@color/update_color_bg"
-            android:text="去付款"
-            android:textColor="@color/white"/>
+            android:background="@color/cor1"
+            android:text="去支付"
+            android:textColor="@color/cor15"
+            android:textSize="@dimen/siz3" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/to_pay"
-        android:layout_below="@id/title_layout">
+        android:layout_below="@id/repair_detail_ctv">
 
 
         <ScrollView
@@ -55,136 +76,35 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/pad1"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:id="@+id/rl_device_brand"
-                    style="@style/layout_item"
-                    >
 
-                    <TextView
-                        android:id="@+id/t1"
-                        style="@style/personal_left_text"
-                        android:text="机器品牌"
-                        />
-
-                    <TextView
-                        android:id="@+id/tv_device_brand"
-                        style="@style/personal_edit_text"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/public_layout_padding_left"
-                        android:background="@null"
-                        android:text="斗山"
-                        />
-                </RelativeLayout>
-
-                <LinearLayout
-                    style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
-
-                <RelativeLayout
-                    android:id="@+id/rl_device_model"
-                    style="@style/layout_item"
-                    >
-
-                    <TextView
-                        android:id="@+id/t2"
-                        style="@style/personal_left_text"
-                        android:text="机器型号"
-                        />
-
-                    <TextView
-                        android:id="@+id/tv_device_model"
-                        style="@style/personal_edit_text"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/public_layout_padding_left"
-                        android:background="@null"
-                        android:text="GFD55147"
-                        />
-                </RelativeLayout>
-
-                <LinearLayout
-                    style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:background="#F6F6F9">
+                <FrameLayout
+                    android:id="@+id/pay_deviceinfo_fl"
+                    style="@style/CommonTabContainerStyle">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:text="耗件详情"
-                        android:textColor="#999999"
-                        />
-                </RelativeLayout>
-
-                <com.cloudmachine.utils.CustomListView
-                    android:id="@+id/lv_details"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                </com.cloudmachine.utils.CustomListView>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:background="#F6F6F9"/>
-
-                <RelativeLayout
-                    android:id="@+id/rl_weixin_pay"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/public_height_140"
-                    android:background="@color/white">
+                        android:layout_gravity="center_vertical"
+                        android:text="设备信息"
+                        android:textColor="@color/cor9"
+                        android:textSize="@dimen/siz3" />
 
                     <ImageView
-                        android:id="@+id/iv_weixin_pay"
-                        android:layout_width="@dimen/public_height_100"
-                        android:layout_height="@dimen/public_height_100"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/public_left_margin_42"
-                        android:src="@drawable/weixinpay"
-                        />
-
-                    <TextView
-                        android:id="@+id/tv_weixinpay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/public_left_margin_42"
-                        android:layout_toRightOf="@id/iv_weixin_pay"
-                        android:text="微信支付"
-                        android:textSize="16sp"
-                        />
+                        android:layout_gravity="right|center_vertical"
+                        android:src="@drawable/arrow_right" />
 
-                    <CheckBox
-                        android:id="@+id/cb_weixin_pay"
-                        style="@style/PayCheckBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/public_left_margin_42"
-                        android:clickable="false"
-                        />
-
-                </RelativeLayout>
-
-                <LinearLayout
-                    style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/common_left_gap"
-                    />
+                </FrameLayout>
 
                 <RelativeLayout
                     android:id="@+id/rl_alipay"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/public_height_140"
+                    android:layout_height="@dimen/dimen_size_60"
+                    android:layout_marginTop="@dimen/pad1"
                     android:background="@color/white">
 
                     <ImageView
@@ -193,19 +113,18 @@
                         android:layout_height="@dimen/public_height_100"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/public_left_margin_42"
-                        android:src="@drawable/aliapy"
-                        />
+                        android:src="@drawable/ic_aliapy" />
 
                     <TextView
                         android:id="@+id/tv_alipay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/public_left_margin_42"
+                        android:layout_marginLeft="@dimen/dimen_size_22"
                         android:layout_toRightOf="@id/iv_alipay"
                         android:text="支付宝支付"
-                        android:textSize="16sp"
-                        />
+                        android:textColor="@color/cor8"
+                        android:textSize="@dimen/siz3" />
 
                     <CheckBox
                         android:id="@+id/cb_alipay"
@@ -215,31 +134,61 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/public_left_margin_42"
-                        android:clickable="false"
-                        />
+                        android:checked="true"
+                        android:clickable="false" />
 
                 </RelativeLayout>
 
-                <LinearLayout
-                    style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/common_left_gap"
-                    />
 
-                <View
+                <View style="@style/CommonLandscapeLine" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_weixin_pay"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:background="#F6F6F9"/>
+                    android:layout_height="@dimen/dimen_size_60"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/iv_weixin_pay"
+                        android:layout_width="@dimen/public_height_100"
+                        android:layout_height="@dimen/public_height_100"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/public_left_margin_42"
+                        android:src="@drawable/ic_weixinpay" />
+
+                    <TextView
+                        android:id="@+id/tv_weixinpay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dimen_size_22"
+                        android:layout_toRightOf="@id/iv_weixin_pay"
+                        android:text="微信支付"
+                        android:textColor="@color/cor8"
+                        android:textSize="@dimen/siz3" />
+
+                    <CheckBox
+                        android:id="@+id/cb_weixin_pay"
+                        style="@style/PayCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/public_left_margin_42"
+                        android:clickable="false" />
+
+                </RelativeLayout>
+
 
                 <RelativeLayout
                     android:id="@+id/rl_consumption_totalmount"
-                    style="@style/layout_item"
-                    >
+                    style="@style/CommonTabContainerStyle"
+                    android:layout_marginTop="@dimen/pad1">
 
                     <TextView
                         android:id="@+id/t4"
                         style="@style/personal_left_text"
-                        android:text="耗件总费用"
-                        />
+                        android:text="耗件明细" />
 
                     <TextView
                         android:id="@+id/tv_consumption_totalmount"
@@ -248,84 +197,31 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/public_layout_padding_left"
                         android:background="@null"
-                        android:text=""
-                        />
-                </RelativeLayout>
+                        android:text="" />
 
-                <LinearLayout
-                    style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/common_left_gap"
-                    />
-
-                <RelativeLayout
-                    android:id="@+id/rl_man_hour"
-                    style="@style/layout_item"
-                    >
-
-                    <TextView
-                        android:id="@+id/t3"
-                        style="@style/personal_left_text"
-                        android:text="工时费用"
-                        />
-
-                    <TextView
-                        android:id="@+id/tv_man_hour"
-                        style="@style/personal_edit_text"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/public_layout_padding_left"
-                        android:background="@null"
-                        android:text="王海华 (400元)"
-                        />
+                        android:src="@drawable/arrow_right" />
                 </RelativeLayout>
 
-                <LinearLayout
-                    style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
+                <View style="@style/CommonLandscapeLine" />
 
-                <RelativeLayout
-                    android:id="@+id/rl_discount_amount"
-                    style="@style/layout_item"
-                    >
-
-                    <TextView
-                        android:id="@+id/t5"
-                        style="@style/personal_left_text"
-                        android:text="耗件折扣"
-                        />
-
-                    <TextView
-                        android:id="@+id/tv_discount_amount"
-                        style="@style/personal_edit_text"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/public_layout_padding_left"
-                        android:background="@null"
-                        android:text=""
-                        />
-                </RelativeLayout>
-
-                <LinearLayout
-                    style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/public_layout_padding_left"
-                    />
 
                 <RelativeLayout
                     android:id="@+id/rl_coupon"
-                    style="@style/layout_item"
-                    >
+                    style="@style/CommonTabContainerStyle">
 
                     <TextView
                         android:id="@+id/tv_coupon"
                         style="@style/personal_left_text"
-                        android:text="优惠券"
-                        />
+                        android:text="优惠券" />
 
                     <ImageView
                         android:id="@+id/arrowTip7"
-                        style="@style/personal_arrow_image"
-                        />
+                        style="@style/arrow_right_style" />
 
                     <TextView
                         android:id="@+id/select3"
@@ -337,15 +233,143 @@
                         android:layout_toLeftOf="@+id/arrowTip7"
                         android:layout_toStartOf="@+id/arrowTip7"
                         android:background="@null"
-                        android:text="无可用"/>
+                        android:text="请选择" />
                 </RelativeLayout>
 
-                <LinearLayout
-                    style="@style/line_layout"
-                    android:layout_marginLeft="@dimen/common_left_gap"
-                    />
 
+                <View style="@style/CommonLandscapeLine" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_man_hour"
+                    style="@style/CommonTabContainerStyle">
+
+                    <TextView
+                        android:id="@+id/t3"
+                        style="@style/personal_left_text"
+                        android:text="工时费" />
+
+                    <TextView
+                        android:id="@+id/tv_man_hour"
+                        style="@style/personal_edit_text"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/public_layout_padding_left"
+                        android:background="@null"
+                        android:text="0" />
+                </RelativeLayout>
+
+
+                <FrameLayout
+                    android:id="@+id/part_discount_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <View style="@style/CommonLandscapeLine" />
+
+                    <RelativeLayout style="@style/CommonTabContainerStyle">
+
+                        <TextView
+                            style="@style/personal_left_text"
+                            android:text="配件折扣" />
+
+                        <TextView
+                            android:id="@+id/part_discount_amout"
+                            style="@style/personal_edit_text"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/public_layout_padding_left"
+                            android:background="@null"
+                            android:text="0" />
+                    </RelativeLayout>
+
+                </FrameLayout>
+
+
+                <FrameLayout
+                    android:id="@+id/worktime_discount_layout"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                <View style="@style/CommonLandscapeLine" />
+
+                <RelativeLayout
+                    style="@style/CommonTabContainerStyle">
+
+                    <TextView
+                        style="@style/personal_left_text"
+                        android:text="工时折扣" />
+
+                    <TextView
+                        android:id="@+id/worktime_discount_amout"
+                        style="@style/personal_edit_text"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/public_layout_padding_left"
+                        android:background="@null"
+                        android:text="0" />
+                </RelativeLayout>
+
+                </FrameLayout>
+
+
+                <FrameLayout
+                    android:id="@+id/ticket_discount_layout"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+
+
+                <View style="@style/CommonLandscapeLine" />
+
+                <RelativeLayout
+                    style="@style/CommonTabContainerStyle">
+
+                    <TextView
+                        style="@style/personal_left_text"
+                        android:text="赠送件券" />
+
+                    <TextView
+                        android:id="@+id/ticket_discount_amout"
+                        style="@style/personal_edit_text"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/public_layout_padding_left"
+                        android:background="@null"
+                        android:text="0" />
+                </RelativeLayout>
+                </FrameLayout>
             </LinearLayout>
+
+            <!--<View-->
+            <!--style="@style/CommonLandscapeLine"-->
+            <!--/>-->
+
+            <!--<RelativeLayout-->
+            <!--android:id="@+id/rl_discount_amount"-->
+            <!--style="@style/CommonTabContainerStyle"-->
+            <!--&gt;-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/t5"-->
+            <!--style="@style/personal_left_text"-->
+            <!--android:text="耗件折扣"-->
+            <!--/>-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/tv_discount_amount"-->
+            <!--style="@style/personal_edit_text"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginRight="@dimen/public_layout_padding_left"-->
+            <!--android:background="@null"-->
+            <!--android:text=""-->
+            <!--/>-->
+            <!--</RelativeLayout>-->
 
 
         </ScrollView>

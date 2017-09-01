@@ -1,45 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/public_title_height"
-    android:background="@color/public_blue_bg"
-    >
-    <TextView
-        android:id="@+id/common_titleview_back_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textColor="@color/white"
-        android:text="@string/back"
-        android:gravity="center_vertical"
-        android:drawableLeft="@drawable/bg_btn_back"
-        android:drawablePadding="6dp"
-        android:textSize="@dimen/text_size_16_sp"
-        android:paddingLeft="@dimen/public_layout_padding_left"
-        android:paddingRight="@dimen/public_layout_padding_left"
-        />
+        android:layout_height="@dimen/common_title_height"
+    android:background="@drawable/bg_common_title"
+   >
 
-    <TextView
-        android:id="@+id/common_titleview_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@color/public_white"
-        android:textSize="@dimen/public_title_textsize"
-        android:singleLine="true"
-        android:maxEms="7"
-        />
+        <ImageView
+            android:id="@+id/common_titleview_back_img"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/pad4"
+            android:paddingRight="@dimen/pad4"
+            android:src="@drawable/ic_back" />
+
+        <ImageView
+            android:id="@+id/common_titleview_close"
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="45dp"
+            android:paddingLeft="@dimen/dimen_size_5"
+            android:paddingRight="@dimen/dimen_size_5"
+            android:src="@drawable/ic_close"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/common_titleview_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxEms="10"
+            android:singleLine="true"
+            android:textColor="@color/cor8"
+            android:textSize="@dimen/text_size_18_sp"
+            />
 
 
-    <TextView
-        android:id="@+id/common_titleview_right_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_16_sp"
-        android:gravity="center_vertical"
-        android:paddingRight="@dimen/public_layout_padding_left"
-        android:layout_gravity="right"
-        />
+        <TextView
+            android:id="@+id/common_titleview_right_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:gravity="center_vertical"
+            android:paddingRight="@dimen/public_layout_padding_left"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/text_size_14_sp"
+            />
+
+        <ImageView
+            android:id="@+id/common_titleview_right_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="@dimen/pad1"
+            android:visibility="gone"
+            />
+
 
 
 </FrameLayout>

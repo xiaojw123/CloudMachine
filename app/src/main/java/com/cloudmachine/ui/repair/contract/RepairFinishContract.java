@@ -5,8 +5,8 @@ import android.content.Context;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.struc.BOInfo;
-import com.cloudmachine.struc.CWInfo;
+import com.cloudmachine.bean.BOInfo;
+import com.cloudmachine.bean.CWInfo;
 
 import rx.Observable;
 

@@ -3,8 +3,8 @@ package com.cloudmachine.ui.home.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.struc.RepairListInfo;
-import com.cloudmachine.struc.UnfinishedBean;
+import com.cloudmachine.bean.RepairListInfo;
+import com.cloudmachine.bean.UnfinishedBean;
 import com.cloudmachine.ui.home.model.SiteBean;
 
 import rx.Observable;
@@ -13,7 +13,7 @@ import rx.Observable;
  * Created by xiaojw on 2017/6/7.
  */
 
-public interface MSupervisorContract {
+public interface MSupervisorContract{
 
     interface View extends BaseView {
         void returnStationView(SiteBean siteBean);

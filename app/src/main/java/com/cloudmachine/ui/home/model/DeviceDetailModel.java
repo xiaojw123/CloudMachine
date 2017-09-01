@@ -1,9 +1,9 @@
 package com.cloudmachine.ui.home.model;
 
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.struc.McDeviceBasicsInfo;
+import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.ui.home.contract.DeviceDetailContract;
 
 import rx.Observable;

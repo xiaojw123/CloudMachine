@@ -1,1 +1,1 @@
-include ':app', ':toasty', ':magicindicator', ':PhotoPicker', ':baseadapter-recyclerview'
+include ':app', ':toasty', ':PhotoPicker'

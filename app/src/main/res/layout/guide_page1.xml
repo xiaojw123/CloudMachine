@@ -1,61 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/public_bg"
-    >
-    <LinearLayout 
-        android:id="@+id/image_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/guide_image_bg_height"
-        android:gravity="center"
-		android:layout_alignParentTop="true"
-		android:layout_alignParentLeft="true"
-		android:layout_alignParentStart="true">
-        <ImageView 
-        android:layout_width="@dimen/guide_image_guide1_width"
-        android:layout_height="@dimen/guide_image_guide1_height"
-        android:background="@drawable/guide_iamge4"
-        />
-    </LinearLayout>
-    <ImageView 
-        android:layout_width="@dimen/guide_image_text1_width"
-        android:layout_height="@dimen/guide_image_text1_height"
-        android:layout_below="@id/image_layout"
-        android:background="@drawable/guide_text4"
-        android:layout_marginTop="@dimen/guide_text_marginTop"
-        android:layout_centerHorizontal="true"
-        />
-    <LinearLayout 
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="@dimen/guide_image_width"
+        android:layout_height="@dimen/guide_image_height"
+        android:layout_marginTop="@dimen/guide_image_top"
+        android:background="@drawable/guide_iamge4" />
+
+    <ImageView
+        android:layout_width="@dimen/guide_text_width"
+        android:layout_height="@dimen/guide_text_height"
+        android:layout_marginTop="@dimen/guide_text_top"
+        android:background="@drawable/guide_text4" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/guide_dot_marginBottom"
-        android:layout_centerHorizontal="true"
-        >
-        <ImageView 
-            android:layout_width="@dimen/guide_dot_diameter"
-        	android:layout_height="@dimen/guide_dot_diameter"
-        	android:background="@drawable/guide_dot_dw"
-            />
-        <ImageView 
-            android:layout_width="@dimen/guide_dot_diameter"
-        	android:layout_height="@dimen/guide_dot_diameter"
-        	android:background="@drawable/guide_dot_nm"
-        	android:layout_marginLeft="@dimen/guide_dot_padding"
-            />
-        <ImageView 
-            android:layout_width="@dimen/guide_dot_diameter"
-        	android:layout_height="@dimen/guide_dot_diameter"
-        	android:background="@drawable/guide_dot_nm"
-        	android:layout_marginLeft="@dimen/guide_dot_padding"
-            />
-        <ImageView 
-            android:layout_width="@dimen/guide_dot_diameter"
-        	android:layout_height="@dimen/guide_dot_diameter"
-        	android:background="@drawable/guide_dot_nm"
-        	android:layout_marginLeft="@dimen/guide_dot_padding"
-            />
+        android:layout_marginTop="@dimen/guide_dot_top">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_dot_select" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/guide_dot_left"
+            android:background="@drawable/bg_dot_unselect" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/guide_dot_left"
+            android:background="@drawable/bg_dot_unselect" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/guide_dot_left"
+            android:background="@drawable/bg_dot_unselect" />
     </LinearLayout>
-	
-</RelativeLayout>
+
+</LinearLayout>

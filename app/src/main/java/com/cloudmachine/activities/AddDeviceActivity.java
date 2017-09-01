@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -28,18 +29,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CanBeEditItemView;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.main.photo.AlbumActivity;
+import com.cloudmachine.bean.EditListInfo;
+import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.updateDeviceInfoAsync;
 import com.cloudmachine.net.task.updateDeviceInfoByKeyAsync;
-import com.cloudmachine.struc.EditListInfo;
-import com.cloudmachine.struc.McDeviceBasicsInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.UMengKey;
@@ -51,18 +51,21 @@ import com.cloudmachine.utils.photo.util.Res;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.ArrayList;
+
 /**
  * 查看页面基本信息
  */
-public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener{
+public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener {
     public static final String DEVICE_SHOW = "device_show";
+    public static final String IMG_TITLE_SHOW = "img_title_show";
     private static final int TAKE_PICTURE = 0x000001;
+    public static final int UPATE_INFO = 0x1313;
     private final static int SCANNIN_GREQUEST_CODE = 678;
     private Context mContext;
     private Handler mHandler;
-    private TitleView title_layout;
     //	private DeviceInfo deviceInfo;
-    private CanBeEditItemView device_name, device_type, device_brand1, device_model, device_year, device_card,
+    private CanBeEditItemView device_name, device_type, device_brand1, device_model, device_year,
             device_owner, device_phone_number, device_rackId, device_workTime;
     //	private int addDeviceType ; //0:查看基本信息  1:新增
     private int status;
@@ -83,7 +86,10 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     private McDeviceBasicsInfo mcDeviceBasicsInfo;
     private RadiusButtonView change_owner;
     private FrameLayout memberLayout;
-    private boolean showDevice;
+    private boolean showDevice, showImgTitle;
+    private TextView imgTv1, imgTv2, imgTv3;
+    private LinearLayout deveimgCotainer;
+    CanBeEditItemView licenseNoEiv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +121,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         if (bundle != null) {
             try {
                 showDevice = bundle.getBoolean(DEVICE_SHOW);
+                showImgTitle = bundle.getBoolean(IMG_TITLE_SHOW);
                 mcDeviceBasicsInfo = (McDeviceBasicsInfo) bundle.getSerializable(Constants.P_MCDEVICEBASICSINFO);
                 if (null != mcDeviceBasicsInfo) {
                     deviceId = mcDeviceBasicsInfo.getId();
@@ -138,18 +145,17 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                     }
                 }
             } catch (Exception e) {
-                Constants.MyLog(e.getMessage());
             }
         }
     }
 
     private void initView() {
-        initTitleLayout();
         initAddDeviceItemView();
         initPhotoGridView();
         change_owner = (RadiusButtonView) findViewById(R.id.change_owner);
+        ViewGroup container = (ViewGroup) change_owner.getParent();
         if (!Constants.isNoEditInMcMember(deviceId, deviceTypeId)) {
-            change_owner.setVisibility(View.VISIBLE);
+            container.setVisibility(View.VISIBLE);
             change_owner.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -162,51 +168,48 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 }
             });
         } else {
-            change_owner.setVisibility(View.GONE);
+            container.setVisibility(View.GONE);
         }
 
 
     }
 
-    private void initTitleLayout() {
-
-        title_layout = (TitleView) findViewById(R.id.title_layout);
-
-        title_layout.setTitle(ResV.getString(R.string.addDevice_title));
-        title_layout.setLeftOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                finish();
-            }
-        });
-    }
 
     private void initAddDeviceItemView() {
+        licenseNoEiv = (CanBeEditItemView) findViewById(R.id.device_license);
+        imgTv1 = (TextView) findViewById(R.id.mac_img_tv1);
+        imgTv2 = (TextView) findViewById(R.id.mac_img_tv2);
+        imgTv3 = (TextView) findViewById(R.id.mac_img_tv3);
+        if (showImgTitle) {
+            imgTv1.setVisibility(View.VISIBLE);
+            imgTv2.setVisibility(View.VISIBLE);
+            imgTv3.setVisibility(View.VISIBLE);
+        }
         memberLayout = (FrameLayout) findViewById(R.id.deivce_member);
         device_name = (CanBeEditItemView) findViewById(R.id.device_name);
         device_type = (CanBeEditItemView) findViewById(R.id.device_type);
         device_brand1 = (CanBeEditItemView) findViewById(R.id.device_brand1);
         device_model = (CanBeEditItemView) findViewById(R.id.device_model);
         device_year = (CanBeEditItemView) findViewById(R.id.device_year);
-        device_card = (CanBeEditItemView) findViewById(R.id.device_card);
         device_owner = (CanBeEditItemView) findViewById(R.id.device_owner);
         device_phone_number = (CanBeEditItemView) findViewById(R.id.device_phone_number);
         device_rackId = (CanBeEditItemView) findViewById(R.id.device_rackId);
         device_workTime = (CanBeEditItemView) findViewById(R.id.device_workTime);
         if (null != mcDeviceBasicsInfo) {
+            licenseNoEiv.setContent(mcDeviceBasicsInfo.getLicense());
             device_name.setContent(mcDeviceBasicsInfo.getDeviceName());
             device_type.setContent(mcDeviceBasicsInfo.getCategory());
             device_brand1.setContent(mcDeviceBasicsInfo.getBrand());
             device_model.setContent(mcDeviceBasicsInfo.getModel());
             device_year.setContent(mcDeviceBasicsInfo.getFactoryTime());
-            device_card.setContent(mcDeviceBasicsInfo.getLicense());
             device_rackId.setContent(mcDeviceBasicsInfo.getRackId());
             device_workTime.setContent(String.valueOf(mcDeviceBasicsInfo.getWorkTime()) + "时");
         }
         memberLayout.setOnClickListener(this);
-        device_name.setOnClickListener(this);
+        if (!Constants.isNoEditInMcMember(deviceId, mcDeviceBasicsInfo.getType())) {
+            device_name.isArrow(true);
+            device_name.setOnClickListener(this);
+        }
             /*device_type.setOnClickListener(this);
             device_brand1.setOnClickListener(this);
 			device_model.setOnClickListener(this);
@@ -273,7 +276,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
             }
         });
 
-
+        deveimgCotainer = (LinearLayout) findViewById(R.id.device_img_cotainer);
         decive_image = (ImageView) findViewById(R.id.decive_image);
         decive_image.setOnClickListener(this);
         name_image = (ImageView) findViewById(R.id.name_image);
@@ -282,21 +285,29 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         engine_image.setOnClickListener(this);
         if (null != mcDeviceBasicsInfo && null != mcDeviceBasicsInfo.getDevicePhoto() && mcDeviceBasicsInfo.getDevicePhoto().length > 0) {
             decive_image_url = mcDeviceBasicsInfo.getDevicePhoto()[0];
-            ImageLoader.getInstance().displayImage(decive_image_url, decive_image,
-                    Constants.displayDeviceImageOptions, null);
+            if (!TextUtils.isEmpty(decive_image_url)) {
+                deveimgCotainer.setVisibility(View.VISIBLE);
+                ImageLoader.getInstance().displayImage(decive_image_url, decive_image,
+                        Constants.displayDeviceImageOptions, null);
+            }
+
         }
         if (null != mcDeviceBasicsInfo && null != mcDeviceBasicsInfo.getNameplatePhoto() && mcDeviceBasicsInfo.getNameplatePhoto().length > 0) {
             name_image_url = mcDeviceBasicsInfo.getNameplatePhoto()[0];
-            ImageLoader.getInstance().displayImage(name_image_url, name_image,
-                    Constants.displayDeviceImageOptions, null);
-        } else {
-        }
+            if (!TextUtils.isEmpty(name_image_url)) {
+                deveimgCotainer.setVisibility(View.VISIBLE);
+                ImageLoader.getInstance().displayImage(name_image_url, name_image,
+                        Constants.displayDeviceImageOptions, null);
+            }
 
+        }
         if (null != mcDeviceBasicsInfo && null != mcDeviceBasicsInfo.getEnginePhoto()) {
             engine_image_url = mcDeviceBasicsInfo.getEnginePhoto();
-            ImageLoader.getInstance().displayImage(engine_image_url, engine_image,
-                    Constants.displayDeviceImageOptions, null);
-        } else {
+            if (!TextUtils.isEmpty(engine_image_url)) {
+                deveimgCotainer.setVisibility(View.VISIBLE);
+                ImageLoader.getInstance().displayImage(engine_image_url, engine_image,
+                        Constants.displayDeviceImageOptions, null);
+            }
         }
         /*noScrollgridview.setOnItemClickListener(new OnItemClickListener() {
 
@@ -399,21 +410,33 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 }
                 dialog.show();
                 break;
-            case R.id.device_card:
-                gotoCapture(Constants.CODE_license);
-                break;
             case R.id.name_image:
-                Constants.gotoImageBrowerType(this, 1, new String[]{name_image_url}, false, 0);
+//                Constants.gotoImageBrowerType(this, 1, new String[]{name_image_url}, false, 0);
+                Bundle bundle1 = new Bundle();
+                ArrayList<String> img1List = new ArrayList<>();
+                img1List.add(name_image_url);
+                bundle1.putStringArrayList(BigPicActivity.BIG_PIC_URLS, img1List);
+                Constants.toActivity(this, BigPicActivity.class, bundle1);
                 MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
 //			addImageType = 1;
 //			photo();
                 break;
             case R.id.decive_image:
-                Constants.gotoImageBrowerType(this, 1, new String[]{decive_image_url}, false, 0);
+//                Constants.gotoImageBrowerType(this, 1, new String[]{decive_image_url}, false, 0);
+                Bundle bundle2 = new Bundle();
+                ArrayList<String> img2List = new ArrayList<>();
+                img2List.add(name_image_url);
+                bundle2.putStringArrayList(BigPicActivity.BIG_PIC_URLS, img2List);
+                Constants.toActivity(this, BigPicActivity.class, bundle2);
                 MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
                 break;
             case R.id.engine_image:
-                Constants.gotoImageBrowerType(this, 1, new String[]{engine_image_url}, false, 0);
+//                Constants.gotoImageBrowerType(this, 1, new String[]{engine_image_url}, false, 0);
+                Bundle bundle3 = new Bundle();
+                ArrayList<String> img3List = new ArrayList<>();
+                img3List.add(name_image_url);
+                bundle3.putStringArrayList(BigPicActivity.BIG_PIC_URLS, img3List);
+                Constants.toActivity(this, BigPicActivity.class, bundle3);
                 MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
 //			addImageType = 2;
 //			photo();
@@ -432,7 +455,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         // TODO Auto-generated method stub
         switch (msg.what) {
         /*case Constants.HANDLER_SAVEDEVICE_SUCCESS:
-			DeviceInfo deviceInfo = (DeviceInfo)msg.obj;
+            DeviceInfo deviceInfo = (DeviceInfo)msg.obj;
 			if(null == deviceInfo){
 				deviceInfo = this.deviceInfo;
 			}
@@ -477,8 +500,8 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 String message_u_f = (String) msg.obj;
                 Constants.ToastAction(null != message_u_f ? message_u_f : "修改失败！");
                 break;
-		/*case ImageUploadAsync.ImageUpload_Success:
-			String url = (String)msg.obj;
+        /*case ImageUploadAsync.ImageUpload_Success:
+            String url = (String)msg.obj;
 			devicePhoto = Constants.arrayCopyString(devicePhoto,url);
 			image_array_view.setImageUrl(devicePhoto);
 //			if(addDeviceType == 1){
@@ -515,6 +538,8 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+
+
             case TAKE_PICTURE:
                 if (resultCode == RESULT_OK && addImageType == 1) {
                     String fileName = String.valueOf(System.currentTimeMillis());
@@ -544,8 +569,8 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                     Bimp.tempSelectBitmap.add(takePhoto);
                 }
                 break;
-		/*case SCANNIN_GREQUEST_CODE:
-			if(resultCode == RESULT_OK){
+        /*case SCANNIN_GREQUEST_CODE:
+            if(resultCode == RESULT_OK){
 				Bundle bundle = data.getExtras();
 				//显示扫描到的内容
 				String rStr = bundle.getString("result");
@@ -561,10 +586,17 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
 			break;*/
             default:
                 switch (resultCode) {
+                    case UPATE_INFO:
+                        if (data != null) {
+                            String deviceName = data.getStringExtra(Constants.P_DEVICENAME);
+                            device_name.setContent(deviceName);
+                            mRxManager.post(Constants.UPDATE_DEVICE_NAME, deviceName);
+                        }
+                        break;
                     case RESULT_OK:
                         Bundle bundle = data.getExtras();
                         int editType = bundle.getInt(Constants.P_EDITTYPE);
-                        int itemType = bundle.getInt(Constants.P_ITEMTYPE);
+                        int itemType = bundle.getInt(Constants.P_ITEMTYPE,-1);
                         switch (itemType) {
                             case Constants.E_ITEMS_deviceName:
                                 String name = bundle.getString(Constants.P_EDITRESULTSTRING);
@@ -632,8 +664,8 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         }
 
         // TODO Auto-generated method stub
-		/*if(requestCode == IMAGE_REQUEST_CODE){
-			if (data != null && data.getData() != null) {
+        /*if(requestCode == IMAGE_REQUEST_CODE){
+            if (data != null && data.getData() != null) {
 				Constants.startPhotoZoom(this,PhotosGallery.getPhotosUri(mContext, data.getData())
 						,RESULT_REQUEST_CODE);
 			}
@@ -755,8 +787,8 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
             new updateDeviceInfoAsync(mContext, mHandler).execute(String.valueOf(deviceId), key, value);
         }
     }
-	/*private void addDevice(){
-		if(null == deviceInfo){
+    /*private void addDevice(){
+        if(null == deviceInfo){
 			deviceInfo = new DeviceInfo();
 		}
 		if(!TextUtils.isEmpty(device_card.getContent())){
@@ -849,10 +881,10 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
             bundle.putString(Constants.P_EDITRESULTSTRING, view.getContent());
             bundle.putInt(Constants.P_EDITTYPE, editType);
             bundle.putInt(Constants.P_ITEMTYPE, itemType);
+            bundle.putString(Constants.P_DEVICEID, String.valueOf(mcDeviceBasicsInfo.getId()));
+            bundle.putString(Constants.P_DEVICENAME, mcDeviceBasicsInfo.getDeviceName());
             Constants.toActivityForR(this, EditLayoutActivity.class, bundle, 0);
         } else {
-            if (status == 0)
-                title_layout.setRightTextEdit(true);
             view.isEdit(true);
             view.getEdit_view().requestFocus();
             try {
@@ -899,8 +931,8 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
-		/*if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if(status == 0){
+        /*if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(status == 0){
 				showPickDialog();
 				return true;
 			}
@@ -927,12 +959,4 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
 
     }
 
-    private void gotoCapture(int codeType) {
-//		captureSensorType = sensorType;
-		/*Intent intent = new Intent();
-		intent.setClass(this, MipcaActivityCapture.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		intent.putExtra(Constants.P_CODE_TYPE, codeType);
-		startActivityForResult(intent, SCANNIN_GREQUEST_CODE);*/
-    }
 }

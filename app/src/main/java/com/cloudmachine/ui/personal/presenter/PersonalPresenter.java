@@ -1,11 +1,11 @@
 package com.cloudmachine.ui.personal.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.struc.Member;
-import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.ScoreInfo;
 import com.cloudmachine.ui.personal.contract.PersonalContract;
 import com.cloudmachine.utils.ToastUtils;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.chart.utils.AppLog;
 
 /**
  * 项目名称：CloudMachine

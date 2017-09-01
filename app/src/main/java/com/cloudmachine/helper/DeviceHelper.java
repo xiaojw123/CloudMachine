@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.cloudmachine.struc.NewRepairInfo;
+import com.cloudmachine.bean.NewRepairInfo;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

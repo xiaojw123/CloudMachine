@@ -3,7 +3,7 @@ package com.cloudmachine.ui.home.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.struc.McDeviceBasicsInfo;
+import com.cloudmachine.bean.McDeviceBasicsInfo;
 
 import rx.Observable;
 

@@ -1,7 +1,7 @@
 package com.cloudmachine.ui.repair.model;
 
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.ui.repair.contract.NewRepairContract;
 

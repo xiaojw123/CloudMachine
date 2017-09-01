@@ -1,7 +1,7 @@
 package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.struc.RepairListInfo;
+import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.ui.home.contract.RepairHistoryContract;
 
 /**

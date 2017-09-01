@@ -1,23 +1,22 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,29 +25,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.LatLngBounds;
-import com.amap.api.maps2d.model.Marker;
+import com.amap.api.maps.model.Marker;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.ViewCouponActivity;
-import com.cloudmachine.activities.WanaCloudBox;
-import com.cloudmachine.adapter.BaseRecyclerAdapter;
-import com.cloudmachine.adapter.DeviceListAdpater;
-import com.cloudmachine.api.ApiConstants;
-import com.cloudmachine.helper.SwitchHelper;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.VersionInfo;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.GetVersionAsync;
-import com.cloudmachine.recyclerbean.HomeBannerBean;
-import com.cloudmachine.struc.McDeviceInfo;
-import com.cloudmachine.struc.McDeviceLocation;
-import com.cloudmachine.struc.Member;
-import com.cloudmachine.struc.VersionInfo;
+import com.cloudmachine.ui.home.activity.fragment.DeviceFragment;
+import com.cloudmachine.ui.home.activity.fragment.MaintenanceFragment;
 import com.cloudmachine.ui.home.contract.HomeContract;
 import com.cloudmachine.ui.home.model.HomeModel;
+import com.cloudmachine.ui.home.model.PopItem;
 import com.cloudmachine.ui.home.presenter.HomePresenter;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.homepage.activity.ViewMessageActivity;
@@ -59,47 +56,32 @@ import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ResV;
-import com.cloudmachine.utils.ShareDialog;
-import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.VerisonCheckSP;
 import com.cloudmachine.utils.VersionU;
-import com.cloudmachine.utils.mpchart.ValueFormatUtil;
 import com.cloudmachine.widget.NotfyImgView;
-import com.rey.material.widget.FloatingActionButton;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
-import rx.functions.Action1;
 
-public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> implements Handler.Callback, HomeContract.View, AMap.OnMarkerClickListener, AMap.OnMapClickListener, BaseRecyclerAdapter.OnItemClickListener, View.OnClickListener {
+public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeModel> implements Handler.Callback, HomeContract.View, View.OnClickListener {
     public static boolean isForeground = false;
     public static final String MESSAGE_RECEIVED_ACTION = "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
     public static final String KEY_MESSAGE = "message";
     public static final String KEY_EXTRAS = "extras";
-    private static final long DEFUALT_UNLOGIN_ID = -1;
-    //分享信息
-    private static final String SESSIONTITLE = "云机械";
-    private static final String SESSIONDESCRIPTION = "我的工程机械设备都在云机械APP，你的设备在哪里，赶紧加入吧！";
-    private static final String SESSIONURL = "http://www.cloudm.com/yjx";
     @BindView(R.id.home_me_img)
     ImageView homeMeImg;
     @BindView(R.id.home_box_img)
     ImageView homeBoxImg;
     @BindView(R.id.home_actvite_img)
-    NotfyImgView homeActviteImg;
+    ImageView homeActviteImg;
 
-    @BindView(R.id.home_question_ans)
-    FloatingActionButton homeQuestionAnsBtm;
-    @BindView(R.id.home_flush)
-    FloatingActionButton homeFlushBtn;
-    @BindView(R.id.home_repair_btn)
-    Button homeRepairBtn;
+
     @BindView(R.id.home_drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.home_head_img)
@@ -118,61 +100,94 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
     FrameLayout itemQrCode;
     @BindView(R.id.item_about)
     FrameLayout itemAbout;
-    @BindView(R.id.item_share_app)
-    FrameLayout itemShareApp;
     @BindView(R.id.home_me_layout)
     LinearLayout homeMeLayout;
     @BindView(R.id.home_head_layout)
     FrameLayout homeHeadLyout;
-    @BindView(R.id.home_menu_btn)
-    FloatingActionButton menuBtn;
     @BindView(R.id.home_title_layout1)
     RelativeLayout titleLayout1;
     @BindView(R.id.item_message_tv)
     TextView itemMessageTv;
     @BindView(R.id.item_message_nimg)
     NotfyImgView itmeMessageNimg;
+    @BindView(R.id.home_fragment_cotainer)
+    FrameLayout framgmentCotainer;
+    @BindView(R.id.home_title_device)
+    TextView deviceTv;
+    @BindView(R.id.home_title_maintenance)
+    TextView maintenanceTv;
+    @BindView(R.id.home_me_img_alert)
+    View meAlert;
+    @BindView(R.id.item_my_order)
+    FrameLayout itemMyOrder;
 
-    PopupWindow menuPop;
-    TextView devicesNumTv;
-    DeviceListAdpater deviceListAdpater;
-    List<McDeviceInfo> mDeviceList;
+
     ImageView promotionImg;
     PopupWindow promotionPop;
-    boolean isAdShow = true;
-    boolean isWindowFocus;
-    HomeBannerBean mPromotionBean;
+    List<PopItem> mItems;
     Marker curMarker;
-    long lasMemberId;
     private Handler mHandler;
     private MessageReceiver mMessageReceiver;
+
+    Fragment deviceFragment, maintenaceFragment;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        initPromotionView();
+        setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
 //        BadgeUtil.sendMiuiAppUnreadNotificationNumber(getApplicationContext(), 15);
         MobclickAgent.enableEncrypt(true); // 友盟统计
         MobclickAgent.onEvent(this, UMengKey.time_home_map);
         mHandler = new Handler(this);
         registerMessageReceiver();
-        registerRxEvent();
-
+        showFragment(deviceTv);
+        mPresenter.getH5ConfigInfo();
     }
 
-    private void registerRxEvent() {
-        mRxManager.on(Constants.UPDATE_DEVICE_LIST, new Action1<String>() {
-            @Override
-            public void call(String o) {
-                if (UserHelper.isLogin(HomeActivity.this)) {
-                    mPresenter.getDevices(UserHelper.getMemberId(HomeActivity.this), Constants.MC_DevicesList_AllType);
-                } else {
-                    mPresenter.getDevices(Constants.MC_DevicesList_AllType);
+    private void showFragment(View titleView) {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (titleView == deviceTv) {
+            deviceTv.setTextColor(Color.BLACK);
+            maintenanceTv.setTextColor(Color.GRAY);
+            if (deviceFragment == null) {
+                deviceFragment = new DeviceFragment();
+                if (maintenaceFragment != null) {
+                    ft.hide(maintenaceFragment);
                 }
+                ft.add(R.id.home_fragment_cotainer, deviceFragment);
+            } else {
+                if (deviceFragment.isVisible()) {
+                    return;
+                }
+                ft.hide(maintenaceFragment);
+                ft.show(deviceFragment);
             }
-        });
+        }
+        if (titleView == maintenanceTv) {
+            deviceTv.setTextColor(Color.GRAY);
+            maintenanceTv.setTextColor(Color.BLACK);
+            if (maintenaceFragment == null) {
+                maintenaceFragment = new MaintenanceFragment();
+                if (deviceFragment != null) {
+                    ft.hide(deviceFragment);
+                }
+                ft.add(R.id.home_fragment_cotainer, maintenaceFragment);
+            } else {
+                if (maintenaceFragment.isVisible()) {
+                    return;
+                }
+                ft.hide(deviceFragment);
+                ft.show(maintenaceFragment);
+            }
+        }
+        ft.commit();
+
+
     }
+
 
     public void registerMessageReceiver() {
         mMessageReceiver = new MessageReceiver();
@@ -199,12 +214,6 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
         }
     }
 
-    @Override
-    protected void initAMap() {
-        aMap.setInfoWindowAdapter(this);
-        aMap.setOnMapClickListener(this);
-        aMap.setOnMarkerClickListener(this);
-    }
 
     @Override
     protected void onResume() {
@@ -212,7 +221,9 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
         super.onResume();
         loadData();
 
+
     }
+
 
     @Override
     protected void onPause() {
@@ -231,49 +242,32 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
         mPresenter.setVM(this, mModel);
     }
 
-    //初始化促销广告位
-    private void initPromotionView() {
-        if (promotionPop == null) {
-            View contentView = LayoutInflater.from(this).inflate(R.layout.pop_home_ad, null);
-            promotionImg = (ImageView) contentView.findViewById(R.id.pop_ad_img);
-            ImageView closeImg = (ImageView) contentView.findViewById(R.id.pop_ad_close_img);
-            closeImg.setOnClickListener(this);
-            promotionPop = getAnimPop(contentView);
+    public void requestPromotion(long memberId) {
+        if (promotionPop == null || !promotionPop.isShowing()) {
+            AppLog.print("getPromotionInfo___");
+            mPresenter.getPromotionInfo(memberId);
+//            testPromption();
         }
-        mPresenter.getPromotionInfo();
     }
-
-    @Override
-    public int getLayoutResID() {
-        return R.layout.activity_home;
-    }
-
 
     //初始化消息、机器列表
     private void loadData() {
         Member member = MemeberKeeper.getOauth(this);
         if (member != null) {
             long memberId = member.getId();
-            Glide.with(this).load(member.getLogo()).error(R.drawable.default_img).into(homeHeadImg);
+            Glide.with(mContext).load(member.getLogo())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .crossFade()
+                    .error(R.drawable.ic_default_head)
+                    .into(homeHeadImg);
             homeNicknameTv.setText(member.getNickName());
             mPresenter.updateUnReadMessage(memberId);
-            if (lasMemberId == memberId) {
-                return;
-            }
-            aMap.clear();
-            aMap.invalidate();
-            mPresenter.getDevices(memberId, Constants.MC_DevicesList_AllType);
-            lasMemberId = memberId;
         } else {
-            if (lasMemberId == DEFUALT_UNLOGIN_ID) {
-                return;
-            }
-            aMap.clear();
-            aMap.invalidate();
-            mPresenter.getDevices(Constants.MC_DevicesList_AllType);
-            homeHeadImg.setImageResource(R.drawable.default_img);
+            homeHeadImg.setImageResource(R.drawable.ic_default_head);
             homeNicknameTv.setText("登录");
-            lasMemberId = DEFUALT_UNLOGIN_ID;
+            meAlert.setVisibility(View.GONE);
+            itmeMessageNimg.setNotifyPointVisible(false);
         }
         long time = VerisonCheckSP.getTime(this);
         if (time != 0
@@ -285,32 +279,39 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
 
     }
 
+//    private void testPromption() {
+//        List<PopItem> items = new ArrayList<>();
+//        PopItem item1 = new PopItem();
+//        item1.setActPictureLink("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502961692435&di=75956a99c9e00870c3039659eba01471&imgtype=0&src=http%3A%2F%2Fi2.qhimg.com%2Ft018d01274dd54968d4.jpg");
+//        item1.setJumpLink("http://www.geekpark.net/");
+//        item1.setPopupType(2);
+//        items.add(item1);
+//        PopItem item2 = new PopItem();
+//        item2.setActPictureLink("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502961769796&di=0331a6a42253271286e42d70bb7e61e6&imgtype=0&src=http%3A%2F%2Fimg.qqzhi.com%2Fupload%2Fimg_4_2347346394D2346761690_23.jpg");
+//        item2.setJumpLink("http://www.jianshu.com/");
+//        item2.setPopupType(2);
+//        items.add(item2);
+//        PopItem item3 = new PopItem();
+//        item3.setActPictureLink("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502961823875&di=f326ebb245e1e119726ca75da4042eff&imgtype=0&src=http%3A%2F%2Fimg.mp.sohu.com%2Fupload%2F20170720%2F184865028df4431da335cd01c9173db0_th.png");
+//        item3.setJumpLink("https://www.huxiu.com/");
+//        item3.setPopupType(2);
+//        items.add(item3);
+//        updatePromotionInfo(items);
+//    }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        if (hasFocus) {
-            isWindowFocus = true;
-            showPromotionPop();
-        }
-    }
 
-    private void showPromotionPop() {
-        if (isAdShow && mPromotionBean != null) {
-            isAdShow = false;
-            promotionPop.showAtLocation(getWindow().getDecorView(), Gravity.FILL, 0, 0);
-            SwitchHelper.setSwitchPromotionAdTime(this, mPromotionBean.gmtModified);
-        }
-    }
-
-
-    @OnClick({R.id.home_menu_btn, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_card_coupon, R.id.item_qr_code, R.id.item_about, R.id.item_share_app, R.id.home_me_img, R.id.home_box_img, R.id.home_actvite_img, R.id.home_question_ans, R.id.home_flush, R.id.home_repair_btn})
+    @OnClick({R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_card_coupon, R.id.item_qr_code, R.id.item_about, R.id.home_me_img, R.id.home_box_img, R.id.home_actvite_img})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.pop_device_close_img:
-                menuPop.dismiss();
+            case R.id.item_my_order:
+                Bundle bundle = new Bundle();
+                bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppOrderList);
+                Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
                 break;
-            case R.id.home_marker_content:
-                gotoDeviceDetail(view);
+
+            case R.id.home_title_device:
+            case R.id.home_title_maintenance:
+                showFragment(view);
                 break;
             case R.id.home_marker_window_layout:
                 if (curMarker != null) {
@@ -318,43 +319,24 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
                 }
                 break;
 
+            case R.id.home_pop_bg:
             case R.id.pop_ad_close_img:
-                promotionPop.dismiss();
+                dismissPop();
                 break;
-
-
-            case R.id.home_menu_btn:
-                MobclickAgent.onEvent(mContext, UMengKey.count_menu_open);
-                showMenuPop();
-                break;
-
-
             case R.id.home_me_img:
-                drawerLayout.openDrawer(homeMeLayout);
-                break;
-            case R.id.home_box_img:
-                Constants.toActivity(this, WanaCloudBox.class, null);
-                break;
-            case R.id.home_actvite_img:
-                Constants.toActivity(this, ActivitesActivity.class, null);
-                break;
-            case R.id.home_question_ans://问答
-                MobclickAgent.onEvent(this, UMengKey.time_ask_page);
-                Bundle bundle = new Bundle();
-                bundle.putString("url", ApiConstants.H5_HOST + "n/ask_qlist");
-                Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
-                break;
-            case R.id.home_flush:
-                MobclickAgent.onEvent(mContext, UMengKey.count_machine_refresh);
-                flush();
-                break;
-
-            case R.id.home_repair_btn:
                 if (UserHelper.isLogin(this)) {
-                    Constants.toActivity(this, MaintenanceSupervisorActivity.class, null);
+                    drawerLayout.openDrawer(homeMeLayout);
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
+                break;
+            case R.id.home_box_img:
+                Bundle boxExtras = new Bundle();
+                boxExtras.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppBoxDetail);
+                Constants.toActivity(this, QuestionCommunityActivity.class, null);
+                break;
+            case R.id.home_actvite_img:
+                Constants.toActivity(this, ActivitesActivity.class, null);
                 break;
 
             case R.id.item_message:
@@ -366,15 +348,9 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
                 break;
             case R.id.item_ask://我的提问
                 if (UserHelper.isLogin(this)) {
-                    Member member = MemeberKeeper.getOauth(this);
-                    Long wjdsId = member.getWjdsId();
-                    if (wjdsId != null) {
-                        Bundle askBundle = new Bundle();
-                        askBundle.putString("url", ApiConstants.H5_HOST + "n/ask_myq?myid=" + wjdsId);
-                        Constants.toActivity(this, QuestionCommunityActivity.class, askBundle, false);
-                    }else{
-                        ToastUtils.showToast(this,"没有挖机数据!");
-                    }
+                    Bundle askBundle = new Bundle();
+                    askBundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppMyQuestion);
+                    Constants.toActivity(this, QuestionCommunityActivity.class, askBundle, false);
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
@@ -404,20 +380,7 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
                 }
                 break;
             case R.id.item_about://关于与帮助
-                if (UserHelper.isLogin(this)) {
-                    Constants.toActivity(this, AboutCloudActivity.class, null);
-                } else {
-                    Constants.toActivity(this, LoginActivity.class, null);
-                }
-                break;
-            case R.id.item_share_app://分享app
-                if (UserHelper.isLogin(this)) {
-                    ShareDialog shareDialog = new ShareDialog(this, SESSIONURL, SESSIONTITLE, SESSIONDESCRIPTION, -1);
-                    shareDialog.show();
-                    MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
-                } else {
-                    Constants.toActivity(this, LoginActivity.class, null);
-                }
+                Constants.toActivity(this, AboutCloudActivity.class, null);
                 break;
             case R.id.home_head_layout:
                 if (UserHelper.isLogin(this)) {
@@ -432,156 +395,92 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
         }
     }
 
-    private void showMenuPop() {
-        if (curMarker != null) {
-            curMarker.hideInfoWindow();
-        }
-        if (menuPop == null) {
-            View contentView = LayoutInflater.from(this).inflate(R.layout.pop_home_menu, null);
-            devicesNumTv = (TextView) contentView.findViewById(R.id.pop_devie_num_tv);
-            RecyclerView devicesListRlv = (RecyclerView) contentView.findViewById(R.id.pop_device_list_rlv);
-            devicesListRlv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-            ImageView deviceCloseImg = (ImageView) contentView.findViewById(R.id.pop_device_close_img);
-            deviceCloseImg.setOnClickListener(this);
-            devicesListRlv.setLayoutManager(new LinearLayoutManager(this));
-            deviceListAdpater = new DeviceListAdpater(this, mDeviceList);
-            deviceListAdpater.setOnItemClickListener(this);
-            devicesListRlv.setAdapter(deviceListAdpater);
-            menuPop = getAnimPop(contentView);
-        } else {
-            deviceListAdpater.updateItems(mDeviceList);
-        }
-        devicesNumTv.setText("设备(" + mDeviceList.size() + ")");
-        menuPop.showAtLocation(getWindow().getDecorView(), Gravity.FILL, 0, 0);
-    }
 
-    private void flush() {
-        aMap.clear();
-        aMap.invalidate();
-        if (UserHelper.isLogin(this)) {
-            mPresenter.getDevices(UserHelper.getMemberId(this), Constants.MC_DevicesList_AllType);
+    private void dismissPop() {
+        ++curAdPos;
+        if (mItems != null && mItems.size() > curAdPos) {
+            showItemPop(curAdPos);
         } else {
-            mPresenter.getDevices(Constants.MC_DevicesList_AllType);
+            curAdPos = 0;
+            if (promotionPop.isShowing()) {
+                promotionPop.dismiss();
+            }
         }
     }
 
-    public PopupWindow getAnimPop(View contentView) {
-        PopupWindow pop = new PopupWindow(contentView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        // 实例化一个ColorDrawable颜色为半透明
-        pop.setAnimationStyle(R.style.PopAnimationStyle);
-        pop.setFocusable(true);
-        pop.setOutsideTouchable(true);
-        pop.setContentView(contentView);
-        return pop;
-    }
 
     //消息小红点
     @Override
     public void updateMessageCount(int count) {
         if (count > 0) {
             itmeMessageNimg.setNotifyPointVisible(true);
+            meAlert.setVisibility(View.VISIBLE);
         } else {
             itmeMessageNimg.setNotifyPointVisible(false);
+            meAlert.setVisibility(View.GONE);
         }
     }
 
+
     @Override
-    public void updateDevices(List<McDeviceInfo> deviceList) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        mDeviceList = new ArrayList<>(deviceList);
-        for (McDeviceInfo info : deviceList) {
-            Marker marker;
-            McDeviceLocation location = info.getLocation();
-            double lat = location.getLat();
-            double lng = location.getLng();
-            if (lat == 0 || lng == 0) {
-                mDeviceList.remove(info);
-                continue;
-            }
-            LatLng latLng = new LatLng(lat, lng);
-            builder.include(latLng);
-            if (info.getId() == 0) {
-                marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_experience));
-            } else {
-                if (info.getWorkStatus() == 1) {
-                    marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_work));
-                } else {
-                    marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_unwork));
+    public void updatePromotionInfo(List<PopItem> items) {
+        AppLog.print("updatePromotionInfo items___" + items);
+        if (items == null || items.size() <= 0) {
+            return;
+        }
+        mItems = items;
+        if (promotionPop == null) {
+            View contentView = LayoutInflater.from(this).inflate(R.layout.pop_home_ad, null);
+            View bgView = contentView.findViewById(R.id.home_pop_bg);
+            promotionImg = (ImageView) contentView.findViewById(R.id.pop_ad_img);
+            ImageView closeImg = (ImageView) contentView.findViewById(R.id.pop_ad_close_img);
+            closeImg.setOnClickListener(this);
+            bgView.setOnClickListener(this);
+            promotionPop = CommonUtils.getAnimPop(contentView);
+        }
+        showItemPop(0);
+    }
+
+    private int curAdPos;
+
+    private void showItemPop(int pos) {
+        curAdPos = pos;
+        PopItem item = mItems.get(pos);
+        if (item != null) {
+            Glide.with(this).load(item.getActPictureLink()).into(new GlideDrawableImageViewTarget(promotionImg) {
+                @Override
+                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                    super.onResourceReady(resource, animation);
+                    if (!promotionPop.isShowing()) {
+                        promotionPop.showAtLocation(getWindow().getDecorView(), Gravity.FILL, 0, 0);
+                    }
                 }
-
-            }
-            marker.setObject(info);
-            curMarker = marker;
-        }
-        LatLngBounds bounds = builder.build();
-        int size = mDeviceList.size();
-        if (size > 1) {
-            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
-            menuBtn.setVisibility(View.VISIBLE);
+            });
+            final String jumpLink = item.getJumpLink();
+            final int popupType = item.getPopupType();
+            AppLog.print("popType___" + popupType + ",  jumpLink__" + jumpLink);
+            promotionImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (popupType != 1) {
+                        if (popupType == 3) {
+                            dismissPop();
+                            Constants.toActivity(HomeActivity.this, ViewCouponActivity.class, null, false);
+                        } else {
+                            if (!TextUtils.isEmpty(jumpLink)) {
+                                dismissPop();
+                                Bundle bundle = new Bundle();
+                                bundle.putString(QuestionCommunityActivity.H5_URL, jumpLink);
+                                Constants.toActivity(HomeActivity.this, QuestionCommunityActivity.class, bundle);
+                            }
+                        }
+                    }
+                }
+            });
         } else {
-            if (size == 1 && curMarker != null) {
-                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curMarker.getPosition(), ZOOM_DEFAULT));
-                curMarker.showInfoWindow();
-            }
-            menuBtn.setVisibility(View.GONE);
+            promotionImg.setOnClickListener(this);
         }
 
-    }
-
-    @Override
-    public void updatePromotionInfo(HomeBannerBean promotionBean) {
-        String picUrl = promotionBean.picAddress;
-        if (!TextUtils.isEmpty(picUrl)) {
-            if (SwitchHelper.isAdShowed(this, promotionBean.gmtModified)) {
-                return;
-            }
-            SwitchHelper.setSwitchPromotionAdTime(this, promotionBean.gmtModified);
-            mPromotionBean = promotionBean;
-            Glide.with(this).load(picUrl).into(promotionImg);
-            if (isWindowFocus) {
-                showPromotionPop();
-            }
-        }
-
-    }
-
-
-    @Override
-    public void onItemClick(View view, int position) {
-        gotoDeviceDetail(view);
-    }
-
-    private void gotoDeviceDetail(View view) {
-        if (menuPop != null && menuPop.isShowing()) {
-            menuPop.dismiss();
-        }
-        McDeviceInfo info = (McDeviceInfo) view.getTag();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.MC_DEVICEINFO, info);
-//        bundle.putSerializable(Constants.MC_LOC_NOW, locNow);
-        Constants.toActivity(this, DeviceDetailActivity.class, bundle);
-    }
-
-
-    @Override
-    public View getMarkerInfoView(Marker marker) {
-        McDeviceInfo bean = (McDeviceInfo) marker.getObject();
-        View view = LayoutInflater.from(this).inflate(R.layout.home_marker_window, null);
-        RelativeLayout contentLayout = (RelativeLayout) view.findViewById(R.id.home_marker_content);
-        TextView title_tv = (TextView) view.findViewById(R.id.marker_title_tv);
-        TextView oillave_tv = (TextView) view.findViewById(R.id.marker_oillave_tv);
-        TextView worktime_tv = (TextView) view.findViewById(R.id.marker_timelen_tv);
-        TextView loc_tv = (TextView) view.findViewById(R.id.marker_loc_tv);
-        contentLayout.setTag(bean);
-        McDeviceLocation location = bean.getLocation();
-        title_tv.setText(bean.getName());
-        oillave_tv.setText(bean.getOilLave() + "%");
-        worktime_tv.setText(ValueFormatUtil.getWorkTime(bean.getWorkTime(), "0时"));
-        loc_tv.setText(location.getPosition());
-        //体验机 禁止进入设备详情页 todo:待调整
-        contentLayout.setOnClickListener(this);
-        view.setOnClickListener(this);
-        return view;
     }
 
 
@@ -591,18 +490,16 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
             case Constants.HANDLER_GETVERSION_SUCCESS:
                 VersionInfo vInfo = (VersionInfo) msg.obj;
                 if (null != vInfo) {
-                    Constants.MyLog(vInfo.getMustUpdate() + "1111111");
-                    if (vInfo.getMustUpdate() == -1) {
-                        // Constants.MyToast(vInfo.getMessage());
-                    } else if (vInfo.getMustUpdate() == 0) {
-                        boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), vInfo.getVersion());
-                        if (isUpdate) {
-                            Constants.updateVersion(this, mHandler,
-                                    vInfo.getMessage(), vInfo.getLink());
-                        }
-
+                    boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), vInfo.getVersion());
+                    if (isUpdate) {
+                        Constants.updateVersion(this, mHandler,
+                                vInfo.getMustUpdate(),vInfo.getMessage(),vInfo.getLink());
                     }
+
                 }
+                break;
+            case Constants.HANDLER_VERSIONDOWNLOAD:
+                Constants.versionDownload(HomeActivity.this, (String) msg.obj);
                 break;
         }
         return false;
@@ -615,6 +512,7 @@ public class HomeActivity extends BaseMapActivity<HomePresenter, HomeModel> impl
         }
         super.onDestroy();
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) { // 双击退出页面

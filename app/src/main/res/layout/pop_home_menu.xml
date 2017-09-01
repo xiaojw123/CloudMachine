@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#80000000"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    >
+
+    <View
+        android:id="@+id/pop_device_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pop_bg_color"
+        />
 
     <LinearLayout
-        android:layout_width="293dp"
+        android:id="@+id/pop_device_contentlayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
         android:background="@drawable/pop_device_list_bg"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingLeft="21dp"
-        android:paddingRight="21dp">
+        android:layout_marginTop="80dp"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:paddingBottom="@dimen/dimen_size_20"
+        >
 
         <TextView
             android:id="@+id/pop_devie_num_tv"
@@ -26,20 +36,16 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/common_line" />
+            android:layout_height="@dimen/dimen_size_1"
+            android:background="@color/cor12" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/pop_device_list_rlv"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:overScrollMode="never"
-            android:layout_height="372dp" />
+            />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/pop_device_close_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:src="@drawable/icon_close" />
-</LinearLayout>
+
+</FrameLayout>

@@ -1,70 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical">
 
-    <com.cloudmachine.autolayout.widgets.TitleView
-        android:id="@+id/title_layout"
+
+    <com.cloudmachine.widget.CommonTitleView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </com.cloudmachine.autolayout.widgets.TitleView>
+        android:layout_height="wrap_content"
+        app:common_title_name="@string/message" />
 
-    <LinearLayout
-        android:id="@+id/title_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/main_bar_height"
-        android:background="@drawable/view_bottom_tab"
-        android:orientation="horizontal"
-        >
 
-        <RelativeLayout
-            android:id="@+id/tab_one_layout"
+        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+            android:id="@+id/view_message_smrlv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
-
-            <TextView
-                android:id="@+id/tab_one_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="@dimen/main_bar_image_padding"
-                android:text="全部"
-                android:textColor="#29a1f7"
-                android:textSize="16sp"
-                />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/tab_two_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
-
-            <TextView
-                android:id="@+id/tab_two_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="@dimen/main_bar_image_padding"
-                android:text="系统消息"
-                android:textColor="#29a1f7"
-                android:textSize="16sp"
-                />
-        </RelativeLayout>
-
-    </LinearLayout>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:visibility="gone"
+            />
 
     <FrameLayout
-        android:id="@+id/frame_content"
+        android:id="@+id/view_message_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="你还没有任何消息"
+        android:drawableTop="@drawable/ic_message_empt"
+        android:drawablePadding="@dimen/pad2"
+        android:layout_gravity="center"
+
+        />
     </FrameLayout>
+
+
+
 
 </LinearLayout>

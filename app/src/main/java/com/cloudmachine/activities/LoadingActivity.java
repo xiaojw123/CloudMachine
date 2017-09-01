@@ -2,7 +2,6 @@ package com.cloudmachine.activities;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -13,13 +12,10 @@ import android.view.View;
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.struc.News;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,8 +28,7 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
 
 
     private Handler mHandler;
-    private List<News> displaylist = new ArrayList<News>();
-    private boolean isGetData, isTimeOut;
+    private boolean isTimeOut;
     private Timer myTimer;
 
     @Override
@@ -83,45 +78,17 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
         switch (msg.what) {
             case Constants.HANDLER_TIMER:
                 isTimeOut = true;
+                // TODO: 2017/7/26
                 redirectTo();
-                break;
-            case Constants.HANDLER_GETCOMMUNITYLIST_SUCCESS:
-                displaylist = (List<News>) msg.obj;
-                isGetData = true;
-                redirectTo();
-                break;
-            case Constants.HANDLER_GETCOMMUNITYLIST_FAIL:
-                isGetData = true;
                 break;
             case Constants.HANDLER_SWITCH_MAINACTIVITY:
-                Intent intent = null;
-                intent = new Intent(this, HomeActivity.class);
-                Bundle bundle = new Bundle();
-                ArrayList list = new ArrayList();
-                list.add(displaylist);
-                bundle.putParcelableArrayList("list", list);
-                intent.putExtras(bundle);
-        /*	SharedPreferences preferences = getSharedPreferences("login",
-                    Context.MODE_PRIVATE);
-			int i = preferences.getInt("isLogin", 0);
-			double versionName = VersionU.getVersionName(this);
-			String saveVersion = preferences.getString("version", "1.0");
-			if(versionName>Double.parseDouble(saveVersion)){
-				intent = new Intent(this, GuideActivity.class);
-			}else{
-				intent = new Intent(this, LoginActivity.class);
-			}*/
-                startActivity(intent);
+                Constants.toActivity(this,HomeActivity.class,null);
                 finish();
                 overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
 
                 break;
             case Constants.HANDLER_SWITCH_GUIDACTIVITY:
-                Bundle b = new Bundle();
-                ArrayList l2 = new ArrayList();
-                l2.add(displaylist);
-                b.putParcelableArrayList("list", l2);
-                Constants.toActivity(this, GuideActivity.class, b);
+                Constants.toActivity(this, GuideActivity.class, null);
                 finish();
                 break;
         }
@@ -184,7 +151,6 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
     protected void onResume() {
         // TODO Auto-generated method stub
         JPushInterface.onResume(this);
-        Constants.MyLog(getDeviceInfo(this));
         super.onResume();
     }
 

@@ -1,8 +1,9 @@
 package com.cloudmachine.net;
 
-import com.cloudmachine.utils.Constants;
+import android.util.Log;
+
 import com.cloudmachine.utils.VersionU;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.chart.utils.AppLog;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -41,7 +42,7 @@ public class HttpURLConnectionImp implements IHttp {
     private static final int TIMEOUT = 20000;
 
     /**
-     * @param url
+     *
      * @param params post params <key.params>
      * @return String
      * @throws IOException
@@ -96,10 +97,7 @@ public class HttpURLConnectionImp implements IHttp {
         out.writeBytes(stringBuffer.toString());
         out.flush();
         out.close();
-        Constants.MyLog(urlString + "?" + stringBuffer.toString());
-        AppLog.print(urlString + "?" + stringBuffer.toString());
-//            }
-
+        AppLog.printURl(urlString + "?" + stringBuffer.toString());
         String resultString = "";
         InputStream in = httpURLConnection.getInputStream();
         if (null != in) {
@@ -188,8 +186,6 @@ public class HttpURLConnectionImp implements IHttp {
         out.writeBytes(stringBuffer.toString());
         out.flush();
         out.close();
-        Constants.MyLog(urlString + "?" + stringBuffer.toString());
-        //            }
 
         String resultString = "";
         InputStream in = httpURLConnection.getInputStream();
@@ -248,7 +244,7 @@ public class HttpURLConnectionImp implements IHttp {
                 return IOUtil.inputStreamToString(inputStream);
             }
         } catch (Exception e) {
-            Constants.MyLog(e.getLocalizedMessage());
+            Log.e("OkHttp",e.getLocalizedMessage());
         }
         return null;
     }

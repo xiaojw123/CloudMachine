@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/public_bg"
-     >
+    android:background="@color/cor13">
 
     <ImageView
         android:id="@+id/mnbv"
@@ -13,17 +12,15 @@
         android:layout_marginTop="@dimen/loading_image_marginTop"
         android:background="@drawable/loading_icon" />
 
-    
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/loading_text_marginBottom"
-            android:textSize="@dimen/loading_text_size" 
-            android:textColor="@color/loading_text"
-            android:text="@string/loading_text"
-            />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dimen_size_47"
+        android:text="@string/loading_text"
+        android:textColor="@color/cor11"
+        android:textSize="@dimen/text_size_12_sp" />
 
 </RelativeLayout>

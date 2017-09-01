@@ -6,27 +6,29 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.UiSettings;
-import com.amap.api.maps2d.model.BitmapDescriptorFactory;
-import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.Marker;
-import com.amap.api.maps2d.model.MarkerOptions;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
-import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
@@ -35,8 +37,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseModel> extends BaseAutoLayoutActivity<T, E> implements AMap.InfoWindowAdapter, AMap.OnMapClickListener, AMap.OnMarkerClickListener {
-    protected static final float ZOOM_DEFAULT = 16;
-    protected static final float ZOOM_BIG=22;
+    protected static final float ZOOM_DEFAULT = 15;
+    protected static final float ZOOM_BIG = 22;
     protected boolean isFirstLoc = true;
     private final int REQ_FINE_LOCATION = 0x12;
     @BindView(R.id.home_mapview)
@@ -60,44 +62,50 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
         this.isHidenAble = isHidenAble;
     }
 
-    @Override
-    public void initPresenter() {
-
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mMapView.onResume();
+        if (mMapView != null) {
+            mMapView.onResume();
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-        mMapView.onSaveInstanceState(outState);
+        if (mMapView != null) {
+            mMapView.onSaveInstanceState(outState);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mMapView.onPause();
+        if (mMapView != null) {
+            mMapView.onPause();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+        if (mMapView != null) {
+            mMapView.onDestroy();
+        }
     }
 
     protected void initAMap() {
     }
-
     protected void setMapZoomTo(float zoomPixel) {
         aMap.moveCamera(CameraUpdateFactory.zoomTo(zoomPixel));
     }
 
 
     private void initMap(Bundle savedInstanceState) {
+        if (mMapView == null) {
+            return;
+        }
         mMapView.onCreate(savedInstanceState);
         mMapView.setDrawingCacheEnabled(true);
         if (aMap == null) {
@@ -145,16 +153,16 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
     }
 
 
-    protected MarkerOptions getMarkerOptions(Context context,LatLng latLng, int resid) {
-        return getMarkerOptions(context,latLng,resid,"mark");
+    protected MarkerOptions getMarkerOptions(Context context, LatLng latLng, int resid) {
+        return getMarkerOptions(context, latLng, resid, "mark");
     }
 
 
-    protected MarkerOptions getMarkerOptions(Context context,LatLng latLng, int resid, String title) {
+    protected MarkerOptions getMarkerOptions(Context context, LatLng latLng, int resid, String title) {
         MarkerOptions options = new MarkerOptions();
-        ImageView img=new ImageView(context);
-        img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(context, Constants.MACHINE_ICON_WIDTH),DensityUtil.dip2px(context,Constants.MACHINE_ICON_HEIGHT)));
-        img.setScaleType(ImageView.ScaleType.FIT_XY);
+        ImageView img = new ImageView(context);
+//        img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(context, Constants.MACHINE_ICON_WIDTH),DensityUtil.dip2px(context,Constants.MACHINE_ICON_HEIGHT)));
+        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         img.setImageResource(resid);
         options.icon(BitmapDescriptorFactory.fromView(img));
         options.title(title);
@@ -162,14 +170,58 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
         return options;
     }
 
-    protected MarkerOptions getNormalMarkerOptions(Context context,LatLng latLng, int resid, String title) {
+    protected MarkerOptions getMarkerLocOptions(Context context, LatLng latLng, String title) {
+        MarkerOptions options = new MarkerOptions();
+        TextView tv = new TextView(context);
+        tv.setText(title);
+        tv.setTextColor(getResources().getColor(R.color.cor15));
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) getResources().getDimension(R.dimen.siz6));
+        tv.setBackground(getResources().getDrawable(R.drawable.bg_loc_text));
+        tv.setGravity(Gravity.CENTER);
+        tv.setMaxEms(15);
+        int left = DensityUtil.dip2px(this, 16);
+        tv.setPadding(left, 0, left, DensityUtil.dip2px(this, 19));
+        tv.setEllipsize(TextUtils.TruncateAt.END);
+        tv.setSingleLine();
+        options.icon(BitmapDescriptorFactory.fromView(tv));
+        options.title(title);
+        options.position(latLng);
+        return options;
+    }
+
+
+    protected MarkerOptions getNormalMarkerOptions(Context context, LatLng latLng, int resid, String title) {
         MarkerOptions options = new MarkerOptions();
         options.icon(BitmapDescriptorFactory.fromResource(resid));
         options.title(title);
         options.position(latLng);
         return options;
     }
+
     protected MarkerOptions getMarkerOptions(double lat, double lng, int resid, String title) {
+        MarkerOptions options = new MarkerOptions();
+        options.icon(BitmapDescriptorFactory.fromResource(resid));
+        if (!TextUtils.isEmpty(title)) {
+            options.title(title);
+        }
+        options.position(new LatLng(lat, lng));
+        return options;
+    }
+
+    protected MarkerOptions getTechnicianMarkerOptions(double lat, double lng, int resid, String title) {
+        MarkerOptions options = new MarkerOptions();
+        ImageView img = new ImageView(this);
+        img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(this, 31), DensityUtil.dip2px(this, 34)));
+        img.setBackground(getResources().getDrawable(resid));
+        options.icon(BitmapDescriptorFactory.fromView(img));
+        if (!TextUtils.isEmpty(title)) {
+            options.title(title);
+        }
+        options.position(new LatLng(lat, lng));
+        return options;
+    }
+
+    protected MarkerOptions getTechMarkerOptions(double lat, double lng, int resid, String title) {
         MarkerOptions options = new MarkerOptions();
         options.icon(BitmapDescriptorFactory.fromResource(resid));
         if (!TextUtils.isEmpty(title)) {
@@ -208,9 +260,13 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (!marker.isInfoWindowShown()) {
+        if (isForbidenClick){
+            return true;
+        }
+        if (marker!=null&&!marker.isInfoWindowShown()) {
             marker.showInfoWindow();
         }
         return false;
     }
+    protected  boolean isForbidenClick;
 }

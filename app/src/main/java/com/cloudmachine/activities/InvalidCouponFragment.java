@@ -1,15 +1,14 @@
 package com.cloudmachine.activities;
 
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +16,10 @@ import android.widget.ListView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.GetCouponAdapter;
+import com.cloudmachine.adapter.InvalidCouponAdapter;
+import com.cloudmachine.bean.CouponInfo;
 import com.cloudmachine.listener.RecyclerItemClickListener;
 import com.cloudmachine.net.task.GetCouponAsync;
-import com.cloudmachine.recycleadapter.InvalidCouponAdapter;
-import com.cloudmachine.recycleadapter.decoration.GridSpacingItemDecoration;
-import com.cloudmachine.struc.CouponInfo;
 import com.cloudmachine.utils.Constants;
 
 import java.util.ArrayList;
@@ -76,9 +74,7 @@ public class InvalidCouponFragment extends Fragment implements Handler.Callback{
         ViewCouponActivity viewCouponActivity = (ViewCouponActivity) getActivity();
         empTv=viewParent.findViewById(R.id.empt_tv);
         mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, getActivity().getResources().getDimensionPixelSize(R.dimen.padding_middle), true));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setHasFixedSize(true);
         mInvalidCouponAdapter = new InvalidCouponAdapter(dataList, getActivity());
         mRecyclerView.setAdapter(mInvalidCouponAdapter);

@@ -1,10 +1,10 @@
 package com.cloudmachine.ui.personal.model;
 
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.struc.Member;
-import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.ScoreInfo;
 import com.cloudmachine.ui.personal.contract.PersonalContract;
 
 import rx.Observable;

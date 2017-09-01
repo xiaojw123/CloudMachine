@@ -2,7 +2,7 @@ package com.cloudmachine.base.baserx;
 
 import android.content.Context;
 
-import com.cloudmachine.app.MyApplication;
+import com.cloudmachine.MyApplication;
 import com.cloudmachine.utils.NetWorkUtils;
 
 import rx.Subscriber;

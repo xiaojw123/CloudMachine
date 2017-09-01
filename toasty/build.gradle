@@ -1,16 +1,16 @@
 apply plugin: 'com.android.library'
 group = 'com.github.GrenderG'
-
+def cfg = rootProject.ext.configuration
+def libs = rootProject.ext.libraries
 android {
-    compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    compileSdkVersion cfg.compileVersion
+    buildToolsVersion cfg.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 88
-        versionName "2.2.0"
-
+        minSdkVersion cfg.minSdk
+        targetSdkVersion cfg.targetSdk
+        versionCode cfg.version_code
+        versionName cfg.version_name
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -24,5 +24,5 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:24.2.1"
+    compile "com.android.support:appcompat-v7:${libs.support}"
 }

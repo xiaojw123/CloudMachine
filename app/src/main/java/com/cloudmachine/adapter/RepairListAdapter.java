@@ -9,17 +9,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.utils.AutoUtils;
+import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
-import com.cloudmachine.struc.RepairHistoryInfo;
+import com.cloudmachine.helper.OrderStatus;
+import com.cloudmachine.bean.RepairHistoryInfo;
 import com.cloudmachine.utils.Constants;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.chart.utils.AppLog;
 
 import java.util.ArrayList;
 
 public class RepairListAdapter extends BaseAdapter {
 
-    private Context mActivity;
     private LayoutInflater layoutInflater;
     private boolean haveShowOnce = false;
     private int unFinishedNum = -1;
@@ -27,7 +27,6 @@ public class RepairListAdapter extends BaseAdapter {
 
     public RepairListAdapter(Context mActivity,
                              ArrayList<RepairHistoryInfo> repairList) {
-        this.mActivity = mActivity;
         this.layoutInflater = LayoutInflater.from(mActivity);
         this.historyInfos = repairList;
     }
@@ -61,26 +60,17 @@ public class RepairListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = layoutInflater.inflate(
                     R.layout.list_item_repair_history, null);
+            holder.timeTv= (TextView) convertView.findViewById(R.id.repair_history_time_tv);
             holder.logoFlagIcon = (ImageView) convertView.findViewById(R.id.logo_flag_img);
-            holder.ivIcon = (ImageView) convertView//左侧小圆点
-                    .findViewById(R.id.iv_icon);
             holder.deviceName = (TextView) convertView
                     .findViewById(R.id.device_name);//品牌+型号
             holder.repairPlace = (TextView) convertView
-                    .findViewById(R.id.repair_place);//描述
-            holder.repairDate = (TextView) convertView//维修进度时间
-                    .findViewById(R.id.repair_date);
-            holder.arrowRight = (ImageView) convertView//向右的箭头
-                    .findViewById(R.id.arrow_right);
+                    .findViewById(R.id.repair_desc);//描述
             holder.status = (TextView) convertView//维修状态
-                    .findViewById(R.id.status);
-            holder.bgBottom = (View) convertView//底部空白栏
-                    .findViewById(R.id.bg_bottom);
+                    .findViewById(R.id.repair_history_status_tv);
             holder.textComplete = (TextView) convertView//
                     .findViewById(R.id.tv_completed);//头部已完成标题栏文字
             holder.completed = (RelativeLayout) convertView.findViewById(R.id.completed);//头部已完成标题栏
-            holder.price = (TextView) convertView.findViewById(R.id.price);
-
             convertView.setTag(holder);
             AutoUtils.auto(convertView);
         } else {
@@ -95,11 +85,6 @@ public class RepairListAdapter extends BaseAdapter {
             holder.completed.setVisibility(View.GONE);
         }
 
-        if (position >= unFinishedNum) {
-            holder.bgBottom.setVisibility(View.GONE);
-        } else {
-            holder.bgBottom.setVisibility(View.VISIBLE);
-        }
 
         if (null != historyInfos.get(position)) {
             holder.deviceName.setText(historyInfos.get(position)
@@ -109,19 +94,7 @@ public class RepairListAdapter extends BaseAdapter {
 
             holder.repairPlace.setText(historyInfos
                     .get(position).getVdiscription());
-
-            holder.repairDate.setText(historyInfos.get(position)
-                    .getDopportunity());
-            RepairHistoryInfo historyInfo = historyInfos.get(position);
-            int type = historyInfo.getNloanamount_TYPE();
-            String price = type == 1 ? historyInfo.getNloanamount() : historyInfo.getPrice();
-            if (null != price &&
-                    !price.startsWith("0")) {
-                holder.price.setVisibility(View.VISIBLE);
-                holder.price.setText(price + "元");
-            } else {
-                holder.price.setVisibility(View.INVISIBLE);
-            }
+            holder.timeTv.setText(historyInfos.get(position).getDopportunity());
             String logoFlag = historyInfos.get(position).getLogo_flag();
             AppLog.print("logoFlag___pos:" + position + ", flag:" + logoFlag);
             if ("0".equals(logoFlag)) {
@@ -135,133 +108,93 @@ public class RepairListAdapter extends BaseAdapter {
                 }
             }
             String nStatusString = "";
+            String nstatus = historyInfos.get(position).getNstatus();
             if (historyInfos.get(position).getFlag().equals("0")) {
-                if (historyInfos.get(position).getNstatus()
-                        .equals("10220001")) {
-                    nStatusString = "已报修";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("102200012")) {
-                    nStatusString = "已转工单";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("10220003")) {
-                    nStatusString = "已取消";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("10220004")) {
-                    nStatusString = "已跟踪";
+                if (nstatus.equals("10220003")) {
+                    nStatusString = OrderStatus.CANCEL;
+                } else {
+                    nStatusString = OrderStatus.WAIT;
                 }
+
             }
             if (historyInfos.get(position).getFlag().equals("1")) {
-                if (historyInfos.get(position).getNstatus().equals("0")) {
-                    nStatusString = "已下单";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("1")) {
-                    nStatusString = "已派工";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("2")) {
-                    nStatusString = "已技师确认";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("3")) {
-                    nStatusString = "已预约";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("4")) {
-                    nStatusString = "已出发";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("5")) {
-                    nStatusString = "已到达";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("6")) {
-                    nStatusString = "已客户确认";
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("7")) {
-                    nStatusString = "已结算";
-                    if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
-                        nStatusString = "待评价";
-                    }
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("8")) {
-                    /*nStatusString = "已完工";
-                    if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
-                        nStatusString = "待评价";
-                    }
-                    if (historyInfos.get(position).getIs_EVALUATE().equals("N")
-                            && historyInfos.get(position).getNloanamount_TYPE() == 1
-                            && Double.parseDouble(historyInfos.get(position).getNloanamount()) > 0.0) {
-                        nStatusString = "待支付";
-                    }*/
-                    try {
-                        double nloanamount = Double.parseDouble(historyInfos.get(position).getNloanamount());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        //Constants.ToastAction("服务器传参错误");
-                    }
-
-                    switch (historyInfos.get(position).getNloanamount_TYPE()) {
-                        case 0://正常状态(已付款,直接判断是否评价)
-                            if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
-                                //未评价
-                                nStatusString = "待评价";
-                            } else if (historyInfos.get(position).getIs_EVALUATE().equals("Y")) {
-                                nStatusString = "已完工";
-                            }
-                            break;
-                        case -1://未知状态
-                            try {
+                switch (nstatus) {
+                    case "0":
+                        nStatusString =OrderStatus.WAIT;
+                        break;
+                    case "8":
+                        switch (historyInfos.get(position).getNloanamount_TYPE()) {
+                            case 0://正常状态(已付款,直接判断是否评价)
+                                if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
+                                    //未评价
+                                    nStatusString = OrderStatus.EVALUATION;
+                                } else if (historyInfos.get(position).getIs_EVALUATE().equals("Y")) {
+                                    nStatusString = OrderStatus.COMPLETED;
+                                }
+                                break;
+                            case -1://未知状态
+                                try {
+                                    if (Double.parseDouble(historyInfos.get(position).getNloanamount()) > 0.0) {
+                                        nStatusString = OrderStatus.PAY;
+                                    } else {
+                                        if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
+                                            nStatusString = OrderStatus.EVALUATION;
+                                        } else if (historyInfos.get(position).getIs_EVALUATE().equals("Y")) {
+                                            nStatusString = OrderStatus.COMPLETED;
+                                        }
+                                    }
+                                } catch (NumberFormatException e) {
+                                    e.printStackTrace();
+                                    Constants.ToastAction("服务器传参数错误");
+                                }
+                                break;
+                            case 1:
                                 if (Double.parseDouble(historyInfos.get(position).getNloanamount()) > 0.0) {
-                                    nStatusString = "待付款";
+                                    nStatusString = OrderStatus.PAY;
                                 } else {
                                     if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
-                                        nStatusString = "待评价";
+                                        nStatusString = OrderStatus.EVALUATION;
                                     } else if (historyInfos.get(position).getIs_EVALUATE().equals("Y")) {
-                                        nStatusString = "已完工";
+                                        nStatusString = OrderStatus.COMPLETED;
                                     }
                                 }
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace();
-                                Constants.ToastAction("服务器传参数错误");
-                            }
-                            break;
-                        case 1:
-                            if (Double.parseDouble(historyInfos.get(position).getNloanamount()) > 0.0) {
-                                nStatusString = "待支付";
-                            } else {
-                                if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
-                                    nStatusString = "待评价";
-                                } else if (historyInfos.get(position).getIs_EVALUATE().equals("Y")) {
-                                    nStatusString = "已完工";
-                                }
-                            }
-                            break;
-                    }
+                                break;
+                        }
 
+                        break;
+                    case "9":
+                        nStatusString = "已完工";
+                        if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
+                            nStatusString = "待评价";
+                        }
 
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("9")) {
-                    nStatusString = "已返程";
-                    if (historyInfos.get(position).getIs_EVALUATE().equals("N")) {
-                        nStatusString = "待评价";
-                    }
-                } else if (historyInfos.get(position).getNstatus()
-                        .equals("10")) {
-                    nStatusString = "已丢单";
+                        break;
+                    case "10":
+                        nStatusString = "已丢单";
+                        break;
+                    default:
+                        nStatusString = "进行中";
+
+                        break;
                 }
+
+
             }
 
             holder.status.setText(nStatusString);
+            convertView.setTag(R.id.order_status, nStatusString);
+            convertView.setTag(R.id.order_item,historyInfos.get(position));
         }
 
         return convertView;
     }
 
     static class ViewHolder {
+        TextView timeTv;
         ImageView logoFlagIcon;
-        ImageView ivIcon;
         TextView deviceName;
         TextView repairPlace;
-        TextView repairDate;
-        TextView price;
-        ImageView arrowRight;
         TextView status;
-        View bgBottom;
         RelativeLayout completed;
         TextView textComplete;
     }

@@ -3,18 +3,18 @@
     xmlns:cloudm="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/public_bg"
     android:orientation="vertical"
     >
 
-    <com.cloudmachine.utils.widgets.TitleView
+    <com.cloudmachine.widget.CommonTitleView
         android:id="@+id/title_layout"
 	         android:layout_width="fill_parent"
 	         android:layout_height="wrap_content"
-	         cloudm:text="编辑框界面"
-        >
-    </com.cloudmachine.utils.widgets.TitleView>
-	<TextView 
+	         cloudm:common_title_name="名称"
+		cloudm:common_right_text="保存"
+       />
+	<TextView
 	    android:layout_width="match_parent"
     	android:layout_height="35dp"
     	android:paddingLeft="15dp"
@@ -50,11 +50,12 @@
 	        android:id="@+id/text_edit"
 	        android:layout_width="match_parent"
     		android:layout_height="match_parent"
-    		android:layout_above="@id/line_bottom"
-    		android:layout_below="@id/line_up"
-    		android:paddingLeft="15dp"
+			android:paddingLeft="15dp"
     		android:paddingRight="15dp"
-	        />
+			android:background="@color/white"
+			android:layout_below="@+id/line_up"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true" />
 	</RelativeLayout>
 	<!-- <LinearLayout 
 	    android:layout_width="match_parent"
@@ -98,6 +99,6 @@
         android:layout_marginRight="@dimen/common_view_gap"
         android:layout_marginTop="@dimen/common_top_gap"
         android:visibility="gone"
-        ></com.cloudmachine.utils.widgets.RadiusButtonView>
+        />
 
 </LinearLayout>

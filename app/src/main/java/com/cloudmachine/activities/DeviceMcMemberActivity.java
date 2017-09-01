@@ -1,41 +1,49 @@
 package com.cloudmachine.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.MemberSlideAdapter;
-import com.cloudmachine.autolayout.widgets.ListViewCompat;
+import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.autolayout.widgets.SlideView;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.MemberInfo;
+import com.cloudmachine.bean.MemberInfoSlide;
 import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.listener.OnItemClickListener;
+import com.cloudmachine.listener.RecyclerItemClickListener;
+import com.cloudmachine.net.task.DevicesDeleteMemberAsync;
 import com.cloudmachine.net.task.DevicesMemberListAsync;
-import com.cloudmachine.struc.MemberInfo;
-import com.cloudmachine.struc.MemberInfoSlide;
 import com.cloudmachine.ui.home.activity.RemarkInfoActivity;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UMengKey;
+import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
+import com.yanzhenjie.recyclerview.swipe.Closeable;
+import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener, AdapterView.OnItemClickListener {
+public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Callback, RecyclerItemClickListener.OnItemClickListener, OnItemClickListener {
 
     private Context mContext;
     private Handler mHandler;
     private long deviceId;
     private int deviceType;
-    private ListViewCompat member_listview;
+    private SwipeMenuRecyclerView member_srlv;
     private MemberSlideAdapter pAdapter;
     private List<MemberInfoSlide> dataResult = new ArrayList<MemberInfoSlide>();
     private int quartersId;
@@ -43,6 +51,7 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
     private View empty_layout;
     private SlideView mLastSlideViewWithStatusOn;
     boolean isOwner;
+    int curMemberId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +78,6 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
                 deviceId = bundle.getLong(Constants.P_DEVICEID);
                 deviceType = bundle.getInt(Constants.P_DEVICETYPE);
             } catch (Exception e) {
-                Constants.MyLog(e.getMessage());
             }
 
         }
@@ -81,35 +89,25 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
         getMemberList();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-    }
 
     private void initView() {
         initTitleLayout();
         empty_layout = findViewById(R.id.empty_layout);
-        pAdapter = new MemberSlideAdapter(dataResult, deviceId, deviceType, mContext, mHandler);
-        member_listview = (ListViewCompat) findViewById(R.id.member_listview);
-        if (deviceId > 0) {
-            member_listview.setOnItemClickListener(this);
-        }
-        member_listview.setAdapter(pAdapter);
-
+        pAdapter = new MemberSlideAdapter(dataResult, mContext);
+        member_srlv = (SwipeMenuRecyclerView) findViewById(R.id.member_swipeRlv);
+        member_srlv.setLayoutManager(new LinearLayoutManager(this));
+        member_srlv.setAdapter(pAdapter);
         add_member = (RadiusButtonView) findViewById(R.id.add_member);
         if (!Constants.isNoEditInMcMember(deviceId, deviceType)) {
+            isOwner = true;
+            pAdapter.setOnItemClickListener(this);
+            member_srlv.setSwipeMenuCreator(CommonUtils.getMenuCreator(this));
+            member_srlv.setSwipeMenuItemClickListener(menuItemClickListener);
             add_member.setVisibility(View.VISIBLE);
             add_member.setOnClickListener(new OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
                     MobclickAgent.onEvent(mContext, UMengKey.count_memeber_add);
                     gotoSearch();
                 }
@@ -120,48 +118,118 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 
     }
 
-    private void initTitleLayout() {
-        TitleView title_layout;
-        title_layout = (TitleView) findViewById(R.id.title_layout);
-        title_layout.setTitle(getResources().getString(R.string.mc_member_title));
-        title_layout.setLeftOnClickListener(new OnClickListener() {
+    OnSwipeMenuItemClickListener menuItemClickListener = new OnSwipeMenuItemClickListener() {
 
+
+        @Override
+        public void onItemClick(Closeable closeable, final int position, int menuPosition, int direction) {
+            if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
+                curMemberId = dataResult.get(position).getMemberId();
+                //删除item
+                MobclickAgent.onEvent(DeviceMcMemberActivity.this, UMengKey.count_memeber_delete);
+                showAlertPop();
+//                if (!TextUtils.isEmpty(dataResult.get(position).getName())) {
+//                    CustomDialog.Builder builder = new CustomDialog.Builder(DeviceMcMemberActivity.this);
+//                    String name = dataResult.get(position).getName();
+//                    builder.setMessage("确定删除" + "'" + name + "'" + ",删除之后该成员将无法查看此机器的数据", "");
+//                    builder.setTitle("提示");
+//                    builder.setLeftButtonColor(getResources().getColor(R.color.black));
+//                    builder.setRightButtonColor(getResources().getColor(R.color.black));
+//                    builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            member_srlv.smoothCloseMenu();
+//                            dialog.dismiss();
+//                            return;
+//                        }
+//                    });
+//                    builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            new DevicesDeleteMemberAsync(DeviceMcMemberActivity.this, mHandler).execute(String.valueOf(dataResult.get(position).getMemberId()),
+//                                    String.valueOf(deviceId));
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    builder.create().show();
+//                }
+//                if (TextUtils.isEmpty(dataResult.get(position).getName())) {
+//                    CustomDialog.Builder builder = new CustomDialog.Builder(DeviceMcMemberActivity.this);
+//                    builder.setLeftButtonColor(getResources().getColor(R.color.black));
+//                    builder.setRightButtonColor(getResources().getColor(R.color.black));
+//                    builder.setMessage("确定删除?" + ",删除之后该成员将无法查看此机器的数据", "");
+//                    builder.setTitle("提示");
+//                    builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            member_srlv.smoothCloseMenu();
+//                            dialog.dismiss();
+//                            return;
+//                        }
+//                    });
+//                    builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            new DevicesDeleteMemberAsync(DeviceMcMemberActivity.this, mHandler).execute(String.valueOf(dataResult.get(position).getMemberId()),
+//                                    String.valueOf(deviceId));
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    builder.create().show();
+//                }
+//			new DevicesDeleteMemberAsync(context,handler).execute(String.valueOf(dataResult.get(position).getMemberId()),
+//					String.valueOf(deviceId));
+
+            }
+        }
+    };
+
+    public void showAlertPop() {
+        CustomDialog.Builder builder = new CustomDialog.Builder(this);
+        builder.setMessage("确认删除该成员吗？删除后成员将无法查看设备信息");
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                DeviceMcMemberActivity.this.finish();
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
             }
         });
+        builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                new DevicesDeleteMemberAsync(DeviceMcMemberActivity.this, mHandler).execute(String.valueOf(curMemberId),
+                        String.valueOf(deviceId));
 
+            }
+        });
+        builder.create().show();
+    }
+
+
+    private void initTitleLayout() {
+        CommonTitleView title_layout = (CommonTitleView) findViewById(R.id.title_layout);
         if (!Constants.isNoEditInMcMember(deviceId, deviceType)) {
-            title_layout.setRightText(-1, getResources().getString(R.string.mc_member_add), new OnClickListener() {
-
+            title_layout.setRightText(getResources().getString(R.string.mc_member_add), new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
                     gotoSearch();
                 }
             });
-            title_layout.setRightTextEdit(true);
         }
-
 
     }
 
     private void gotoSearch() {
         Bundle bundle = new Bundle();
-        bundle.putInt(Constants.P_SEARCHLISTTYPE, 1);
+        bundle.putInt(Constants.P_SEARCHLISTTYPE, 3);
         bundle.putLong(Constants.P_DEVICEID, deviceId);
         Constants.toActivity(this, SearchActivity.class, bundle);
     }
 
-    @Override
-    public void onClick(View v) {
-        // TODO Auto-generated method stub
-        switch (v.getId()) {
-        }
-
-    }
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -174,12 +242,6 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
                     for (int i = 0; i < tM.size(); i++) {
                         MemberInfoSlide minfo = new MemberInfoSlide();
                         MemberInfo tmInfo = tM.get(i);
-                        if (UserHelper.isLogin(this)) {
-                            long memberId = UserHelper.getMemberId(this);
-                            if (tmInfo.getRoleIdS() == 1 && memberId == tmInfo.getMemberId()) {
-                                isOwner = true;
-                            }
-                        }
                         minfo.setId(tmInfo.getId());
                         minfo.setRoleIdS(tmInfo.getRoleIdS());
                         minfo.setMemberId(tmInfo.getMemberId());
@@ -213,44 +275,6 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
         return false;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-                            long id) {
-        if (isOwner) {
-            MemberInfoSlide memberInfo = (MemberInfoSlide) view.getTag(R.id.id_RemarkInfo);
-            if (UserHelper.isLogin(this)) {
-                long memberId = UserHelper.getMemberId(this);
-                if (memberInfo!=null&&memberId != memberInfo.getMemberId()) {
-                    Intent intent = new Intent(this, RemarkInfoActivity.class);
-                    intent.putExtra(Constants.P_DEVICEID, deviceId);
-                    intent.putExtra(RemarkInfoActivity.ID,(long) memberInfo.getId());
-                    intent.putExtra(RemarkInfoActivity.NAME,memberInfo.getName());
-                    intent.putExtra(RemarkInfoActivity.MEMBER_ID,memberId);
-                    intent.putExtra(RemarkInfoActivity.ROLE,memberInfo.getRole());
-                    intent.putExtra(RemarkInfoActivity.ROLEIDS,memberInfo.getRoleIdS());
-                    intent.putExtra(RemarkInfoActivity.ROLEREMARK,memberInfo.getRoleRemark());
-                    startActivity(intent);
-                }
-            }
-        }
-        // TODO Auto-generated method stub
-//
-//		MemberInfoSlide memberInfo = dataResult.get(position);
-//		Intent intent_h = new Intent(this, PermissionActivity.class);
-//		overridePendingTransition(R.anim.slide_right_in,
-//				R.anim.slide_left_out);
-//		intent_h.putExtra(Constants.P_DEVICEID, deviceId);
-//		intent_h.putExtra(Constants.P_DEVICETYPE, deviceType);
-//		intent_h.putExtra(Constants.P_PERMISSIONTYPE, 0);
-//		intent_h.putExtra(Constants.P_MERMBERINFO, memberInfo);
-//
-//		intent_h.putExtra(Constants.P_MERMBERID, memberInfo.getMemberId());
-//		intent_h.putExtra(Constants.P_MERMBERNAME, memberInfo.getName());
-//		intent_h.putExtra(Constants.P_MERMBERROLE, memberInfo.getRole());
-//		intent_h.putExtra(Constants.P_MERMBERROLEREMARK, memberInfo.getRoleRemark());
-//		intent_h.putExtra(Constants.P_MERMBERPERMISSION, memberInfo.getPermissName());
-//		startActivityForResult(intent_h,0);
-    }
 
     private void getMemberList() {
 //		if(deviceId != Constants.MC_Simulation_DeviceId){
@@ -273,4 +297,24 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
     }
 
 
+    @Override
+    public void onItemClick(View view, int position) {
+        if (isOwner) {
+            MemberInfoSlide memberInfo = (MemberInfoSlide) view.getTag(R.id.id_RemarkInfo);
+            if (UserHelper.isLogin(this)) {
+                long memberId = UserHelper.getMemberId(this);
+                if (memberInfo != null && memberId != memberInfo.getMemberId()) {
+                    Intent intent = new Intent(this, RemarkInfoActivity.class);
+                    intent.putExtra(Constants.P_DEVICEID, deviceId);
+                    intent.putExtra(RemarkInfoActivity.ID, (long) memberInfo.getId());
+                    intent.putExtra(RemarkInfoActivity.NAME, memberInfo.getName());
+                    intent.putExtra(RemarkInfoActivity.MEMBER_ID, memberId);
+                    intent.putExtra(RemarkInfoActivity.ROLE, memberInfo.getRole());
+                    intent.putExtra(RemarkInfoActivity.ROLEIDS, memberInfo.getRoleIdS());
+                    intent.putExtra(RemarkInfoActivity.ROLEREMARK, memberInfo.getRoleRemark());
+                    startActivity(intent);
+                }
+            }
+        }
+    }
 }

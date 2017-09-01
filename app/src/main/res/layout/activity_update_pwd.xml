@@ -6,8 +6,8 @@
     android:background="@color/public_bg"
     android:orientation="vertical" >
 
-    <com.cloudmachine.autolayout.widgets.TitleView
-        android:id="@+id/title_layout"
+    <com.cloudmachine.widget.CommonTitleView
+        cloudm:common_title_name="@string/modify_password"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
@@ -17,17 +17,20 @@
 
         <com.cloudmachine.autolayout.widgets.RadiusButtonView
             android:id="@+id/btn_bottom"
-            android:layout_width="@dimen/repair_button_width"
-            android:layout_height="@dimen/repair_button_height"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_50"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/public_layout_padding_left"
-            cloudm:rbtn_fillColor_dw="@color/public_b_20"
-            cloudm:rbtn_fillColor_nm="@color/public_blue_bg"
-            cloudm:rbtn_strokeColor="@color/public_blue_bg"
+            android:layout_marginLeft="@dimen/pad1"
+            android:layout_marginRight="@dimen/pad1"
+            android:layout_marginBottom="@dimen/pad2"
+            cloudm:rbtn_fillColor_dw="@color/cor5"
+            cloudm:rbtn_fillColor_nm="@color/cor5"
+            cloudm:rbtn_strokeColor="@color/cor5"
+            cloudm:rbtn_roundRadius="@dimen/dimen_size_2"
             cloudm:rbtn_text="@string/btn_radio_submit"
-            cloudm:rbtn_textColor="@color/public_white"
-            cloudm:rbtn_textSize="@dimen/public_textsize1" />
+            cloudm:rbtn_textColor="@color/cor15"
+            cloudm:rbtn_textSize="@dimen/siz3" />
 
         <LinearLayout
             android:layout_width="match_parent"

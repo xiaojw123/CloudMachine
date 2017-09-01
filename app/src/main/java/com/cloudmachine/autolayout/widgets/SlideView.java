@@ -9,8 +9,8 @@ import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.AutoLinearLayout;
-import com.cloudm.autolayout.utils.AutoUtils;
+import com.cloudmachine.autolayout.AutoLinearLayout;
+import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
 
 

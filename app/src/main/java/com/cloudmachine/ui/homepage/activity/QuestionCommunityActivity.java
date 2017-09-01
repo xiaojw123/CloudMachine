@@ -21,43 +21,54 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-import android.webkit.JsPromptResult;
-import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.cloudmachine.R;
 import com.cloudmachine.activities.PermissionsActivity;
-import com.cloudmachine.api.ApiConstants;
+import com.cloudmachine.alipay.PayResult;
+import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.broadcast.MyReceiver;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.ResidentAddressInfo;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
-import com.cloudmachine.struc.Member;
+import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.ui.home.model.JsBody;
+import com.cloudmachine.ui.home.model.JsInteface;
 import com.cloudmachine.ui.homepage.contract.QuestionCommunityContract;
 import com.cloudmachine.ui.homepage.model.QuestionCommunityModel;
 import com.cloudmachine.ui.homepage.presenter.QuestionCommunityPresenter;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
+import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileStorage;
 import com.cloudmachine.utils.FileUtils;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.PhotosGallery;
+import com.cloudmachine.utils.ShareDialog;
 import com.cloudmachine.utils.ToastUtils;
+import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.UploadPhotoUtils;
-import com.github.mikephil.charting.utils.AppLog;
-import com.jsbridge.JsBridgeClient;
-import com.jsbridge.core.JsBridgeManager;
+import com.cloudmachine.widget.CommonTitleView;
+import com.umeng.analytics.MobclickAgent;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -79,56 +90,63 @@ import rx.schedulers.Schedulers;
 @SuppressLint("SetJavaScriptEnabled")
 public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCommunityPresenter, QuestionCommunityModel>
         implements QuestionCommunityContract.View {
+    private static final int REQUEST_PICK_IMAGE = 0x001; //相册选取
+    private static final int REQUEST_CAPTURE = 0x002;  //拍照
+    private static final int REQUEST_PICTURE_CUT = 0x003;  //剪裁图片
+    private static final int REQUEST_PERMISSION = 0x004;  //权限请求
+    private static final int REQUEST_PERMISSION_PICK = 0x005;  //权限请求
+    private static final int FLUSH_PAGE = 0x1330;
+    private static final String PARAMS_KEY_MYID = "myid";
+    private static final String PARAMS_KEY_MEMBERID = "memberId";
+    private static final String JS_INTERFACE_NAME = "webkit";
+    private static final String SHARE = "分享";
+    private static final String SHAREDESC = "内容源自云机械APP";
+    private static final String[] UPLOAD_PIC_ITEMS = new String[]{"选择本地图片", "拍照"};
+    public static final String H5_URL = "h5_url";
+    public static final String H5_TITLE = "h5_title";
+    public static final String GO_TO_MY_ORDER = "gotoMyOrder";
+    @BindView(R.id.common_h5_pb)
+    ProgressBar mPb;
+    @BindView(R.id.common_h5_wv)
+    WebView mWebView;
+    @BindView(R.id.common_h5_ctv)
+    CommonTitleView mWvTitle;
+    private PermissionsChecker mPermissionsCheck;
+    private Uri imageUri;
+    private String mUrl;
+    private String mTitle;
+    private String imagePath;
+    private String h5Title;
+    private boolean isClickCamera;
 
-    @BindView(R.id.webview_progressbar)
-    ProgressBar mWebviewProgressbar;
-    @BindView(R.id.wv_questions)
-    WebView mWvQuestions;
-
-    private Context mContext;
-//    private String URLString = "http://h5.test.cloudm.com/n/ask_qlist";
-    private String URLString = ApiConstants.H5_HOST+"n/ask_qlist";
-    private Long mMyid;
-    private JsBridgeManager jsBridgeManager;
-    private String notifyUrl;
-    String[] items = new String[]{"选择本地图片", "拍照"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questioncommunity);
         ButterKnife.bind(this);
-        mPermissionsCheck = new PermissionsChecker(this);
-        initJsBridgeManager();
         initParams();
-        initWebView();
+        initView();
+        initRxManager();
+    }
+
+    private void initRxManager() {
+        mRxManager.on(GO_TO_MY_ORDER, new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                mHandler.sendEmptyMessage(Constants.HANDLER_JUMP_MY_ORDER);
+            }
+        });
+
     }
 
 
-
-    private void initJsBridgeManager() {
-        jsBridgeManager = JsBridgeClient.getJsBridgeManager(QuestionCommunityActivity.this);
-    }
-
-    // TODO: 2017/5/2 modify by xjw
     private void initParams() {
-        mContext = this;
-        Intent intent = this.getIntent();
-        Bundle bundle = intent.getExtras();
-        if (bundle == null) {
-            return;
-        }
-        notifyUrl = bundle.getString(MyReceiver.NOTIFY_URL);
-        String url = bundle.getString("url");
-        if (!TextUtils.isEmpty(url)) {
-            URLString = url;
-        }
-        if (URLString.contains("myid")) {
-            return;
-        }
-        Member member = MemeberKeeper.getOauth(this);
-        if (member != null) {
-            mMyid = member.getWjdsId();
+        mPermissionsCheck = new PermissionsChecker(this);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mTitle = bundle.getString(H5_TITLE);
+            mUrl = bundle.getString(H5_URL);
         }
     }
 
@@ -137,150 +155,90 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         mPresenter.setVM(this, mModel);
     }
 
-    private void initWebView() {
-        // 设置可以自动加载图片
-        mWvQuestions.getSettings().setLoadsImagesAutomatically(true);
-        mWvQuestions.getSettings().setBuiltInZoomControls(true);
-        mWvQuestions.getSettings().setJavaScriptEnabled(true);
-        mWvQuestions.getSettings().setUseWideViewPort(true);
-        mWvQuestions.getSettings().setLoadWithOverviewMode(true);
-        mWvQuestions.getSettings().setDefaultTextEncodingName("utf-8");
-        mWvQuestions.getSettings().setGeolocationEnabled(true);
-        mWvQuestions.getSettings().setDomStorageEnabled(true);
+    @SuppressLint("AddJavascriptInterface")
+    private void initView() {
+        if (!TextUtils.isEmpty(mTitle)) {
+            mWvTitle.setTitleName(mTitle);
+            mWvTitle.setVisibility(View.VISIBLE);
+        }
+        initSetting();
+        mWebView.setWebChromeClient(new MyWebChromeClient());
+        mWebView.setWebViewClient(new H5WebClient());
+        mWebView.addJavascriptInterface(new JsInteface(this, mHandler), JS_INTERFACE_NAME);
+        loadUrl();
+        homeUrl = mUrl;
+        AppLog.print("Common H5 URL__" + mUrl);
+    }
+
+    private void initSetting() {
+        WebSettings settings = mWebView.getSettings();
+        settings.setLoadsImagesAutomatically(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setJavaScriptEnabled(true);
+        settings.setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setDefaultTextEncodingName("utf-8");
+        settings.setGeolocationEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setPluginState(WebSettings.PluginState.ON);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mWvQuestions.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
-        //优先使用缓存：
-        //		webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        //不使用缓存：
-        mWvQuestions.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        //		webview.clearHistory();
-        //		webview.clearFormData();
-        //		webview.clearCache(true);
-        mWvQuestions.setWebChromeClient(new MyWebChromeClient());
-
-        if (Build.VERSION.SDK_INT >= 8) {
-            mWvQuestions.getSettings().setPluginState(WebSettings.PluginState.ON);
-        } else {
-            // webview.getSettings().setPluginsEnabled(true);
-        }
-        mWvQuestions.setWebViewClient(new WebViewClient() {
-            public void onReceivedError(WebView view, int errorCode,
-                                        String description, String failingUrl) {
-                AppLog.print("onReceivedError___");
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                AppLog.print("shoudLoadUrl___" + url);
-//                if (PAGE_TAB_QUESTION.equals(pageType)) {
-////                    if (!URLString.equals(url)) {
-////                        finish();
-////                    }
-//                    return true;
-//                }
-                return jsBridgeManager.invokeNative(view, url);
-            }
-
-        });
-        if (!TextUtils.isEmpty(notifyUrl)) {
-            mWvQuestions.loadUrl(notifyUrl);
-            return;
-        }
-        if (mMyid != null) {
-            mWvQuestions.loadUrl(URLString + "?myid=" + mMyid + "&hideback=1");
-            AppLog.print("QuestionCommunityActivity链接" + URLString + "?myid=" + mMyid + "&hideback=1");
-        } else {
-            mWvQuestions.loadUrl(URLString);
-        }
-
-
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
     }
 
-    public void shoWAlertDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提示");
-        builder.setMessage(message);
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create();
-        builder.show();
-    }
-
-    final class MyWebChromeClient extends WebChromeClient {
+    private class H5WebClient extends WebViewClient {
         @Override
-        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-            AppLog.print("onJsAlert___url" + url + "___message__" + message + "___JsResult__" + result);
-            if ("upload_img".equals(message)) {
-                showUpLoadImgDialog();
-                result.confirm();
-                return true;
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            AppLog.print("shoudLoadUrl___" + url + ", homeURL__" + homeUrl);
+            if (backUrl == null) {
+                backUrl = url;
+            }
+            if (url.equals(homeUrl) || url.startsWith("cloudm://closeAskPage")) {
+                mWvTitle.setCloseVisible(View.GONE);
             } else {
-                shoWAlertDialog(message);
-                result.confirm();
-                return true;
+                mWvTitle.setCloseVisible(View.VISIBLE);
             }
+            if (!url.startsWith("cloudm://")) {
+                mUrl = url;
+            }
+            return false;
         }
+    }
 
+    private String homeUrl;
+    private String backUrl;
 
-        @Override
-        public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
-            AppLog.print("onJsPrompt___");
-            return super.onJsPrompt(view, url, message, defaultValue, result);
-        }
+    public void shoWAlertDialog(String message, final String alertEvent) {
+        CustomDialog.Builder builder = new CustomDialog.Builder(this);
+        builder.setMessage(message);
+        builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Constants.callJsMethod(mWebView, alertEvent);
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
 
-        @Override
-        public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
-            AppLog.print("onJsConfirm___");
-            new AlertDialog.Builder(mContext)
-                    .setTitle(getResources().getString(R.string.app_name))
-                    .setMessage(message)
-                    .setPositiveButton(android.R.string.ok,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    result.confirm();
-                                }
-                            })
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    result.cancel();
-                                }
-                            })
-                    .create()
-                    .show();
-
-            return true;
-        }
+    private final class MyWebChromeClient extends WebChromeClient {
 
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin,
                                                        android.webkit.GeolocationPermissions.Callback callback) {
             super.onGeolocationPermissionsShowPrompt(origin, callback);
-            AppLog.print("onGeolocationPermissionsShowPrompt__");
             callback.invoke(origin, true, false);
         }
 
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            // TODO Auto-generated method stub
-            AppLog.print("onProgressChanged_");
             super.onProgressChanged(view, newProgress);
-            mWebviewProgressbar.setVisibility(View.VISIBLE);
-            mWebviewProgressbar.setProgress(0);
-            mWebviewProgressbar.setProgress(newProgress);
+            mPb.setVisibility(View.VISIBLE);
+            mPb.setProgress(0);
+            mPb.setProgress(newProgress);
             if (newProgress == 100) {
-                mWebviewProgressbar.setVisibility(View.GONE);
+                mPb.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -288,7 +246,6 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
     @Override
     protected void onDestroy() {
-        // TODO Auto-generated method stub
         removeCookie(this);
         super.onDestroy();
     }
@@ -303,7 +260,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private void showUpLoadImgDialog() {
         new AlertDialog.Builder(QuestionCommunityActivity.this)
                 .setTitle("头像照片")
-                .setItems(items, new DialogInterface.OnClickListener() {
+                .setItems(UPLOAD_PIC_ITEMS, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -312,9 +269,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     if (mPermissionsCheck.lacksPermissions(PERMISSIONS_PICK)) {
                                         PermissionsActivity.startActivityForResult(QuestionCommunityActivity.this,
-                                                REQUEST_PERMISSION_PICK,PERMISSIONS_PICK);
-//                                        PermissionsActivity.startActivityForResult(this, REQUEST_PERMISSION,
-//                                                PERMISSIONS);
+                                                REQUEST_PERMISSION_PICK, PERMISSIONS_PICK);
                                     } else {
                                         startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                                 REQUEST_PICK_IMAGE);
@@ -327,10 +282,10 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                                 isClickCamera = false;
                                 break;
                             case 1:
-                                //检查权限(6.0以上做权限判断)
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     if (mPermissionsCheck.lacksPermissions(PERMISSIONS)) {
-                                        startPermissionsActivity();
+                                        PermissionsActivity.startActivityForResult(QuestionCommunityActivity.this, REQUEST_PERMISSION,
+                                                PERMISSIONS);
                                     } else {
                                         openCamera();
                                     }
@@ -351,10 +306,6 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
     }
 
-    private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(this, REQUEST_PERMISSION,
-                PERMISSIONS);
-    }
 
     //打开系统相机
     private void openCamera() {
@@ -381,21 +332,26 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             Manifest.permission.READ_EXTERNAL_STORAGE};
 
 
-    private PermissionsChecker mPermissionsCheck;
-    private static final int REQUEST_PICK_IMAGE = 0x001; //相册选取
-    private static final int REQUEST_CAPTURE = 0x002;  //拍照
-    private static final int REQUEST_PICTURE_CUT = 0x003;  //剪裁图片
-    private static final int REQUEST_PERMISSION = 0x004;  //权限请求
-    private static final int REQUEST_PERMISSION_PICK = 0x005;  //权限请求
-    private boolean isClickCamera;
-    private Uri imageUri;
-    private String imagePath;
-    private String imString;
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case Constants.REQUEST_ToSearchActivity:
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        ResidentAddressInfo info = (ResidentAddressInfo) bundle.getSerializable(Constants.P_SEARCHINFO);
+                        if (info != null) {
+                            String locJson = "callbackSelectAddress('{ \"province\": \"" + info.getProvince() + "\",\"location\":{\"longitude\":\"" + info.getLat() + "\",\"latitude\":\"" + info.getLng() + "\"},\"city\": \"" + info.getCity() + "\",\"district\": \"" + info.getDistrict() + "\",\"name\": \"" + info.getPosition() + "\"}')";
+                            Constants.callJsMethod(mWebView, locJson);
+                        }
+                    }
+                }
+
+                break;
+            case FLUSH_PAGE:
+                loadUrl();
+                break;
             case REQUEST_PICK_IMAGE://从相册选择
                 if (data == null) {
                     return;
@@ -412,22 +368,24 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 }
                 break;
             case REQUEST_PICTURE_CUT://裁剪完成
-                Bitmap bitmap = null;
-                try {
-                    if (isClickCamera) {
-                        bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
-                    } else {
-                        bitmap = BitmapFactory.decodeFile(imagePath);
-                    }
-                    // iv.setImageBitmap(bitmap);
-                    //Bitmap photo = extras.getParcelable("data");
-                    imString = savePhotoToSDCard(bitmap);
-                    compressPicture(imString);
+                if (data != null) {
+                    Bitmap bitmap;
+                    try {
+                        if (isClickCamera) {
+                            bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
+                        } else {
+                            bitmap = BitmapFactory.decodeFile(imagePath);
+                        }
+                        // iv.setImageBitmap(bitmap);
+                        //Bitmap photo = extras.getParcelable("data");
+                        String imString = savePhotoToSDCard(bitmap);
+                        compressPicture(imString);
 //                    new ImageUploadAsync(handler, imString, 1111).execute();
 //                    UploadPhotoUtils.getInstance(this).upLoadFile(imString, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case REQUEST_PERMISSION://权限请求
@@ -443,7 +401,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 break;
             case REQUEST_PERMISSION_PICK:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    ToastUtils.showToast(QuestionCommunityActivity.this,"权限被拒绝");
+                    ToastUtils.showToast(QuestionCommunityActivity.this, "权限被拒绝");
                     this.finish();
                 } else {
                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
@@ -453,6 +411,29 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
         }
 
+    }
+
+    private void loadUrl() {
+        if (!TextUtils.isEmpty(mUrl)) {
+            Member member = MemeberKeeper.getOauth(this);
+            if (member != null) {
+                fillParams(PARAMS_KEY_MYID, member.getWjdsId());
+                fillParams(PARAMS_KEY_MEMBERID, member.getId());
+            }
+        }
+        mWebView.loadUrl(mUrl);
+    }
+
+    //补充URL参数
+    public void fillParams(String key, Long value) {
+        if (!mUrl.contains(key)) {
+            if (mUrl.contains("?")) {
+                mUrl += "&";
+            } else {
+                mUrl += "?";
+            }
+            mUrl += key + "=" + value;
+        }
     }
 
     private void compressPicture(String imString) {
@@ -466,7 +447,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     public void call(File file) {   //http:///excamaster
                         Long wjdxId = UserHelper.getWjdxID(mContext);
                         if (wjdxId != null) {
-                            UploadPhotoUtils.getInstance(mContext).upLoadForH5File(file, ApiConstants.XIEXIN_HOST+"excamaster/yjxapi/uploadpicture?pictype=1&?myid=" + wjdxId, mHandler);
+                            UploadPhotoUtils.getInstance(mContext).upLoadForH5File(file, ApiConstants.XIEXIN_HOST + "excamaster/yjxapi/uploadpicture?pictype=1&?myid=" + wjdxId, mHandler);
 //                            UploadPhotoUtils.getInstance(mContext).upLoadForH5File(file, "http://121.40.130.218:8980/excamaster/yjxapi/uploadpicture?pictype=1&?myid=" + wjdxId, mHandler);
                         }
                     }
@@ -513,8 +494,10 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             return null;
         } finally {
             try {
-                fileOutputStream.flush();
-                fileOutputStream.close();
+                if (fileOutputStream != null) {
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+                }
             } catch (IOException e) {
                 return null;
             }
@@ -605,18 +588,130 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         cropPhoto();
     }
 
+    String jsAlerEvent;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case Constants.HANDLER_ALIPAY_RESULT:
+                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+                    String resultStatus = payResult.getResultStatus();
+                    // 判断resultStatus 为9000则代表支付成功
+                    if (TextUtils.equals(resultStatus, "9000")) {
+                        // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
+                        Toast.makeText(QuestionCommunityActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                        sendEmptyMessage(Constants.HANDLER_JUMP_MY_ORDER);
+                    } else {
+                        // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
+                        Toast.makeText(QuestionCommunityActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case Constants.HANDLER_JUMP_MY_ORDER:
+                    Constants.callJsMethod(mWebView, "callbackDSFPayResultSuccess()");
+                    break;
+                case Constants.HANDLER_HIDEN_CLOSE_BTN:
+                    mWvTitle.setCloseVisible(View.GONE);
+                    break;
+                case Constants.HANDLER_SHOW_CLOSE_BTN:
+                    mWvTitle.setCloseVisible(View.VISIBLE);
+                    break;
+
+                case Constants.HANDLER_JS_ALERT:
+                    JSONObject job = (JSONObject) msg.obj;
+                    String type = job.optString(JsInteface.ALERT_TYPE);
+                    if (JsInteface.UPLOAD_IMG.equals(type)) {
+                        showUpLoadImgDialog();
+                    } else {
+                        String tips = job.optString(JsInteface.ALERT_TIPS);
+                        String alert_event = job.optString(JsInteface.ALERT_EVENT);
+                        shoWAlertDialog(tips, alert_event);
+                    }
+                    break;
                 case Constants.HANDLER_UPLOAD_SUCCESS:
                     String dataStr = (String) msg.obj;
-                    AppLog.print("upload result data_" + dataStr);
-                    String jsBackImg = "javascript:backLocalImgInfo('" + dataStr + "')";
-                    AppLog.print("调用js___" + jsBackImg);
-                    mWvQuestions.loadUrl(jsBackImg);
+                    Constants.callJsMethod(mWebView, "backLocalImgInfo('" + dataStr + "')");
+                    break;
+                case Constants.HANDLER_REPAIR:
+                    if (UserHelper.isLogin(QuestionCommunityActivity.this)) {
+                        Constants.toActivity(QuestionCommunityActivity.this, NewRepairActivity.class, null);
+                    } else {
+                        Constants.toActivityForR(QuestionCommunityActivity.this, LoginActivity.class, null);
+                    }
+                    break;
+
+                case Constants.HANDLER_JS_JUMP:
+                    String methodStr = (String) msg.obj;
+                    if (JsInteface.Go_Login_Page.equals(methodStr)) {
+                        Bundle b = new Bundle();
+                        b.putInt("flag", 4);
+                        Constants.toActivityForR(QuestionCommunityActivity.this, LoginActivity.class, b, FLUSH_PAGE);
+                    }
+                    break;
+                case Constants.HANDLER_JS_BODY:
+                    final JsBody body = (JsBody) msg.obj;
+                    h5Title = body.getCenter_title();
+                    if (!TextUtils.isEmpty(h5Title)) {
+                        mWvTitle.setTitleName(h5Title);
+                        String rightTitle = body.getRight_title();
+                        if (!TextUtils.isEmpty(rightTitle) && !SHARE.equals(rightTitle)) {
+                            final String rightEvent = body.getRight_event();
+                            if (!TextUtils.isEmpty(rightEvent)) {
+                                mWvTitle.setRightText(rightTitle, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Constants.callJsMethod(mWebView, rightEvent);
+                                    }
+                                });
+                            } else {
+                                mWvTitle.setRightText(rightTitle);
+                            }
+                        } else {
+                            mWvTitle.setRightText(null, null);
+                        }
+                        String shareTitle = body.getShare_title();
+                        if (SHARE.equals(rightTitle) || !TextUtils.isEmpty(shareTitle)) {
+                            mWvTitle.setRightImg(R.drawable.ic_share, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, mUrl, h5Title, SHAREDESC, -1);
+                                    shareDialog.show();
+                                    MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
+                                }
+                            });
+                        } else {
+                            mWvTitle.setRightImg(0, null);
+                        }
+                        final String leftEvent = body.getLeft_event();
+                        if (!TextUtils.isEmpty(leftEvent)) {
+                            mWvTitle.setLeftClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Constants.callJsMethod(mWebView, leftEvent);
+                                }
+                            });
+                        }
+                    }
                     break;
             }
         }
     };
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mWebView != null && mWebView.canGoBack()) {
+                mWebView.goBack();
+                String url = mWebView.getUrl();
+                if (url.equals(backUrl) || url.startsWith("cloudm://closeAskPage")) {
+                    mWvTitle.setCloseVisible(View.GONE);
+                } else {
+                    mWvTitle.setCloseVisible(View.VISIBLE);
+                }
+                return true;
+            }
+
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

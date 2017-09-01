@@ -13,7 +13,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
-import com.cloudm.autolayout.utils.AutoUtils;
+import com.cloudmachine.autolayout.utils.AutoUtils;
 
 /*****
  * 

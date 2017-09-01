@@ -5,7 +5,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import net.lucode.hackware.magicindicator.buildins.UIUtil;
+import com.cloudmachine.utils.DensityUtil;
 
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     int mSpace;
@@ -13,11 +13,11 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
 
     public SpaceItemDecoration(Context context, int space) {
-        this.mSpace = UIUtil.dip2px(context, space);
+        this.mSpace = DensityUtil.dip2px(context, space);
     }
 
     public SpaceItemDecoration(Context context, int space, boolean singleDirection) {
-        this.mSpace = UIUtil.dip2px(context, space);
+        this.mSpace = DensityUtil.dip2px(context, space);
         this.singleDirection = singleDirection;
     }
 

@@ -1,6 +1,7 @@
 package com.cloudmachine.utils;
 
 import android.app.Dialog;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -77,10 +78,12 @@ public class ShareDialog extends Dialog implements View.OnClickListener {
         }
         ImageView ivSession = (ImageView) view.findViewById(R.id.iv_session);
         ImageView ivTimeline = (ImageView) view.findViewById(R.id.iv_timeline);
+        ImageView ivCopyLink= (ImageView) view.findViewById(R.id.iv_copylink);
         Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(this);
         ivSession.setOnClickListener(this);
         ivTimeline.setOnClickListener(this);
+        ivCopyLink.setOnClickListener(this);
 
     }
 
@@ -88,6 +91,13 @@ public class ShareDialog extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_cancel:
+                dismiss();
+                break;
+            case R.id.iv_copylink:
+//                webpageUrl
+                ClipboardManager cm= (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                cm.setText(webpageUrl);
+                ToastUtils.showCenterToast(v.getContext(),"复制成功");
                 dismiss();
                 break;
             case R.id.iv_session:  // 分享给微信朋友

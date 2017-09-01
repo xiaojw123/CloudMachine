@@ -47,7 +47,7 @@ public class NotfyImgView extends ImageView {
             Paint paint = new Paint();
             paint.setColor(getResources().getColor(R.color.oval_message_color));
             Drawable drawable = getDrawable();
-            canvas.drawCircle(drawable.getIntrinsicWidth() + getPaddingRight() - centerX, centerY, radius, paint);
+            canvas.drawCircle(drawable.getIntrinsicWidth() + getPaddingRight()+getPaddingLeft() - centerX, centerY, radius, paint);
         }
     }
 

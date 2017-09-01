@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cloudmachine.ui.home.activity.RepairDetailMapActivity">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/repair_detail_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_shodow_visible="false"
+        app:common_title_name="等待接单" />
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/home_mapview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/repair_detail_ctv" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/pad1"
+        android:layout_marginRight="@dimen/pad1"
+
+        android:showDividers="middle"
+        android:divider="@drawable/divider_line_horztial"
+        android:layout_marginBottom="@dimen/pad1"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:paddingLeft="@dimen/pad1"
+            android:paddingRight="@dimen/pad1"
+            android:layout_height="@dimen/dimen_size_60">
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/rd_img"
+                android:layout_centerVertical="true"
+                android:layout_width="@dimen/dimen_size_40"
+                android:layout_height="@dimen/dimen_size_40" />
+
+            <TextView
+                android:id="@+id/rd_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cor8"
+                android:textSize="@dimen/siz3"
+                android:layout_marginLeft="@dimen/dimen_size_16"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/rd_img"
+                />
+
+            <ImageView
+                android:id="@+id/rd_call_img"
+                android:src="@drawable/ic_call"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rdm_detail_layout"
+            android:paddingLeft="@dimen/pad1"
+            android:paddingRight="@dimen/pad1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_70">
+
+
+
+
+        <TextView
+            android:id="@+id/rd_devicename_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cor8"
+            android:layout_marginTop="@dimen/dimen_size_14"
+            android:textSize="@dimen/siz3"
+            android:maxEms="6"
+            android:singleLine="true"
+            />
+
+            <View
+                android:id="@+id/rd_divider1"
+                android:layout_height="@dimen/dimen_size_14"
+                android:layout_width="@dimen/dimen_size_1"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:layout_marginRight="@dimen/dimen_size_10"
+                android:layout_toRightOf="@+id/rd_devicename_tv"
+                android:background="@color/cor12"
+                android:layout_alignTop="@+id/rd_devicename_tv"
+                />
+
+            <TextView
+                android:id="@+id/rd_deviceno_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cor9"
+                android:layout_toRightOf="@+id/rd_divider1"
+                android:textSize="@dimen/siz3"
+                android:layout_alignTop="@+id/rd_divider1"
+                android:maxEms="10"
+                android:singleLine="true"
+                />
+
+            <TextView
+                android:id="@+id/rd_description_tv"
+                android:textColor="@color/cor9"
+                android:textSize="@dimen/siz6"
+                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:layout_below="@+id/rd_devicename_tv"
+                android:maxEms="15"
+                android:layout_marginTop="@dimen/dimen_size_4"
+                android:layout_height="wrap_content" />
+
+
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_right"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
+
+
+
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

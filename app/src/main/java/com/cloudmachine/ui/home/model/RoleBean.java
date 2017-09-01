@@ -1,10 +1,13 @@
 package com.cloudmachine.ui.home.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by xiaojw on 2017/6/8.
  */
 
-public class RoleBean {
+public class RoleBean implements Parcelable {
 
     /**
      * type : 管理者
@@ -89,4 +92,47 @@ public class RoleBean {
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.type);
+        dest.writeString(this.permission);
+        dest.writeString(this.description);
+        dest.writeInt(this.creator);
+        dest.writeInt(this.updater);
+        dest.writeLong(this.id);
+        dest.writeString(this.createTime);
+        dest.writeString(this.updateTime);
+    }
+
+    public RoleBean() {
+    }
+
+    protected RoleBean(Parcel in) {
+        this.type = in.readString();
+        this.permission = in.readString();
+        this.description = in.readString();
+        this.creator = in.readInt();
+        this.updater = in.readInt();
+        this.id = in.readLong();
+        this.createTime = in.readString();
+        this.updateTime = in.readString();
+    }
+
+    public static final Parcelable.Creator<RoleBean> CREATOR = new Parcelable.Creator<RoleBean>() {
+        @Override
+        public RoleBean createFromParcel(Parcel source) {
+            return new RoleBean(source);
+        }
+
+        @Override
+        public RoleBean[] newArray(int size) {
+            return new RoleBean[size];
+        }
+    };
 }

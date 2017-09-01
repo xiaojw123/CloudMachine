@@ -1,30 +1,29 @@
 package com.cloudmachine.ui.login.acticity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.cloudmachine.MyApplication;
 import com.cloudmachine.R;
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
-import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.recyclerbean.CheckNumBean;
-import com.cloudmachine.struc.Member;
-import com.cloudmachine.struc.UserInfo;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.bean.CheckNumBean;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.login.contract.VerifyPhoneNumContract;
 import com.cloudmachine.ui.login.model.VerifyPhoneNumModel;
@@ -59,10 +58,8 @@ import rx.functions.Func1;
  */
 
 public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNumPresenter, VerifyPhoneNumModel>
-        implements VerifyPhoneNumContract.View, View.OnClickListener, Handler.Callback {
+        implements VerifyPhoneNumContract.View, View.OnClickListener, Handler.Callback, TextWatcher {
 
-    @BindView(R.id.vp_weixinlogo)
-    ImageView mWexinAvatar;
     @BindView(R.id.ll_back)
     LinearLayout mLlBack;//返回按钮
     @BindView(R.id.phone_string)//手机号码
@@ -192,9 +189,9 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
             }
         });
-        if (!TextUtils.isEmpty(mHeadimgurl)) {
-            Glide.with(this).load(mHeadimgurl).error(R.drawable.weichat_login).into(mWexinAvatar);
-        }
+        mPhoneString.addTextChangedListener(this);
+        mValidateCode.addTextChangedListener(this);
+        mPwdString.addTextChangedListener(this);
     }
 
     private void switchLayout() {
@@ -213,7 +210,6 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
         mPresenter.setVM(this, mModel);
     }
 
-
     private void sendMessage() {
         final int count = 60;
         Observable.interval(0, 1, TimeUnit.SECONDS)
@@ -228,15 +224,16 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                     @Override
                     public void call() {
                         mValidateLayout.setEnabled(false);
-                        mValidateText.setTextColor(Color.BLUE);
+                        mValidateText.setTextColor(getResources().getColor(R.color.login_hint_text));
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Long>() {
                     @Override
                     public void onCompleted() {
-//                        mValidateText.setText("获取验证码");
-//                        mValidateText.setTextColor(Color.GRAY);
+                        mValidateText.setText("获取验证码");
+                        mValidateLayout.setEnabled(true);
+                        mValidateText.setTextColor(getResources().getColor(R.color.cor8));
                     }
 
                     @Override
@@ -246,9 +243,9 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
                     @Override
                     public void onNext(Long aLong) {
-//                        mValidateText.setText("重新发送" + aLong + "秒");
-//                        mValidateText.setTextColor(Color.BLUE);
-                        mValidateLayout.setEnabled(true);
+                        mValidateText.setText("获取验证码(" + aLong + ")");
+                        mValidateLayout.setEnabled(false);
+                        mValidateText.setTextColor(getResources().getColor(R.color.login_hint_text));
                     }
                 });
 
@@ -258,10 +255,12 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
     @Override
     public void returnWXBindMobile(String message) {
         ToastUtils.success(message, true);
+        sendMessage();
     }
 
     @Override
     public void returnCheckNum(CheckNumBean checkNumBean) {
+
         //账号未注册
         if (checkNumBean.type == 1) {
             changeMobileState(false, 1);
@@ -319,7 +318,6 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                 if (TextUtils.isEmpty(mPhoneString.getText().toString().trim())) {
                     ToastUtils.info("手机号码不能为空", true);
                 } else {
-                    sendMessage();
                     mPresenter.checkNum(Long.parseLong(mPhoneString.getText().toString().trim()));
                 }
                 break;
@@ -386,5 +384,45 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
                     }
                 }));
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String str1 = mPhoneString.getText().toString();
+        String str2 = mValidateCode.getText().toString();
+        String str3 = mPwdString.getText().toString();
+        String valiateText = mValidateText.getText().toString();
+        if ("获取验证码".equals(valiateText)) {
+            if (str1.length() > 0) {
+                mValidateLayout.setEnabled(true);
+                mValidateText.setTextColor(getResources().getColor(R.color.cor8));
+            } else {
+                mValidateLayout.setEnabled(false);
+                mValidateText.setTextColor(getResources().getColor(R.color.login_hint_text));
+            }
+        }
+        if (mobileType == 1) {
+            if (str1.length() > 0 && str2.length() > 0 && str3.length() > 0) {
+                mFindBtn.setTextColor(getResources().getColor(R.color.cor15));
+            } else {
+                mFindBtn.setTextColor(getResources().getColor(R.color.cor2015));
+            }
+        }else{
+            if (str1.length() > 0 && str2.length() > 0) {
+                mFindBtn.setTextColor(getResources().getColor(R.color.cor15));
+            } else {
+                mFindBtn.setTextColor(getResources().getColor(R.color.cor2015));
+            }
+        }
     }
 }

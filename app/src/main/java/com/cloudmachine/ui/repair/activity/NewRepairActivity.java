@@ -1,7 +1,6 @@
 package com.cloudmachine.ui.repair.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,7 +15,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,25 +25,28 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationClientOption.AMapLocationMode;
 import com.amap.api.location.AMapLocationClientOption.AMapLocationProtocol;
 import com.amap.api.location.AMapLocationListener;
+import com.cloudmachine.MyApplication;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.CheckMachineActivity;
 import com.cloudmachine.activities.EditLayoutActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.SearchPoiActivity;
-import com.cloudmachine.app.MyApplication;
+import com.cloudmachine.adapter.PhotoAdapter;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.EditListInfo;
+import com.cloudmachine.bean.MachineTypeInfo;
+import com.cloudmachine.bean.McDeviceInfo;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.NewRepairInfo;
+import com.cloudmachine.bean.ResidentAddressInfo;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.DeviceHelper;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.RecyclerItemClickListener;
 import com.cloudmachine.net.task.MachineTypesListAsync;
 import com.cloudmachine.net.task.SubmitRepairAsync;
-import com.cloudmachine.recycleadapter.PhotoAdapter;
-import com.cloudmachine.struc.EditListInfo;
-import com.cloudmachine.struc.MachineTypeInfo;
-import com.cloudmachine.struc.McDeviceInfo;
-import com.cloudmachine.struc.NewRepairInfo;
-import com.cloudmachine.struc.ResidentAddressInfo;
 import com.cloudmachine.ui.repair.contract.NewRepairContract;
 import com.cloudmachine.ui.repair.model.NewRepairModel;
 import com.cloudmachine.ui.repair.presenter.NewRepairPresenter;
@@ -60,7 +61,6 @@ import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.utils.photo.util.PublicWay;
 import com.cloudmachine.utils.photo.util.Res;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
-import com.github.mikephil.charting.utils.AppLog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -69,7 +69,6 @@ import java.util.List;
 import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPreview;
 
-import static com.cloudmachine.R.id.recycler_view;
 
 /**
  * @author shixionglu 新增报修页面
@@ -78,10 +77,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         Callback, OnClickListener, NewRepairContract.View {
     public static final String DEFAULT_LOCAITOIN = "defualt_location";
     private static final int REQUEST_PERMISSION_PICK = 0x008;  //权限请求
-    private Context mContext;
     private Handler mHandler;
-    private static final int REQUEST_CODE_DEVICENAME = 0x001;
-    private McDeviceInfo deviceInfo;
     private TextView tvType;
     private TextView tvBrand;
     private TextView tvModel;
@@ -92,14 +88,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
     private AMapLocationClient locationClient = null;
     private TextView text_address;
-
-    private LinearLayout macopName;
-    private LinearLayout macopTel;
-    private LinearLayout discription;
-
-    private ArrayList<McDeviceInfo> deviceMacList=new ArrayList<>();// 整体设备列表
-    private ArrayList<McDeviceInfo> ownDeviceInfos;// 自己的机器
-
     private RelativeLayout showButton;
     private TextView tvCheckMac;
 
@@ -115,7 +103,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private String province;
     private String deviceId;
 
-    private int clickPosition;
     private ClearEditTextView cetContactName;
     private ClearEditTextView cetContactMobile;
     private ClearEditTextView cetContactDesc;
@@ -137,7 +124,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         Res.init(this);
         PublicWay.activityList.add(this);
         setContentView(R.layout.activity_new_repair);
-        mContext = this;
         mHandler = new Handler(this);
         if (mPermissionsChecker == null) {
             mPermissionsChecker = new PermissionsChecker(this);
@@ -168,7 +154,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
     private void initView() {
         initNewReapirView();
-        getOwnerMac(); // 获取自己拥有的机器
         showData(); // 控制按钮选择机器的显示影藏
     }
 
@@ -176,44 +161,17 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            try {
-                mcDeviceInfo = (McDeviceInfo) bundle.getSerializable(Constants.P_DEVICEINFO_MY);
-                vworkaddress = bundle.getString(DEFAULT_LOCAITOIN);
-                // deviceId = 100;
-            } catch (Exception e) {
-                Constants.MyLog(e.getMessage());
-            }
+            mcDeviceInfo = (McDeviceInfo) bundle.getSerializable(Constants.P_DEVICEINFO_MY);
+            vworkaddress = bundle.getString(DEFAULT_LOCAITOIN);
 
         }
     }
 
 
     public void showData() {
-        if (mcDeviceInfo == null) {
-            if (null != ownDeviceInfos && ownDeviceInfos.size() > 0) {
-                tvCheckMac.setVisibility(View.VISIBLE);
-                showButton.setVisibility(View.VISIBLE);
-            } else {
-                tvCheckMac.setVisibility(View.GONE);
-                showButton.setVisibility(View.GONE);
-            }
-        } else {
-            tvCheckMac.setVisibility(View.GONE);
-            showButton.setVisibility(View.GONE);
-            showMyDeviceInfo();
-
-        }
-
+        showMyDeviceInfo();
     }
 
-    public void getOwnerMac() {
-        ownDeviceInfos = new ArrayList<>();
-        for (int i = 0; i < deviceMacList.size(); i++) {
-            if (deviceMacList.get(i).getType() == 1) {
-                ownDeviceInfos.add(deviceMacList.get(i));
-            }
-        }
-    }
 
     static final String[] PERMISSIONS_PICK = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -221,7 +179,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
         selectPhotos = new ArrayList<>();
         //初始化动态recyclerview
-        mRecyclerView = (RecyclerView) findViewById(recycler_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         photoAdapter = new PhotoAdapter(this, selectedPhotos);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL));
         mRecyclerView.setAdapter(photoAdapter);
@@ -255,10 +213,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         RadiusButtonView btnSubmitNow = (RadiusButtonView) findViewById(R.id.btn_bottom_repair);
         showButton = (RelativeLayout) findViewById(R.id.rl_showbutton);
         tvCheckMac = (TextView) findViewById(R.id.tv_checkMac);
-        macopName = (LinearLayout) findViewById(R.id.et_name);
-        macopTel = (LinearLayout) findViewById(R.id.et_mobile);
-        discription = (LinearLayout) findViewById(R.id.et_desc);
-
         tvType = (TextView) findViewById(R.id.tv_type);
         tvBrand = (TextView) findViewById(R.id.tv_brand);
         tvModel = (TextView) findViewById(R.id.tv_model);
@@ -274,13 +228,16 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
             cetContactMobile.setText(repairInfo.getVmacoptel());
             tvType.setText(repairInfo.getPk_prod_def());
             et_rackIdname.setText(repairInfo.getVmachinenum());
-            PK_BRAND=repairInfo.getPk_brand();
-            PK_VHCL_MATERIAL=repairInfo.getPk_vhcl_material();
+            PK_BRAND = repairInfo.getPk_brand();
+            PK_VHCL_MATERIAL = repairInfo.getPk_vhcl_material();
             setTextToView(tvModel, repairInfo.getModelname());
             setTextToView(tvBrand, repairInfo.getBrandname());
         } else {
-            cetContactName.setText(MyApplication.getInstance().getTempMember().getNickname());
-            cetContactMobile.setText(MyApplication.getInstance().getTempMember().getMobile());
+            Member member = MyApplication.getInstance().getTempMember();
+            if (member != null) {
+                cetContactName.setText(member.getNickname());
+                cetContactMobile.setText(member.getMobile());
+            }
         }
         macopType.setOnClickListener(this);
         macopBrand.setOnClickListener(this);
@@ -288,28 +245,30 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         macopAddress.setOnClickListener(this);
         checkMac.setOnClickListener(checkMacListener);
         btnSubmitNow.setOnClickListener(btnSubmitListener);
+        if (UserHelper.getMyDevices().size() > 0) {
+            showButton.setVisibility(View.VISIBLE);
+            tvCheckMac.setVisibility(View.VISIBLE);
+        }
+
 
     }
-    private OnClickListener checkMacListener=new OnClickListener() {
+
+    private OnClickListener checkMacListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-        checkMac();
+            checkMac();
         }
     };
-    private OnClickListener btnSubmitListener=new OnClickListener() {
+    private OnClickListener btnSubmitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-       submitRepairInfo();
+            submitRepairInfo();
         }
     };
 
     private void checkMac() {
-        Bundle b = new Bundle();
-        b.putSerializable(Constants.P_MAC_DEVICE, ownDeviceInfos);
-        // Constants.toActivity(NewRepairActivity.this,
-        // CheckMachineActivity.class, b,false);
         Constants.toActivityForR(NewRepairActivity.this,
-                CheckMachineActivity.class, b, Constants.REQUEST_ToSearchDeviceActivity);
+                CheckMachineActivity.class, null, Constants.REQUEST_ToSearchDeviceActivity);
     }
 
     private void submitRepairInfo() {
@@ -321,7 +280,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         pk_brand = PK_BRAND;
         pk_vhcl_materia = PK_VHCL_MATERIAL;
         String modelName = tvModel.getText().toString();
-        String brandName=tvBrand.getText().toString();
+        String brandName = tvBrand.getText().toString();
         vmachinenum = et_rackIdname.getText().toString().trim();
 
         vservicetype = "1";
@@ -391,11 +350,8 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
     private void showDialog(final NewRepairInfo newRepairInfo) {
         CustomDialog.Builder builder = new CustomDialog.Builder(NewRepairActivity.this);
-        builder.setMessage("请确认" + vmacoptel + "的手机号码保持畅通，我们会在3分钟内联系您，请耐心等候", "");
-        builder.setTitle("提示");
-        builder.setLeftButtonColor(getResources().getColor(R.color.public_title_color));
-        builder.setRightButtonColor(getResources().getColor(R.color.public_title_color));
-        builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+        builder.setMessage("请确认" + vmacoptel + "的手机号码保持畅通，我们会在3分钟内联系您，请耐心等候");
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -404,7 +360,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 return;
             }
         });
-        builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -482,12 +438,10 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     AMapLocationListener locationListener = new AMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation loc) {
-            AppLog.print("onLocationChanged___loc=" + loc);
             if (null != loc) {
                 // 解析定位结果
                 province = loc.getProvince();
-                vworkaddress = loc.getProvider();
-                AppLog.print("onLocationChanged___province=" + province + ", vwordkaddres__" + vworkaddress);
+                vworkaddress = loc.getAddress();
                 setTextToView(text_address, loc.getPoiName());
                 stopLocation();
                 // String result = Utils.getLocationStr(loc);
@@ -510,11 +464,10 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
         switch (msg.what) {
             case Constants.HANDLER_NEWREPAIR_SUCCESS:
-                Constants.MyLog(String.valueOf(msg.obj));
+                ToastUtils.showToast(this, "报修成功");
                 finish();
                 break;
             case Constants.HANDLER_NEWREPAIR_FAILD:
-                Constants.MyLog(String.valueOf(msg.obj));
                 break;
             case Constants.HANDLER_GETMACHINETYPES_SUCCESS:
                 List<MachineTypeInfo> mTypeInfo = (List<MachineTypeInfo>) msg.obj;
@@ -530,8 +483,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 break;
             case Constants.HANDLER_UPLOAD_SUCCESS:
                 String url = (String) msg.obj;
-                Constants.MyLog("拿到的图片链接" + url);
-                ToastUtils.success("上传照片成功", true);
                 //向集合添加选中的url
                 selectPhotos.add(url);
                 break;
@@ -543,8 +494,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Constants.MyLog("requestCode" + requestCode);
-        Constants.MyLog("resultCode" + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PERMISSION_PICK) {
             if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
@@ -567,7 +516,17 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 ResidentAddressInfo addressInfo = (ResidentAddressInfo) data.getExtras().getSerializable(Constants.P_SEARCHINFO);
                 if (null != addressInfo) {
                     province = addressInfo.getProvince();
-                    vworkaddress = addressInfo.getPosition();
+                    String city = addressInfo.getCity();
+                    String address = "";
+                    if (!TextUtils.isEmpty(province) && province.equals(city)) {
+                        address += province;
+                    } else {
+                        address += province;
+                        address += city;
+                    }
+                    address += addressInfo.getPosition();
+//                    vworkaddress = addressInfo.getPosition();
+                    vworkaddress = address;
                     setTextToView(text_address, addressInfo.getTitle());
                 }
             }
@@ -576,7 +535,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         if (resultCode == RESULT_OK &&
                 (requestCode == PhotoPicker.REQUEST_CODE || requestCode == PhotoPreview.REQUEST_CODE)) {
             AppLog.print("date");
-            Constants.MyLog("照片回显");
             if (data != null) {
                 photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
             }
@@ -617,6 +575,11 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                                 .getSerializable(Constants.P_EDITRESULTITEM);
                         if (null != eInfoType) {
                             deviceType = eInfoType.getName();
+                            String type = tvType.getText().toString();
+                            if (!TextUtils.isEmpty(type) && !type.equals(deviceType)) {
+                                tvBrand.setText(null);
+                                tvModel.setText(null);
+                            }
                             setTextToView(tvType, deviceType);
                             PK_PROD_DEF = eInfoType.getPK_PROD_DEF();
                             deviceModel = "";
@@ -629,6 +592,10 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                                 .getSerializable(Constants.P_EDITRESULTITEM);
                         if (null != eInfoBrand) {
                             deviceBrand1 = eInfoBrand.getName();
+                            String brand = tvBrand.getText().toString();
+                            if (!TextUtils.isEmpty(brand) && !brand.equals(deviceBrand1)) {
+                                tvModel.setText(null);
+                            }
                             setTextToView(tvBrand, deviceBrand1);
                             PK_BRAND = eInfoBrand.getPK_BRAND();
                             deviceModel = "";
@@ -652,10 +619,11 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 }
                 break;
             case Constants.CLICK_POSITION:
-                isOwnerDevice = true;
-                clickPosition = data.getIntExtra("click_position", -1);
-                if (clickPosition != -1) {
-                    mcDeviceInfo = ownDeviceInfos.get(clickPosition);
+//                isOwnerDevice = true;
+                McDeviceInfo item = (McDeviceInfo) data.getSerializableExtra("selInfo");
+                if (item != null) {
+                    mcDeviceInfo = item;
+//                    mcDeviceInfo = ownDeviceInfos.get(clickPosition);
                     showMyDeviceInfo();
                 }
                 break;
@@ -672,8 +640,8 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private void showMyDeviceInfo() {
         if (null != mcDeviceInfo) {
             PK_PROD_DEF = mcDeviceInfo.getPk_PROD_DEF();
-//            PK_BRAND = mcDeviceInfo.getPk_BRAND();
-//            PK_VHCL_MATERIAL = mcDeviceInfo.getPk_VHCL_MATERIAL();
+            PK_BRAND = mcDeviceInfo.getPk_BRAND();
+            PK_VHCL_MATERIAL = mcDeviceInfo.getPk_VHCL_MATERIAL();
             vmachinenum = mcDeviceInfo.getRackId();
             et_rackIdname.setText(vmachinenum);
             vworkaddress = mcDeviceInfo.getLocation().getPosition();
@@ -697,7 +665,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 // Intent(NewRepairActivity.this,MachineTypeActivity.class);
                 if (!isOwnerDevice) {
                     gotoEditActivity(Constants.E_DEVICE_LIST,
-                            Constants.E_ITEMS_category, "", "", "", "机型");
+                            Constants.E_ITEMS_category, "", "", "", "机型", tvType.getText().toString());
                 } else {
                     Constants.MyToast("已安装云盒子机器信息不可修改");
                 }
@@ -708,7 +676,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 // Intent(NewRepairActivity.this,MachineBrandActivity.class);
                 if (!isOwnerDevice) {
                     gotoEditActivity(Constants.E_DEVICE_LIST, Constants.E_ITEMS_brand,
-                            PK_PROD_DEF, "", "", "品牌");
+                            PK_PROD_DEF, "", "", "品牌", tvBrand.getText().toString());
                 } else {
                     Constants.MyToast("已安装云盒子机器信息不可修改");
                 }
@@ -720,11 +688,10 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 if (!isOwnerDevice) {
                     if (!TextUtils.isEmpty(PK_PROD_DEF) && !TextUtils.isEmpty(PK_BRAND)) {
                         gotoEditActivity(Constants.E_DEVICE_LIST, Constants.E_ITEMS_model,
-                                PK_PROD_DEF, PK_BRAND, "", "型号");
+                                PK_PROD_DEF, PK_BRAND, "", "型号", tvModel.getText().toString());
                     } else {
                         //Constants.ToastAction("请先选择产品和品牌");
                         Toast.makeText(mContext, "请先选择产品和品牌", Toast.LENGTH_LONG).show();
-                        Constants.MyLog("请先选择产品和品牌");
                     }
 
                 } else {
@@ -743,7 +710,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
     // v1用来传nc类型id，v2用来传nc品牌id，v4用来传类型id
     private void gotoEditActivity(int editType, int itemType, String v1,
-                                  String v2, String v3, String titleName) {
+                                  String v2, String v3, String titleName, String itemName) {
 
         Bundle bundle = new Bundle();
         bundle.putString(Constants.P_TITLETEXT, titleName);
@@ -752,11 +719,11 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         bundle.putInt(Constants.P_ITEMTYPE, itemType);
         bundle.putString(Constants.P_EDIT_LIST_VALUE1, v1);
         bundle.putString(Constants.P_EDIT_LIST_VALUE2, v2);
+        bundle.putString(Constants.P_EDIT_LIST_ITEM_NAME, itemName);
         Constants.toActivityForR(this, EditLayoutActivity.class, bundle, 0);
     }
 
     @Override
     public void returnUploadPhoto(String url) {
-        Constants.MyLog("打印的图片链接为" + url);
     }
 }

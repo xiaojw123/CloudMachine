@@ -1,10 +1,5 @@
 package com.cloudmachine.adapter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -16,9 +11,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.utils.AutoUtils;
+import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
-import com.cloudmachine.struc.McDeviceInfo;
+import com.cloudmachine.bean.McDeviceInfo;
+import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.utils.Constants;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -27,9 +23,13 @@ import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 public class OwnDeviceAdapter extends BaseAdapter{
 	
-	private ArrayList<McDeviceInfo> dataResult;
+	private List<McDeviceInfo> dataResult;
 	private Context context;
 	private LayoutInflater layoutInflater;
 	private Handler handler;
@@ -40,7 +40,7 @@ public class OwnDeviceAdapter extends BaseAdapter{
 	final private ImageLoader imageLoader = ImageLoader.getInstance();
 
 	public OwnDeviceAdapter(Context context, Handler myHandler,
-			ArrayList<McDeviceInfo> dataResult) {
+			List<McDeviceInfo> dataResult) {
 		this.context = context;
 		this.dataResult = dataResult;
 		this.layoutInflater = LayoutInflater.from(context);
@@ -75,44 +75,37 @@ public class OwnDeviceAdapter extends BaseAdapter{
 		if (convertView == null) {
 			convertView = layoutInflater.inflate(R.layout.item_main_list, null);
 			viewHolder = new ViewHolder();
-			viewHolder.line_bottom = (ImageView) convertView
-					.findViewById(R.id.line_bottom);
 			viewHolder.name_text = (TextView) convertView
 					.findViewById(R.id.name_text);
-			viewHolder.arrow_r_text = (TextView) convertView
-					.findViewById(R.id.arrow_r_text);
-			viewHolder.iv_icon = (ImageView) convertView
-					.findViewById(R.id.icon);
 			viewHolder.mac_address = (TextView) convertView
 					.findViewById(R.id.mac_address);
+			viewHolder.selImg= (ImageView) convertView.findViewById(R.id.md_sel_img);
 			convertView.setTag(viewHolder);
 			AutoUtils.autoSize(convertView);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		viewHolder.name_text.setText(dataResult.get(position).getName());
-		if (dataResult.get(position).getWorkStatus() == 0) {
-			viewHolder.arrow_r_text.setText("");
-		} else {
-			viewHolder.arrow_r_text.setText("工作中");
+		McDeviceInfo info=dataResult.get(position);
+		if (info.isSelected()){
+			viewHolder.selImg.setVisibility(View.VISIBLE);
+		}else{
+			viewHolder.selImg.setVisibility(View.GONE);
 		}
+		viewHolder.name_text.setText(info.getName());
 		// viewHolder.line_bottom.setVisibility(View.VISIBLE);
 		// viewHolder.line_bottom2.setVisibility(View.GONE);
 		// convertView.setOnClickListener(new myClickListener(position));
-		viewHolder.mac_address.setText("");
-		if (null != dataResult.get(position).getLocation()) {										//先判断location是否为空，在判断position是否为空
-			String address = dataResult.get(position).getLocation()
+		McDeviceLocation loc=info.getLocation();
+		if (null != loc) {										//先判断location是否为空，在判断position是否为空
+			String address = loc
 					.getPosition();
 			if (address != null) {
-				viewHolder.mac_address.setText(dataResult.get(position)
-						.getLocation().getPosition());
+				viewHolder.mac_address.setText(address);
 			}
 		}
 		ListView listView = (ListView) parent;
 		listView.setOnScrollListener(new PauseOnScrollListener(imageLoader,
 				false, true));
-		imageLoader.displayImage(dataResult.get(position).getImage(),
-				viewHolder.iv_icon, options, animateFirstListener);
 		return convertView;
 	}
 
@@ -131,11 +124,9 @@ public class OwnDeviceAdapter extends BaseAdapter{
 	 */
 
 	static class ViewHolder {
-		ImageView line_bottom;
-		ImageView iv_icon;
 		TextView name_text;
-		TextView arrow_r_text;
 		TextView mac_address;
+		ImageView selImg;
 	}
 
 	/**

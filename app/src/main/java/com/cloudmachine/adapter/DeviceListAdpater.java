@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.holder.DeviceHoler;
-import com.cloudmachine.struc.McDeviceInfo;
+import com.cloudmachine.bean.McDeviceInfo;
 
 import java.util.List;
 

@@ -1,61 +1,71 @@
 package com.cloudmachine.ui.repair.activity;
 
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.activities.WebviewActivity;
-import com.cloudmachine.api.ApiConstants;
+import com.cloudmachine.activities.EvaluationActivity;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.struc.BOInfo;
-import com.cloudmachine.struc.CWInfo;
-import com.cloudmachine.struc.WorkDetailBean;
-import com.cloudmachine.struc.WorkSettleBean;
-import com.cloudmachine.struc.WorkcollarListBean;
+import com.cloudmachine.bean.BOInfo;
+import com.cloudmachine.bean.CWInfo;
+import com.cloudmachine.bean.WorkSettleBean;
+import com.cloudmachine.ui.home.activity.ConsumptionActivity;
+import com.cloudmachine.ui.home.activity.PayDeviceInfoActivity;
 import com.cloudmachine.ui.repair.contract.RepairFinishContract;
 import com.cloudmachine.ui.repair.model.RepairFinishModel;
 import com.cloudmachine.ui.repair.presenter.RepairFinishPresenter;
-import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
-
-import java.util.ArrayList;
+import com.cloudmachine.widget.CommonTitleView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFinishPresenter, RepairFinishModel> implements RepairFinishContract.View, View.OnClickListener {
+
+    @BindView(R.id.finish_deviceinfo_fl)
+    FrameLayout finishDeviceinfoFl;
+    @BindView(R.id.finish_consumption_tv)
+    TextView finishConsumptionTv;
+    @BindView(R.id.finish_coupon_tv)
+    TextView finishCouponTv;
+    @BindView(R.id.finish_workhours_tv)
+    TextView finishWorkhoursTv;
+    CWInfo mBoInfo;
+    @BindView(R.id.finish_consumption_fl)
+    FrameLayout finishConsumptionFl;
+    @BindView(R.id.finish_titleview)
+    CommonTitleView finishCtv;
+    @BindView(R.id.finish_deviceinfo_amount)
+    TextView amountTv;
+    @BindView(R.id.part_discount_layout)
+    RelativeLayout partlayout;
+    @BindView(R.id.part_discount_amout)
+    TextView partAmoutTv;
+    @BindView(R.id.worktime_discount_layout)
+    RelativeLayout workTimeLayout;
+    @BindView(R.id.worktime_discount_amout)
+    TextView worktimeAmoutTv;
+    @BindView(R.id.ticket_discount_layout)
+    RelativeLayout tickeLayout;
+    @BindView(R.id.ticket_discount_amout)
+    TextView ticketAmoutTv;
+
+
     String orderNum;
-    @BindView(R.id.order_detail_item_container1)
-    LinearLayout orderDetailItemContainer1;
-    @BindView(R.id.order_detail_item_container2)
-    LinearLayout orderDetailItemContainer2;
-    @BindView(R.id.order_detail_item_container3)
-    LinearLayout orderDetailItemContainer3;
-    @BindView(R.id.order_detail_item_container2_title)
-    TextView itemContainer2titleTv;
-    int common_text_size=16;
-    int common_padding=25;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reparir_finsih_detail);
         ButterKnife.bind(this);
-        String orderNum = getIntent().getStringExtra("orderNum");
+        orderNum = getIntent().getStringExtra("orderNum");
         String flag = getIntent().getStringExtra("flag");
+        finishCtv.setRightClickListener(this);
         mPresenter.updateRepairFinishDetail(orderNum, flag);
     }
 
@@ -66,138 +76,70 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
 
     @Override
     public void returnDetailView(BOInfo boInfo) {
+
     }
 
     @Override
     public void returnDetailView(CWInfo boInfo) {
-        WorkDetailBean workDetail = boInfo.getWorkDetail();
-        WorkSettleBean workSettle = boInfo.getWorkSettle();
-        orderDetailItemContainer1.addView(getItemContainer1("机械品牌", workDetail.getVbrandname()));
-        orderDetailItemContainer1.addView(getItemContainer1("机械型号", workDetail.getVmaterialname()));
-        ArrayList<WorkcollarListBean> workcollars = boInfo.getWorkcollarList();
-        if (workcollars != null && workcollars.size() > 0) {
-            itemContainer2titleTv.setVisibility(View.VISIBLE);
-            orderDetailItemContainer2.setVisibility(View.VISIBLE);
-            for (WorkcollarListBean collarDetail : workcollars) {
-                double qty = getDoubleFromString(collarDetail.getUse_QTY());
-                String price = CommonUtils.formartPrice(String.valueOf(getDoubleFromString(collarDetail.getUnit_PRICE()) * qty));
-                orderDetailItemContainer2.addView(getItemContainer2(collarDetail.getPart_NAME() + "x" + qty, "¥ " + price));
+        mBoInfo = boInfo;
+        WorkSettleBean settleBean = boInfo.getWorkSettle();
+        finishConsumptionTv.setText(settleBean.getNpartstotalamount());
+        finishCouponTv.setText("-¥" + settleBean.getDsicountamount());
+        finishWorkhoursTv.setText("¥" + settleBean.getNrepairworkhourcost());
+        amountTv.setText("实付:¥ " + settleBean.getNpaidinamount());
+        String ndiscounttotalamount = settleBean.getNdiscounttotalamount();
+        if (!TextUtils.isEmpty(ndiscounttotalamount)) {
+            double a1 = Double.parseDouble(ndiscounttotalamount);
+            if (a1 > 0) {
+                partlayout.setVisibility(View.VISIBLE);
+                partAmoutTv.setText("-¥" + ndiscounttotalamount);
             }
         }
-        orderDetailItemContainer3.addView(getItemContainer1("耗件总费用", "¥ " + CommonUtils.formartPrice(workSettle.getNpartstotalamount())));
-        orderDetailItemContainer3.addView(getItemContainer1("工时费用", "¥ " + CommonUtils.formartPrice(workSettle.getNrepairworkhourcost())));
-        orderDetailItemContainer3.addView(getItemContainer1("耗件折扣", "¥ " + CommonUtils.formartPrice(workSettle.getNdiscounttotalamount())));
-        orderDetailItemContainer3.addView(getItemContainer3("优惠券", "¥ " + CommonUtils.formartPrice(workSettle.getNmaxamount()),tintDrawable(getResources().getDrawable(R.drawable.coupon_description_selector),ColorStateList.valueOf(getResources().getColor(R.color.public_blue_bg)))));
-        orderDetailItemContainer3.addView(getItemContainer1("合计", "¥ " + CommonUtils.formartPrice(workSettle.getNreceiveamount())));
-    }
-
-    @NonNull
-    private FrameLayout getItemContainer2(String key, String value) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        FrameLayout cotainer = new FrameLayout(this);
-        cotainer.setLayoutParams(params);
-        FrameLayout.LayoutParams titleParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        titleParams.gravity = Gravity.CENTER_VERTICAL;
-        TextView title_tv = new TextView(this);
-        title_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, common_text_size);
-        title_tv.setTextColor(getResources().getColor(R.color.c_5));
-        title_tv.setLayoutParams(titleParams);
-        title_tv.setText(key);
-        FrameLayout.LayoutParams valueParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        valueParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
-        TextView value_tv = new TextView(this);
-        value_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, common_text_size);
-        value_tv.setTextColor(getResources().getColor(R.color.c_5));
-        value_tv.setLayoutParams(valueParams);
-        value_tv.setText(value);
-        cotainer.setPadding(0,common_padding,0,common_padding);
-        cotainer.addView(title_tv);
-        cotainer.addView(value_tv);
-        return cotainer;
-    }
-
-    private double getDoubleFromString(String value) {
-        double intVaue = 0;
-        if (!TextUtils.isEmpty(value)) {
-            intVaue = Double.parseDouble(value);
+        String hourCost = settleBean.getNdiscountworkhourcost();
+        if (!TextUtils.isEmpty(hourCost)) {
+            double a2 = Double.parseDouble(hourCost);
+            if (a2 > 0) {
+                workTimeLayout.setVisibility(View.VISIBLE);
+                worktimeAmoutTv.setText("-¥" + hourCost);
+            }
         }
-        return intVaue;
+        String nmaxamount = settleBean.getNmaxamount();
+        if (!TextUtils.isEmpty(nmaxamount)) {
+            double a3 = Double.parseDouble(nmaxamount);
+            if (a3 > 0) {
+                tickeLayout.setVisibility(View.VISIBLE);
+                ticketAmoutTv.setText("¥" + nmaxamount);
+            }
+        }
+
+
     }
 
 
-    @NonNull
-    private FrameLayout getItemContainer1(String key, String value) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        FrameLayout cotainer = new FrameLayout(this);
-        cotainer.setLayoutParams(params);
-        FrameLayout.LayoutParams titleParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        titleParams.gravity = Gravity.CENTER_VERTICAL;
-        TextView title_tv = new TextView(this);
-        title_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, common_text_size);
-        title_tv.setTextColor(getResources().getColor(R.color.black));
-        title_tv.setLayoutParams(titleParams);
-        title_tv.setText(key);
-        FrameLayout.LayoutParams valueParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        valueParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
-        TextView value_tv = new TextView(this);
-        value_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, common_text_size);
-        value_tv.setTextColor(getResources().getColor(R.color.c_5));
-        value_tv.setLayoutParams(valueParams);
-        value_tv.setText(value);
-        cotainer.setPadding(0,common_padding,0,common_padding);
-        cotainer.addView(title_tv);
-        cotainer.addView(value_tv);
-        return cotainer;
-    }
+    @OnClick({R.id.finish_deviceinfo_fl, R.id.finish_consumption_fl})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.common_titleview_right_tv:
+                Bundle bundle0 = new Bundle();
+                bundle0.putInt(EvaluationActivity.ACTION_TYPE, 1);
+                bundle0.putString("orderNum", orderNum);
+                Constants.toActivity(this, EvaluationActivity.class, bundle0);
+                break;
+            case R.id.finish_deviceinfo_fl:
+                if (mBoInfo != null) {
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putSerializable(Constants.WORK_DETAIL, mBoInfo.getWorkDetail());
+                    bundle1.putStringArrayList(Constants.LOGO_LIST, mBoInfo.getLogoList());
+                    Constants.toActivity(this, PayDeviceInfoActivity.class, bundle1);
+                }
+                break;
+            case R.id.finish_consumption_fl:
+                Bundle bundle2 = new Bundle();
+                bundle2.putSerializable(Constants.CWINFO, mBoInfo);
+                Constants.toActivity(this, ConsumptionActivity.class, bundle2);
+                break;
 
-    @NonNull
-    private FrameLayout getItemContainer3(String key, String value,Drawable drawable) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        FrameLayout cotainer = new FrameLayout(this);
-        cotainer.setLayoutParams(params);
-        FrameLayout.LayoutParams titleParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        titleParams.gravity = Gravity.CENTER_VERTICAL;
-        TextView title_tv = new TextView(this);
-        title_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, common_text_size);
-        title_tv.setTextColor(getResources().getColor(R.color.black));
-        title_tv.setLayoutParams(titleParams);
-        title_tv.setText(key);
-        FrameLayout.LayoutParams valueParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        valueParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
-        TextView value_tv = new TextView(this);
-        value_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, common_text_size);
-        value_tv.setTextColor(getResources().getColor(R.color.c_5));
-        value_tv.setLayoutParams(valueParams);
-        value_tv.setText(value);
-        cotainer.setPadding(0,common_padding,0,common_padding);
-        cotainer.addView(title_tv);
-        ImageView img=new ImageView(this);
-        FrameLayout.LayoutParams imgParams=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        imgParams.gravity=Gravity.CENTER_VERTICAL;
-        imgParams.leftMargin=180;
-        img.setLayoutParams(imgParams);
-        img.setImageDrawable(drawable);
-        img.setOnClickListener(this);
-        cotainer.addView(img);
-        cotainer.addView(value_tv);
-        return cotainer;
-    }
+        }
 
-    @Override
-    public void onClick(View v) {
-        Intent intent = new Intent(mContext, WebviewActivity.class);
-        intent.putExtra(Constants.P_WebView_Title,"说明");
-        intent.putExtra(Constants.P_WebView_Url, ApiConstants.H5_HOST+"n/coupon_description");
-        startActivity(intent);
     }
-
-    //改变drwable颜色
-    public static Drawable tintDrawable(Drawable drawable, ColorStateList colors) {
-        Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTintList(wrappedDrawable, colors);
-        return wrappedDrawable;
-    }
-
 }

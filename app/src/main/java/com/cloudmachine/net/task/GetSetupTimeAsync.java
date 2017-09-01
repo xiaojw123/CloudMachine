@@ -7,8 +7,8 @@ import android.os.Message;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.BaseBO;
-import com.cloudmachine.struc.SetUpTimeInfo;
+import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.SetUpTimeInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.google.gson.Gson;
@@ -75,20 +75,16 @@ public class GetSetupTimeAsync extends ATask {
         super.decodeJson(result);
         Message msg = Message.obtain();
         if (isSuccess) {
-            Constants.MyLog("chenggong");
             try {
                 Gson gson = new Gson();
                 BaseBO<List<SetUpTimeInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<SetUpTimeInfo>>>(){}.getType());
                 msg.what = Constants.HANDLER_GETSETUPTIME_SUCCESS;
                 msg.obj = baseBO.getResult();
                 handler.sendMessage(msg);
-                Constants.MyLog("获取优惠券数据成功");
                 return;
             } catch (Exception e) {
-                Constants.MyLog(e.toString());
             }
         } else {
-            Constants.MyLog("11111111");
         }
         //缓存数据第4步
         if(!isHaveCache){

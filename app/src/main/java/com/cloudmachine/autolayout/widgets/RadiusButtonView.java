@@ -11,9 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.AutoRelativeLayout;
-import com.cloudm.autolayout.utils.AutoUtils;
+import com.cloudmachine.autolayout.AutoRelativeLayout;
+import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
+import com.cloudmachine.chart.utils.AppLog;
 
 
 public class RadiusButtonView extends AutoRelativeLayout {
@@ -82,7 +83,9 @@ public class RadiusButtonView extends AutoRelativeLayout {
     	//TypedValue.COMPLEX_UNIT_SP 
     	//TypedValue.COMPLEX_UNIT_DIP
 //    	AutoUtils.autoTextSize(radius_button_text, (int)sizef);
-    	radius_button_text.setTextSize(TypedValue.COMPLEX_UNIT_PX,AutoUtils.getPercentHeightSizeBigger((int)sizef));
+        AppLog.print("setTextSize sizef____"+sizef);
+    	radius_button_text.setTextSize(TypedValue.COMPLEX_UNIT_PX,sizef);
+//    	radius_button_text.setTextSize(TypedValue.COMPLEX_UNIT_PX,AutoUtils.getPercentHeightSizeBigger((int)sizef));
     }
     public void setColor(int strokeColor, int fillColor_nm, int fillColor_dw){
     	this.strokeColor = strokeColor;

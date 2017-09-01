@@ -1,9 +1,8 @@
 package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.recyclerbean.HomeBannerBean;
+import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.ui.home.contract.ActivitesContract;
-import com.cloudmachine.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -17,7 +16,6 @@ public class ActivitiesPresenter extends ActivitesContract.Presenter {
         mRxManage.add(mModel.getHomeBannerInfo().subscribe(new RxSubscriber<ArrayList<HomeBannerBean>>(mContext,false) {
             @Override
             protected void _onNext(ArrayList<HomeBannerBean> homeBannerBeen) {
-                Constants.MyLog(homeBannerBeen.toString());
                 mView.returnHomeBannerInfo(homeBannerBeen);
             }
 

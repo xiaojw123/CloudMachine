@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,11 +20,10 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.cloudmachine.R;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.utils.ToastUtils;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.chart.utils.AppLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,8 +47,6 @@ import rx.schedulers.Schedulers;
 public class MyQRCodeActivity extends BaseAutoLayoutActivity {
     private static int PERIOD = 1000;
     private static int MSG_TIMER = 0x10;
-    @BindView(R.id.title_layout)
-    TitleView mTitleLayout;
     @BindView(R.id.iv_qrcode)
     ImageView mIvQrcode;
     @BindView(R.id.leftime_tv)
@@ -201,7 +197,6 @@ public class MyQRCodeActivity extends BaseAutoLayoutActivity {
 
     private void initView() {
 
-        initTitleLayout();
 
 //        Location location= LocationUtils.getInstance(this).showLocation();
 //        String address = "纬度："+location.getLatitude()+"经度："+location.getLongitude();
@@ -248,16 +243,6 @@ public class MyQRCodeActivity extends BaseAutoLayoutActivity {
 
     }
 
-    private void initTitleLayout() {
-
-        mTitleLayout.setTitle("我的二维码");
-        mTitleLayout.setLeftImage(-1, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
 
     @Override
     public void initPresenter() {

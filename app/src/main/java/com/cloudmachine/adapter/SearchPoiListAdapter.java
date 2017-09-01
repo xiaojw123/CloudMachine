@@ -1,33 +1,26 @@
 package com.cloudmachine.adapter;
 
-import java.util.List;
-
 import android.content.Context;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
-import com.cloudmachine.struc.ResidentAddressInfo;
+import com.cloudmachine.autolayout.utils.AutoUtils;
+import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.utils.Constants;
+
+import java.util.List;
 
 
 public class SearchPoiListAdapter extends BaseAdapter {
 	private List<ResidentAddressInfo> dataResult;
-	private Context context;
 	private LayoutInflater layoutInflater;
-	private Handler handler;
-	public SearchPoiListAdapter(List<ResidentAddressInfo> dataResult,Context context,
-			Handler myHandler) {
-		this.context = context;
+	public SearchPoiListAdapter(List<ResidentAddressInfo> dataResult,Context context) {
 		this.dataResult = dataResult;
 		this.layoutInflater = LayoutInflater.from(context);
-		handler = myHandler;
 	}
 
 	@Override
@@ -51,7 +44,7 @@ public class SearchPoiListAdapter extends BaseAdapter {
 	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder viewHolder = null;
+		ViewHolder viewHolder;
 		if (convertView == null) {
 			convertView = layoutInflater.inflate(R.layout.list_item_search_poi,
 					null);
@@ -72,7 +65,6 @@ public class SearchPoiListAdapter extends BaseAdapter {
 	}
 
 	static class ViewHolder {
-		ImageView image_view;
 		TextView text1_view;
 		TextView text2_view;
 	}

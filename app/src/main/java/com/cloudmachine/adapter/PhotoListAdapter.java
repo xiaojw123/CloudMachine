@@ -46,6 +46,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
                 @Override
                 public void onClick(View v) {
                     Intent intent=new Intent(mContext, BigPicActivity.class);
+                    intent.putExtra(BigPicActivity.POSITION,position);
                     intent.putStringArrayListExtra(BigPicActivity.BIG_PIC_URLS,mItems);
                     mContext.startActivity(intent);
                 }

@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <com.cloudmachine.autolayout.widgets.TitleView
+    <com.cloudmachine.widget.CommonTitleView
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </com.cloudmachine.autolayout.widgets.TitleView>
+        android:layout_height="wrap_content"
+        app:common_title_name="卡券"
+        />
 
     <LinearLayout
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/main_bar_height"
-        android:background="@drawable/view_bottom_tab"
+        android:layout_height="@dimen/spa5"
+        android:background="@color/public_bg"
         android:orientation="horizontal"
+        android:layout_marginTop="-4dp"
         >
 
         <RelativeLayout
@@ -34,8 +36,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="@dimen/main_bar_image_padding"
                 android:text="可用"
-                android:textColor="#29a1f7"
-                android:textSize="16sp"
+                android:textColor="@color/cor8"
+                android:textSize="@dimen/siz3"
                 />
         </RelativeLayout>
 
@@ -53,8 +55,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="@dimen/main_bar_image_padding"
                 android:text="不可用"
-                android:textColor="#29a1f7"
-                android:textSize="16sp"
+                android:textColor="@color/cor10"
+                android:textSize="@dimen/siz3"
                 />
         </RelativeLayout>
 

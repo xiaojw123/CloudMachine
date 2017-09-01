@@ -1,7 +1,7 @@
 package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.struc.McDeviceBasicsInfo;
+import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.ui.home.contract.DeviceDetailContract;
 
 /**

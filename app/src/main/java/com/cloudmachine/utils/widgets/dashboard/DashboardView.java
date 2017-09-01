@@ -14,10 +14,9 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Interpolator;
 
-import java.util.List;
-
 import com.cloudmachine.R;
-import com.cloudmachine.utils.Constants;
+
+import java.util.List;
 
 /**
  * 仪表盘View
@@ -777,7 +776,6 @@ public class DashboardView extends View {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
 //            	valueAnimator.getAnimatedValue()
-            	Constants.MyLog(""+valueAnimator.getAnimatedValue());
             	mRealTimeValue = Float.valueOf(valueAnimator.getAnimatedValue().toString());
 //                currentValue = (float) (valueAnimator.getAnimatedValue().toString());
             	init();

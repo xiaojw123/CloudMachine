@@ -1,14 +1,13 @@
 package com.cloudmachine.utils.mpchart;
 
-import java.util.TimerTask;
-
 import android.os.Handler;
 import android.os.Message;
 
-import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.highlight.Highlight;
+import com.cloudmachine.chart.charts.LineChart;
+import com.cloudmachine.chart.data.Entry;
+import com.cloudmachine.chart.highlight.Highlight;
+
+import java.util.TimerTask;
 
 public class DrawTimerTask extends TimerTask{
 	LineChart chart;

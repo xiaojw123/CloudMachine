@@ -10,25 +10,25 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
-import com.cloudmachine.app.MyApplication;
+import com.cloudmachine.MyApplication;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.net.task.GetAccessTokenAsync;
 import com.cloudmachine.net.task.GetUserMsgAsync;
-import com.cloudmachine.struc.Member;
-import com.cloudmachine.struc.UserInfo;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.login.acticity.VerifyPhoneNumActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.WeChatShareUtil;
-import com.github.mikephil.charting.utils.AppLog;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -45,6 +45,7 @@ import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
+
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Handler.Callback {
 
@@ -120,7 +121,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
         }
         if (result != null) {
             Toast.makeText(this, baseResp.errCode, Toast.LENGTH_SHORT).show();
-            Constants.MyLog("微信分享返回码" + baseResp.errCode);
         }
     }
 
@@ -203,7 +203,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
                                 Gson gson = new Gson();
                                 member = gson.fromJson(result, Member.class);
                             } catch (Exception e) {
-                                Constants.MyLog("WXEntryActivity" + e.toString());
                             }
                             if (member != null) {
                                 excamMaster(member.getId());
@@ -275,7 +274,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Han
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Constants.MyLog("执行了");
         Constants.toActivity(WXEntryActivity.this, HomeActivity.class, null, true);
     }
     private void loginComplete() {

@@ -1,7 +1,7 @@
 package com.cloudmachine.ui.homepage.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.struc.MessageBO;
+import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.ui.homepage.contract.SystemMessageContract;
 
 import java.util.List;

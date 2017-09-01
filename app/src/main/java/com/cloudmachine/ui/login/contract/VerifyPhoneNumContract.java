@@ -4,8 +4,8 @@ import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
 import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.recyclerbean.CheckNumBean;
-import com.cloudmachine.struc.Member;
+import com.cloudmachine.bean.CheckNumBean;
+import com.cloudmachine.bean.Member;
 
 import rx.Observable;
 

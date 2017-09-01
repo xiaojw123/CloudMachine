@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+    <View
+        android:id="@+id/pop_device_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pop_bg_color"
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/pop_alert_view"
+        android:layout_width="@dimen/alert_window_width"
+        android:layout_height="@dimen/alert_window_height"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_alert_window">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen_size_20"
+            android:text="客服热线"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/siz5" />
+
+        <TextView
+            android:id="@+id/phone_box_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_41"
+            android:layout_marginTop="@dimen/dimen_size_56"
+            android:drawablePadding="@dimen/dimen_size_10"
+            android:drawableTop="@drawable/ic_box"
+            android:gravity="center_horizontal"
+            android:text="@string/cloud_box"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/siz6" />
+
+
+        <TextView
+            android:id="@+id/phone_repair_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/phone_box_tv"
+            android:layout_marginRight="@dimen/dimen_size_41"
+            android:drawablePadding="@dimen/dimen_size_10"
+            android:drawableTop="@drawable/ic_repair"
+            android:gravity="center_horizontal"
+            android:text="@string/repair"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/siz6" />
+
+
+        <View
+            android:id="@+id/phone_d_line"
+            style="@style/CommonLandscapeLine"
+            android:layout_marginTop="@dimen/dimen_size_20"
+            android:layout_below="@+id/phone_box_tv"
+            />
+        <TextView
+            android:id="@+id/phone_cancel_tv"
+            android:layout_below="@+id/phone_d_line"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/cancel"
+            android:textSize="@dimen/siz5"
+            android:textColor="@color/black"
+            android:gravity="center"
+            />
+
+
+    </RelativeLayout>
+
+
+</FrameLayout>

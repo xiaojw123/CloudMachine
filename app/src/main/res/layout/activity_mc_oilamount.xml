@@ -3,109 +3,107 @@
     xmlns:cloudm="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mc_main_bg"
+    android:background="@color/public_bg"
     android:orientation="vertical" >
 	<com.cloudmachine.widget.CommonTitleView
 		android:id="@+id/title_layout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		cloudm:common_title_name="油位"
+		cloudm:common_title_name="当前油位"
 		/>
-    
-    <TextView 
-        style="@style/TextView.line"
-        android:layout_marginTop="@dimen/common_view_gap"
-        />
-    <RelativeLayout 
-        android:layout_width="match_parent"
-	    android:layout_height="@dimen/oilamount_oil_m_height"
-        android:background="@color/white"
-        android:paddingLeft="@dimen/common_left_gap"
-        android:paddingRight="@dimen/common_left_gap"
-        android:gravity="center_vertical"
-        >
-            <!-- <com.cloudmachine.utils.widgets.ArcView2
+
+	<LinearLayout
+		android:visibility="gone"
+		android:id="@+id/oil_form_container"
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/dimen_size_90"
+		android:layout_marginTop="@dimen/dimen_size_6"
+		android:background="@color/white"
+		android:gravity="center_vertical"
+		android:paddingLeft="@dimen/pad2"
+        android:paddingRight="@dimen/pad2">
+		<!-- <com.cloudmachine.utils.widgets.ArcView2
                         android:id="@+id/arcView"
                         android:layout_width="wrap_content"
-		   				android:layout_height="wrap_content"
-		   				android:background="@color/white"
-		   				android:layout_alignParentRight="true"
-		   				android:layout_centerVertical="true"
+                           android:layout_height="wrap_content"
+                           android:background="@color/white"
+                           android:layout_alignParentRight="true"
+                           android:layout_centerVertical="true"
                         /> -->
-            <com.cloudmachine.autolayout.widgets.DynamicWave 
-                            android:id="@+id/arcView"
-                            android:layout_width="@dimen/oil_level_size"
-                            android:layout_height="@dimen/oil_level_size"
-                            android:layout_alignParentRight="true"
-		   					android:layout_centerVertical="true"
-                            android:padding="@dimen/public_line_wh"
-                            />
-        
-        <RelativeLayout 
-            android:layout_width="match_parent"
-			android:layout_height="@dimen/oilamount_oil_big_radius"
+		<com.cloudmachine.autolayout.widgets.DynamicWave
+			android:id="@+id/arcView"
+			android:layout_width="@dimen/dimen_size_49"
+			android:layout_height="@dimen/dimen_size_49"
+			android:layout_alignParentRight="true"
 			android:layout_centerVertical="true"
-			android:layout_toLeftOf="@id/arcView"
-            >
-            <TextView 
-                style="@style/TextView.oilamount_big_text"
-  				android:layout_alignParentTop="true"
-  				android:text="当前油位"
-                />
-            <LinearLayout 
-                android:layout_width="wrap_content"
-  				android:layout_height="wrap_content"
-  				android:layout_alignParentBottom="true"
-                >
-                <TextView 
-                    style="@style/TextView.oilamount_small_text"
-  					android:text="剩余"
-                    />
-                <TextView 
-                    android:id="@+id/oil_proportion"
-                    style="@style/TextView.oilamount_proportion_text"
-  					android:textColor="@color/oil_amount_proportion_text"
-                    />
-            </LinearLayout>
-        </RelativeLayout>
-    </RelativeLayout>
-    <TextView 
-        style="@style/TextView.line"
-        />
-    <TextView 
-        style="@style/TextView.line"
-        android:layout_marginTop="@dimen/common_top_gap"
-        />
-       <RelativeLayout 
+			android:padding="@dimen/public_line_wh" />
+
+		<LinearLayout
+			android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/arcView"
+            android:orientation="vertical">
+
+			<TextView
+				style="@style/TextView.oilamount_big_text"
+				android:layout_alignParentTop="true"
+				android:text="当前油位" />
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_10">
+
+				<TextView
+					style="@style/TextView.oilamount_small_text"
+					android:text="剩余" />
+
+				<TextView
+					android:id="@+id/oil_proportion"
+					style="@style/TextView.oilamount_proportion_text"
+					android:textColor="@color/c_4db6e9" />
+			</LinearLayout>
+		</LinearLayout>
+	</RelativeLayout>
+
+	<RelativeLayout
            android:layout_width="match_parent"
 		   android:layout_height="match_parent"
 		   android:orientation="vertical"
+		   android:layout_marginTop="@dimen/spa7"
 		   android:background="@color/white"
            >
         <LinearLayout 
             android:id="@+id/chart_title_layout"
             android:layout_width="match_parent"
-		   android:layout_height="@dimen/mc_search_listitem_h"
+		   android:layout_height="@dimen/dimen_size_82"
 		   android:orientation="vertical"
             >
             <TextView 
             style="@style/TextView.oilamount_big_text"
   				android:text="油位剩余百分比分布"
   				android:gravity="center"
-  				android:layout_width="match_parent"
-  				android:layout_height="match_parent"
-  				android:layout_weight="1"
-  				android:layout_gravity="center"
+  				android:layout_width="wrap_content"
+  				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:layout_marginTop="@dimen/dimen_size_25"
+				android:layout_marginBottom="@dimen/dimen_size_15"
             />
             <TextView 
                 style="@style/TextView.oilamount_small_text"
                 android:text="单位：%"
-  				android:layout_height="match_parent"
-  				android:layout_weight="2"
-  				android:layout_marginLeft="@dimen/common_left_gap"
+  				android:layout_marginLeft="@dimen/pad2"
                 />
         </LinearLayout>
-        <LinearLayout 
+			<LinearLayout
             android:id="@+id/chart_bottom_layout"
             android:layout_width="match_parent"
 		   android:layout_height="@dimen/common_title_left_layout"
@@ -149,9 +147,11 @@
 		   		android:background="@color/white"
 		   		android:layout_above="@id/chart_bottom_layout"
 		   		android:layout_below="@id/chart_title_layout"
+				android:paddingLeft="@dimen/pad2"
+				android:paddingRight="@dimen/pad2"
                 >
                         
-                    <com.github.mikephil.charting.charts.LineChart
+                    <com.cloudmachine.chart.charts.LineChart
         				android:id="@+id/linechart"
         				android:layout_width="match_parent"
         				android:layout_height="match_parent"
@@ -161,11 +161,25 @@
         				android:layout_width="match_parent"
         				android:layout_height="match_parent"
                         >
-                        
+
                     </RelativeLayout>
                 
             </FrameLayout>
             
        </RelativeLayout>
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/oil_empty_tv"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="暂无油位数据"
+		android:drawableTop="@drawable/ic_oil_empty"
+		android:layout_gravity="center_horizontal"
+		android:drawablePadding="@dimen/pad1"
+		android:textColor="@color/cor10"
+		android:layout_marginTop="@dimen/dimen_size_120"
+		android:visibility="gone"
+		/>
 	
 </LinearLayout>

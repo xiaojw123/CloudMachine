@@ -1,7 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--common map-->
+    <com.amap.api.maps.TextureMapView
+        android:id="@+id/home_mapview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/device_menu_tv"
+        android:layout_width="@dimen/dimen_size_44"
+        android:layout_height="@dimen/dimen_size_44"
+        android:background="@drawable/bg_card_col14"
+        android:drawableTop="@drawable/ic_menu"
+        android:text="@string/all"
+        android:layout_alignRight="@+id/device_ques_ans_tv"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:textSize="@dimen/siz8"
+        android:gravity="center_horizontal"
+        android:textColor="@color/cor9"
+        android:paddingTop="@dimen/dimen_size_5"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/device_ques_ans_tv"
+        android:layout_width="@dimen/dimen_size_44"
+        android:layout_height="@dimen/dimen_size_44"
+        android:drawableTop="@drawable/ic_ques_ask"
+        android:text="@string/ques_ask"
+        android:background="@drawable/bg_card_col14"
+        android:gravity="center_horizontal"
+        android:layout_alignRight="@+id/device_vp"
+        android:layout_alignBottom="@+id/device_flush_imgBtn"
+        android:textSize="@dimen/siz8"
+        android:textColor="@color/cor9"
+        android:paddingTop="@dimen/dimen_size_5"
+        />
+
+
+    <ImageButton
+        android:id="@+id/device_phone_imgBtn"
+        android:layout_width="@dimen/dimen_size_32"
+        android:layout_height="@dimen/dimen_size_32"
+        android:layout_above="@+id/device_flush_imgBtn"
+        android:layout_alignLeft="@+id/device_flush_imgBtn"
+        android:src="@drawable/ic_phone"
+        android:layout_marginBottom="@dimen/dimen_size_14"
+        android:background="@drawable/bg_btn_flush"
+        />
+
+
+
+    <ImageButton
+        android:id="@+id/device_flush_imgBtn"
+        android:layout_width="@dimen/dimen_size_32"
+        android:layout_height="@dimen/dimen_size_32"
+        android:layout_above="@+id/device_vp"
+        android:layout_marginBottom="@dimen/dimen_size_19"
+        android:layout_alignLeft="@+id/device_vp"
+        android:src="@drawable/ic_flush"
+        android:background="@drawable/bg_btn_flush"
+        />
+
+
+
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/device_vp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_105"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dimen_size_8"
+        android:layout_marginLeft="@dimen/dimen_size_8"
+        android:layout_marginRight="@dimen/dimen_size_8"
+        />
+
+
+
+
+</RelativeLayout>

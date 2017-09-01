@@ -16,9 +16,8 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.cloudm.autolayout.utils.AutoUtils;
+import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
-import com.cloudmachine.utils.Constants;
 
 public class DynamicWave extends View {
 
@@ -184,8 +183,6 @@ public class DynamicWave extends View {
         // 记录下view的宽高
         mTotalWidth = w;
         mTotalHeight = h;
-        Constants.MyLog("mTotalWidth :"+mTotalWidth);
-        Constants.MyLog("mTotalHeight :"+mTotalHeight);
         // 用于保存原始波纹的y值
         mYPositions = new float[mTotalWidth];
         // 用于保存波纹一的y值

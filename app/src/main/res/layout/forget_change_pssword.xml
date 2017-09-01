@@ -8,13 +8,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/login_title_height" >
+        android:layout_height="@dimen/dimen_size_50" >
 
         <LinearLayout
             android:id="@+id/left_layout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/public_layout_padding_left"
             android:paddingRight="@dimen/public_layout_padding_left" >
@@ -30,9 +29,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="新用户注册"
+        android:text="输入手机号，快速注册"
+        android:layout_marginTop="@dimen/dimen_size_4"
         android:textColor="@color/public_black"
-        android:textSize="@dimen/register_title_text_size" />
+        android:textSize="@dimen/register_title_text_size"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -75,7 +76,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="获取验证码"
-                android:textColor="@drawable/bg_text_validate"
+                android:enabled="false"
+                android:textColor="@drawable/tvcolor_vercode"
                 android:textSize="@dimen/public_textsize1" />
         </RelativeLayout>
 
@@ -150,65 +152,21 @@
         android:layout_marginLeft="@dimen/public_layout_padding_left" />
 </LinearLayout>
     
-<LinearLayout 
-    android:id="@+id/pwd_new_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
-    <LinearLayout
-        
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/login_input_height" >
 
-        <TextView
-            style="@style/register_item_left_text"
-            android:text="新密码" />
-
-        <com.cloudmachine.utils.widgets.ClearEditTextView
-            android:id="@+id/pwd_new_string"
-            style="@style/register_clear_edit_text"
-            android:hint="请输入新密码" 
-            android:inputType="textPassword"/>
-    </LinearLayout>
-
-    <LinearLayout
-        style="@style/line_layout"
-        android:layout_marginLeft="@dimen/public_layout_padding_left" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/login_input_height" >
-
-        <TextView
-            style="@style/register_item_left_text"
-            android:text="确认密码" />
-
-        <com.cloudmachine.utils.widgets.ClearEditTextView
-            android:id="@+id/pwd_new2_string"
-            style="@style/register_clear_edit_text"
-            android:hint="请再次输入新密码" 
-            android:inputType="textPassword"/>
-    </LinearLayout>
-
-    <LinearLayout
-        style="@style/line_layout"
-        android:layout_marginLeft="@dimen/public_layout_padding_left" />
-    </LinearLayout>
-    
 
     <com.cloudmachine.autolayout.widgets.RadiusButtonView
         android:id="@+id/find_btn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/novice_guide_button_height"
+        android:layout_height="@dimen/spa3"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/public_layout_padding_left"
-        android:layout_marginRight="@dimen/public_layout_padding_left"
-        android:layout_marginTop="@dimen/public_layout_padding_left"
-        cloudm:rbtn_fillColor_dw="@color/public_b_20"
-        cloudm:rbtn_fillColor_nm="@color/public_blue_bg"
-        cloudm:rbtn_strokeColor="@color/public_blue_bg"
-        cloudm:rbtn_text="@string/login_title"
-        cloudm:rbtn_textColor="@color/public_white"
+        android:layout_marginLeft="@dimen/pad2"
+        android:layout_marginRight="@dimen/pad2"
+        android:layout_marginTop="@dimen/spa5"
+        cloudm:rbtn_fillColor_dw="@color/cor5"
+        cloudm:rbtn_fillColor_nm="@color/cor5"
+        cloudm:rbtn_strokeColor="@color/cor5"
+        cloudm:rbtn_text="@string/register"
+        cloudm:rbtn_textColor="@color/cor2015"
         cloudm:rbtn_textSize="@dimen/about_button_textsize" />
 
     <LinearLayout
@@ -230,7 +188,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/register_agreement2"
-            android:textColor="@color/public_blue_bg"
+            android:textColor="@color/public_black"
             android:textSize="@dimen/public_textsize2" />
     </LinearLayout>
 

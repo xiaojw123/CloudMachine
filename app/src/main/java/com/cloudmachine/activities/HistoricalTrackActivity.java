@@ -2,6 +2,7 @@ package com.cloudmachine.activities;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,28 +13,24 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.AMap.OnMapLoadedListener;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.model.BitmapDescriptorFactory;
-import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.LatLngBounds.Builder;
-import com.amap.api.maps2d.model.Marker;
-import com.amap.api.maps2d.model.MarkerOptions;
-import com.amap.api.maps2d.model.Polyline;
-import com.amap.api.maps2d.model.PolylineOptions;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.LatLngBounds;
+import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.Polyline;
+import com.amap.api.maps.model.PolylineOptions;
 import com.cloudmachine.R;
+import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseActivity;
 import com.cloudmachine.net.task.LocusListAsync;
-import com.cloudmachine.pool.PausableThreadPoolExecutor;
-import com.cloudmachine.pool.PriorityRunnable;
-import com.cloudmachine.struc.LocationXY;
-import com.cloudmachine.struc.McDeviceBasicsInfo;
-import com.cloudmachine.struc.McDeviceLocation;
+import com.cloudmachine.bean.LocationXY;
+import com.cloudmachine.bean.McDeviceBasicsInfo;
+import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UMengKey;
-import com.cloudmachine.utils.widgets.TitleView;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
 import com.cloudmachine.utils.widgets.wheelview.WheelView;
 import com.cloudmachine.utils.widgets.wheelview.adapter.ArrayWheelAdapter;
@@ -45,7 +42,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class HistoricalTrackActivity extends BaseActivity implements OnMapLoadedListener,OnClickListener,
+public class HistoricalTrackActivity extends BaseActivity implements AMap.OnMapLoadedListener,OnClickListener,
 Callback{
 
 //	private static final double[][] data = {{30.273548,119.997108},{30.272933,119.99681},
@@ -64,9 +61,6 @@ Callback{
 	private AMap mAmap;
 	private List<LocationXY> locationXY = new ArrayList<LocationXY>();
 	private Polyline mVirtureRoad;
-	private Marker mMoveMarker;
-	private TitleView title_layout;
-	private PausableThreadPoolExecutor pausableThreadPoolExecutor;
 	private View start_time_layout,end_time_layout,wheelview_layout;
 	private TextView start_time,end_time;
 	private TextView wheelview_cancel,wheelview_determine,wheelview_title;
@@ -80,9 +74,8 @@ Callback{
 	private McDeviceBasicsInfo mcDeviceBasicsInfo;
 	private McDeviceLocation location;
 	private long startTime,endTime;
-	private PriorityRunnable pRunnable;
 	private boolean isMove;
-	private Thread moveThread;
+//	private Thread moveThread;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +89,7 @@ Callback{
 		mapView.onCreate(savedInstanceState);// 此方法必须重写
 		mAmap = mapView.getMap();
 		mAmap.setOnMapLoadedListener(this);
+		mAmap.getUiSettings().setMyLocationButtonEnabled(false);
 		getIntentData();
 		initView();
 		initRoadData();
@@ -116,14 +110,12 @@ Callback{
         			locationXY.add(xy);
         		}
         	}catch(Exception e){
-        		Constants.MyLog(e.getMessage());
         	}
         	
         }
     }
 	
 	private void initView(){
-		initTitleLayout();
 		wheelview_layout = findViewById(R.id.wheelview_layout);
 		start_time_layout = findViewById(R.id.start_time_layout);
 		end_time_layout = findViewById(R.id.end_time_layout);
@@ -139,21 +131,7 @@ Callback{
 		initWheelView();
 	}
 
-	private void initTitleLayout(){
-		
-		title_layout = (TitleView)findViewById(R.id.title_layout);
-		title_layout.setTitle("历史轨迹");
-		
-		title_layout.setLeftImage(-1, new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				 finish(); 
-			}
-		});
-	}
-	
+
 	private void initRoadData() {
 		if(locationXY.size()<=0)
 			return;
@@ -161,18 +139,18 @@ Callback{
 		for(int i=0; i<locationXY.size(); i++){
 			polylineOptions.add(new LatLng(locationXY.get(i).getY(), locationXY.get(i).getX()));
 		}
-		
+
 		polylineOptions.width(10);
-		polylineOptions.color(Color.parseColor("#f46a03"));
+		polylineOptions.color(Color.parseColor("#7bb4f5"));
 		mVirtureRoad = mAmap.addPolyline(polylineOptions);
-		MarkerOptions markerOptions = new MarkerOptions();
+//		MarkerOptions markerOptions = new MarkerOptions();
 //		markerOptions.setFlat(true);
-		markerOptions.anchor(0.5f, 0.5f);
-		markerOptions.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.location_marker));
-		markerOptions.position(polylineOptions.getPoints().get(0));
-		mMoveMarker = mAmap.addMarker(markerOptions);
-		mMoveMarker.setRotateAngle((float) getAngle(0));
+//		markerOptions.anchor(0.5f, 0.5f);
+//		markerOptions.icon(BitmapDescriptorFactory
+//				.fromResource(R.drawable.location_marker));
+//		markerOptions.position(polylineOptions.getPoints().get(0));
+//		mMoveMarker = mAmap.addMarker(markerOptions);
+//		mMoveMarker.setRotateAngle((float) getAngle(0));
 //		mAmap.moveCamera(CameraUpdateFactory.changeLatLng(mMoveMarker.getPosition()));
 		if(polylineOptions.getPoints().size()>2){
 			mAmap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
@@ -186,7 +164,7 @@ Callback{
 	} 
 	
 	private void initMapMarker(){
-		Builder bu = new Builder();
+		LatLngBounds.Builder bu = new LatLngBounds.Builder();
 		double latMax = 0,latMin = 0,lngMax = 0,lngMin = 0;
 		double lat = -1 ,lng = -1;
 		if(null != locationXY && locationXY.size()>0){
@@ -274,10 +252,7 @@ Callback{
 			int hour = date.getHours();
 			int minute = date.getMinutes();
 			
-			Constants.MyLog("Time-two: "+ Constants.getDateDays(dayArray2[year_month_day_week_wheelview.getCurrentItem()], 
-					Constants.getNowData(), 
-					Constants.DateFormat1));
-			if(Constants.getDateDays(Constants.getNowData(), 
+			if(Constants.getDateDays(Constants.getNowData(),
 					dayArray2[year_month_day_week_wheelview.getCurrentItem()], 
 					Constants.DateFormat1) == 0){//今天
 //				Constants.MyLog("hour: "+ hour + " minute :"+minute
@@ -319,69 +294,69 @@ Callback{
 		};
 		
 		pausableThreadPoolExecutor.execute(pRunnable);*/
-		moveThread = new Thread() {
-
-			public void run() {
-				for (int i = 0; i < mVirtureRoad.getPoints().size() - 1; i++) {
-					if(!isMove){
-						return;
-					}
-					LatLng startPoint = mVirtureRoad.getPoints().get(i);
-					LatLng endPoint = mVirtureRoad.getPoints().get(i + 1);
-					mMoveMarker.setPosition(startPoint);
-
-					mMoveMarker.setRotateAngle((float) getAngle(startPoint,
-							endPoint));
-
-					double slope = getSlope(startPoint, endPoint);
-					if(slope == 0)
-						continue;
-					//是不是正向的标示（向上设为正向）
-					boolean isReverse = (startPoint.latitude > endPoint.latitude);
-
-					double intercept = getInterception(slope, startPoint);
-
-					double xMoveDistance = isReverse ? getXMoveDistance(slope)
-							: -1 * getXMoveDistance(slope);
-
-					
-					for (double j = startPoint.latitude;
-							!((j > endPoint.latitude)^ isReverse);
-							
-							j = j
-							- xMoveDistance) {
-						if(!isMove){
-							return;
-						}
-						LatLng latLng = null;
-						if (slope != Double.MAX_VALUE) {
-							latLng = new LatLng(j, (j - intercept) / slope);
-						} else {
-							latLng = new LatLng(j, startPoint.longitude);
-						}
-						if(null != latLng && 
-								latLng.latitude != Double.NaN &&
-								latLng.longitude != Double.NaN){
-							mMoveMarker.setPosition(latLng);
-						}else{
-							latLng = new LatLng(j, startPoint.longitude);
-							mMoveMarker.setPosition(latLng);
-							break;
-						}
-						
-						mAmap.invalidate();// 刷新地图
-						try {
-							Thread.sleep(TIME_INTERVAL);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-
-				}
-			}
-
-		};
-		moveThread.start();
+//		moveThread = new Thread() {
+//
+//			public void run() {
+//				for (int i = 0; i < mVirtureRoad.getPoints().size() - 1; i++) {
+//					if(!isMove){
+//						return;
+//					}
+//					LatLng startPoint = mVirtureRoad.getPoints().get(i);
+//					LatLng endPoint = mVirtureRoad.getPoints().get(i + 1);
+//					mMoveMarker.setPosition(startPoint);
+//
+//					mMoveMarker.setRotateAngle((float) getAngle(startPoint,
+//							endPoint));
+//
+//					double slope = getSlope(startPoint, endPoint);
+//					if(slope == 0)
+//						continue;
+//					//是不是正向的标示（向上设为正向）
+//					boolean isReverse = (startPoint.latitude > endPoint.latitude);
+//
+//					double intercept = getInterception(slope, startPoint);
+//
+//					double xMoveDistance = isReverse ? getXMoveDistance(slope)
+//							: -1 * getXMoveDistance(slope);
+//
+//
+//					for (double j = startPoint.latitude;
+//							!((j > endPoint.latitude)^ isReverse);
+//
+//							j = j
+//							- xMoveDistance) {
+//						if(!isMove){
+//							return;
+//						}
+//						LatLng latLng = null;
+//						if (slope != Double.MAX_VALUE) {
+//							latLng = new LatLng(j, (j - intercept) / slope);
+//						} else {
+//							latLng = new LatLng(j, startPoint.longitude);
+//						}
+//						if(null != latLng &&
+//								latLng.latitude != Double.NaN &&
+//								latLng.longitude != Double.NaN){
+//							mMoveMarker.setPosition(latLng);
+//						}else{
+//							latLng = new LatLng(j, startPoint.longitude);
+//							mMoveMarker.setPosition(latLng);
+//							break;
+//						}
+//
+//						mAmap.reloadMap();// 刷新地图
+//						try {
+//							Thread.sleep(TIME_INTERVAL);
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//
+//				}
+//			}
+//
+//		};
+//		moveThread.start();
 	}
 	
 	@Override
@@ -405,8 +380,6 @@ Callback{
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		mapView.onDestroy();
-		if(null != pausableThreadPoolExecutor)
-			pausableThreadPoolExecutor.shutdownNow();
 	}
 
 	@Override
@@ -552,17 +525,29 @@ Callback{
 				if(null != mcDeviceBasicsInfo && startTime > 0 && endTime > 0){
 					long st,et;
 					if(startTime>endTime){
-						Constants.ToastAction(getResources().getString(R.string.start_end_time_error));
+						showPromptDialog(getResources().getString(R.string.start_end_time_error));
 						return;
 					}
 					new LocusListAsync(mcDeviceBasicsInfo.getId(),startTime,endTime,mContext,mHandler).execute();
 				}else{
-					Constants.ToastAction(getResources().getString(R.string.start_end_time_null));
+					showPromptDialog(getResources().getString(R.string.start_end_time_null));
 				}
 				
 			}
 			break;
 		}
+	}
+	private void showPromptDialog(String message){
+		CustomDialog.Builder builder=new CustomDialog.Builder(this);
+		builder.setMessage(message);
+		builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		builder.create().show();
+
 	}
 
 	@Override
@@ -583,16 +568,17 @@ Callback{
 			locationXY.clear();
 			locationXY.addAll((List<LocationXY>)msg.obj);
 			mAmap.clear();
-			mAmap.invalidate();
+			mAmap.reloadMap();
 			if(null != locationXY && locationXY.size()>2){
 				initRoadData();
 				moveLooper();
 			}else {
-				Constants.ToastAction("定位点过少，无法形成轨迹，请扩大选择范围");
+				showPromptDialog("定位点过少，无法形成轨迹，请扩大选择范围");
+
 			}
 			break;
 		case Constants.HANDLER_LOCUS_FAIL:
-			Constants.ToastAction((String)msg.obj);
+			showPromptDialog((String)msg.obj);
 			break;
 		}
 		return false;
@@ -600,10 +586,10 @@ Callback{
 	
 	private void stopMoveThread(){
 		isMove = false;
-		if(null != moveThread){
-			moveThread.interrupt();
-			moveThread = null;
-		}
+//		if(null != moveThread){
+//			moveThread.interrupt();
+//			moveThread = null;
+//		}
 	}
 	
 }

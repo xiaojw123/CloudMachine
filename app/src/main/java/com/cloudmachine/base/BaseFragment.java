@@ -1,8 +1,8 @@
 package com.cloudmachine.base;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,12 +55,16 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
             }
             UMListUtil.getUMListUtil().sendStruEvent(this.getClass().getSimpleName(), getActivity());
             initPresenter();
+            initView(savedInstanceState);
             initView();
         }
 
         return viewParent;
     }
 
+    protected void initView(Bundle savedInstanceState){
+
+    };
     protected abstract void initView();
 
     protected abstract void initPresenter();

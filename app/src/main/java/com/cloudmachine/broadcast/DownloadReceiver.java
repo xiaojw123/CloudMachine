@@ -29,8 +29,7 @@ public class DownloadReceiver extends BroadcastReceiver {
 						Cursor c = downloadManager.query(new DownloadManager.Query().setFilterById(completeDownloadId));
 						c.moveToFirst();
 						String str = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-						Constants.MyLog(str);
-						
+
 						context.startActivity(getApkFileIntent(str));
 						
 					} catch (Exception e) {

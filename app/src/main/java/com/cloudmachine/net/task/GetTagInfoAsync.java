@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 import android.content.Context;
 import android.os.Handler;
@@ -13,9 +12,8 @@ import android.os.Message;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.BaseBO;
-import com.cloudmachine.struc.CommentsInfo;
-import com.cloudmachine.struc.RepairRecordBasicInfo;
+import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.CommentsInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.URLs;
 import com.google.gson.Gson;

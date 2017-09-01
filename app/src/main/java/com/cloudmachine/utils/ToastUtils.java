@@ -2,9 +2,10 @@ package com.cloudmachine.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.Gravity;
 import android.widget.Toast;
 
-import com.cloudmachine.app.MyApplication;
+import com.cloudmachine.MyApplication;
 
 import es.dmoral.toasty.Toasty;
 
@@ -21,7 +22,13 @@ import es.dmoral.toasty.Toasty;
 public class ToastUtils {
 
     public static void showToast(Context context,String message){
-        Toast.makeText(context,message,Toast.LENGTH_LONG).show();
+        Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showCenterToast(Context context,String message){
+        Toast t=Toast.makeText(context,message,Toast.LENGTH_SHORT);
+        t.setGravity(Gravity.CENTER,0,0);
+        t.show();
     }
 
     /**

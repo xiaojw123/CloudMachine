@@ -1,11 +1,11 @@
 package com.cloudmachine.ui.login.model;
 
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.recyclerbean.CheckNumBean;
-import com.cloudmachine.struc.Member;
+import com.cloudmachine.bean.CheckNumBean;
+import com.cloudmachine.bean.Member;
 import com.cloudmachine.ui.login.contract.VerifyPhoneNumContract;
 
 import rx.Observable;

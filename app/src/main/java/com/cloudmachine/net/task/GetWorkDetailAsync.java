@@ -7,13 +7,12 @@ import android.os.Message;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.BOInfo;
-import com.cloudmachine.struc.BaseBO;
-import com.cloudmachine.struc.CWInfo;
+import com.cloudmachine.bean.BOInfo;
+import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.URLs;
-import com.github.mikephil.charting.utils.AppLog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

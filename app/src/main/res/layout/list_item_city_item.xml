@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_item"
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/alpha"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="12dp"
-        android:background="#F7F6F4"
-        android:gravity="center"
-        android:textColor="#8E8D8B"
-        android:textSize="30sp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="12dip"
-        android:textColor="#FF767676"
-        android:textSize="16dp" />
+        android:orientation="vertical"
+        >
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="25dp"
-        android:background="#E2E2E2" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/alpha"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_24"
+            android:layout_marginLeft="@dimen/pad2"
+            android:gravity="center"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/siz3"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_44"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/pad2"
+            android:paddingRight="@dimen/pad2"
+            android:text="fasfasfafaf"
+            android:textColor="@color/cor8"
+            android:textSize="@dimen/siz3" />
+
+        <View
+            android:layout_height="1dp"
+            style="@style/CommonLandscapeLine"
+            android:layout_marginLeft="@dimen/pad1"
+            />
+
+
+    </LinearLayout>
+
+</FrameLayout>

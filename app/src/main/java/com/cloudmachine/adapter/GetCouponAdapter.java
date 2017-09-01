@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.struc.CouponInfo;
+import com.cloudmachine.bean.CouponInfo;
 
 import java.util.ArrayList;
 

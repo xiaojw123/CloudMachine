@@ -33,6 +33,11 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter{
         mItems = items;
         notifyDataSetChanged();
     }
+    public void updateItem(T item){
+        mItems.add(0,item);
+        notifyItemChanged(0);
+    };
+
 
 
     @Override

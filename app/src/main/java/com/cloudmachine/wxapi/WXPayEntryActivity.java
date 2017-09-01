@@ -1,11 +1,12 @@
 package com.cloudmachine.wxapi;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.cloudmachine.activities.PaymentResultsActivity;
+import com.cloudmachine.activities.RepairPayDetailsActivity;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -16,7 +17,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 
 
-public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler{
+public class WXPayEntryActivity extends BaseAutoLayoutActivity implements IWXAPIEventHandler{
 	
 	private static final String TAG = "MicroMsg.SDKSample.WXPayEntryActivity";
 	
@@ -32,6 +33,11 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler{
     }
 
 	@Override
+	public void initPresenter() {
+
+	}
+
+	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		setIntent(intent);
@@ -45,20 +51,24 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler{
 	@Override
 	public void onResp(BaseResp resp) {
 		//Log.d(TAG, "onPayFinish, errCode = " + resp.errCode);
-		Constants.MyLog("onPayFinish, errCode = " + resp.errCode);
 		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
 			if (resp.errCode == 0) {
-				Constants.MyLog("支付成功");
 				Constants.ToastAction("支付成功");
-				Bundle b = new Bundle();
-				b.putString("paymentResult","支付成功");
-				Constants.toActivity(WXPayEntryActivity.this, PaymentResultsActivity.class,b,true);
+				mRxManager.post(RepairPayDetailsActivity.FINISH_PAY_DETAIL,null);
+				mRxManager.post(QuestionCommunityActivity.GO_TO_MY_ORDER,null);
+                finish();
+//				Bundle b = new Bundle();
+//				b.putString("paymentResult","支付成功");
+
+
+//				Constants.toActivity(WXPayEntryActivity.this, PaymentResultsActivity.class,b,true);
 			} else {
-				Constants.MyLog("支付失败");
 				Constants.ToastAction("支付失败");
-				Bundle b = new Bundle();
-				b.putString("paymentResult","支付失败");
-				Constants.toActivity(WXPayEntryActivity.this, PaymentResultsActivity.class, b, true);
+				mRxManager.post(RepairPayDetailsActivity.FINISH_PAY_DETAIL,null);
+                finish();
+//				Bundle b = new Bundle();
+//				b.putString("paymentResult","支付失败");
+//				Constants.toActivity(WXPayEntryActivity.this, PaymentResultsActivity.class, b, true);
 			}
 		}
 

@@ -11,7 +11,7 @@ import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.Utils;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.chart.utils.AppLog;
 
 import org.apache.http.NameValuePair;
 import org.json.JSONException;

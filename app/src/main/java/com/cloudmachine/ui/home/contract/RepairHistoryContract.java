@@ -5,7 +5,7 @@ import android.content.Context;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.struc.RepairListInfo;
+import com.cloudmachine.bean.RepairListInfo;
 
 import rx.Observable;
 

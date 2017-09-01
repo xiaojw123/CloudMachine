@@ -2,14 +2,14 @@ package com.cloudmachine.ui.home.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.ui.home.contract.RemarkInfoContract;
 import com.cloudmachine.ui.home.model.RemarkInfoModel;
@@ -18,8 +18,9 @@ import com.cloudmachine.ui.home.presenter.RemarkInfoPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
 import com.cloudmachine.utils.widgets.wheelview.WheelView;
-import com.cloudmachine.utils.widgets.wheelview.adapter.ArrayWheelAdapter;
+import com.cloudmachine.widget.CommonTitleView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresenter, RemarkInfoModel> implements RemarkInfoContract.View, OnWheelScrollListener {
+public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresenter, RemarkInfoModel> implements RemarkInfoContract.View, OnWheelScrollListener, TextWatcher {
     public static final String REMARK_INFO = "remark_info";
     public static final String ROLEIDS = "roleIdS";
     public static final String ID = "id";
@@ -42,24 +43,14 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
     @BindView(R.id.role_container)
     FrameLayout roleContainer;
     @BindView(R.id.remarkinfo_titleview)
-    TitleView remarkinfoTitleview;
-    @BindView(R.id.remarkinfo_wlv)
-    WheelView remarkInfoWlv;
-    @BindView(R.id.remarkinfo_wheelview_cancel)
-    TextView remarkinfoWheelviewCancel;
-    @BindView(R.id.remarkinfo_wheelview_title)
-    TextView remarkinfoWheelviewTitle;
-    @BindView(R.id.remarkinfo_wheelview_determine)
-    TextView remarkinfoWheelviewDetermine;
-    @BindView(R.id.remarkinfo_roleselect_layout)
-    LinearLayout roleselectLayout;
+    CommonTitleView remarkinfoTitleview;
     @BindView(R.id.remarkinfo_role_name)
     TextView roleNameTv;
     int selectIndex;
-    List<RoleBean> mRoleList;
+    ArrayList<RoleBean> mRoleList;
     HashMap<String, Long> mRoleMap = new HashMap<>();
     long deviceId;
-    String items[];
+    String role;
 
 
     @Override
@@ -82,12 +73,12 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
         });
         Intent intent = getIntent();
         final long id = intent.getLongExtra(ID, 0);
-        final long memberId = intent.getLongExtra(MEMBER_ID,0);
+        final long memberId = intent.getLongExtra(MEMBER_ID, 0);
         String name = intent.getStringExtra(NAME);
-        String role = intent.getStringExtra(ROLE);
+        role = intent.getStringExtra(ROLE);
         String roleRemark = intent.getStringExtra(ROLEREMARK);
         final long rolesIds = intent.getLongExtra(ROLEIDS, 0);
-        remarkinfoTitleview.setRightOnClickListener(new View.OnClickListener() {
+        remarkinfoTitleview.setRightClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String remark = remarknameEdt.getText().toString();
@@ -104,6 +95,7 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
         nicknameEdt.setText(name);
         remarknameEdt.setText(roleRemark);
         roleNameTv.setText(role);
+        remarknameEdt.addTextChangedListener(this);
     }
 
     @Override
@@ -111,7 +103,7 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
         mPresenter.setVM(this, mModel);
     }
 
-    @OnClick({R.id.nickname_edt, R.id.remarkname_edt, R.id.role_container, R.id.remarkinfo_wheelview_cancel, R.id.remarkinfo_wheelview_determine})
+    @OnClick({R.id.nickname_edt, R.id.remarkname_edt, R.id.role_container})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.nickname_edt:
@@ -119,23 +111,17 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
             case R.id.remarkname_edt:
                 break;
             case R.id.role_container:
-                roleselectLayout.setVisibility(View.VISIBLE);
-                break;
-            case R.id.remarkinfo_wheelview_cancel:
-                roleselectLayout.setVisibility(View.GONE);
-                break;
-            case R.id.remarkinfo_wheelview_determine:
-                if (items.length > selectIndex) {
-                    roleNameTv.setText(items[selectIndex]);
-                }
-                roleselectLayout.setVisibility(View.GONE);
+                String roleName = roleNameTv.getText().toString();
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(RoleSelActiviy.ROLE_LIST, mRoleList);
+                bundle.putString(RoleSelActiviy.ROLE_NAME, roleName);
+                Constants.toActivityForR(this, RoleSelActiviy.class, bundle);
                 break;
         }
     }
 
     @Override
     public void onScrollingStarted(WheelView wheel) {
-        ;
     }
 
     @Override
@@ -145,19 +131,10 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
 
     @Override
     public void returnRoleListView(List<RoleBean> roleList) {
-        mRoleList = roleList;
-        int len = roleList.size();
-        items = new String[len];
-        for (int i = 0; i < len; i++) {
-            RoleBean bean = roleList.get(i);
-            String roleType = bean.getType();
-            items[i] = roleType;
-            mRoleMap.put(roleType, bean.getId());
+        mRoleList = (ArrayList<RoleBean>) roleList;
+        for (RoleBean bean : mRoleList) {
+            mRoleMap.put(bean.getType(), bean.getId());
         }
-        ArrayWheelAdapter memberAdapter = new ArrayWheelAdapter(this, items);
-        remarkInfoWlv.setViewAdapter(memberAdapter);
-        remarkInfoWlv.setCurrentItem(selectIndex);
-        remarkInfoWlv.addScrollingListener(this);
     }
 
     @Override
@@ -167,5 +144,50 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
 
     @Override
     public void updateRemarkFailed() {
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String content = s.toString();
+        if (content.length() > 0) {
+            remarkinfoTitleview.setRighteTextEnalbe(true);
+            remarkinfoTitleview.setRightTextColor(getResources().getColor(R.color.cor9));
+        } else {
+            remarkinfoTitleview.setRighteTextEnalbe(false);
+            remarkinfoTitleview.setRightTextColor(getResources().getColor(R.color.cor10));
+        }
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            RoleBean bean = data.getParcelableExtra(RoleSelActiviy.ROLE_BEAN);
+            if (bean != null) {
+                String roleType = bean.getType();
+                if (!role.equals(roleType)) {
+                    remarkinfoTitleview.setRighteTextEnalbe(true);
+                    remarkinfoTitleview.setRightTextColor(getResources().getColor(R.color.cor9));
+                } else {
+                    remarkinfoTitleview.setRighteTextEnalbe(false);
+                    remarkinfoTitleview.setRightTextColor(getResources().getColor(R.color.cor10));
+                }
+                roleNameTv.setText(roleType);
+            }
+        }
+
+
     }
 }

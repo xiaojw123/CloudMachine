@@ -3,28 +3,71 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="18dp"
-    android:paddingBottom="15dp"
     >
 
     <TextView
         android:id="@+id/item_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_16_sp"
-        android:textColor="@color/black"
+        android:textSize="@dimen/siz3"
+        android:textColor="@color/cor8"
+        android:layout_marginLeft="@dimen/dimen_size_16"
         />
+
+
+
+
+    <TextView
+        android:id="@+id/itme_deives_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/cor4"
+        android:textSize="@dimen/siz4"
+        android:text="工作中"
+        android:visibility="gone"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:layout_alignTop="@+id/item_device_name"
+        android:layout_toLeftOf="@+id/item_arrow_right"
+        />
+
+    <ImageView
+        android:id="@+id/item_arrow_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_right"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/item_device_name"
+        android:layout_marginRight="@dimen/dimen_size_16"
+        />
+
+    <TextView
+        android:id="@+id/item_device_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_device_name"
+        android:textSize="@dimen/siz4"
+        android:layout_marginTop="@dimen/dimen_size_19"
+        android:textColor="@color/cor9"
+        android:singleLine="true"
+        android:layout_marginRight="@dimen/dimen_size_16"
+        android:drawablePadding="@dimen/dimen_size_12"
+        android:drawableLeft="@drawable/icon_map_loc"
+        android:layout_alignLeft="@+id/item_device_name"
+        />
+
 
     <TextView
         android:id="@+id/item_device_oil"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/item_device_name"
+        android:layout_below="@+id/item_device_loc"
         android:drawableLeft="@drawable/icon_fuel"
         android:textSize="@dimen/text_size_14_sp"
         android:textColor="@color/color_92"
-        android:drawablePadding="9dp"
-        android:layout_marginTop="11dp"
+        android:drawablePadding="@dimen/dimen_size_12"
+        android:layout_marginTop="@dimen/dimen_size_19"
         android:text="0%"
+        android:layout_alignLeft="@+id/item_device_name"
         />
 
     <TextView
@@ -32,36 +75,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/item_device_oil"
-        android:layout_marginLeft="31dp"
+        android:drawablePadding="@dimen/dimen_size_12"
+        android:layout_marginLeft="@dimen/dimen_size_25"
+        android:drawableLeft="@drawable/icon_time"
         android:layout_toRightOf="@+id/item_device_oil"
-        android:text="0时" />
-
-    <TextView
-        android:id="@+id/itme_deives_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_12_sp"
-        android:textColor="@color/color_a6e09e"
-        android:layout_alignTop="@+id/item_device_oil"
-        android:layout_toLeftOf="@+id/item_arrow_right"
-        android:layout_marginRight="7dp"
-        />
-    <ImageView
-        android:id="@+id/item_arrow_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/arrow_next"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/item_device_oil"
+        android:text="0时"
         />
 
-    <TextView
-        android:id="@+id/item_device_loc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_1"
+        android:background="@color/cor12"
+        android:layout_marginLeft="@dimen/dimen_size_10"
         android:layout_below="@+id/item_device_oil"
-        android:textSize="@dimen/text_size_13_sp"
-        android:layout_marginTop="11dp"
-        android:singleLine="true"
+        android:layout_marginTop="15dp"
         />
+
+
 </RelativeLayout>

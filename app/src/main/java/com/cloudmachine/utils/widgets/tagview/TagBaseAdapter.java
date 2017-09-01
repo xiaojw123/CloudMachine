@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 
-import com.cloudm.autolayout.utils.AutoUtils;
+import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
-import com.cloudmachine.struc.DisadvantageBean;
+import com.cloudmachine.bean.DisadvantageBean;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -21,7 +21,7 @@ public class TagBaseAdapter extends BaseAdapter {
 
     private Context mContext;
     //private List<String> mList;
-    private ArrayList<DisadvantageBean> tagBeans;
+    private List<DisadvantageBean> tagBeans;
     
     
 //    public TagBaseAdapter(Context context, List<String> list) {
@@ -30,7 +30,7 @@ public class TagBaseAdapter extends BaseAdapter {
 //    }
 
     public TagBaseAdapter(Context mContext,
-			ArrayList<DisadvantageBean> tagBeans) {
+			List<DisadvantageBean> tagBeans) {
     	this.mContext = mContext;
     	this.tagBeans = tagBeans;
     }
@@ -69,11 +69,11 @@ public class TagBaseAdapter extends BaseAdapter {
         if (disadvantageBean.isChecked()) {
 			holder.tagBtn.setText(text);
 			holder.tagBtn.setBackground(mContext.getResources().getDrawable(R.drawable.tag_checked));
-			holder.tagBtn.setTextColor(mContext.getResources().getColor(R.color.tag_checked_color));
+			holder.tagBtn.setTextColor(mContext.getResources().getColor(R.color.cor2));
 		}else {
 			holder.tagBtn.setText(text);
 			holder.tagBtn.setBackground(mContext.getResources().getDrawable(R.drawable.tag_unchecked));
-			holder.tagBtn.setTextColor(mContext.getResources().getColor(R.color.tag_unchecked_color));
+			holder.tagBtn.setTextColor(mContext.getResources().getColor(R.color.cor9));
 
 		}
 

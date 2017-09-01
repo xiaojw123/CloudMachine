@@ -1,7 +1,5 @@
 package com.cloudmachine.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.listener.OnClickEffectiveListener;
-import com.cloudmachine.struc.McDeviceInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.widgets.RadiusButtonView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+
+import java.util.List;
 
 public class McSearchAdapter extends BaseAdapter {
 

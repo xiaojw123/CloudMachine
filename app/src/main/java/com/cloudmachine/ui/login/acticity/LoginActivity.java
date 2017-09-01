@@ -6,32 +6,36 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.cloudmachine.MyApplication;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.FindPasswordActivity;
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.ApiConstants;
-import com.cloudmachine.api.HostType;
-import com.cloudmachine.app.MyApplication;
 import com.cloudmachine.autolayout.widgets.CircleTextImageView;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.net.task.LoginAsync;
-import com.cloudmachine.struc.Member;
-import com.cloudmachine.struc.UserInfo;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.login.contract.LoginContract;
@@ -39,31 +43,32 @@ import com.cloudmachine.ui.login.model.LoginModel;
 import com.cloudmachine.ui.login.presenter.LoginPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
-import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.AppMsg;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.utils.widgets.ClearEditTextView.ICoallBack;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.widget.CustomEditText;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.Map;
 import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
+import rx.functions.Action1;
 
-public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginModel> implements OnClickListener, Callback, LoginContract.View {
-
+public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginModel> implements OnClickListener, Callback, LoginContract.View, CustomEditText.DrawableRightClickListener, TextWatcher {
+    public static final String RX_LOGIN = "rx_login";
     private static final int MSG_SET_ALIAS = 1001;
     private Context mContext;
     private Handler mHandler;
-    private ClearEditTextView password_ed;
+    private CustomEditText password_ed;
     private ClearEditTextView username_ed;
     private RadiusButtonView login_btn;
     private LoadingDialog progressDialog;
@@ -72,10 +77,6 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     private int flag;
     private View left_layout, right_layout;
     private CircleTextImageView userImage;
-    private RelativeLayout mPwdSwitch;
-    //是否是明文显示 默认为密文
-    private boolean isExpress = false;
-    private ImageView mIvVisible, mIvUnVisible;
     private Member mMember;
 
 
@@ -88,6 +89,29 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         this.mContext = this;
         getIntentData();
         initView();
+//        initRxManager();
+    }
+
+    private void initRxManager() {
+        mRxManager.on(RX_LOGIN, new Action1<Map<String, String>>() {
+            @Override
+            public void call(Map<String, String> params) {
+                Set<Map.Entry<String, String>> entryParams = params.entrySet();
+                String userName = null;
+                String password = null;
+                for (Map.Entry<String, String> entry : entryParams) {
+                    userName = entry.getKey();
+                    password = entry.getValue();
+
+                }
+                if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
+                    return;
+                }
+                new LoginAsync(userName, password, mContext, mHandler).execute();
+
+            }
+        });
+
     }
 
     private void getIntentData() {
@@ -145,15 +169,10 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         left_layout.setOnClickListener(this);
         right_layout.setOnClickListener(this);
         //切换密码相对布局
-        mPwdSwitch = (RelativeLayout) findViewById(R.id.rl_switch);
-        mPwdSwitch.setOnClickListener(this);
-        mIvVisible = (ImageView) findViewById(R.id.iv_visible);
-        mIvUnVisible = (ImageView) findViewById(R.id.unvisible);
 
         username_ed = (ClearEditTextView) findViewById(R.id.username_ed);
-        password_ed = (ClearEditTextView) findViewById(R.id.password_ed);
-        switchPwd(isExpress);
-
+        password_ed = (CustomEditText) findViewById(R.id.password_ed);
+        password_ed.setDrawableRightClickListener(this);
         username_ed.setICoallBack(new ICoallBack() {
 
             @Override
@@ -166,6 +185,8 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                 }
             }
         });
+        username_ed.addTextChangedListener(this);
+        password_ed.addTextChangedListener(this);
         login_btn = (RadiusButtonView) findViewById(R.id.login_btn);
         login_btn.setOnClickListener(new OnClickListener() {
             @Override
@@ -207,7 +228,6 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
             return;
         }
         if (passwordString.length() < 6) {
-            password_ed.setShakeAnimation();
             AppMsg appMsg = AppMsg.makeText(this, "请正确输入你的密码", AppMsg.STYLE_CO);
             appMsg.setLayoutGravity(Gravity.TOP);
             appMsg.show();
@@ -223,6 +243,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     public void onClick(View v) {
         Intent it = null;
         switch (v.getId()) {
+
             case R.id.left_layout:
                 finish();
                 break;
@@ -230,7 +251,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                 MobclickAgent.onEvent(mContext, UMengKey.count_register);
                 it = new Intent(this, FindPasswordActivity.class);
                 it.putExtra("type", 3);
-                startActivity(it);
+                startActivityForResult(it, 0);
                 break;
             case R.id.forget_pw_tv:
                 MobclickAgent.onEvent(mContext, UMengKey.count_forgotpassword);
@@ -238,10 +259,6 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                 it.putExtra(FindPasswordActivity.HASINVITATIONCODE, true);
                 it.putExtra("type", 1);
                 startActivity(it);
-                break;
-            case R.id.rl_switch:
-                isExpress = !isExpress;
-                switchPwd(isExpress);
                 break;
             case R.id.weixin_login:
                 loginToWeiXin();
@@ -316,14 +333,19 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     }
 
     private void jumpNextPage() {
-        Constants.MyLog("云机械登录获取到的账号信息" + mMember.getWjdsId());
-        MemeberKeeper.saveOAuth(mMember, LoginActivity.this);
-        Member m = MemeberKeeper.getOauth(this);
-        Constants.MyLog("云机械登录获取到的账号信息  数据库" + m.getWjdsId());
-
         MyApplication.getInstance().setLogin(true);
         MyApplication.getInstance().setFlag(true);
-        if (flag == 2) {
+        MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 0);
+        Constants.isMcLogin = true;
+        if (mMember != null) {
+            //调用JPush API设置Alias
+            mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
+            MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));
+        }
+        if (flag == 4) {
+            setResult(RESULT_OK);
+            finish();
+        } else if (flag == 2) {
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
         } else if (flag == 1) {
@@ -331,18 +353,13 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
             Intent intent = new Intent(LoginActivity.this, QuestionCommunityActivity.class);
             Bundle bundle = new Bundle();
 //                    bundle.putString("url","http://h5.test.cloudm.com/n/ask_qlist");
-            bundle.putString("url", ApiConstants.H5_HOST + "n/ask_qlist");
+            bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppCommunity);
             intent.putExtras(bundle);
             mContext.startActivity(intent);
             finish();
         } else {
             finish();
         }
-        MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 0);
-        Constants.isMcLogin = true;
-        //调用JPush API设置Alias
-        mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
-        MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));
     }
 
     private void excamMaster(Long id) {
@@ -355,22 +372,19 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                         Long wjdsId = userInfo.userinfo.id;
                         Long status = userInfo.userinfo.status;
                         Long role_id = userInfo.userinfo.role_id;
-                        mMember.setWjdsId(wjdsId);
-                        mMember.setWjdsStatus(status);
-                        mMember.setWjdsRole_id(role_id);
-                        mMember.setNum(2L);
-
+                        if (mMember != null) {
+                            mMember.setWjdsId(wjdsId);
+                            mMember.setWjdsStatus(status);
+                            mMember.setWjdsRole_id(role_id);
+                            mMember.setNum(2L);
+                        }
                         MemeberKeeper.saveOAuth(mMember, mContext);
-                        AppLog.print("从当前页面拿到的挖机大师id" + MemeberKeeper.getOauth(LoginActivity.this).getWjdsId());
-                        AppLog.print("从当前页面拿到的numId" + MemeberKeeper.getOauth(LoginActivity.this).getNum());
-//                        LoginActivity.this.finish();
                         jumpNextPage();
                     }
 
                     @Override
                     protected void _onError(String message) {
-                        AppLog.print("_onError");
-                        ToastUtils.showToast(LoginActivity.this,"挖机大师数同步失败");
+                        MemeberKeeper.saveOAuth(mMember, mContext);
                         jumpNextPage();
                     }
                 }));
@@ -380,6 +394,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
         @Override
         public void gotResult(int code, String alias, Set<String> tags) {
+            AppLog.print("gotResult___" + code);
             String logs;
             switch (code) {
                 case 0:
@@ -406,15 +421,54 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
     };
 
-    public void switchPwd(boolean isExpress) {
-        if (isExpress) {
-            password_ed.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            mIvVisible.setVisibility(View.VISIBLE);
-            mIvUnVisible.setVisibility(View.GONE);
+    @Override
+    public void onDrawableRightClickListener(View view) {
+
+        if (view.isSelected()) {
+            view.setSelected(false);
+            password_ed.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         } else {
-            password_ed.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            mIvVisible.setVisibility(View.GONE);
-            mIvUnVisible.setVisibility(View.VISIBLE);
+            view.setSelected(true);
+            password_ed.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        }
+        String contentStr = password_ed.getText().toString();
+        password_ed.setSelection(contentStr.length());
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String pswStr = password_ed.getText().toString();
+        String usernameStr = username_ed.getText().toString();
+        if (usernameStr.length() > 0) {
+            String logoUrl = UserHelper.getLogo(this, usernameStr);
+            if (!TextUtils.isEmpty(logoUrl)) {
+                Glide.with(this).load(logoUrl).into(userImage);
+            }
+        }
+        if (pswStr.length() > 0 && usernameStr.length() > 0) {
+            login_btn.setTextColor(getResources().getColor(R.color.cor15));
+        } else {
+            login_btn.setTextColor(getResources().getColor(R.color.cor2015));
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == FindPasswordActivity.FP_LOGIN) {
+            mMember = (Member) data.getSerializableExtra(Constants.MC_MEMBER);
+            jumpNextPage();
         }
     }
 }

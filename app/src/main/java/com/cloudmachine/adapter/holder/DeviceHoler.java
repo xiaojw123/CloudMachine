@@ -4,9 +4,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.struc.McDeviceInfo;
-import com.cloudmachine.struc.McDeviceLocation;
-import com.cloudmachine.utils.mpchart.ValueFormatUtil;
+import com.cloudmachine.bean.McDeviceInfo;
+import com.cloudmachine.bean.McDeviceLocation;
+import com.cloudmachine.utils.CommonUtils;
 
 import butterknife.BindView;
 
@@ -37,12 +37,12 @@ public class DeviceHoler extends BaseHolder<McDeviceInfo> {
             itemDeviceLoc.setText(location.getPosition());
         }
         if (item.getWorkStatus() == 1) {
-            itmeDeivesStatus.setText("工作中");
+            itmeDeivesStatus.setVisibility(View.VISIBLE);
         } else {
-            itmeDeivesStatus.setText("");
+            itmeDeivesStatus.setVisibility(View.GONE);
         }
-        itemDeviceOil.setText(item.getOilLave() + "%");
-        itemDeviceWorktime.setText(ValueFormatUtil.getWorkTime(item.getWorkTime(), "0时"));
+        itemDeviceOil.setText(CommonUtils.formatOilValue(item.getOilLave()));
+        itemDeviceWorktime.setText(CommonUtils.formatTimeLen(item.getWorkTime()));
     }
 
 }

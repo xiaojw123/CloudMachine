@@ -2,8 +2,8 @@ package com.cloudmachine.ui.login.presenter;
 
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.recyclerbean.CheckNumBean;
-import com.cloudmachine.struc.Member;
+import com.cloudmachine.bean.CheckNumBean;
+import com.cloudmachine.bean.Member;
 import com.cloudmachine.ui.login.contract.VerifyPhoneNumContract;
 import com.cloudmachine.utils.ToastUtils;
 

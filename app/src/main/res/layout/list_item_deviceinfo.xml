@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/device_info_cotainer"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_size_105"
+    android:layout_above="@+id/device_detail_bottom_layout"
+    android:layout_marginLeft="@dimen/dimen_size_8"
+    android:layout_marginRight="@dimen/dimen_size_8"
+    android:layout_marginBottom="@dimen/dimen_size_6"
+    android:background="@drawable/bg_card"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_size_2"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/pad1"
+        android:paddingRight="@dimen/pad1"
+        >
+
+    <TextView
+        android:id="@+id/device_info_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/pad1"
+        android:singleLine="true"
+        android:layout_gravity="center_vertical"
+        android:drawableLeft="@drawable/icon_map_loc"
+        android:textColor="@color/cor9"
+        android:layout_marginRight="@dimen/dimen_size_50"
+        android:textSize="@dimen/siz4" />
+
+    <TextView
+        android:id="@+id/device_info_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/cor4"
+        android:layout_gravity="right|center_vertical"
+        android:textSize="@dimen/siz5"
+        android:text="工作中"
+        android:visibility="gone"
+        />
+
+
+    </FrameLayout>
+
+    <View
+        style="@style/CommonLandscapeLine"
+        android:layout_marginLeft="@dimen/dimen_size_38" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        android:dividerPadding="@dimen/dimen_size_15"
+        android:divider="@drawable/divider_line_vertical"
+        >
+
+        <TextView
+            android:id="@+id/device_info_oil"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/pad1"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/icon_fuel"
+            android:drawablePadding="@dimen/pad1"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/siz5" />
+
+
+        <TextView
+            android:id="@+id/device_info_timelen"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/icon_time"
+            android:drawablePadding="@dimen/pad1"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/pad1"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/siz5" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

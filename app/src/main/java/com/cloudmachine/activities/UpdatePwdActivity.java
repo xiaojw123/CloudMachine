@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.task.UpdatePwdAsync;
 import com.cloudmachine.utils.Constants;
@@ -26,8 +25,7 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 	private ClearEditTextView old_pwd;
 	private ClearEditTextView new_pwd;
 	private ClearEditTextView confirm_pwd;
-	private TitleView title_layout;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,7 +53,6 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 	}
 
 	private void initView(){
-		initTitleLayout();
 		btn_bottom = (RadiusButtonView)findViewById(R.id.btn_bottom);
 		old_pwd = (ClearEditTextView)findViewById(R.id.old_pwd);
 		new_pwd = (ClearEditTextView)findViewById(R.id.new_pwd);
@@ -88,19 +85,7 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 		});
 	}
 
-	private void initTitleLayout() {
-		title_layout = (TitleView) findViewById(R.id.title_layout);
-		title_layout.setTitle("修改密码");
-		title_layout.setLeftOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				finish();
-			}
-		});
-	}
-	
+
 	@Override
 	public boolean handleMessage(Message msg) {
 		// TODO Auto-generated method stub

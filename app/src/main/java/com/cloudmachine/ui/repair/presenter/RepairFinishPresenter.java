@@ -1,8 +1,8 @@
 package com.cloudmachine.ui.repair.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.struc.BOInfo;
-import com.cloudmachine.struc.CWInfo;
+import com.cloudmachine.bean.BOInfo;
+import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.ui.repair.contract.RepairFinishContract;
 import com.cloudmachine.utils.ToastUtils;
 

@@ -7,8 +7,8 @@ import android.os.Message;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.struc.BaseBO;
-import com.cloudmachine.struc.CouponInfo;
+import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.CouponInfo;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.google.gson.Gson;
@@ -90,10 +90,8 @@ public class GetCouponAsync extends ATask {
                 msg.what = Constants.HANDLER_GETCOUPONS_SUCCESS;
                 msg.obj = baseBO.getResult();
                 handler.sendMessage(msg);
-                Constants.MyLog("拿到我的优惠券成功");
                 return;
             } catch (Exception e) {
-                Constants.MyLog(e.toString());
             }
         } else {
         }

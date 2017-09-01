@@ -1,15 +1,5 @@
 package com.cloudmachine.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.message.BasicNameValuePair;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -32,9 +22,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.cloudmachine.R;
-import com.cloudmachine.struc.ScreenInfo;
+import com.cloudmachine.bean.ScreenInfo;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Utils {
     public static final String TAG = "PushDemoActivity";
@@ -60,9 +60,9 @@ public class Utils {
 	.build();
     
     public static DisplayImageOptions displayImageOptions  = new DisplayImageOptions.Builder()
-	.showImageOnFail(R.drawable.default_img)
-	.showImageForEmptyUri(R.drawable.default_img)
-	.showImageOnFail(R.drawable.default_img)
+	.showImageOnFail(R.drawable.ic_default_head)
+	.showImageForEmptyUri(R.drawable.ic_default_head)
+	.showImageOnFail(R.drawable.ic_default_head)
 	.cacheInMemory(true)
 	.cacheOnDisc(true)
 	.displayer(new RoundedBitmapDisplayer(10))

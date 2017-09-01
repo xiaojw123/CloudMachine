@@ -1,10 +1,6 @@
 package com.cloudmachine.utils.widgets;
 
 
-import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.MathHelper;
-import com.cloudmachine.utils.widgets.dashboard.DashboardView.StripeMode;
-
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -12,12 +8,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.animation.Interpolator;
+
+import com.cloudmachine.utils.MathHelper;
 
 public class ArcView extends View{
 
@@ -179,7 +175,6 @@ public class ArcView extends View{
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
 //            	valueAnimator.getAnimatedValue()
-            	Constants.MyLog(""+valueAnimator.getAnimatedValue());
             	mProgress = Float.valueOf(valueAnimator.getAnimatedValue().toString());
 //                currentValue = (float) (valueAnimator.getAnimatedValue().toString());
                 invalidate();

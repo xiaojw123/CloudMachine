@@ -15,14 +15,10 @@ import com.cloudmachine.R;
 
 
 public class AddDeviceItemView extends RelativeLayout {
-	private Context context;
-    private TextView xing,ll_line,name_text,ctext_view;
-    private TextView bottom_line;
-    private ImageView arrowImage; 
+    private TextView xing,name_text,ctext_view;
+    private ImageView arrowImage;
     private EditText edit_view;
     private boolean required,edit,arrow;
-    private boolean isLast;
-    
     private String title_name = "";
     private String hint = "";
     private String content = "";
@@ -46,8 +42,6 @@ public class AddDeviceItemView extends RelativeLayout {
         required = a.getBoolean(R.styleable.addDItem_view_required, false);
         edit = a.getBoolean(R.styleable.addDItem_view_edit, false);
         arrow = a.getBoolean(R.styleable.addDItem_view_arrow, false);
-        isLast = a.getBoolean(R.styleable.addDItem_view_last, false);
-        
         initView(context);
         setTitle(title_name);
         setInitContent(content);
@@ -55,20 +49,16 @@ public class AddDeviceItemView extends RelativeLayout {
         isEdit(edit);
         isRequired(required);
         isArrow(arrow);
-        isLastLine(isLast);
-        a.recycle(); 
+        a.recycle();
 
     }
 
     private void initView(Context context) {
-    	this.context = context;
         // 初始情况，设置下拉刷新view高度为0
     	LayoutInflater inflater=(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.view_adddevice_item, this);
 
-        bottom_line = (TextView) findViewById(R.id.bottom_line);
         xing = (TextView) findViewById(R.id.xing);
-        ll_line = (TextView) findViewById(R.id.ll_line);
         name_text = (TextView) findViewById(R.id.name_text);
         ctext_view = (TextView) findViewById(R.id.ctext_view);
         arrowImage = (ImageView) findViewById(R.id.arrow);
@@ -116,16 +106,6 @@ public class AddDeviceItemView extends RelativeLayout {
 		   arrowImage.setVisibility(View.VISIBLE);
 	   }else{
 		   arrowImage.setVisibility(View.INVISIBLE);
-	   }
-   }
-   public void isLastLine(boolean b){
-	   isLast = b;
-	   if(b){
-		   bottom_line.setVisibility(View.VISIBLE);
-		   ll_line.setVisibility(View.GONE);
-	   }else{
-		   bottom_line.setVisibility(View.GONE);
-		   ll_line.setVisibility(View.VISIBLE);
 	   }
    }
    public boolean getRequired(){

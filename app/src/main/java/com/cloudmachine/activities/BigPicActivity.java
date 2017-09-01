@@ -17,6 +17,7 @@ import java.util.List;
 
 public class BigPicActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
     public static final String BIG_PIC_URLS = "big_pic_url";
+    public static final String POSITION="position";
     private static final String INDEX_FORMARTTER="%1$d/%2$d";
     ImageView bigPicBack;
     ViewPager bigPicVpager;
@@ -44,6 +45,7 @@ public class BigPicActivity extends AppCompatActivity implements View.OnClickLis
 
     private void initViewPager() {
         List<String> bigUrls = getIntent().getStringArrayListExtra(BIG_PIC_URLS);
+        int currentIndex=getIntent().getIntExtra(POSITION,0);
         List<ImageView> imgList = new ArrayList<>();
         for (String url : bigUrls) {
             ImageView img = new ImageView(this);
@@ -55,8 +57,8 @@ public class BigPicActivity extends AppCompatActivity implements View.OnClickLis
         len=imgList.size();
         bigPicVpager.setAdapter(new BigImgPageAdaper(imgList));
         bigPicVpager.addOnPageChangeListener(this);
-        bigPicVpager.setCurrentItem(0);
-        bigPicIndex.setText(String.format(INDEX_FORMARTTER,1, len));
+        bigPicVpager.setCurrentItem(currentIndex);
+        bigPicIndex.setText(String.format(INDEX_FORMARTTER,currentIndex+1, len));
     }
 
 

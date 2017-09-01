@@ -8,12 +8,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/login_title_height">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/ll_back"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="@dimen/login_title_height">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -21,32 +21,22 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:layout_marginLeft="15dp"
-                android:text="返回"
+                android:text="取消"
                 android:textColor="#444444" />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="验证手机号"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="99dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/vp_weixinlogo"
-            android:layout_width="73dp"
-            android:layout_height="73dp"
-            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/weichat_login" />
+            android:layout_marginTop="@dimen/dimen_size_54"
+            android:text="验证手机号"
+            android:textColor="@color/public_black"
+            android:textSize="@dimen/register_title_text_size" />
+
+
     </RelativeLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -77,7 +67,8 @@
             android:id="@+id/validate_layout"
             android:layout_width="@dimen/register_code_layout_width"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:enabled="false">
 
             <TextView
                 android:layout_width="@dimen/public_line_wh"
@@ -90,8 +81,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="获取验证码"
-                android:textColor="#444444"
+                android:textColor="@color/login_hint_text"
                 android:textSize="@dimen/public_textsize1" />
+            <!--android:textColor="#444444"-->
         </RelativeLayout>
 
         <LinearLayout
@@ -156,20 +148,22 @@
         style="@style/line_layout"
         android:layout_marginLeft="@dimen/public_layout_padding_left" />
 
+
     <com.cloudmachine.autolayout.widgets.RadiusButtonView
         android:id="@+id/find_btn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/novice_guide_button_height"
+        android:layout_height="@dimen/spa3"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/public_layout_padding_left"
-        android:layout_marginRight="@dimen/public_layout_padding_left"
-        android:layout_marginTop="@dimen/public_layout_padding_left"
-        cloudm:rbtn_fillColor_dw="@color/public_b_20"
-        cloudm:rbtn_fillColor_nm="@color/public_blue_bg"
-        cloudm:rbtn_strokeColor="@color/public_blue_bg"
+        android:layout_marginLeft="@dimen/pad2"
+        android:layout_marginRight="@dimen/pad2"
+        android:layout_marginTop="@dimen/spa5"
+        cloudm:rbtn_fillColor_dw="@color/cor5"
+        cloudm:rbtn_fillColor_nm="@color/cor5"
+        cloudm:rbtn_strokeColor="@color/cor5"
         cloudm:rbtn_text="提交"
-        cloudm:rbtn_textColor="@color/public_white"
-        cloudm:rbtn_textSize="@dimen/about_button_textsize" />
+        cloudm:rbtn_textColor="@color/cor2015"
+        cloudm:rbtn_textSize="@dimen/siz3" />
+
 
     <LinearLayout
         android:id="@+id/agreement_layout"
@@ -177,8 +171,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/public_textsize1"
         android:gravity="center_horizontal"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -192,7 +185,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="云机械平台服务协议"
-            android:textColor="@color/public_blue_bg"
+            android:textColor="@color/public_black"
             android:textSize="@dimen/public_textsize2" />
     </LinearLayout>
 

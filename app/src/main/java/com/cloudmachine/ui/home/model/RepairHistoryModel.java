@@ -2,11 +2,11 @@ package com.cloudmachine.ui.home.model;
 
 import android.content.Context;
 
-import com.cloudmachine.api.Api;
-import com.cloudmachine.api.HostType;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.helper.UserHelper;
-import com.cloudmachine.struc.RepairListInfo;
+import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.ui.home.contract.RepairHistoryContract;
 import com.cloudmachine.utils.Constants;
 

@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cloudm.autolayout.AutoRelativeLayout;
+import com.cloudmachine.autolayout.AutoRelativeLayout;
 import com.cloudmachine.R;
 
 

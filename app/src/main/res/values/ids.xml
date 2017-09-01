@@ -39,5 +39,11 @@
   <item type="id" name="about_version_code">false</item>
   <item type="id" name="split">false</item>
   <item type="id" name="id_RemarkInfo"/>
+  <item type="id" name="order_status"/>
+  <item type="id" name="order_item"/>
+<!--autolayout-->
+  <item name="id_tag_autolayout_size" type="id"/>
+  <item name="id_tag_autolayout_padding" type="id"/>
+  <item name="id_tag_autolayout_margin" type="id"/>
 
 </resources>

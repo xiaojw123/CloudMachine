@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/webview_progressbar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="4dp" />
+
+
 
     <WebView
-        android:id="@+id/wv_questions"
+        android:id="@+id/common_h5_wv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </WebView>
+        android:layout_height="match_parent"
+        android:layout_marginTop="-4dp"
+        android:layout_below="@+id/common_h5_ctv"
+        />
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/common_h5_pb"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="-4dp"
+        android:layout_below="@+id/common_h5_ctv"
+        />
+
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/common_h5_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>

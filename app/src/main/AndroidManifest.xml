@@ -1,48 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.cloudmachine">
-
-    <!-- android:installLocation="preferExternal" -->
-
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.cloudmachine">
     <permission
         android:name="com.cloudmachine.permission.JPUSH_MESSAGE"
-        android:protectionLevel="signature"/>
+        android:protectionLevel="signature" />
 
     <!-- 测试permissionDispatcher -->
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!-- Required  一些系统要求的权限，如访问网络等 -->
-    <uses-permission android:name="com.cloudmachine.permission.JPUSH_MESSAGE"/>
-    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="com.cloudmachine.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <!-- Optional for location -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <!-- 极光推送 结束 -->
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <!-- 以下为二维码扫描必须的权限 -->
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <!--
     <uses-feature android:name="android.hardware.camera"/>
@@ -53,83 +50,87 @@
     <!-- 高德地图定位权限 -->
     <!-- Normal Permissions 不需要运行时注册 -->
     <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
 
     <!-- 请求网络 -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- 不是SDK需要的权限，是示例中的后台唤醒定位需要的权限 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- 需要运行时注册的权限 -->
     <!-- 用于进行网络定位 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- 用于访问GPS定位 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- 用于提高GPS定位速度 -->
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <!-- 写入扩展存储，向扩展卡写入数据，用于写入缓存定位数据 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- 读取缓存数据 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!-- 用于读取手机当前的状态 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <!-- 更改设置 -->
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <!-- 照相及图片选择器 -->
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.camera.autofocus"
-        android:required="false"/>
+        android:required="false" />
 
     <!-- 照相及图片选择器 -->
     <application
-        android:name=".app.MyApplication"
+        android:name="com.cloudmachine.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
+        <!--<meta-data-->
+            <!--android:name="com.taobao.android.hotfix.IDSECRET"-->
+            <!--android:value="24604065-1" />-->
+        <!--<meta-data-->
+            <!--android:name="com.taobao.android.hotfix.APPSECRET"-->
+            <!--android:value="e489794ab324ddf3f5b26f53bd1e55ed" />-->
+        <!--<meta-data-->
+            <!--android:name="com.taobao.android.hotfix.RSASECRET"-->
+            <!--android:value="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnQX3myAaH+JR1olEebfYST/3Zjp11eJOn8EVVpkj5FDSK1rQfIER7c0TwHDzdjRJ8e0okJUoBdYeZBcUEyprQfEtyXpUxKSFTQFn+sb0VF27jtnEiBOoZQkOGyCHhX/xblk9ZfqQEAmKghh1D2ZAq/6iufUbayEdRXCpXPfpbpmzhOJs/NdykSfP5ZH6gK210lf9DmwsxJVX/yTShOhaw7iaCSNhnAzQbpCtl9EjvLAylg29zrAX0nxGrox6yqe4mZX5MpjljrC1ZqzHcfEyRgdMiWyaBv7g7dwFUyHl3LqKt2c1oULucal1iwbp7iICtQWxSr5LehHY9o3GPM3x1AgMBAAECggEAOQInqbvQDhR6dcYHpDmSwBcnzTnBDcM1gO5yk4kEInHynsgjyOA0t2dIvhbB4DovbOKRGNTk7q5is5O13bY5IorbJHZ8n68HPtsWUau/aSr9jvwmf5PxPv7JCW25rpoK6CTJkxWJThyKBXDxFKlZbG6Lzj3BIt1VAbRKckYbyZTWPni64oN7iSShu0TMkGTuXETXDzCNYRmCk8uLH4vWTen+8yJUDuwY4qIloqjCEz1KspTe4WYVL6+4HKsW3fRiiJOcR9lfDK09zAEewkgcUfnHxFNmqINihe14Z0uK/iQ0g9ZmNhviiuyTYjlbpSkpB9tZ/mVVh9lMRxdV3fQ/2QKBgQD+bOMNgd1Wzj32vPlhVSgoVJRudXvU4PqgloGHIjj09clewdnmqDSlfC27RCqtGudMPW1BcTeYiMRWTFeboU/MiiEJ28Qr2zIbK7afG3XiGEraAs0FugcwJQpFZiKtHfHQUfuDzx5LC/2xD1q8dJKh2fwhOVZ5gPQF+86V4ia7qwKBgQCoSn4zAXYologvkhzGFuWrv+jF9Sj+I4e/Oq5Z9gUfJNO5I2moruASFkVoZgSBlctXi97g5tMPT+GEyzy16qXVFyp52z0PaXwg4Vghq7Lup8+mbLFG5eggMkvW2unkWZ0Oxut9O5C6PpuuA0Nxp9St4M/28AHLoNOeBmz+dGOIXwKBgQD88D+idBMac5vCqwi6LTDpN30Be6cKckh4UmifcfRyA9CYddwtpdgBFT1ZyWEsC20brI3r26TL7lxS9z65qFtvG3vREz0p5Jch0AmUkHZXupLfvp0ZLmJrCMf3Spz6wqRe2MJVvhl9voQN/RfV94a3hcFVPm2sCfmP4VD2TYj4VQKBgA417B4me3HF9E4ACon3mQE9vUwp/YIoQeg17k8OZTRSCcbSZLOnwKgGVWoRY0QGABuuZe2b0Cq01hg+iSvbWpF52U5c4vUQNTkZjjWZqAxbAz/MYdPYyhcd6CWGasWrg4Wh6nSyuO/hJYg2IlXQlDbyit0ROzWUqQnpBP8fmOAFAoGBAJ6QSUBSUl3Boo+x/vxcKOaKNW4WdEp4hgQnA1lFjgWNQGjOdDNX3qzg9ZY44KNSmJaqZonUheXpbWX3efEC9V+dD8AmsAdqX67B7lkbXgTjgBBXeT3cXQ33UVm54Bg7AaqmIrsedhpzWRLF2KikPQ06ZCdlsOpgBA1QW2J9GJWK" />-->
+
         <!-- 配置兼容glide -->
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
-            android:value="GlideModule"/>
-        <meta-data
-            android:name="com.taobao.android.hotfix.APPSECRET"
-            android:value="b762380bf7c5cf0c414a6d9d99dff96e"/>
-        <meta-data
-            android:name="com.taobao.android.hotfix.RSASECRET"
-            android:value="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC9YeNvk5bWNxEnm+4gp1XSvUgw8EqzVL9PKlPrxkegMWGCF4w/KhtY6d+UW4Z5doeMMMXL3AoDON+AbIsKFcbf58y5xWknJ024uL935jTocX8Qvw6Uxp1rnnhV3G2GRITQq5JOxgEvAiT4MJrrh/rrloE4NzK9JfaL6rjQbhya5uKqa6TpafMpHkR4Lx/61923ZunBjoJvUTKXyAuw3Woig93cicvznXLJ4Vvng3LKFORSJiST+nUQBTQcXCMkOv5Bov9yB4W63YTj0IzfF5ODONtpwdD5UKIKfvz7FXIpEZp81W2xuUqi4FgkQ11DD3+UoW2xFC45fB76OFN36mzNAgMBAAECggEBAJKrcT1EjJky5LJMbUwUzL79oR9lujTQ+akSGxSK54YFOINMQW3Z6nweBO4dRDRlu+yzCT0tGQQN0+reJYCWBQP7ve5SGXIdWnAphQAS5f7vh30suto2SEzE2mWE5b4K6uHBPvqLFveVLZSZ8CFhms9CLKmg9kbPU/ZgvumNndHIjwQqeuNE8d0jGDNCytVFosQHKvixqpJxvHMbwBhwkMA+pEF5g1UVRKGonk/q/nj3hVITSMYpSrx59Okt0M574dv60ea84UPWJ4RvNlCGir6ebfa5eY+kHkLJTFIzvJAxXhXGRyva1f3B4MMgCoc6I21UK/yy4+5da26cTWcNuoECgYEA+ixU94HJ48Mnd2NfFx0pkilMSFOCXDsYulGJKM3ja4c/CkU7B2MBHDIUDrwZUciQGd5WAvQcQ8nBMK/cBHDtCdlCsd6qT5eSYfFD/gLNSOdz7fbF3wzfK0MfVlF1KHffMWCZuo4v6iONUEZ/vwNcn5Dx6ioavaAT0csXy38vPQUCgYEAwcsWvh7535K6Oqjm4d4P0hft9+FYF2pJtG6N4A+pJcMTvQPCYuzY+buqrm4quid6WU2eZ+gfzAHo0Mn/ZMlkgjKv7JEM1Z4FS0jIgQ/p4QbuxHfPDeaQV50wpduuDawK5YNtH6Yt9HUd0RDnUcoYdnYzXuKYMYF+SHuxPvtbuykCgYEA2U5u07uSgdw/yO2xaKN1O7fRwjV/09ulhBpVGPOWqw2EzcgLGUR/b110nMP4/lhIC6BceB5Q+vUicccgR19MFzT4QQbYS2Cuz5LB67/FT6F0yuyDPlew9qRMcS86pFdTsVFm12yw5CHTmzpRtrsV1qkR6cR/C94juSU/2wz0HH0CgYB04O24gKonYzEaS9/j/bABABmv1KLyjFIjlkHPDuLvOXZgGzJTw5EhHURVq2/tkf3CeoO9G0yCF+y4b/uuZ6BMvhFIVjstYv7CZwU2gciGxU2gBLpGIfaQQOekQJf6+vYfcmKQIgO5WiE/hDhfJcoXODbHVVaBFR56zM8bszGh8QKBgGS4zySO6r8cAVptxNtT7I59F9Z5hH6hYfKTu5iVYhS1GbMPaJAuHFCgUiP7O4cXh3OLAr7Ad9sBv/RMIz/csAslR0c022R0JIbCnvqso5d5tz9NDMaaNJKhaG07JMD8bngAhdFffBHdsoElMvxV8hWJjw6iWENY76qrO58AKPy5"/>
+            android:value="GlideModule" />
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="ffd30c2fe06c5aed9bf94e5068781c0a"/>
+            android:value="ffd30c2fe06c5aed9bf94e5068781c0a" />
         <meta-data
             android:name="design_width"
-            android:value="1080"/>
+            android:value="1080" />
         <meta-data
             android:name="design_height"
-            android:value="1920"/>
+            android:value="1920" />
 
         <!-- 定位需要的服务 -->
-        <service android:name="com.amap.api.location.APSService"/>
+        <service android:name="com.amap.api.location.APSService" />
 
         <!-- 照相图片选择器 -->
         <activity
             android:name="me.iwf.photopicker.PhotoPickerActivity"
-            android:theme="@style/customTheme"/>
+            android:theme="@style/customTheme" />
         <activity
             android:name="me.iwf.photopicker.PhotoPagerActivity"
-            android:theme="@style/customTheme"/>
+            android:theme="@style/customTheme" />
 
         <!-- 蚂蚁金服支付 -->
         <activity
@@ -137,21 +138,21 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="com.alipay.sdk.auth.AuthActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind"/>
+            android:screenOrientation="behind" />
         <activity
-            android:name=".activities.LoadingActivity"
+            android:name="com.cloudmachine.activities.LoadingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -161,12 +162,12 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
-                <data android:scheme="tencent100371282"/>
+                <data android:scheme="tencent100371282" />
 
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
@@ -174,335 +175,174 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".ui.login.acticity.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.InputPhoneNum"
+            android:name="com.cloudmachine.activities.EditPersonalActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
         <activity
-            android:name=".activities.InputCode"
+            android:name="com.cloudmachine.activities.UpdatePwdActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
         <activity
-            android:name=".activities.EditPersonalActivity"
+            android:name="com.cloudmachine.activities.SuggestBackActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".activities.UpdatePwdActivity"
+            android:name="com.cloudmachine.activities.FindPasswordActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
         <activity
-            android:name=".activities.SuggestBackActivity"
+            android:name="com.cloudmachine.activities.AboutCloudActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.FindPasswordActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
+            android:name="com.cloudmachine.activities.SearchPoiActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.WebviewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:name="com.cloudmachine.activities.CityActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.AboutCloudActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.SearchPoiActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activities.CityActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activities.AgentInfoActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.AddDeviceActivity"
+            android:name="com.cloudmachine.activities.AddDeviceActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
         <activity
-            android:name=".main.NewReplyActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
-        <activity
-            android:name=".activities.SettingActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.SettingMessageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".ui.homepage.fragment.MessageActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activities.SearchActivity"
+            android:name="com.cloudmachine.activities.SearchActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustResize"/>
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".activities.DeviceMcActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
-        <activity
-            android:name=".activities.OilWearActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
-        <activity
-            android:name=".activities.WorkTimeActivity"
+            android:name="com.cloudmachine.activities.WorkTimeActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.EngineActivity"
+            android:name="com.cloudmachine.activities.StatisticsActivity"
+            android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.HydraulicActivity"
+            android:name="com.cloudmachine.activities.OilAmountActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.OilAmountActivity"
+            android:name="com.cloudmachine.activities.MapOneActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cloudmachine.activities.HistoricalTrackActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.FaultDitailsActivity"
+            android:name="com.cloudmachine.activities.DeviceMcMemberActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.FaultDitailsListActivity"
+            android:name="com.cloudmachine.activities.GuideActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.MapOneActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activities.MapViewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.HistoricalTrackActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.PermissionActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.QrCodeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.DeviceMcMemberActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.GuideActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.EditLayoutActivity"
+            android:name="com.cloudmachine.activities.EditLayoutActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustUnspecified|adjustResize"/>
+            android:windowSoftInputMode="adjustUnspecified|adjustResize" />
         <activity
-            android:name=".main.photoImgeView.ImagePagerActivity"
+            android:name=".activities.ImagePagerActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".main.MipcaActivityCapture"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.MessageContentActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <!-- 多图选择 -->
         <activity
-            android:name=".main.photo.AlbumActivity"
+            android:name="com.cloudmachine.activities.AlbumActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".main.photo.ImageFile"
+            android:name="com.cloudmachine.activities.ImageFile"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
-            android:name=".main.photo.ShowAllPhoto"
+            android:name="com.cloudmachine.activities.ShowAllPhoto"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
-            android:name=".main.photo.GalleryActivity"
+            android:name="com.cloudmachine.activities.GalleryActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
-        <activity
-            android:name=".activities.RepairBasicInfomationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.repair.activity.NewRepairActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.DeviceListActivity"
+            android:name="com.cloudmachine.activities.CheckMachineActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.MachineTypeActivity"
+            android:name="com.cloudmachine.activities.EvaluationActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.MachineBrandActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.MachineModelActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.MachineAddressActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.CheckMachineActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.GetDecviceListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.EvaluationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.RepairRecordActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.WorkHoursActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <!-- 设置微信登录页面为透明 -->
         <!-- android:launchMode="singleTask" -->
         <!-- android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" -->
         <activity
-            android:name=".wxapi.WXEntryActivity"
+            android:name="com.cloudmachine.wxapi.WXEntryActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="adjustPan|adjustUnspecified|stateHidden">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:windowSoftInputMode="adjustPan|adjustUnspecified|stateHidden" />
         <activity
-            android:name=".activities.UseHelpActivity"
+            android:name="com.cloudmachine.activities.ViewCouponActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.WanaCloudBox"
+            android:name="com.cloudmachine.activities.RepairPayDetailsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.ConfirmInformationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
+            android:name="com.cloudmachine.activities.PermissionsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.PaymentResultsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.ViewCouponActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.RepairDetailsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".activities.PermissionsActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".wxapi.WXPayEntryActivity"
+            android:name="com.cloudmachine.wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".ui.login.acticity.VerifyPhoneNumActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".ui.homepage.activity.MessageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".ui.question.activity.QuestionActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".ui.homepage.activity.InsuranceActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".ui.homepage.activity.MasterDailyActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.personal.activity.PersonalDataActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.personal.activity.MyQRCodeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.repair.activity.ViewRepairActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.homepage.activity.QuestionCommunityActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".ui.personal.activity.InsuranceListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".ui.homepage.activity.AccessoriesMallActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity
-            android:name=".ui.personal.activity.AskMyQuestionActicity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.homepage.activity.ViewMessageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <receiver android:name=".wxapi.AppRegister">
+        <receiver android:name="com.cloudmachine.wxapi.AppRegister">
             <intent-filter>
-                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP"/>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
         </receiver>
 
@@ -515,7 +355,7 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"
-                tools:replace="name,resource"/>
+                tools:replace="name,resource" />
         </provider>
 
         <!--
@@ -538,7 +378,7 @@
 
         <receiver android:name=".broadcast.DownloadReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
 
@@ -548,17 +388,17 @@
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
-                <action android:name="cn.jpush.android.ui.PushActivity"/>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="com.cloudmachine"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.cloudmachine" />
             </intent-filter>
         </activity>
         <!-- Required  SDK核心功能 -->
         <service
             android:name="cn.jpush.android.service.DownloadService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
 
         <!-- Required SDK 核心功能 -->
         <service
@@ -566,10 +406,10 @@
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTER"/>
-                <action android:name="cn.jpush.android.intent.REPORT"/>
-                <action android:name="cn.jpush.android.intent.PushService"/>
-                <action android:name="cn.jpush.android.intent.PUSH_TIME"/>
+                <action android:name="cn.jpush.android.intent.REGISTER" />
+                <action android:name="cn.jpush.android.intent.REPORT" />
+                <action android:name="cn.jpush.android.intent.PushService" />
+                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
             </intent-filter>
         </service>
 
@@ -578,78 +418,73 @@
             android:name="cn.jpush.android.service.PushReceiver"
             android:enabled="true">
             <intent-filter android:priority="1000">
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY"/> <!-- Required  显示通知栏 -->
-                <category android:name="com.cloudmachine"/>
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" /> <!-- Required  显示通知栏 -->
+                <category android:name="com.cloudmachine" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.USER_PRESENT"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
             <!-- Optional -->
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED"/>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
 
-                <data android:scheme="package"/>
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
 
         <!-- Required SDK核心功能 -->
-        <receiver android:name="cn.jpush.android.service.AlarmReceiver"/>
+        <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
 
         <!-- User defined.  For test only  用户自定义的广播接收器 -->
         <receiver
             android:name=".broadcast.MyReceiver"
             android:enabled="true">
             <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTRATION"/> <!-- Required  用户注册SDK的intent -->
-                <action android:name="cn.jpush.android.intent.UNREGISTRATION"/>
-                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED"/> <!-- Required  用户接收SDK消息的intent -->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED"/> <!-- Required  用户接收SDK通知栏信息的intent -->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/> <!-- Required  用户打开自定义通知栏的intent -->
-                <action android:name="cn.jpush.android.intent.ACTION_RICHPUSH_CALLBACK"/> <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
-                <action android:name="cn.jpush.android.intent.CONNECTION"/> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
-                <category android:name="com.cloudmachine"/>
+                <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!-- Required  用户注册SDK的intent -->
+                <action android:name="cn.jpush.android.intent.UNREGISTRATION" />
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!-- Required  用户接收SDK消息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!-- Required  用户接收SDK通知栏信息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!-- Required  用户打开自定义通知栏的intent -->
+                <action android:name="cn.jpush.android.intent.ACTION_RICHPUSH_CALLBACK" /> <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
+                <action android:name="cn.jpush.android.intent.CONNECTION" /> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <category android:name="com.cloudmachine" />
             </intent-filter>
         </receiver>
 
         <!-- Required  . Enable it you can get statistics data with channel -->
         <meta-data
             android:name="JPUSH_CHANNEL"
-            android:value="developer-default"/>
+            android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="f2d4c2e7ac5f3f997b8278ab"/>
-        <!--
- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
-        -->
+            android:value="f2d4c2e7ac5f3f997b8278ab" />
+        <!--<meta-data-->
+            <!--android:name="com.google.android.gms.version"-->
+            <!--android:value="@integer/google_play_services_version" /> &lt;!&ndash; </>值来自开发者平台取得的AppKey &ndash;&gt;-->
         <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/> <!-- </>值来自开发者平台取得的AppKey -->
-        <!-- 正式云机械key：f2d4c2e7ac5f3f997b8278ab -->
-        <!--
-        友盟统计  放到 MyApplication 里设置了
-		<meta-data
             android:name="UMENG_APPKEY"
-            android:value="57bd696d67e58e71d3000d02" >
-        </meta-data>
-        -->
+            android:value="57bd696d67e58e71d3000d02" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="cloudm" />
+
         <activity
-            android:name=".activities.BigPicActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.home.activity.HomeActivity"/>
-        <activity android:name=".ui.home.activity.ActivitesActivity"/>
-        <activity android:name=".ui.home.activity.DeviceDetailActivity"/>
-        <activity android:name=".ui.home.activity.BaseMapActivity"/>
-        <activity android:name=".ui.home.activity.RemarkInfoActivity"/>
-        <activity
-            android:name=".ui.home.activity.MaintenanceSupervisorActivity"
-            android:hardwareAccelerated="true"/>
-        <activity android:name=".ui.home.activity.HistoricalTrackNewActivity"/>
-        <activity android:name=".ui.home.activity.TrackHistoryActivity"/>
-        <activity android:name=".ui.home.activity.RepairRecordNewActivity"/>
-        <activity android:name=".ui.repair.activity.RepairFinishDetailActivity"/>
+            android:name="com.cloudmachine.activities.BigPicActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.home.activity.HomeActivity" />
+        <activity android:name=".ui.home.activity.ActivitesActivity" />
+        <activity android:name=".ui.home.activity.DeviceDetailActivity" />
+        <activity android:name=".ui.home.activity.BaseMapActivity" />
+        <activity android:name=".ui.home.activity.RemarkInfoActivity" />
+        <activity android:name=".ui.home.activity.TrackHistoryActivity" />
+        <activity android:name=".ui.home.activity.RepairRecordNewActivity" />
+        <activity android:name=".ui.repair.activity.RepairFinishDetailActivity" />
+        <activity android:name=".ui.home.activity.PayDeviceInfoActivity" />
+        <activity android:name=".ui.home.activity.RepairDetailMapActivity" />
+        <activity android:name=".ui.home.activity.ConsumptionActivity" />
+        <activity android:name=".ui.home.activity.RoleSelActiviy" />
     </application>
 
 </manifest>

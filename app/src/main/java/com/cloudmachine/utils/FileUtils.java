@@ -7,14 +7,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.TextUtils;
 
-import com.github.mikephil.charting.utils.AppLog;
+import com.cloudmachine.chart.utils.AppLog;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -414,7 +413,7 @@ public class FileUtils {
             return "";
         }
             /*String textStr = "";
-			 if(TextUtils.isEmpty(inputString)){
+             if(TextUtils.isEmpty(inputString)){
 				 textStr = "";
 			 }else if(inputString.contains("<<")){
 				 textStr = inputString;
@@ -468,8 +467,8 @@ public class FileUtils {
      * @param name 文件路径
      * @return
      */
-		/*public static String getFileName(String name) {
-			File file1 = new File(name);
+        /*public static String getFileName(String name) {
+            File file1 = new File(name);
 			return file1.getName();
 		}*/
     public static boolean isExistRemote(String url) {
@@ -507,16 +506,16 @@ public class FileUtils {
         long currentTime = System.currentTimeMillis();
         LinkedList<File> list = new LinkedList<File>();
         File dir = new File(fileAbsolutePath);
-        File file[] = dir.listFiles();
-        for (int i = 0; i < file.length; i++) {
-            if (file[i].isDirectory()) {
-                list.add(file[i]);
-            } else {
-                long lastModified = file[i].lastModified();// 获取文件最后修改的时间
-                if (currentTime - lastModified > expiredTime) {
-                    file[i].delete();
+            File file[] = dir.listFiles();
+            for (int i = 0; i < file.length; i++) {
+                if (file[i].isDirectory()) {
+                    list.add(file[i]);
+                } else {
+                    long lastModified = file[i].lastModified();// 获取文件最后修改的时间
+                    if (currentTime - lastModified > expiredTime) {
+                        file[i].delete();
+                    }
                 }
-            }
         }
         File tmp;
         while (!list.isEmpty()) {
@@ -708,7 +707,7 @@ public class FileUtils {
 
     public static String saveBitmap(Bitmap bm, String picName) {
         try {
-            AppLog.print("media_mounted__"+Environment.getExternalStorageState().equals(
+            AppLog.print("media_mounted__" + Environment.getExternalStorageState().equals(
                     Environment.MEDIA_MOUNTED));
             File f = new File(SDPATH, picName + ".JPEG");
             if (f.exists()) {

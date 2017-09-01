@@ -7,20 +7,19 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.cloudmachine.R;
 import com.cloudmachine.activities.EvaluationActivity;
-import com.cloudmachine.activities.RepairBasicInfomationActivity;
-import com.cloudmachine.activities.RepairDetailsActivity;
+import com.cloudmachine.activities.RepairPayDetailsActivity;
 import com.cloudmachine.adapter.RepairListAdapter;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.struc.FinishBean;
-import com.cloudmachine.struc.RepairHistoryInfo;
-import com.cloudmachine.struc.RepairListInfo;
-import com.cloudmachine.struc.UnfinishedBean;
+import com.cloudmachine.bean.FinishBean;
+import com.cloudmachine.bean.RepairHistoryInfo;
+import com.cloudmachine.bean.RepairListInfo;
+import com.cloudmachine.bean.UnfinishedBean;
+import com.cloudmachine.helper.OrderStatus;
 import com.cloudmachine.ui.home.contract.RepairHistoryContract;
 import com.cloudmachine.ui.home.model.RepairHistoryModel;
 import com.cloudmachine.ui.home.presenter.RepairHistoryPresenter;
@@ -42,9 +41,8 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
     // private XListView xlvUnComplete;
 
     private RepairListAdapter repairListAdapter;
-    private RelativeLayout rlRepairNow;
+    private LinearLayout rlRepairNow;
     private RadiusButtonView btnBottomRepair;
-    private TitleView title_layout;
     private RepairListInfo repairListInfo;
     private ArrayList<FinishBean> finishBeans = new ArrayList<>(); // 已完成集合
     private ArrayList<UnfinishedBean> unfinishedBeans = new ArrayList<>();// 未完成集合
@@ -65,7 +63,6 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
 
     protected void initView() {
         mHandler = new Handler(this);
-        initTitleLayout();
         noRepairRecord = findViewById(R.id.no_repair_records); // 无维修记录布局
         have_repair_records = findViewById(R.id.have_repair_records); // 有维修记录布局
         btnRepairNow = (RadiusButtonView) findViewById(R.id.btn_repair_now); // 立刻报修
@@ -84,7 +81,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
         xlvComplete.setXListViewListener(this);
         xlvComplete.setAdapter(repairListAdapter);
         xlvComplete.setOnItemClickListener(this);
-        rlRepairNow = (RelativeLayout) findViewById(
+        rlRepairNow = (LinearLayout) findViewById(
                 R.id.rl_repair_now);
 
         btnBottomRepair = (RadiusButtonView) findViewById(
@@ -97,27 +94,12 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
             }
 
         });
-        showData();
         deviceId = getIntent().getLongExtra(Constants.MC_DEVICEID, Constants.INVALID_DEVICE_ID);
         if (deviceId == Constants.INVALID_DEVICE_ID) {
             rlRepairNow.setVisibility(View.VISIBLE);
         }
     }
 
-
-    private void initTitleLayout() {
-
-        title_layout = (TitleView) findViewById(R.id.title_layout);
-        title_layout.setTitle(getResources().getString(
-                R.string.main3_title_text));
-        title_layout.setLeftOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-//        title_layout.setLeftLayoutVisibility(View.GONE);
-    }
 
     private void showData() {
 
@@ -205,80 +187,105 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        int temp = position - 1;
-        if (null != repairList && repairList.size() > 0            //跳转单个报修详情页面
-                ) {
-
-            if (temp < unfinishedBeans.size()) {
-
-                if (unfinishedBeans.get(temp).getNstatus().equals("8")) {
-                    switch (unfinishedBeans.get(temp).getNloanamount_TYPE()) {
-                        case 0://正常状态(已付款,直接判断是否评价)
-                            if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
-                                //未评价
-                                //nStatusString = "待评价";
-                            } else if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("Y")) {
-                                //nStatusString = "已完工";
-                            }
-                            break;
-                        case -1://未知状态
-                            try {
-                                if (Double.parseDouble(unfinishedBeans.get(temp).getNloanamount()) > 0.0) {
-                                    //nStatusString = "待付款";
-                                } else {
-                                    if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
-                                        //nStatusString = "待评价";
-                                    } else if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("Y")) {
-                                        //nStatusString = "已完工";
-                                    }
-                                }
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace();
-                                Constants.ToastAction("服务器传参数错误");
-                            }
-                            break;
-                        case 1:
-                            if (Double.parseDouble(unfinishedBeans.get(temp).getNloanamount()) > 0.0) {
-                                //nStatusString = "待支付";
-                                String orderNum = unfinishedBeans.get(temp).getOrderNum();
-                                String flag = unfinishedBeans.get(temp).getFlag();
-                                Bundle b = new Bundle();
-                                b.putString("orderNum", orderNum);
-                                b.putString("flag", flag);
-                                Constants.toActivity(RepairRecordNewActivity.this, RepairDetailsActivity.class, b, false);
-                            } else {
-                                if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
-                                    //	nStatusString = "待评价";
-                                } else if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("Y")) {
-                                    //nStatusString = "已完工";
-                                }
-                            }
-                            break;
-                    }
-                } else {
-                    String orderNum = unfinishedBeans.get(temp).getOrderNum();
-                    Intent intent = new Intent(RepairRecordNewActivity.this, RepairBasicInfomationActivity.class);
-                    intent.putExtra("orderNum", orderNum);
-                    intent.putExtra("flag", unfinishedBeans.get(temp).getFlag());
-                    startActivity(intent);
-                }
-
-            } else {
-                int p = temp - unfinishedBeans.size();
-                if (finishBeans.get(p).getIs_EVALUATE().equals("N")) {
-                    Intent intent = new Intent(RepairRecordNewActivity.this, EvaluationActivity.class);
-                    intent.putExtra("orderNum", finishBeans.get(p).getOrderNum());
-                    intent.putExtra("tel", finishBeans.get(p).getVmacoptel());
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(RepairRecordNewActivity.this, RepairFinishDetailActivity.class);
-                    intent.putExtra("orderNum", finishBeans.get(p).getOrderNum());
-                    intent.putExtra("flag", finishBeans.get(p).getFlag());
-                    startActivity(intent);
-                }
-            }
-
+        String orderStatus = (String) view.getTag(R.id.order_status);
+        RepairHistoryInfo info = (RepairHistoryInfo) view.getTag(R.id.order_item);
+        if (info==null){
+            return;
         }
+        String orderNum = info.getOrderNum();
+        String flag = info.getFlag();
+        switch (orderStatus) {
+            case OrderStatus.PAY:
+                Bundle b = new Bundle();
+                b.putString("orderNum", orderNum);
+                b.putString("flag", flag);
+                Constants.toActivity(RepairRecordNewActivity.this, RepairPayDetailsActivity.class, b, false);
+                break;
+            case OrderStatus.EVALUATION:
+                Bundle eBundle = new Bundle();
+                eBundle.putString("orderNum", orderNum);
+                eBundle.putString("tel", info.getVmacoptel());
+                Constants.toActivity(RepairRecordNewActivity.this, EvaluationActivity.class, eBundle);
+                break;
+            case OrderStatus.COMPLETED:
+                Intent intent = new Intent(RepairRecordNewActivity.this, RepairFinishDetailActivity.class);
+                intent.putExtra("orderNum", orderNum);
+                intent.putExtra("flag", flag);
+                startActivity(intent);
+                break;
+            default:
+                Bundle dBundle = new Bundle();
+                dBundle.putString("orderNum", orderNum);
+                dBundle.putString("nstatus", orderStatus);
+                dBundle.putString("flag", flag);
+                Constants.toActivity(RepairRecordNewActivity.this, RepairDetailMapActivity.class, dBundle);
+                break;
+        }
+
+//
+//        if (null != repairList && repairList.size() > 0            //跳转单个报修详情页面
+//                ) {
+//
+//            if (temp < unfinishedBeans.size()) {
+//
+//                if (unfinishedBeans.get(temp).getNstatus().equals("8")) {
+//                    switch (unfinishedBeans.get(temp).getNloanamount_TYPE()) {
+//                        case 0://正常状态(已付款,直接判断是否评价)
+//                            if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
+//                                //未评价
+//                                //nStatusString = "待评价";
+//                            } else if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("Y")) {
+//                                //nStatusString = "已完工";
+//                            }
+//                            break;
+//                        case -1://未知状态
+//                            try {
+//                                if (Double.parseDouble(unfinishedBeans.get(temp).getNloanamount()) > 0.0) {
+//                                    //nStatusString = "待付款";
+//                                } else {
+//                                    if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
+//                                        //nStatusString = "待评价";
+//                                    } else if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("Y")) {
+//                                        //nStatusString = "已完工";
+//                                    }
+//                                }
+//                            } catch (NumberFormatException e) {
+//                                e.printStackTrace();
+//                                Constants.ToastAction("服务器传参数错误");
+//                            }
+//                            break;
+//                        case 1:
+//                            if (Double.parseDouble(unfinishedBeans.get(temp).getNloanamount()) > 0.0) {
+//                                //nStatusString = "待支付";
+//                                String orderNum = unfinishedBeans.get(temp).getOrderNum();
+//                                String flag = unfinishedBeans.get(temp).getFlag();
+//                                Bundle b = new Bundle();
+//                                b.putString("orderNum", orderNum);
+//                                b.putString("flag", flag);
+//                                Constants.toActivity(RepairRecordNewActivity.this, RepairPayDetailsActivity.class, b, false);
+//                            } else {
+//                                if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
+//                                    //	nStatusString = "待评价";
+//                                } else if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("Y")) {
+//                                    //nStatusString = "已完工";
+//                                }
+//                            }
+//                            break;
+//                    }
+//                } else {
+//
+//                }
+//
+//            } else {
+//                int p = temp - unfinishedBeans.size();
+//                if (finishBeans.get(p).getIs_EVALUATE().equals("N")) {
+//
+//                } else {
+//
+//                }
+//            }
+//
+//        }
     }
 
 

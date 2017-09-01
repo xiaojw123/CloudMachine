@@ -3,8 +3,8 @@ package com.cloudmachine.ui.personal.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.struc.Member;
-import com.cloudmachine.struc.ScoreInfo;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.ScoreInfo;
 
 import rx.Observable;
 

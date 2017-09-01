@@ -3,18 +3,16 @@ package com.cloudmachine.ui.repair.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
+import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.listener.RecyclerItemClickListener;
-import com.cloudmachine.recycleadapter.ValidCouponAdapter;
-import com.cloudmachine.recycleadapter.decoration.GridSpacingItemDecoration;
-import com.cloudmachine.struc.CouponInfo;
+import com.cloudmachine.adapter.ValidCouponAdapter;
+import com.cloudmachine.bean.CouponInfo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,10 +32,11 @@ import butterknife.ButterKnife;
 
 public class ViewRepairActivity extends BaseAutoLayoutActivity {
 
-    @BindView(R.id.title_layout)
-    TitleView    mTitleLayout;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.vp_empt_tv)
+    TextView mEmptTv;
+
     private ArrayList<CouponInfo> mCouponData;
 
 
@@ -67,13 +66,18 @@ public class ViewRepairActivity extends BaseAutoLayoutActivity {
     }
 
     private void initView() {
-
-        initTitleLayout();
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, getResources().getDimensionPixelSize(R.dimen.padding_middle), true));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
+        if (mCouponData!=null&&mCouponData.size()>0){
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptTv.setVisibility(View.GONE);
+        }else{
+            mRecyclerView.setVisibility(View.GONE);
+            mEmptTv.setVisibility(View.VISIBLE);
+        }
         mValidCouponAdapter = new ValidCouponAdapter(mCouponData, ViewRepairActivity.this);
         mRecyclerView.setAdapter(mValidCouponAdapter);
+
 
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(ViewRepairActivity.this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
@@ -81,7 +85,7 @@ public class ViewRepairActivity extends BaseAutoLayoutActivity {
                 mCouponId = mCouponData.get(position).getId();
                 mAmount = mCouponData.get(position).getAmount();
                 Intent intent = new Intent();
-                intent.putExtra("couponId", mCouponData);
+                intent.putExtra("couponId", mCouponId);
                 intent.putExtra("amount", String.valueOf(mAmount));
                 ViewRepairActivity.this.setResult(RESULT_OK,intent);
                 finish();
@@ -90,16 +94,6 @@ public class ViewRepairActivity extends BaseAutoLayoutActivity {
 
     }
 
-    private void initTitleLayout() {
-
-        mTitleLayout.setTitle("查看优惠券");
-        mTitleLayout.setLeftImage(-1, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
 
     @Override
     public void initPresenter() {

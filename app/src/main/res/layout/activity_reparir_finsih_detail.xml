@@ -1,66 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/color_f6f6f9"
+              android:background="@color/public_bg"
               android:orientation="vertical">
 
     <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/finish_titleview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:common_title_name="报修详情"
+        app:common_title_name="已完工"
+        app:common_right_text="评价"
         />
 
 
+    <FrameLayout
+        android:id="@+id/finish_deviceinfo_fl"
+        style="@style/CommonTabContainerStyle"
+        android:layout_below="@+id/finish_titleview"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/siz3"
+            android:textColor="@color/cor9"
+            android:text="设备信息"
+            android:layout_gravity="center_vertical"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_right"
+            android:layout_gravity="right|center_vertical"
+            />
+
+    </FrameLayout>
+
+
+
     <LinearLayout
-        android:id="@+id/order_detail_item_container1"
+        android:layout_below="@+id/finish_deviceinfo_fl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/order_detail_layout1"
-        android:background="@color/white"
-        android:divider="@drawable/divider_line_black"
+        android:layout_marginTop="@dimen/spa7"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dimen_size_16"
-        android:paddingRight="@dimen/dimen_size_16"
-        android:showDividers="middle" />
+        android:showDividers="middle"
+        android:divider="@drawable/divider_line_horztial"
+        >
+        <FrameLayout
+            android:id="@+id/finish_consumption_fl"
+            style="@style/CommonTabContainerStyle"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/siz3"
+                android:textColor="@color/cor9"
+                android:text="耗件明细"
+                android:layout_gravity="center_vertical"
+                />
+
+            <TextView
+                android:id="@+id/finish_consumption_tv"
+                android:text="¥0"
+                android:drawableRight="@drawable/arrow_right"
+                style="@style/CommonTabContentStyle"
+                android:drawablePadding="@dimen/dimen_size_10"
+                />
+
+        </FrameLayout>
+
+        <FrameLayout
+            style="@style/CommonTabContainerStyle"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/siz3"
+                android:textColor="@color/cor9"
+                android:text="优惠券"
+                android:layout_gravity="center_vertical"
+                />
+
+            <TextView
+                android:id="@+id/finish_coupon_tv"
+                android:text="¥0"
+                style="@style/CommonTabContentStyle"
+                />
+
+        </FrameLayout>
+
+        <FrameLayout
+            style="@style/CommonTabContainerStyle"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/siz3"
+                android:textColor="@color/cor9"
+                android:text="工时费"
+                android:layout_gravity="center_vertical"
+                />
+
+            <TextView
+                android:id="@+id/finish_workhours_tv"
+                android:text="¥0"
+                style="@style/CommonTabContentStyle"
+                />
+
+        </FrameLayout>
+
+
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/part_discount_layout"
+                style="@style/CommonTabContainerStyle">
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="配件折扣" />
+
+                <TextView
+                    android:id="@+id/part_discount_amout"
+                    style="@style/personal_edit_text"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:text="0" />
+            </RelativeLayout>
+
+
+
+
+
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/worktime_discount_layout"
+                style="@style/CommonTabContainerStyle">
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="工时折扣" />
+
+                <TextView
+                    android:id="@+id/worktime_discount_amout"
+                    style="@style/personal_edit_text"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:text="0" />
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/ticket_discount_layout"
+                style="@style/CommonTabContainerStyle"
+                >
+
+                <TextView
+                    style="@style/personal_left_text"
+                    android:text="赠送件券" />
+
+                <TextView
+                    android:id="@+id/ticket_discount_amout"
+                    style="@style/personal_edit_text"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:text="0" />
+            </RelativeLayout>
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/order_detail_item_container2_title"
+        android:id="@+id/finish_deviceinfo_amount"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_36"
-        android:text="耗件详情"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/text_size_14_sp"
-        android:layout_below="@+id/order_detail_item_container2"
-        android:visibility="gone"
-        android:paddingLeft="@dimen/dimen_size_16"
-        />
-    <LinearLayout
-        android:id="@+id/order_detail_item_container2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/order_detail_item_container1"
+        android:layout_height="@dimen/dimen_size_60"
         android:background="@color/white"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dimen_size_16"
-        android:paddingRight="@dimen/dimen_size_16"
-        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical|right"
+        android:text="实付:¥ 0"
+        android:textSize="@dimen/text_size_15_sp"
+        android:textColor="@color/cor1"
+        android:paddingRight="@dimen/pad2"
         />
 
 
 
-    <LinearLayout
-        android:id="@+id/order_detail_item_container3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/order_detail_item_container2"
-        android:background="@color/white"
-        android:divider="@drawable/divider_line_black"
-        android:orientation="vertical"
-        android:layout_marginTop="12dp"
-        android:paddingLeft="@dimen/dimen_size_16"
-        android:paddingRight="@dimen/dimen_size_16"
-        android:showDividers="middle" />
 
-</LinearLayout>
+
+
+
+
+
+
+
+
+</RelativeLayout>

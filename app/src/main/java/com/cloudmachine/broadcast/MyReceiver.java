@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cloudmachine.activities.AboutCloudActivity;
-import com.cloudmachine.activities.WanaCloudBox;
+import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
@@ -28,7 +28,6 @@ import cn.jpush.android.api.JPushInterface;
  */
 public class MyReceiver extends BroadcastReceiver {
     private static final String TAG = "JPush";
-    public static final String NOTIFY_URL = "notify_url";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -139,7 +138,8 @@ public class MyReceiver extends BroadcastReceiver {
                             context.startActivity(i3);
                             return;
                         case 8:
-                            Intent i4 = new Intent(context, WanaCloudBox.class);
+                            Intent i4 = new Intent(context,QuestionCommunityActivity.class);
+                            bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppBoxDetail);
                             i4.putExtras(bundle);
                             i4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(i4);
@@ -148,7 +148,7 @@ public class MyReceiver extends BroadcastReceiver {
 //                            notifaction__Result__{"url":"http:\/\/h5.test.cloudm.com\/n\/ask_chatlist?qid=949&auid=4823&myid=4852","type":"9"}
                             Intent notifyIntent = new Intent(context, QuestionCommunityActivity.class);
                             String notifyUrl = extraJson.optString("url");
-                            notifyIntent.putExtra(NOTIFY_URL, notifyUrl);
+                            notifyIntent.putExtra(QuestionCommunityActivity.H5_URL, notifyUrl);
                             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(notifyIntent);
                             break;

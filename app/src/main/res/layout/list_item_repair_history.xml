@@ -1,97 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_list_item"
-    android:orientation="vertical">
+    android:layout_marginTop="@dimen/dimen_size_8"
+    >
 
-    <RelativeLayout
-        android:id="@+id/completed"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/repair_completed"
-        android:background="@color/public_bg">
-
-        <TextView
-            android:id="@+id/tv_completed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/repair_completed_text_leftmargin"
-            android:text="已完成"
-            android:textColor="@color/about_version_text"
-            android:textSize="@dimen/public_textsize4" />
-    </RelativeLayout>
-
-    <!--
-         <LinearLayout
-        android:layout_below="@id/completed"
-        android:id="@+id/ll_repair"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/public_white"
-        android:orientation="horizontal" >
-    -->
+        android:layout_marginLeft="@dimen/dimen_size_8"
+        android:layout_marginRight="@dimen/dimen_size_8"
+        android:layout_marginBottom="@dimen/dimen_size_6"
+        android:orientation="vertical"
+        >
 
-    <RelativeLayout
-        android:id="@+id/rl_repair_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/completed"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/repair_completed"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/tv_completed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/repair_completed_text_leftmargin"
+                android:text="已完成"
+                android:textColor="@color/about_version_text"
+                android:textSize="@dimen/public_textsize4" />
+        </RelativeLayout>
+
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/public_hieght1">
+            android:layout_height="@dimen/dimen_size_70"
+            android:paddingLeft="@dimen/pad1"
+            android:paddingRight="@dimen/pad1"
+            android:background="@drawable/bg_card"
+            >
 
-            <ImageView
-                android:id="@+id/arrow_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/public_textsize7"
-                android:src="@drawable/arrow_next" />
 
-            <TextView
-                android:id="@+id/repair_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/arrow_right"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="5px"
-                android:layout_marginRight="@dimen/public_textsize7"
-                android:text="16/07/16"
-                android:textColor="@color/public_text_color2"
-                android:textSize="@dimen/public_textsize6" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/arrow_right"
-                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/rl_top"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/iv_icon"
-                        android:layout_width="@dimen/oval_blue_size"
-                        android:layout_height="@dimen/oval_blue_size"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/oval_blue_leftmargin"
-                        android:src="@drawable/oval_blue" />
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/repair_history_time_tv"
+                    android:layout_marginTop="@dimen/dimen_size_10"
+                    >
 
                     <TextView
                         android:id="@+id/device_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/repair_item_text_marginleft"
                         android:singleLine="true"
-                        android:text="云机械一号"
-                        android:textColor="@color/public_black"
-                        android:textSize="@dimen/public_textsize3" />
+                        android:textColor="@color/cor8"
+                        android:textSize="@dimen/siz3" />
 
                     <ImageView
                         android:id="@+id/logo_flag_img"
@@ -104,87 +71,49 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/repair_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/taglayout_margintop5">
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/cor9"
+                    android:textSize="@dimen/siz6"
+                    android:layout_below="@+id/rl_top"
+                    android:layout_toLeftOf="@+id/repair_history_status_tv"
+                    />
 
-                    <ImageView
-                        android:id="@+id/iv_icon2"
-                        android:layout_width="@dimen/oval_blue_size"
-                        android:layout_height="@dimen/oval_blue_size"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/oval_blue_leftmargin"
-                        android:src="@drawable/oval_blue"
-                        android:visibility="invisible" />
-
-                    <TextView
-                        android:id="@+id/repair_place"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/repair_item_text_marginleft"
-                        android:maxLines="2"
-                        android:text="杭州余杭区文一西路998好海创园"
-                        android:textColor="@color/public_text_color1"
-                        android:textSize="@dimen/public_textsize2" />
-                </LinearLayout>
-            </LinearLayout>
-
-
-        </RelativeLayout>
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/divide_line"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/public_line_wh"
-        android:layout_marginLeft="@dimen/public_layout_padding_left"
-        android:background="@color/list_divider_color" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:id="@+id/rl_repair"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/repair_item_height4">
-
-            <LinearLayout
-                style="@style/line_layout"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/public_line_wh" />
 
             <TextView
-                android:id="@+id/price"
+                android:id="@+id/repair_history_time_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/rating_bar_oval_margintop"
-                android:layout_marginTop="@dimen/repair_item_text_margintop3"
-                android:text="1200元"
-                android:textColor="@color/public_black"
-                android:textSize="@dimen/public_textsize3" />
+                android:textColor="@color/c_b5"
+                android:textSize="@dimen/siz7"
+                android:layout_alignRight="@+id/repair_history_status_tv"
+                android:layout_above="@+id/repair_history_status_tv"
+                android:layout_marginBottom="@dimen/dimen_size_15"
+                />
 
             <TextView
-                android:id="@+id/status"
+                android:id="@+id/repair_history_status_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/repair_item_text_marginleft"
-                android:layout_marginTop="@dimen/repair_item_text_margintop3"
-                android:text="状态"
-                android:textColor="#fbaa1a"
-                android:textSize="@dimen/public_textsize3"
+                android:layout_centerVertical="true"
+                android:drawablePadding="@dimen/dimen_size_6"
+                android:layout_alignTop="@+id/repair_desc"
+                android:drawableRight="@drawable/arrow_right"
+                android:textColor="@color/cor16"
+                android:textSize="@dimen/siz7" />
 
-                />
+
+
         </RelativeLayout>
 
-        <View
-            android:id="@+id/bg_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/repair_item_text_marginbottom"
-            android:layout_below="@id/rl_repair"
-            android:background="@color/public_bg" />
-    </RelativeLayout>
 
-</LinearLayout>
+    </LinearLayout>
+
+
+</FrameLayout>

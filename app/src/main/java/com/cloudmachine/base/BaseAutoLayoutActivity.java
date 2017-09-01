@@ -10,7 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.cloudm.autolayout.AutoLayoutActivity;
+import com.cloudmachine.autolayout.AutoLayoutActivity;
 import com.cloudmachine.R;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.utils.AppManager;
@@ -78,7 +78,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 //            params.topMargin = 50;
 //        }
 
-		StatusBarCompat.setStatusBarColor(this, ContextCompat.getColor(this, R.color.main_color));
+		StatusBarCompat.setStatusBarColor(this, ContextCompat.getColor(this, R.color.cor10));
     }
 
     public void setStatusbarColor(String rgb) {

@@ -1,20 +1,18 @@
 
 package com.cloudmachine.utils.mpchart;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.github.mikephil.charting.components.MarkerView;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.CandleEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.utils.Utils;
+import com.cloudmachine.chart.components.MarkerView;
+import com.cloudmachine.chart.data.CandleEntry;
+import com.cloudmachine.chart.data.Entry;
+import com.cloudmachine.chart.highlight.Highlight;
+import com.cloudmachine.chart.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Custom implementation of the MarkerView.

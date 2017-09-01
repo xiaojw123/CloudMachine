@@ -1,10 +1,10 @@
 package com.cloudmachine.utils.mpchart;
 
-import java.text.DecimalFormat;
+import com.cloudmachine.chart.data.Entry;
+import com.cloudmachine.chart.formatter.ValueFormatter;
+import com.cloudmachine.chart.utils.ViewPortHandler;
 
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.utils.ViewPortHandler;
+import java.text.DecimalFormat;
 
 public class DailyWorkYAxisValueFormatter implements ValueFormatter {
 

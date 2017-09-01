@@ -3,7 +3,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="44dp"
+    android:layout_height="@dimen/spa3"
     android:background="@color/white"
     >
     <TextView 
@@ -14,43 +14,15 @@
     	android:textColor="@color/redcolor"
     	android:textSize="12sp"
     	android:gravity="center"
-    	android:visibility="invisible"
+    	android:visibility="gone"
         />
-    <TextView 
-        android:id="@+id/bottom_line"
-     		android:layout_width="match_parent"
-			android:layout_height="@dimen/common_line_width"
-			android:background="@color/mc_engine_line"
-			android:layout_alignParentBottom="true"
-			android:visibility="gone"
-        	/>
-    <RelativeLayout 
+    <RelativeLayout
         android:layout_width="match_parent"
     	android:layout_height="match_parent"
-    	android:layout_marginLeft="15dp"
+    	android:layout_marginLeft="@dimen/pad2"
+		android:layout_marginRight="@dimen/pad2"
         >
-        <TextView 
-            android:id="@+id/ll_line"
-            android:layout_width="match_parent"
-    		android:layout_height="@dimen/common_line_width"
-    		android:background="@color/public_line"
-    		android:layout_alignParentBottom="true"
-            />
-        <RelativeLayout 
-            android:layout_width="match_parent"
-    		android:layout_height="match_parent"
-    		android:layout_above="@id/ll_line"
-            >
-            <ImageView 
-                android:id="@+id/arrow"
-                android:layout_width="wrap_content"
-    		    android:layout_height="wrap_content"
-    		    android:background="@drawable/mc_arrow_r"
-    		    android:layout_alignParentRight="true"
-    		    android:layout_marginRight="15dp"
-    		    android:layout_centerVertical="true"
-    		    android:visibility="gone"
-                />
+
             <TextView 
                 android:id="@+id/name_text"
                 android:layout_width="wrap_content"
@@ -58,17 +30,14 @@
     			android:layout_centerVertical="true"
     			android:layout_alignParentLeft="true"
     			style="@style/TextView.Meter_Text2"
-    			android:text="名称"
                 />
             <RelativeLayout 
                 android:layout_width="match_parent"
     			android:layout_height="wrap_content"
-    			android:layout_toLeftOf="@id/arrow"
     			android:layout_toRightOf="@id/name_text"
     			android:layout_centerVertical="true"
     			android:paddingLeft="3dp"
-    			android:paddingRight="3dp"
-    			android:focusable="true"  
+    			android:focusable="true"
    				android:focusableInTouchMode="true"
                 >
                 <EditText 
@@ -78,19 +47,32 @@
     			    android:background="@null"
     			    android:textColorHint="@color/common_hint"
     			    style="@style/TextView.Meter_Text2"
-    			    android:visibility="gone"
-    			    android:gravity="center_horizontal"
+    			    android:gravity="right"
+					android:visibility="gone"
                     />
                 <TextView 
                     android:id="@+id/ctext_view"
                     android:layout_width="match_parent"
     			    android:layout_height="wrap_content"
-    			    style="@style/TextView.Meter_Text2"
-    			    android:textColor="@color/mc_device_hint_text"
+					android:singleLine="true"
+					android:textSize="@dimen/siz3"
+    			    android:textColor="@color/cor20"
     			    android:layout_marginLeft="@dimen/add_dev_item_ctext_l"
+					android:gravity="right"
+					android:layout_toLeftOf="@+id/arrow"
                     />
+
+				<ImageView
+					android:id="@+id/arrow"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="@drawable/arrow_right"
+					android:layout_alignParentRight="true"
+					android:layout_centerVertical="true"
+					android:layout_marginLeft="@dimen/dimen_size_10"
+					android:visibility="gone"
+					/>
             </RelativeLayout>
-        </RelativeLayout>
     </RelativeLayout>
     
         

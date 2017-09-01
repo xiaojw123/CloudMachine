@@ -1,56 +1,38 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" 
-    android:background="@color/public_white"
+    android:background="@color/cor13"
     >
-<RelativeLayout 
-    android:id="@+id/title_layout"
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="44dp"
-    >
-    <TextView 
-        android:id="@+id/title_line"
-        android:layout_width="match_parent"
-    	android:layout_height="@dimen/public_line_wh"
-    	android:background="@color/public_line"
-    	android:layout_alignParentBottom="true"
-        />
-<RelativeLayout 
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
-
-    android:orientation="horizontal"
+    android:layout_height="@dimen/dimen_size_49"
+    android:background="@drawable/bg_common_title"
     >
     <ImageView
-        android:layout_marginLeft="15dp"
         android:id="@+id/btn_back"
-        android:layout_width="@dimen/public_textsize8"
-        android:layout_height="@dimen/public_textsize8"
-        android:src="@drawable/btn_back_selector"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        />
-    <TextView 
-        android:id="@+id/button_cancel"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="搜索"
-        android:textSize="15dp"
+        android:src="@drawable/ic_back"
         android:layout_gravity="center_vertical"
-        android:textColor="@drawable/bg_text_validate"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
+        android:paddingLeft="@dimen/pad4"
+        android:paddingRight="@dimen/pad4"
+        />
+
+    <TextView 
+        android:id="@+id/button_cancel"
+        android:layout_width="@dimen/dimen_size_47"
+        android:layout_height="match_parent"
+        android:text="确定"
+        android:textSize="@dimen/siz5"
+        android:textColor="@color/cor9"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:gravity="center_vertical"
+        android:gravity="center"
         />
      <RelativeLayout
-         android:layout_marginLeft="@dimen/second_margintop"
         android:layout_width="match_parent"
-        android:layout_height="28dp"
+        android:layout_height="@dimen/dimen_size_28"
         android:layout_gravity="center_vertical"
         android:background="@drawable/radius_button_search" 
         android:layout_toLeftOf="@id/button_cancel"
@@ -88,12 +70,12 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="搜索"
-                android:textColorHint="#929292"
+                android:textColorHint="@color/cor11"
                 android:imeOptions="actionSearch"
                 android:keepScreenOn="true"
                 android:singleLine="true"
-                android:textColor="@color/public_black"
-                android:textSize="16dp" 
+                android:textColor="@color/cor8"
+                android:textSize="16dp"
                 android:layout_toLeftOf="@id/icon_clear"
                 android:layout_toRightOf="@id/icon_s"
                 android:paddingLeft="3dp"
@@ -101,8 +83,7 @@
                 >
             </EditText>
         
-    </RelativeLayout>
-    
+
 </RelativeLayout>
    
 
@@ -111,7 +92,18 @@
         android:id="@+id/noti_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/title_layout" />
+     />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/noti_empt_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_30"
+        android:text="抱歉，未找到相关结果"
+        android:textSize="@dimen/siz6"
+        android:textColor="@color/cor9"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        />
+
+</LinearLayout>

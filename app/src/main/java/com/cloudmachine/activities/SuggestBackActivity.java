@@ -7,19 +7,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 
 import com.cloudmachine.R;
-import com.cloudmachine.autolayout.widgets.TitleView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.task.FeedBackAsync;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
+import com.cloudmachine.widget.CommonTitleView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -37,8 +34,8 @@ OnClickListener, Callback{
 	private LoadingDialog progressDialog;
 	
 //	private ImageView backImg;
-	private ClearEditTextView suggestion_ed;
-	private TitleView title_layout;
+	private EditText suggestion_ed;
+	private CommonTitleView title_layout;
 	
 	
 	@Override
@@ -59,30 +56,14 @@ OnClickListener, Callback{
 
 	private void initTitleLayout(){
 		
-		title_layout = (TitleView)findViewById(R.id.title_layout);
-		title_layout.setTitle("意见反馈");
-		
-		title_layout.setLeftOnClickListener(new OnClickListener() {
-			
+		title_layout = (CommonTitleView)findViewById(R.id.title_layout);
+		title_layout.setRightText("提交", new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				 finish(); 
-			}
-		});
-		title_layout.setRightTextEdit(false);
-		title_layout.setRightText(-1, "提交", new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(title_layout.getRightTextEdit()){
 					show();
 					new FeedBackAsync(suggestion_ed.getText().toString()
 							,mContext,mHandler).execute();
-				}
-				
-				
+
 			}
 		});
 		
@@ -115,38 +96,10 @@ OnClickListener, Callback{
 	void initView(){
 		initTitleLayout();
 //		backImg = (ImageView) findViewById(R.id.backImg);
-		suggestion_ed = (ClearEditTextView)findViewById(R.id.suggestion_ed);
+		suggestion_ed = (EditText)findViewById(R.id.suggestion_ed);
 //		backImg.setOnClickListener(this);
-		
 		suggestion_ed.setFocusable(true);
 		suggestion_ed.requestFocus();
-		
-		suggestion_ed.addTextChangedListener(new TextWatcher() {
-			
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-				if (!TextUtils.isEmpty(suggestion_ed.getText().toString())) {
-					title_layout.setRightTextEdit(true);
-				}
-				else {
-					title_layout.setRightTextEdit(false);
-				}
-			}
-		});
 	}
 	
 	

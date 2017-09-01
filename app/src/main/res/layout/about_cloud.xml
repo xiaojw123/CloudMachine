@@ -6,153 +6,128 @@
     android:background="@color/public_bg"
     >
 
-    <com.cloudmachine.autolayout.widgets.TitleView
-        android:id="@+id/title_layout_about"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/about_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        cloudm:common_title_name="@string/about_and_help"
+        />
+
+    <LinearLayout
+        android:layout_below="@+id/about_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:showDividers="middle"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        android:divider="@drawable/divider_line_horztial"
+        >
+        <FrameLayout
+            android:id="@+id/use_help_fl"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spa3"
+            android:paddingLeft="@dimen/pad2"
+            android:paddingRight="@dimen/pad2"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="使用帮助"
+                android:textColor="@color/cor9"
+                android:textSize="@dimen/siz3"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_right"
+                android:layout_gravity="right|center_vertical"
+                />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/feedback_fl"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spa3"
+            android:paddingLeft="@dimen/pad2"
+            android:paddingRight="@dimen/pad2"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="意见反馈"
+                android:textColor="@color/cor9"
+                android:textSize="@dimen/siz3"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_right"
+                android:layout_gravity="right|center_vertical"
+                />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/shareapp_fl"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spa3"
+            android:paddingLeft="@dimen/pad2"
+            android:paddingRight="@dimen/pad2"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="分享APP"
+                android:textColor="@color/cor9"
+                android:textSize="@dimen/siz3"
+                />
+        </FrameLayout>
+
+        <!--<Button-->
+            <!--android:id="@+id/about_envir_btn"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/spa3"-->
+            <!--android:gravity="center"-->
+            <!--android:onClick="changeEnvir"-->
+            <!--android:textSize="@dimen/text_size_18_sp"-->
+            <!--android:background="#cede"-->
+            <!--android:visibility="gone"-->
+            <!--/>-->
+
+
+
+
+
+    </LinearLayout>
+
 
     <ImageView
-        android:id="@+id/mnbv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_layout_about"
+        android:src="@drawable/ic_about_logo"
+        android:layout_above="@+id/version"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/about_image_marginTop"
-        android:src="@drawable/about_logo" />
+        android:layout_marginBottom="@dimen/dimen_size_14"
+        />
 
     <TextView
         android:id="@+id/version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/mnbv"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/about_text_marginTo_image"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dimen_size_20"
         android:text="云机械 1.0 版本"
         android:textColor="@color/about_version_text"
         android:textSize="@dimen/public_title_textsize" />
 
-<LinearLayout
-    android:layout_below="@id/version"
-    android:layout_marginTop="@dimen/update_margin_top"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <RelativeLayout
-        android:id="@+id/check_version"
-        style="@style/layout_item">
-
-        <ImageView
-            android:id="@+id/arrow_right"
-            style="@style/personal_arrow_image"/>
-
-        <TextView
-            style="@style/personal_left_text"
-            android:text="版本更新"
-            />
-
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/update_icon"
-            android:layout_width="@dimen/device_info_text_height"
-            android:layout_height="@dimen/device_info_text_height"
-            android:background="@drawable/update_version_bg"
-            android:text="1"
-            android:layout_toLeftOf="@id/arrow_right"
-            android:layout_centerVertical="true"
-            android:textColor="@color/white"
-            android:gravity="center"
-            />
-         <TextView
-             android:visibility="gone"
-             android:id="@+id/tv_canbe_update"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_centerVertical="true"
-             android:layout_marginRight="@dimen/leftmargin1"
-             android:textSize="@dimen/public_textsize1"
-             android:textColor="@color/public_edit_text"
-             android:layout_toLeftOf="@id/update_icon"
-             android:text="可更新"
-             />
 
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/use_help"
-        style="@style/layout_item">
-
-        <TextView
-            style="@style/personal_left_text"
-            android:text="使用帮助"
-            />
-
-        <ImageView
-            style="@style/personal_arrow_image"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/feedback"
-        style="@style/layout_item">
-
-        <TextView
-            style="@style/personal_left_text"
-            android:text="意见反馈"
-            />
-
-        <ImageView
-            style="@style/personal_arrow_image"/>
-    </RelativeLayout>
-
-</LinearLayout>
-    
-
-    <LinearLayout
-        android:id="@+id/describe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/loading_text_marginBottom"
-        android:orientation="vertical" >
-        
-       <!-- <com.cloudmachine.autolayout.widgets.RadiusButtonView
-        android:id="@+id/checkBtn"
-        android:layout_width="@dimen/about_button_width"
-        android:layout_height="@dimen/about_button_height"
-        android:layout_gravity="center"
-        cloudm:rbtn_strokeColor="@color/about_button_stroke"
-        cloudm:rbtn_fillColor_nm="@color/public_white"
-        cloudm:rbtn_fillColor_dw="@color/about_button_stroke"
-        cloudm:rbtn_text="@string/about_button_text"
-        cloudm:rbtn_textColor="@color/public_black"
-        cloudm:rbtn_textSize="@dimen/about_button_textsize" />-->
-        
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:text="400-008-0581"
-            android:textColor="#c3c3c3"
-            android:textSize="14sp" 
-            android:visibility="gone"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="@dimen/loading_text_size" 
-            android:textColor="@color/loading_text"
-            android:text="@string/loading_text" 
-            android:layout_marginTop="@dimen/about_text_marginTo_button"
-            />
-
-    </LinearLayout>
 
     
 </RelativeLayout>
