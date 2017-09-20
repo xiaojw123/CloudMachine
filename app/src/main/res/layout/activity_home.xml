@@ -95,6 +95,8 @@
                 android:visibility="gone"
                 />
 
+
+
             <ImageView
                 android:id="@+id/home_actvite_img"
                 android:layout_width="wrap_content"
@@ -103,6 +105,23 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/icon_activites"
                 android:layout_alignParentRight="true"
+                />
+            <Button
+                android:id="@+id/box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="b"
+                android:onClick="cloudBoxTest"
+                android:layout_marginRight="2dp"
+                android:layout_toLeftOf="@id/home_actvite_img"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="a"
+                android:onClick="activitiesTest"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@+id/home_me_img"
                 />
 
 
@@ -113,6 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
+
 
 
     </LinearLayout>
@@ -182,7 +202,6 @@
             <FrameLayout
                 android:id="@+id/item_my_order"
                 style="@style/HomeMenuContainerStyle"
-                android:visibility="gone"
                 >
 
                 <TextView
@@ -283,7 +302,12 @@
 
 
 
+
+
     </LinearLayout>
+
+
+
 
 
 </android.support.v4.widget.DrawerLayout>

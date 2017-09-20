@@ -664,7 +664,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 // Intent typeIntent = new
                 // Intent(NewRepairActivity.this,MachineTypeActivity.class);
                 if (!isOwnerDevice) {
-                    gotoEditActivity(Constants.E_DEVICE_LIST,
+                    gotoEditActivity("选择机器类型",Constants.E_DEVICE_LIST,
                             Constants.E_ITEMS_category, "", "", "", "机型", tvType.getText().toString());
                 } else {
                     Constants.MyToast("已安装云盒子机器信息不可修改");
@@ -675,7 +675,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 // Intent brandIntent = new
                 // Intent(NewRepairActivity.this,MachineBrandActivity.class);
                 if (!isOwnerDevice) {
-                    gotoEditActivity(Constants.E_DEVICE_LIST, Constants.E_ITEMS_brand,
+                    gotoEditActivity("选择品牌",Constants.E_DEVICE_LIST, Constants.E_ITEMS_brand,
                             PK_PROD_DEF, "", "", "品牌", tvBrand.getText().toString());
                 } else {
                     Constants.MyToast("已安装云盒子机器信息不可修改");
@@ -687,7 +687,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 // Intent(NewRepairActivity.this,MachineModelActivity.class);
                 if (!isOwnerDevice) {
                     if (!TextUtils.isEmpty(PK_PROD_DEF) && !TextUtils.isEmpty(PK_BRAND)) {
-                        gotoEditActivity(Constants.E_DEVICE_LIST, Constants.E_ITEMS_model,
+                        gotoEditActivity("选择型号",Constants.E_DEVICE_LIST, Constants.E_ITEMS_model,
                                 PK_PROD_DEF, PK_BRAND, "", "型号", tvModel.getText().toString());
                     } else {
                         //Constants.ToastAction("请先选择产品和品牌");
@@ -709,11 +709,12 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     }
 
     // v1用来传nc类型id，v2用来传nc品牌id，v4用来传类型id
-    private void gotoEditActivity(int editType, int itemType, String v1,
-                                  String v2, String v3, String titleName, String itemName) {
+    private void gotoEditActivity(String titleName,int editType, int itemType, String v1,
+                                  String v2, String v3, String text, String itemName) {
 
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.P_TITLETEXT, titleName);
+        bundle.putString(Constants.P_TITLENAME,titleName);
+        bundle.putString(Constants.P_TITLETEXT, text);
         // bundle.putString(Constants.P_EDITRESULTSTRING, view.getContent());
         bundle.putInt(Constants.P_EDITTYPE, editType);
         bundle.putInt(Constants.P_ITEMTYPE, itemType);

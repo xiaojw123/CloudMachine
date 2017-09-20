@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cloudmachine.MyApplication;
@@ -26,6 +25,7 @@ import com.cloudmachine.autolayout.widgets.CircleTextImageView;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.UserInfo;
@@ -43,6 +43,7 @@ import com.cloudmachine.ui.login.model.LoginModel;
 import com.cloudmachine.ui.login.presenter.LoginPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.AppMsg;
@@ -50,11 +51,14 @@ import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.utils.widgets.ClearEditTextView.ICoallBack;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
 import com.cloudmachine.widget.CustomEditText;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.tencent.mm.sdk.modelmsg.SendAuth;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.Map;
 import java.util.Set;
@@ -78,6 +82,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     private View left_layout, right_layout;
     private CircleTextImageView userImage;
     private Member mMember;
+    private UMShareAPI mShareAPI;
 
 
     //flag等于3跳转问答社区页面
@@ -270,19 +275,128 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                 break;
         }
     }
+//
+//    //跳转微信登录授权
+//    private void loginToWeiXin() {
+//        IWXAPI mApi = WXAPIFactory.createWXAPI(this, Constants.APP_ID, true);
+//        mApi.registerApp(Constants.APP_ID);
+//        if (mApi.isWXAppInstalled()) {
+//            SendAuth.Req req = new SendAuth.Req();
+//            req.scope = "snsapi_userinfo";
+//            req.state = "wechat_sdk_demo_test_neng";
+//            mApi.sendReq(req);
+//            finish();
+//        } else
+//            Toast.makeText(this, "用户未安装微信", Toast.LENGTH_SHORT).show();
+//    }
 
-    //跳转微信登录授权
+    private UMAuthListener authListener = new UMAuthListener() {
+        @Override
+        public void onStart(SHARE_MEDIA share_media) {
+
+        }
+
+        @Override
+        public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
+            mShareAPI.getPlatformInfo(LoginActivity.this, SHARE_MEDIA.WEIXIN, platformInfoListener);
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
+            ToastUtils.showToast(mContext,"授权失败！！"+throwable.getMessage());
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA share_media, int i) {
+            ToastUtils.showToast(mContext,"取消授权！！");
+        }
+    };
+
+    private UMAuthListener platformInfoListener = new UMAuthListener() {
+        @Override
+        public void onStart(SHARE_MEDIA share_media) {
+
+        }
+
+        @Override
+        public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
+            if (map == null) {
+                AppLog.print("第三方信息为空");
+                return;
+            }
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                AppLog.print("key:" + entry.getKey() + ", value:" + entry.getValue() + "\n");
+            }
+            final String unionid = map.get("unionid");
+            final String openId = map.get("openid");
+            final String nickname = map.get("name");
+            final String headimgurl = map.get("iconurl");
+            final int sex="男".equals(map.get("gender"))?1:0;
+            mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
+                    .wxLogin(unionid, openId, nickname, headimgurl)
+                    .compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext, false) {
+                        @Override
+                        protected void _onNext(JsonObject jsonObject) {
+                            JsonElement jsonElement = jsonObject.get("code");
+                            int code = jsonElement.getAsInt();
+                            AppLog.print("switchWxLogin code___" + code);
+                            if (code == 16305) {
+                                AppLog.print("set 1");
+                                Bundle b = new Bundle();
+                                b.putString("nickname", nickname);
+                                b.putString("unionid", unionid);
+                                b.putString("openid", openId);
+                                b.putString("headimgurl", headimgurl);
+                                b.putInt("sex", sex);
+                                Constants.toActivity(LoginActivity.this, VerifyPhoneNumActivity.class, b, true);
+                            } else if (code == 800) {
+                                AppLog.print("set 2");
+                                JsonElement resultElement = jsonObject.get("result");
+                                String result = resultElement.toString();
+                                try {
+                                    Gson gson = new Gson();
+                                    mMember = gson.fromJson(result, Member.class);
+                                } catch (Exception e) {
+                                }
+                                if (mMember != null) {
+                                    excamMaster(mMember.getId());
+                                }
+                            } else {
+                                AppLog.print("set 3");
+                                JsonElement messageElement = jsonObject.get("message");
+                                String message = messageElement.getAsString();
+                                ToastUtils.showToast(LoginActivity.this, message);
+                            }
+
+                        }
+
+
+                        @Override
+                        protected void _onError(String message) {
+                            ToastUtils.showToast(LoginActivity.this, message);
+                            finish();
+                        }
+                    }));
+
+
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
+            ToastUtils.showToast(mContext,"授权失败！！"+throwable.getMessage());
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA share_media, int i) {
+            ToastUtils.showToast(mContext,"授权失败！！");
+        }
+    };
+
+
+
     private void loginToWeiXin() {
-        IWXAPI mApi = WXAPIFactory.createWXAPI(this, Constants.APP_ID, true);
-        mApi.registerApp(Constants.APP_ID);
-        if (mApi.isWXAppInstalled()) {
-            SendAuth.Req req = new SendAuth.Req();
-            req.scope = "snsapi_userinfo";
-            req.state = "wechat_sdk_demo_test_neng";
-            mApi.sendReq(req);
-            finish();
-        } else
-            Toast.makeText(this, "用户未安装微信", Toast.LENGTH_SHORT).show();
+        mShareAPI = UMShareAPI.get(this);
+        mShareAPI.doOauthVerify(this, SHARE_MEDIA.WEIXIN, authListener);
     }
 
 

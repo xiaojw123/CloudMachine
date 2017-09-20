@@ -65,6 +65,7 @@ public class ReboundScrollView extends ScrollView {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         if (getChildCount() > 0) {
             contentView = getChildAt(0);
         }

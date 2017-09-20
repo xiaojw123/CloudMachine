@@ -5,18 +5,18 @@ package com.cloudmachine.net.api;
 public class ApiConstants {
 
     /* 测试环境*/
-    public static String CLOUDM_HOST = "http://api.test.cloudm.com/cloudm3/yjx/";
-    public static String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3/";
-    public static String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3/";
-    public static String XIEXIN_HOST = "http://ask.test.cloudm.com/";
-    public static String H5_HOST = "http://h5.test.cloudm.com/";
+//    public static String CLOUDM_HOST = "http://api.test.cloudm.com/cloudm3/yjx/";
+//    public static String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3/";
+//    public static String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3/";
+//    public static String XIEXIN_HOST = "http://ask.test.cloudm.com/";
+//    public static String H5_HOST = "http://h5.test.cloudm.com/";
 
 /*线上环境*/
-//    public static  String CLOUDM_HOST = "http://api.cloudm.com/cloudm3/yjx/";
-//    public static  String GUOSHUAI_HOST = "http://api.cloudm.com/cloudm3/";
-//    public static String CAITINGTING_HOST = "http://api.cloudm.com/cloudm3/";
-//    public static String XIEXIN_HOST = "http://ask.cloudm.com/";
-//    public static String H5_HOST = "http://h5.cloudm.com/";
+    public static  String CLOUDM_HOST = "http://api.cloudm.com/cloudm3/yjx/";
+    public static  String GUOSHUAI_HOST = "http://api.cloudm.com/cloudm3/";
+    public static String CAITINGTING_HOST = "http://api.cloudm.com/cloudm3/";
+    public static String XIEXIN_HOST = "http://ask.cloudm.com/";
+    public static String H5_HOST = "http://h5.cloudm.com/";
 
 
 

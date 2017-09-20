@@ -156,6 +156,17 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
         mlocClient = new AMapLocationClient(getActivity());
         mlocClient.setLocationOption(mLocOption);
         mlocClient.setLocationListener(listener);
+//        RxPermissions mRxPermissions=new RxPermissions(getActivity(),this);
+//        mRxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe(new Action1<Boolean>() {
+//            @Override
+//            public void call(Boolean hasPermission) {
+//                if (hasPermission) {
+//                    mlocClient.startLocation();
+//                } else {
+//                    ToastUtils.showToast(getActivity(), "定位权限未开启，无法定位，请到设置/权限管理中开启");
+//                }
+//            }
+//        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_FINE_LOCATION);
         } else {
@@ -168,10 +179,16 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQ_FINE_LOCATION) {
-            if (grantResults[0] == PermissionsActivity.PERMISSIONS_DENIED) {
-                ToastUtils.showToast(getActivity(), "权限被拒绝");
-            } else {
+            if (grantResults[0] == PermissionsActivity.PERMISSIONS_GRANTED) {
                 mlocClient.startLocation();
+            } else {
+                ToastUtils.showToast(getActivity(), "定位权限未开启，无法定位，请到设置/权限管理中开启");
+//                AppLog.print("打开权限设置。。。。。");
+//                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+//                intent.setData(uri);
+//                startActivity(intent);
             }
         }
     }

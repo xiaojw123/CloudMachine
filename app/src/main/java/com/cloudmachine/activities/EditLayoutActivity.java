@@ -69,9 +69,10 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
     private String value1, value2, value3;
     CommonTitleView title_layout;
 
-    String deviceID,deviceName;
+    String deviceID, deviceName;
     String name;
     String itemName;
+    String titleName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +107,10 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             try {
-                itemName=bundle.getString(Constants.P_EDIT_LIST_ITEM_NAME);
-                deviceID=bundle.getString(Constants.P_DEVICEID);
-                deviceName=bundle.getString(Constants.P_DEVICENAME);
+                titleName = bundle.getString(Constants.P_TITLENAME);
+                itemName = bundle.getString(Constants.P_EDIT_LIST_ITEM_NAME);
+                deviceID = bundle.getString(Constants.P_DEVICEID);
+                deviceName = bundle.getString(Constants.P_DEVICENAME);
                 editType = bundle.getInt(Constants.P_EDITTYPE);
                 itemType = bundle.getInt(Constants.P_ITEMTYPE);
                 titleText = bundle.getString(Constants.P_TITLETEXT);
@@ -177,16 +179,19 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
 
                 break;
         }
+        if (!TextUtils.isEmpty(titleName)) {
+            title_layout.setTitleName(titleName);
+        }
         title_layout.setRightClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                name=text_edit.getText().toString();
-                if (TextUtils.isEmpty(name)){
-                    ToastUtils.showToast(EditLayoutActivity.this,"名称不能为空");
+                name = text_edit.getText().toString();
+                if (TextUtils.isEmpty(name)) {
+                    ToastUtils.showToast(EditLayoutActivity.this, "名称不能为空");
                     return;
                 }
-                UpdateDeviceInfoTask task = new UpdateDeviceInfoTask(mHandler, UserHelper.getMemberId(EditLayoutActivity.this),deviceID,name);
+                UpdateDeviceInfoTask task = new UpdateDeviceInfoTask(mHandler, UserHelper.getMemberId(EditLayoutActivity.this), deviceID, name);
                 task.execute();
             }
         });
@@ -223,16 +228,16 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
         String message = "";
         switch (msg.what) {
             case Constants.HANDLER_UPDATE_INFO_SUCCESS:
-                String result1= (String) msg.obj;
-                ToastUtils.showToast(this,result1);
-                Intent intent=new Intent();
-                intent.putExtra(Constants.P_DEVICENAME,name);
-                setResult(AddDeviceActivity.UPATE_INFO,intent);
+                String result1 = (String) msg.obj;
+                ToastUtils.showToast(this, result1);
+                Intent intent = new Intent();
+                intent.putExtra(Constants.P_DEVICENAME, name);
+                setResult(AddDeviceActivity.UPATE_INFO, intent);
                 finish();
                 break;
             case Constants.HANDLER_UPDATE_INFO_FAILD:
-                String result2= (String) msg.obj;
-                ToastUtils.showToast(this,result2);
+                String result2 = (String) msg.obj;
+                ToastUtils.showToast(this, result2);
                 break;
             case Constants.HANDLER_GETROOTNODES_SUCCESS:
 

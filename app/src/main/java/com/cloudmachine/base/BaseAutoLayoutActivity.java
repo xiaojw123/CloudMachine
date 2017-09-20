@@ -2,6 +2,7 @@ package com.cloudmachine.base;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
@@ -10,8 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.cloudmachine.autolayout.AutoLayoutActivity;
 import com.cloudmachine.R;
+import com.cloudmachine.autolayout.AutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.utils.AppManager;
 import com.cloudmachine.utils.LoadingDialog;
@@ -20,6 +21,7 @@ import com.cloudmachine.utils.TUtil;
 import com.cloudmachine.utils.UMListUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.UMShareAPI;
 
 public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends BaseModel> extends AutoLayoutActivity {
 
@@ -158,6 +160,12 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         LoadingDialog.cancelDialogForLoading();
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+    }
 }
 
 

@@ -48,7 +48,7 @@ public class GuideActivity extends BaseAutoLayoutActivity {
         super.onCreate(savedInstanceState);
         //将要分页显示的View装入数组中
         LayoutInflater inflater = getLayoutInflater();
-        pageViews = new ArrayList<View>();
+        pageViews = new ArrayList<>();
         pageViews.add(inflater.inflate(R.layout.guide_page1, null));
         pageViews.add(inflater.inflate(R.layout.guide_page2, null));
         pageViews.add(inflater.inflate(R.layout.guide_page3, null));

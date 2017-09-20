@@ -41,7 +41,7 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
 
     @Override
     public ActivitiesHoler onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itmeView= LayoutInflater.from(mContext).inflate(R.layout.list_item_activites,parent,false);
+        View itmeView = LayoutInflater.from(mContext).inflate(R.layout.list_item_activites, parent, false);
         return new ActivitiesHoler(itmeView);
     }
 
@@ -65,15 +65,15 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
 
     public class ActivitiesHoler extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-         ImageView postImg;
-         TextView titeTv;
-         TextView desTv;
+        ImageView postImg;
+        TextView titeTv;
+        TextView desTv;
 
         public ActivitiesHoler(View itemView) {
             super(itemView);
-            postImg= (ImageView) itemView.findViewById(R.id.activites_post_img);
-            titeTv= (TextView) itemView.findViewById(R.id.activites_title_tv);
-            desTv= (TextView) itemView.findViewById(R.id.activites_des_tv);
+            postImg = (ImageView) itemView.findViewById(R.id.activites_post_img);
+            titeTv = (TextView) itemView.findViewById(R.id.activites_title_tv);
+            desTv = (TextView) itemView.findViewById(R.id.activites_des_tv);
             itemView.setOnClickListener(this);
         }
 
@@ -82,7 +82,7 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
             MobclickAgent.onEvent(v.getContext(), UMengKey.count_ad_click);
             HomeBannerBean bean = (HomeBannerBean) v.getTag();
             if (bean != null) {
-                String url= !TextUtils.isEmpty(bean.adsLink)?bean.adsLink:bean.picUrl;
+                String url = !TextUtils.isEmpty(bean.adsLink) ? bean.adsLink : bean.picUrl;
 //                if (bean.skipType == 3) {
 //                    Intent wanaBoxIntent = new Intent(mContext, WanaCloudBox.class);
 //                    wanaBoxIntent.putExtra(Constants.P_WebView_Url, url);
@@ -91,9 +91,24 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
 //
 //                }
                 //对banner点击进行链接跳转
+//                if ("推广活动".equals(bean.adsTitle)) {
+//                    if (url != null && url.contains("?")) {
+//                        url += "&";
+//                    } else {
+//                        url += "?";
+//                    }
+//                    url += "activityId=" + bean.id;
+//                }
+
+                if (url != null && url.contains("?")) {
+                    url += "&";
+                } else {
+                    url += "?";
+                }
+                url += "activityId=" + bean.id;
                 Intent intent = new Intent(mContext, QuestionCommunityActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(QuestionCommunityActivity.H5_URL,url);
+                bundle.putString(QuestionCommunityActivity.H5_URL, url);
 //                //分享标题
 //                bundle.putString(Constants.P_WebView_Title, bean.adsTitle);
 //                bundle.putBoolean(Constants.HOME_BANNER_SHARE, true);

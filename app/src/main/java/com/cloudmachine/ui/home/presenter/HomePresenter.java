@@ -1,12 +1,12 @@
 package com.cloudmachine.ui.home.presenter;
 
-import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.UnReadMessage;
+import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.contract.HomeContract;
 import com.cloudmachine.ui.home.model.PopItem;
-
-import org.json.JSONObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,20 +59,22 @@ public class HomePresenter extends HomeContract.Presenter {
 
     @Override
     public void getH5ConfigInfo() {
-        mRxManage.add(mModel.getH5ConfigInfo().subscribe(new RxSubscriber<JSONObject>(mContext, false) {
+        mRxManage.add(mModel.getH5ConfigInfo().subscribe(new RxSubscriber<JsonObject>(mContext, false) {
             @Override
-            protected void _onNext(JSONObject jsonObject) {
+            protected void _onNext(JsonObject jsonObject) {
                 if (jsonObject != null) {
-                    JSONObject pageJobj = jsonObject.optJSONObject("pages");
-                    if (pageJobj != null) {
-                        ApiConstants.AppBoxDetail = pageJobj.optString("AppBoxDetail");
-                        ApiConstants.AppCouponHelper = pageJobj.optString("AppCouponHelper");
-                        ApiConstants.AppCommunity = pageJobj.optString("AppCommunity");
-                        ApiConstants.AppASKQuestion = pageJobj.optString("AppASKQuestion");
-                        ApiConstants.AppMyQuestion = pageJobj.optString("AppMyQuestion");
-                        ApiConstants.AppUseHelper = pageJobj.optString("AppUseHelper");
-                        ApiConstants.AppWorkTimeStatistics = pageJobj.optString("AppWorkTimeStatistics");
-                        ApiConstants.AppOrderList = pageJobj.optString("AppOrderList");
+//                    JSONObject pageJobj = jsonObject.get("pages");
+                    JsonElement pageJelemnt=jsonObject.get("pages");
+                    JsonObject  reslutJob=pageJelemnt.getAsJsonObject();
+                    if (reslutJob != null) {
+                        ApiConstants.AppBoxDetail = reslutJob.get("AppBoxDetail").getAsString();
+                        ApiConstants.AppCouponHelper =  reslutJob.get("AppCouponHelper").getAsString();
+                        ApiConstants.AppCommunity =  reslutJob.get("AppCommunity").getAsString();
+                        ApiConstants.AppASKQuestion = reslutJob.get("AppASKQuestion").getAsString();
+                        ApiConstants.AppMyQuestion = reslutJob.get("AppMyQuestion").getAsString();
+                        ApiConstants.AppUseHelper = reslutJob.get("AppUseHelper").getAsString();
+                        ApiConstants.AppWorkTimeStatistics = reslutJob.get("AppWorkTimeStatistics").getAsString();
+                        ApiConstants.AppOrderList = reslutJob.get("AppOrderList").getAsString();
                     }
                 }
 

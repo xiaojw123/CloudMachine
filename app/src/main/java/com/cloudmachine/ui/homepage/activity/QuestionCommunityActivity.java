@@ -116,7 +116,6 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private String mUrl;
     private String mTitle;
     private String imagePath;
-    private String h5Title;
     private boolean isClickCamera;
 
 
@@ -648,8 +647,14 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     }
                     break;
                 case Constants.HANDLER_JS_BODY:
-                    final JsBody body = (JsBody) msg.obj;
+                    JsBody body = (JsBody) msg.obj;
                     h5Title = body.getCenter_title();
+                    if (!TextUtils.isEmpty(body.getTitle())) {
+                        shareTitle = body.getTitle();
+                        shareLink = body.getLink();
+                        shareDesc = body.getDesc();
+                        shareUrl(shareLink, shareTitle, shareDesc);
+                    }
                     if (!TextUtils.isEmpty(h5Title)) {
                         mWvTitle.setTitleName(h5Title);
                         String rightTitle = body.getRight_title();
@@ -668,15 +673,31 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                         } else {
                             mWvTitle.setRightText(null, null);
                         }
-                        String shareTitle = body.getShare_title();
-                        if (SHARE.equals(rightTitle) || !TextUtils.isEmpty(shareTitle)) {
+                        if (SHARE.equals(rightTitle) || !TextUtils.isEmpty(body.getShare_title())) {
                             mWvTitle.setRightImg(R.drawable.ic_share, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, mUrl, h5Title, SHAREDESC, -1);
-                                    shareDialog.show();
-                                    MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
+                                    if ("活动推广".equals(h5Title)){
+                                        if (!TextUtils.isEmpty(shareTitle)) {
+                                            shareUrl(shareLink, shareTitle, shareDesc);
+                                        } else {
+                                            Constants.callJsMethod(mWebView, "shareEvent()");
+                                        }
+                                    }else{
+                                        shareUrl(mUrl,h5Title, SHAREDESC);
+                                    }
+//                                    if (mUrl != null && mUrl.contains("activityId")) {
+//                                        if (!TextUtils.isEmpty(shareTitle)) {
+//                                            shareUrl(shareLink, shareTitle, shareDesc);
+//                                        } else {
+//                                            Constants.callJsMethod(mWebView, "shareEvent()");
+//                                        }
+//                                    } else {
+//                                        shareUrl(h5Title, mUrl, SHAREDESC);
+//                                    }
+
                                 }
+
                             });
                         } else {
                             mWvTitle.setRightImg(0, null);
@@ -693,6 +714,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     }
                     break;
             }
+        }
+
+        private void shareUrl(String sUrl, String sTitle, String sDesc) {
+            ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, sUrl, sTitle, sDesc, -1);
+            shareDialog.show();
+            MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
         }
     };
 
@@ -714,4 +741,9 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    private String shareTitle;
+    private String shareLink;
+    private String shareDesc;
+    private String h5Title;
 }

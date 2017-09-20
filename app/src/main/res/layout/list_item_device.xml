@@ -40,7 +40,7 @@
         android:layout_marginRight="@dimen/dimen_size_16"
         />
 
-    <TextView
+    <EditText
         android:id="@+id/item_device_loc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,8 +49,11 @@
         android:layout_marginTop="@dimen/dimen_size_19"
         android:textColor="@color/cor9"
         android:singleLine="true"
+        android:focusable="false"
+        android:cursorVisible="false"
         android:layout_marginRight="@dimen/dimen_size_16"
         android:drawablePadding="@dimen/dimen_size_12"
+        android:background="@color/transparent"
         android:drawableLeft="@drawable/icon_map_loc"
         android:layout_alignLeft="@+id/item_device_name"
         />

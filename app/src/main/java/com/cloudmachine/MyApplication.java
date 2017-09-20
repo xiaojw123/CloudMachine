@@ -27,6 +27,11 @@ import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemor
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.umeng.socialize.Config;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
+
+import org.litepal.LitePalApplication;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +58,8 @@ public class MyApplication extends Application {
     private boolean isFlag = false;
     private int msgNum;
     private Member tempMember;
+
+
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -152,6 +159,7 @@ public class MyApplication extends Application {
      */
     public static final int NETWORKTYPE_WIFI = 4;
     private static MyApplication mApplication;
+    public static final boolean ENCRYPTED = true;
 
     public synchronized static MyApplication getInstance() {
         return mApplication;
@@ -160,6 +168,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initSocialConfig();
         this.mContext = this;
 //        initSopfix();
        /* Glide.get(this).register(GlideUrl.class, InputStream.class,
@@ -201,7 +210,24 @@ public class MyApplication extends Application {
         imageLoader.init(config);
         //		CrashHandler.getInstance().init(this);
         ResV.init(this);
+        initDB();
+
     }
+
+    private void initDB() {
+        LitePalApplication.initialize(this);
+    }
+
+    private void initSocialConfig() {
+        Config.DEBUG=true;
+        UMShareAPI.get(this);
+        PlatformConfig.setWeixin("wxfb6afbcc23f867df", "3c69a7395f5e54009accf1e1194d553c");
+        PlatformConfig.setQQZone("1105584331", "2KIceJS92PMlkFKw");
+        PlatformConfig.setSinaWeibo("41475887", "9da46957176d1e1e360c1252f54e94a9", "http://www.cloudm.com/");
+    }
+
+
+
 
     private void initSopfix() {
 // initialize最好放在attachBaseContext最前面

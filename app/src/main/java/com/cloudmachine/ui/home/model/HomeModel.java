@@ -1,12 +1,11 @@
 package com.cloudmachine.ui.home.model;
 
-import com.cloudmachine.net.api.Api;
-import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.bean.UnReadMessage;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.HomeContract;
-
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -31,8 +30,8 @@ public class HomeModel implements HomeContract.Model {
     }
 
     @Override
-    public Observable<JSONObject> getH5ConfigInfo() {
-        return Api.getDefault(HostType.H5_CONFIG_HOST).getH5ConfigInfo().compose(RxHelper.<JSONObject>handleResult());
+    public Observable<JsonObject> getH5ConfigInfo() {
+        return Api.getDefault(HostType.H5_CONFIG_HOST).getH5ConfigInfo().compose(RxHelper.<JsonObject>handleResult());
     }
 
 }

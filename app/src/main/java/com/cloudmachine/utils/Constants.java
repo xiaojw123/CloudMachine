@@ -355,6 +355,7 @@ public class Constants {
     public static final String P_SEARCHLISTTYPE = "searchListType";
     public static final String P_PERMISSIONTYPE = "permissionType";
     public static final String P_TITLETEXT = "titleText";
+    public static final String P_TITLENAME = "titleName";
     public static final String P_EDITTYPE = "editType";
     public static final String P_ITEMTYPE = "itemType";
     public static final String P_EDITRESULTSTRING = "editResultString";

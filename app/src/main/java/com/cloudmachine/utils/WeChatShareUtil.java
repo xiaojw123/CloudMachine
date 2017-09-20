@@ -10,10 +10,12 @@ import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.io.ByteArrayOutputStream;
 
-public class WeChatShareUtil {
+public class WeChatShareUtil implements UMShareListener {
 
     //从官网申请的合法appId
     public static final String APP_ID = /*"wxfb6afbcc23f867df"*/Constants.APP_ID;
@@ -31,6 +33,7 @@ public class WeChatShareUtil {
         if (weChatShareUtil.api != null) {
             weChatShareUtil.api.unregisterApp();
         }
+
         weChatShareUtil.context = context;
         weChatShareUtil.regToWx();
         return weChatShareUtil;
@@ -89,6 +92,8 @@ public class WeChatShareUtil {
         return share(webPage, title, thumb, description, scene);
     }
 
+
+
     private boolean share(WXMediaMessage.IMediaObject mediaObject, Bitmap thumb, int scene) {
         return share(mediaObject, null, thumb, null, scene);
     }
@@ -117,6 +122,7 @@ public class WeChatShareUtil {
         return api.sendReq(req);
     }
 
+
     //判断是否支持转发到朋友圈
     //微信4.2以上支持，如果需要检查微信版本支持API的情况， 可调用IWXAPI的getWXAppSupportAPI方法,0x21020001及以上支持发送朋友圈
     public boolean isSupportWX() {
@@ -138,6 +144,29 @@ public class WeChatShareUtil {
         }
 
         return result;
+    }
+
+    @Override
+    public void onStart(SHARE_MEDIA share_media) {
+
+    }
+
+    @Override
+    public void onResult(SHARE_MEDIA share_media) {
+        ToastUtils.showToast(context, "分享成功！！");
+
+    }
+
+    @Override
+    public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+        ToastUtils.showToast(context, "分享失败！！"+ throwable.getMessage());
+
+    }
+
+    @Override
+    public void onCancel(SHARE_MEDIA share_media) {
+        ToastUtils.showToast(context, "取消分享！！");
+
     }
 }
 

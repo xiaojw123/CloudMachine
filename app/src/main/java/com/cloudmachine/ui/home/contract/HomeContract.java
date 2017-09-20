@@ -5,8 +5,7 @@ import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
 import com.cloudmachine.bean.UnReadMessage;
 import com.cloudmachine.ui.home.model.PopItem;
-
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public interface HomeContract {
         Observable<UnReadMessage> getMessageUntreatedCount(long memberId);
 
         Observable<List<PopItem>> getPromotionModel(long memberId);
-        Observable<JSONObject>   getH5ConfigInfo();
+        Observable<JsonObject>   getH5ConfigInfo();
 
     }
 

@@ -4,6 +4,8 @@ package com.cloudmachine.net.api;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
+import com.cloudmachine.bean.CheckNumBean;
+import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
@@ -12,14 +14,10 @@ import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.bean.ScoreInfo;
 import com.cloudmachine.bean.UnReadMessage;
 import com.cloudmachine.bean.UserInfo;
-import com.cloudmachine.bean.CheckNumBean;
-import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.ui.home.model.PopItem;
 import com.cloudmachine.ui.home.model.RoleBean;
 import com.cloudmachine.ui.home.model.SiteBean;
 import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +44,7 @@ import rx.Observable;
 
 public interface ApiService {
      @GET("n/config/")
-     Observable<BaseRespose<JSONObject>> getH5ConfigInfo();
+     Observable<BaseRespose<JsonObject>> getH5ConfigInfo();
      @GET("spread/getPopList")
      Observable<BaseRespose<List<PopItem>>> getPopList(@Query("memberId") long memberid);
 

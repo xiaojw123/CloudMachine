@@ -2,45 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/bg_text_progress"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_marginTop="@dimen/public_textsize2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#121212"
-        android:textSize="@dimen/public_textsize1"
         android:layout_marginLeft="@dimen/share_text_margin_left"
-        android:text="分享到"/>
+        android:layout_marginTop="@dimen/public_textsize2"
+        android:text="分享到"
+        android:textColor="#121212"
+        android:textSize="@dimen/public_textsize1" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="35dp"
         android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_marginLeft="@dimen/wx_icon_margin_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/wx_icon_margin_left"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/iv_session"
-                android:layout_marginTop="@dimen/wx_icon_margin_left"
                 android:layout_width="@dimen/wx_icon_width"
                 android:layout_height="@dimen/wx_icon_width"
-                android:background="@drawable/wx_session"
-                android:layout_marginBottom="9dp"/>
+                android:layout_marginBottom="9dp"
+                android:layout_marginTop="@dimen/wx_icon_margin_left"
+                android:background="@drawable/wx_session" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6C6C6C"
-                android:text="微信"/>
+                android:text="微信"
+                android:textColor="#6C6C6C" />
         </LinearLayout>
 
         <LinearLayout
@@ -52,16 +52,94 @@
 
             <ImageView
                 android:id="@+id/iv_timeline"
-                android:layout_marginTop="@dimen/wx_icon_margin_left"
                 android:layout_width="@dimen/wx_icon_width"
                 android:layout_height="@dimen/wx_icon_width"
-                android:background="@drawable/wx_timeline"
-                android:layout_marginBottom="9dp"/>
+                android:layout_marginBottom="9dp"
+                android:layout_marginTop="@dimen/wx_icon_margin_left"
+                android:background="@drawable/wx_timeline" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6C6C6C"
-                android:text="微信朋友圈"/>
+                android:text="微信朋友圈"
+                android:gravity="center_horizontal"
+                android:minEms="4"
+                android:textColor="#6C6C6C" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/wx_timeline_margin_left"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_qq"
+                android:layout_width="@dimen/wx_icon_width"
+                android:layout_height="@dimen/wx_icon_width"
+                android:layout_marginBottom="9dp"
+                android:layout_marginTop="@dimen/wx_icon_margin_left"
+                android:background="@drawable/qq" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QQ"
+                android:textColor="#6C6C6C" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/wx_timeline_margin_left"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_qq_zone"
+                android:layout_width="@dimen/wx_icon_width"
+                android:layout_height="@dimen/wx_icon_width"
+                android:layout_marginBottom="9dp"
+                android:layout_marginTop="@dimen/wx_icon_margin_left"
+                android:background="@drawable/qq_zone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QQ空间"
+                android:textColor="#6C6C6C" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="35dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/wx_icon_margin_left"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_weibo"
+                android:layout_width="@dimen/wx_icon_width"
+                android:layout_height="@dimen/wx_icon_width"
+                android:layout_marginBottom="9dp"
+                android:layout_marginTop="@dimen/wx_icon_margin_left"
+                android:background="@drawable/weibo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="微博"
+                android:textColor="#6C6C6C" />
         </LinearLayout>
 
         <LinearLayout
@@ -73,34 +151,36 @@
 
             <ImageView
                 android:id="@+id/iv_copylink"
-                android:layout_marginTop="@dimen/wx_icon_margin_left"
                 android:layout_width="@dimen/wx_icon_width"
                 android:layout_height="@dimen/wx_icon_width"
-                android:background="@drawable/ic_copy_link"
-                android:layout_marginBottom="9dp"/>
+                android:layout_marginBottom="9dp"
+                android:layout_marginTop="@dimen/wx_icon_margin_left"
+                android:background="@drawable/ic_copy_link" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6C6C6C"
-                android:text="复制链接"/>
+                android:minEms="4"
+                android:gravity="center_horizontal"
+                android:text="复制链接"
+                android:textColor="#6C6C6C" />
         </LinearLayout>
+
     </LinearLayout>
 
-   <!-- <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#D7D7D7"/>-->
+    <!-- <View
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:background="#D7D7D7"/>-->
 
     <Button
         android:id="@+id/btn_cancel"
         android:layout_width="match_parent"
         android:layout_height="52dp"
+        android:background="@color/share_bg_color"
         android:text="取消"
         android:textColor="@color/black"
-        android:textSize="17sp"
-        android:background="@color/share_bg_color"/>
-
-
+        android:textSize="17sp" />
 
 
 </LinearLayout>

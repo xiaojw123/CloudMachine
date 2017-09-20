@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cloudmachine">
+
     <permission
         android:name="com.cloudmachine.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
@@ -80,6 +81,9 @@
 
     <!-- 更改设置 -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <!-- 照相及图片选择器 -->
     <uses-feature
@@ -91,21 +95,22 @@
 
     <!-- 照相及图片选择器 -->
     <application
-        android:name="com.cloudmachine.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <!--<meta-data-->
-            <!--android:name="com.taobao.android.hotfix.IDSECRET"-->
-            <!--android:value="24604065-1" />-->
-        <!--<meta-data-->
-            <!--android:name="com.taobao.android.hotfix.APPSECRET"-->
-            <!--android:value="e489794ab324ddf3f5b26f53bd1e55ed" />-->
-        <!--<meta-data-->
-            <!--android:name="com.taobao.android.hotfix.RSASECRET"-->
-            <!--android:value="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnQX3myAaH+JR1olEebfYST/3Zjp11eJOn8EVVpkj5FDSK1rQfIER7c0TwHDzdjRJ8e0okJUoBdYeZBcUEyprQfEtyXpUxKSFTQFn+sb0VF27jtnEiBOoZQkOGyCHhX/xblk9ZfqQEAmKghh1D2ZAq/6iufUbayEdRXCpXPfpbpmzhOJs/NdykSfP5ZH6gK210lf9DmwsxJVX/yTShOhaw7iaCSNhnAzQbpCtl9EjvLAylg29zrAX0nxGrox6yqe4mZX5MpjljrC1ZqzHcfEyRgdMiWyaBv7g7dwFUyHl3LqKt2c1oULucal1iwbp7iICtQWxSr5LehHY9o3GPM3x1AgMBAAECggEAOQInqbvQDhR6dcYHpDmSwBcnzTnBDcM1gO5yk4kEInHynsgjyOA0t2dIvhbB4DovbOKRGNTk7q5is5O13bY5IorbJHZ8n68HPtsWUau/aSr9jvwmf5PxPv7JCW25rpoK6CTJkxWJThyKBXDxFKlZbG6Lzj3BIt1VAbRKckYbyZTWPni64oN7iSShu0TMkGTuXETXDzCNYRmCk8uLH4vWTen+8yJUDuwY4qIloqjCEz1KspTe4WYVL6+4HKsW3fRiiJOcR9lfDK09zAEewkgcUfnHxFNmqINihe14Z0uK/iQ0g9ZmNhviiuyTYjlbpSkpB9tZ/mVVh9lMRxdV3fQ/2QKBgQD+bOMNgd1Wzj32vPlhVSgoVJRudXvU4PqgloGHIjj09clewdnmqDSlfC27RCqtGudMPW1BcTeYiMRWTFeboU/MiiEJ28Qr2zIbK7afG3XiGEraAs0FugcwJQpFZiKtHfHQUfuDzx5LC/2xD1q8dJKh2fwhOVZ5gPQF+86V4ia7qwKBgQCoSn4zAXYologvkhzGFuWrv+jF9Sj+I4e/Oq5Z9gUfJNO5I2moruASFkVoZgSBlctXi97g5tMPT+GEyzy16qXVFyp52z0PaXwg4Vghq7Lup8+mbLFG5eggMkvW2unkWZ0Oxut9O5C6PpuuA0Nxp9St4M/28AHLoNOeBmz+dGOIXwKBgQD88D+idBMac5vCqwi6LTDpN30Be6cKckh4UmifcfRyA9CYddwtpdgBFT1ZyWEsC20brI3r26TL7lxS9z65qFtvG3vREz0p5Jch0AmUkHZXupLfvp0ZLmJrCMf3Spz6wqRe2MJVvhl9voQN/RfV94a3hcFVPm2sCfmP4VD2TYj4VQKBgA417B4me3HF9E4ACon3mQE9vUwp/YIoQeg17k8OZTRSCcbSZLOnwKgGVWoRY0QGABuuZe2b0Cq01hg+iSvbWpF52U5c4vUQNTkZjjWZqAxbAz/MYdPYyhcd6CWGasWrg4Wh6nSyuO/hJYg2IlXQlDbyit0ROzWUqQnpBP8fmOAFAoGBAJ6QSUBSUl3Boo+x/vxcKOaKNW4WdEp4hgQnA1lFjgWNQGjOdDNX3qzg9ZY44KNSmJaqZonUheXpbWX3efEC9V+dD8AmsAdqX67B7lkbXgTjgBBXeT3cXQ33UVm54Bg7AaqmIrsedhpzWRLF2KikPQ06ZCdlsOpgBA1QW2J9GJWK" />-->
+        <!-- <meta-data -->
+        <!-- android:name="com.taobao.android.hotfix.IDSECRET" -->
+        <!-- android:value="24604065-1" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="com.taobao.android.hotfix.APPSECRET" -->
+        <!-- android:value="e489794ab324ddf3f5b26f53bd1e55ed" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="com.taobao.android.hotfix.RSASECRET" -->
+        <!-- android:value="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnQX3myAaH+JR1olEebfYST/3Zjp11eJOn8EVVpkj5FDSK1rQfIER7c0TwHDzdjRJ8e0okJUoBdYeZBcUEyprQfEtyXpUxKSFTQFn+sb0VF27jtnEiBOoZQkOGyCHhX/xblk9ZfqQEAmKghh1D2ZAq/6iufUbayEdRXCpXPfpbpmzhOJs/NdykSfP5ZH6gK210lf9DmwsxJVX/yTShOhaw7iaCSNhnAzQbpCtl9EjvLAylg29zrAX0nxGrox6yqe4mZX5MpjljrC1ZqzHcfEyRgdMiWyaBv7g7dwFUyHl3LqKt2c1oULucal1iwbp7iICtQWxSr5LehHY9o3GPM3x1AgMBAAECggEAOQInqbvQDhR6dcYHpDmSwBcnzTnBDcM1gO5yk4kEInHynsgjyOA0t2dIvhbB4DovbOKRGNTk7q5is5O13bY5IorbJHZ8n68HPtsWUau/aSr9jvwmf5PxPv7JCW25rpoK6CTJkxWJThyKBXDxFKlZbG6Lzj3BIt1VAbRKckYbyZTWPni64oN7iSShu0TMkGTuXETXDzCNYRmCk8uLH4vWTen+8yJUDuwY4qIloqjCEz1KspTe4WYVL6+4HKsW3fRiiJOcR9lfDK09zAEewkgcUfnHxFNmqINihe14Z0uK/iQ0g9ZmNhviiuyTYjlbpSkpB9tZ/mVVh9lMRxdV3fQ/2QKBgQD+bOMNgd1Wzj32vPlhVSgoVJRudXvU4PqgloGHIjj09clewdnmqDSlfC27RCqtGudMPW1BcTeYiMRWTFeboU/MiiEJ28Qr2zIbK7afG3XiGEraAs0FugcwJQpFZiKtHfHQUfuDzx5LC/2xD1q8dJKh2fwhOVZ5gPQF+86V4ia7qwKBgQCoSn4zAXYologvkhzGFuWrv+jF9Sj+I4e/Oq5Z9gUfJNO5I2moruASFkVoZgSBlctXi97g5tMPT+GEyzy16qXVFyp52z0PaXwg4Vghq7Lup8+mbLFG5eggMkvW2unkWZ0Oxut9O5C6PpuuA0Nxp9St4M/28AHLoNOeBmz+dGOIXwKBgQD88D+idBMac5vCqwi6LTDpN30Be6cKckh4UmifcfRyA9CYddwtpdgBFT1ZyWEsC20brI3r26TL7lxS9z65qFtvG3vREz0p5Jch0AmUkHZXupLfvp0ZLmJrCMf3Spz6wqRe2MJVvhl9voQN/RfV94a3hcFVPm2sCfmP4VD2TYj4VQKBgA417B4me3HF9E4ACon3mQE9vUwp/YIoQeg17k8OZTRSCcbSZLOnwKgGVWoRY0QGABuuZe2b0Cq01hg+iSvbWpF52U5c4vUQNTkZjjWZqAxbAz/MYdPYyhcd6CWGasWrg4Wh6nSyuO/hJYg2IlXQlDbyit0ROzWUqQnpBP8fmOAFAoGBAJ6QSUBSUl3Boo+x/vxcKOaKNW4WdEp4hgQnA1lFjgWNQGjOdDNX3qzg9ZY44KNSmJaqZonUheXpbWX3efEC9V+dD8AmsAdqX67B7lkbXgTjgBBXeT3cXQ33UVm54Bg7AaqmIrsedhpzWRLF2KikPQ06ZCdlsOpgBA1QW2J9GJWK" /> -->
+
 
         <!-- 配置兼容glide -->
         <meta-data
@@ -145,7 +150,7 @@
             android:exported="false"
             android:screenOrientation="behind" />
         <activity
-            android:name="com.cloudmachine.activities.LoadingActivity"
+            android:name=".activities.LoadingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -155,6 +160,49 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 微博分享Activity声明 -->
+
+        <activity
+            android:name="com.umeng.socialize.media.WBShareCallBackActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!-- qq分享Activity声明 -->
+        <activity
+            android:name="com.umeng.qq.tencent.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent1105584331" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.umeng.qq.tencent.AssistActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="cn.sharesdk.framework.ShareSDKUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -181,74 +229,74 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.EditPersonalActivity"
+            android:name=".activities.EditPersonalActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
         <activity
-            android:name="com.cloudmachine.activities.UpdatePwdActivity"
+            android:name=".activities.UpdatePwdActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
         <activity
-            android:name="com.cloudmachine.activities.SuggestBackActivity"
+            android:name=".activities.SuggestBackActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name="com.cloudmachine.activities.FindPasswordActivity"
+            android:name=".activities.FindPasswordActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
         <activity
-            android:name="com.cloudmachine.activities.AboutCloudActivity"
+            android:name=".activities.AboutCloudActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.SearchPoiActivity"
+            android:name=".activities.SearchPoiActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.cloudmachine.activities.CityActivity"
+            android:name=".activities.CityActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.cloudmachine.activities.AddDeviceActivity"
+            android:name=".activities.AddDeviceActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
         <activity
-            android:name="com.cloudmachine.activities.SearchActivity"
+            android:name=".activities.SearchActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name="com.cloudmachine.activities.WorkTimeActivity"
+            android:name=".activities.WorkTimeActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.StatisticsActivity"
+            android:name=".activities.StatisticsActivity"
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.OilAmountActivity"
+            android:name=".activities.OilAmountActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.MapOneActivity"
+            android:name=".activities.MapOneActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.cloudmachine.activities.HistoricalTrackActivity"
+            android:name=".activities.HistoricalTrackActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.DeviceMcMemberActivity"
+            android:name=".activities.DeviceMcMemberActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.GuideActivity"
+            android:name=".activities.GuideActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.EditLayoutActivity"
+            android:name=".activities.EditLayoutActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustUnspecified|adjustResize" />
@@ -259,19 +307,19 @@
 
         <!-- 多图选择 -->
         <activity
-            android:name="com.cloudmachine.activities.AlbumActivity"
+            android:name=".activities.AlbumActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.ImageFile"
+            android:name=".activities.ImageFile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.cloudmachine.activities.ShowAllPhoto"
+            android:name=".activities.ShowAllPhoto"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.cloudmachine.activities.GalleryActivity"
+            android:name=".activities.GalleryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
@@ -279,11 +327,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.CheckMachineActivity"
+            android:name=".activities.CheckMachineActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.EvaluationActivity"
+            android:name=".activities.EvaluationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
@@ -291,30 +339,29 @@
         <!-- android:launchMode="singleTask" -->
         <!-- android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" -->
         <activity
-            android:name="com.cloudmachine.wxapi.WXEntryActivity"
+            android:name=".wxapi.WXEntryActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustPan|adjustUnspecified|stateHidden" />
         <activity
-            android:name="com.cloudmachine.activities.ViewCouponActivity"
+            android:name=".activities.ViewCouponActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.RepairPayDetailsActivity"
+            android:name=".activities.RepairPayDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.activities.PermissionsActivity"
+            android:name=".activities.PermissionsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.cloudmachine.wxapi.WXPayEntryActivity"
+            android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".ui.login.acticity.VerifyPhoneNumActivity"
             android:screenOrientation="portrait"
@@ -340,7 +387,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <receiver android:name="com.cloudmachine.wxapi.AppRegister">
+        <receiver android:name=".wxapi.AppRegister">
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
@@ -460,9 +507,9 @@
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="f2d4c2e7ac5f3f997b8278ab" />
-        <!--<meta-data-->
-            <!--android:name="com.google.android.gms.version"-->
-            <!--android:value="@integer/google_play_services_version" /> &lt;!&ndash; </>值来自开发者平台取得的AppKey &ndash;&gt;-->
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.gms.version" -->
+        <!-- android:value="@integer/google_play_services_version" /> &lt;!&ndash; </>值来自开发者平台取得的AppKey &ndash;&gt; -->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="57bd696d67e58e71d3000d02" />
@@ -471,7 +518,7 @@
             android:value="cloudm" />
 
         <activity
-            android:name="com.cloudmachine.activities.BigPicActivity"
+            android:name=".activities.BigPicActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.home.activity.HomeActivity" />
         <activity android:name=".ui.home.activity.ActivitesActivity" />
@@ -485,6 +532,7 @@
         <activity android:name=".ui.home.activity.RepairDetailMapActivity" />
         <activity android:name=".ui.home.activity.ConsumptionActivity" />
         <activity android:name=".ui.home.activity.RoleSelActiviy" />
+        <activity android:name=".activities.GuideActivityNew"></activity>
     </application>
 
 </manifest>

@@ -55,28 +55,7 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
         textView = (TextView) findViewById(R.id.version);
         textView.setText("V" + VersionU.getVersionName()+"("+VersionU.getVersionCode()+")");
         initView();
-//        envirBtn= (Button) findViewById(R.id.about_envir_btn);
-        /*if (isAuto) {
-            new GetVersionAsync(mContext, mHandler).execute();
-        }*/
-//        if (MyApplication.IS_RELEASE){
-//            envirBtn.setVisibility(View.GONE);
-//        }else{
-//            envirBtn.setVisibility(View.VISIBLE);
-//            if (ApiConstants.CLOUDM_HOST.contains("test")){
-//                envirBtn.setText("测试环境");
-//            }else{
-//                envirBtn.setText("线上环境");
-//            }
-//        }
-//        long time = VerisonCheckSP.getTime(this);
-//        if (time != 0
-//                && System.currentTimeMillis() - time < 1000 * 60 * 60 * 24) {
-//
-//        } else {
-            new GetVersionAsync(mContext, mHandler).execute();
-//        }
-
+        new GetVersionAsync(mContext, mHandler).execute();
     }
 //    public void changeEnvir(View view){
 //     String text= envirBtn.getText().toString();
@@ -198,4 +177,5 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
     private static final String SESSIONTITLE = "云机械";
     private static final String SESSIONDESCRIPTION = "我的工程机械设备都在云机械APP，你的设备在哪里，赶紧加入吧！";
     private static final String SESSIONURL = "http://www.cloudm.com/yjx";
+
 }

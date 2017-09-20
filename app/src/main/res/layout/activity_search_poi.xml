@@ -67,7 +67,7 @@
                 android:background="@drawable/bg_btn_map_choose" />
         </LinearLayout>
 
-        <EditText
+        <com.cloudmachine.utils.widgets.ClearEditTextView
             android:id="@+id/site_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,7 +75,10 @@
             android:layout_marginLeft="15px"
             android:layout_toLeftOf="@id/right_text"
             android:layout_toRightOf="@id/map_choose_layout"
+            android:imeOptions="actionSearch"
+            android:singleLine="true"
             android:background="@null"
+            android:layout_marginRight="@dimen/dimen_size_20"
             android:hint="输入机器所在位置"
             android:textColor="@color/cor8"
             android:textColorHint="#c7c7c7"

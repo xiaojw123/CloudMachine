@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -55,7 +56,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     @BindView(R.id.repair_btn)
     RadiusButtonView repairBtn;
     @BindView(R.id.maintence_cur_location)
-    TextView curLocTv;
+    EditText curLocTv;
     @BindView(R.id.maintenance_order_container)
     ViewGroup orderCotainer;
     @BindView(R.id.device_name)
@@ -78,6 +79,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     UnfinishedBean mUnfinishBean;
 
 
+
     @Override
     protected void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
@@ -89,6 +91,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
 //            mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
 //        }
     }
+
 
 
     @Override

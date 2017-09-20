@@ -493,7 +493,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), vInfo.getVersion());
                     if (isUpdate) {
                         Constants.updateVersion(this, mHandler,
-                                vInfo.getMustUpdate(),vInfo.getMessage(),vInfo.getLink());
+                                vInfo.getMustUpdate(), vInfo.getMessage(), vInfo.getLink());
                     }
 
                 }
@@ -535,4 +535,19 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
     private long ExitTime = 0;
+
+
+    public void cloudBoxTest(View view) {
+        Bundle bundle=new Bundle();
+        bundle.putString(QuestionCommunityActivity.H5_URL,"http://h5.cloudm.com/n/order/yunbox?activityId=18");
+        Constants.toActivity(this,QuestionCommunityActivity.class,bundle);
+
+    }
+
+    public void activitiesTest(View view) {
+        Bundle bundle=new Bundle();
+        bundle.putString(QuestionCommunityActivity.H5_URL,"http://h5.cloudm.com/n/hd/spread?extendSource=1&activityId=19");
+        Constants.toActivity(this,QuestionCommunityActivity.class,bundle);
+    }
+
 }

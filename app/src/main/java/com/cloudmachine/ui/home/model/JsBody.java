@@ -13,7 +13,35 @@ public class JsBody {
      * right_title : 我要提问
      * right_event : goNewPage()
      */
+    private String title;
+    private String desc;
+    private String link;
     private String left_event;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
     private String center_title;
     private String right_title;
     private String right_event;
