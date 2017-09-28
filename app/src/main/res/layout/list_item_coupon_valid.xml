@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_size_106"
+    android:background="@drawable/bg_coupon_vaild">
+
+
+    <TextView
+        android:id="@+id/item_coupon_valid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/item_coupon_valid_price"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="@dimen/dimen_size_30"
+        android:text="¥"
+        android:textColor="@color/cor2"
+        android:textSize="@dimen/text_size_18_sp" />
+
+    <TextView
+        android:id="@+id/item_coupon_valid_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dimen_size_5"
+        android:layout_toRightOf="@+id/item_coupon_valid"
+        android:text="50"
+        android:textColor="@color/cor2"
+        android:textSize="@dimen/text_size_37_sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="142dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_coupon_valid_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="云盒子买一送一789券"
+            android:textColor="@color/cor8"
+            android:textSize="@dimen/text_size_16_sp" />
+
+        <TextView
+            android:id="@+id/item_coupon_vaild_limitInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_11"
+            android:text="满500可用，一次最多可用1张"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/text_size_14_sp" />
+
+        <TextView
+            android:id="@+id/item_coupon_validity_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_11"
+            android:text="有效期：2017.10.12至2018.10.11"
+            android:textColor="@color/cor2"
+            android:textSize="@dimen/text_size_13_sp"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

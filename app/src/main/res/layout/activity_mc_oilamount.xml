@@ -9,7 +9,7 @@
 		android:id="@+id/title_layout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		cloudm:common_title_name="当前油位"
+		cloudm:common_title_name="油位"
 		/>
 
 	<LinearLayout

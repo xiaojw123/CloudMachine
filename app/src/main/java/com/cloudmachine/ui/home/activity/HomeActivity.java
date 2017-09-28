@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -70,6 +71,7 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeModel> implements Handler.Callback, HomeContract.View, View.OnClickListener {
+    public static final String KEY_YUBOX = "key_yunbox";
     public static boolean isForeground = false;
     public static final String MESSAGE_RECEIVED_ACTION = "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
     public static final String KEY_MESSAGE = "message";
@@ -79,7 +81,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     @BindView(R.id.home_box_img)
     ImageView homeBoxImg;
     @BindView(R.id.home_actvite_img)
-    ImageView homeActviteImg;
+    NotfyImgView homeActviteImg;
 
 
     @BindView(R.id.home_drawer_layout)
@@ -137,13 +139,16 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-//        BadgeUtil.sendMiuiAppUnreadNotificationNumber(getApplicationContext(), 15);
         MobclickAgent.enableEncrypt(true); // 友盟统计
         MobclickAgent.onEvent(this, UMengKey.time_home_map);
         mHandler = new Handler(this);
         registerMessageReceiver();
         showFragment(deviceTv);
         mPresenter.getH5ConfigInfo();
+        boolean isBox = getIntent().getBooleanExtra(KEY_YUBOX, false);
+        if (isBox) {
+            jumpCloudBox();
+        }
     }
 
     private void showFragment(View titleView) {
@@ -269,6 +274,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             meAlert.setVisibility(View.GONE);
             itmeMessageNimg.setNotifyPointVisible(false);
         }
+        mPresenter.getHomeBannerInfo();
         long time = VerisonCheckSP.getTime(this);
         if (time != 0
                 && System.currentTimeMillis() - time < 1000 * 60 * 60 * 24) {
@@ -336,6 +342,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 Constants.toActivity(this, QuestionCommunityActivity.class, null);
                 break;
             case R.id.home_actvite_img:
+                homeActviteImg.setNotifyPointVisible(false);
                 Constants.toActivity(this, ActivitesActivity.class, null);
                 break;
 
@@ -441,6 +448,24 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         showItemPop(0);
     }
 
+    @Override
+    public void updateActivitySize(int count) {
+        AppLog.print("updateActivitySize__size_" + count);
+        SharedPreferences sp = getSharedPreferences(ACT_SP_NAME, MODE_PRIVATE);
+        int actSize = sp.getInt(KEY_ACT_SIZE, -1);
+        if (actSize != -1) {
+            if (count > actSize) {
+                //红点
+                homeActviteImg.setNotifyPointVisible(true);
+            } else {
+                homeActviteImg.setNotifyPointVisible(false);
+            }
+        }
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(KEY_ACT_SIZE, count);
+        editor.commit();
+    }
+
     private int curAdPos;
 
     private void showItemPop(int pos) {
@@ -537,17 +562,18 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     private long ExitTime = 0;
 
 
-    public void cloudBoxTest(View view) {
-        Bundle bundle=new Bundle();
-        bundle.putString(QuestionCommunityActivity.H5_URL,"http://h5.cloudm.com/n/order/yunbox?activityId=18");
-        Constants.toActivity(this,QuestionCommunityActivity.class,bundle);
-
+    public void jumpCloudBox() {
+        Bundle bundle = new Bundle();
+        bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.H5_HOST+"n/order/yunbox");
+        Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
     }
 
-    public void activitiesTest(View view) {
-        Bundle bundle=new Bundle();
-        bundle.putString(QuestionCommunityActivity.H5_URL,"http://h5.cloudm.com/n/hd/spread?extendSource=1&activityId=19");
-        Constants.toActivity(this,QuestionCommunityActivity.class,bundle);
-    }
+//    public void activitiesTest(View view) {
+//        Bundle bundle = new Bundle();
+//        bundle.putString(QuestionCommunityActivity.H5_URL, "http://h5.cloudm.com/n/hd/spread?extendSource=1&activityId=19");
+//        Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
+//    }
 
+    private static final String ACT_SP_NAME = "activities_sp";
+    private static final String KEY_ACT_SIZE = "key_act_size";
 }

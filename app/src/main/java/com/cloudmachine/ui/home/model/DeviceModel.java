@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.home.model;
 
+import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
@@ -25,5 +26,9 @@ public class DeviceModel implements DeviceContract.Model {
     @Override
     public Observable<List<McDeviceInfo>> getDevices(int type) {
         return Api.getDefault(HostType.CLOUDM_HOST).getDevices(Constants.OS_PLATFORM, VersionU.getVersionName(),type).compose(RxHelper.<List<McDeviceInfo>>handleResult());
+    }
+    @Override
+    public Observable<List<ArticleInfo>> getArticles() {
+        return Api.getDefault(HostType.GUOSHUAI_HOST).getArticleList(0).compose(RxHelper.<List<ArticleInfo>>handleResult());
     }
 }

@@ -50,6 +50,7 @@ import com.cloudmachine.net.task.SubmitRepairAsync;
 import com.cloudmachine.ui.repair.contract.NewRepairContract;
 import com.cloudmachine.ui.repair.model.NewRepairModel;
 import com.cloudmachine.ui.repair.presenter.NewRepairPresenter;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileUtils;
 import com.cloudmachine.utils.PermissionsChecker;
@@ -333,8 +334,8 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         else if (TextUtils.isEmpty(locAddress)) {
             Constants.MyToast("机器位置信息不能为空！");
         } else {
-
-            showDialog(newRepairInfo);
+            mPresenter.getWarnMessage(UserHelper.getMemberId(this), vmacoptel, newRepairInfo);
+//            showDialog(newRepairInfo);
         }
     }
 
@@ -348,9 +349,9 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     }
 
 
-    private void showDialog(final NewRepairInfo newRepairInfo) {
+    private void showDialog(String message, final NewRepairInfo newRepairInfo) {
         CustomDialog.Builder builder = new CustomDialog.Builder(NewRepairActivity.this);
-        builder.setMessage("请确认" + vmacoptel + "的手机号码保持畅通，我们会在3分钟内联系您，请耐心等候");
+        builder.setMessage(message);
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
             @Override
@@ -468,6 +469,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 finish();
                 break;
             case Constants.HANDLER_NEWREPAIR_FAILD:
+                ToastUtils.showToast(this, "报修失败!!");
                 break;
             case Constants.HANDLER_GETMACHINETYPES_SUCCESS:
                 List<MachineTypeInfo> mTypeInfo = (List<MachineTypeInfo>) msg.obj;
@@ -497,7 +499,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PERMISSION_PICK) {
             if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                ToastUtils.showToast(this, "权限被拒绝");
+                CommonUtils.showPermissionDialog(this);
             } else {
                 pickCamera();
             }
@@ -505,7 +507,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         }
         if (requestCode == REQUEST_PERMISSION) {
             if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                Toast.makeText(NewRepairActivity.this, "权限被拒绝", Toast.LENGTH_SHORT).show();
+                CommonUtils.showPermissionDialog(this);
             } else {
                 locationClient.startLocation();
             }
@@ -664,7 +666,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 // Intent typeIntent = new
                 // Intent(NewRepairActivity.this,MachineTypeActivity.class);
                 if (!isOwnerDevice) {
-                    gotoEditActivity("选择机器类型",Constants.E_DEVICE_LIST,
+                    gotoEditActivity("选择机器类型", Constants.E_DEVICE_LIST,
                             Constants.E_ITEMS_category, "", "", "", "机型", tvType.getText().toString());
                 } else {
                     Constants.MyToast("已安装云盒子机器信息不可修改");
@@ -675,7 +677,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 // Intent brandIntent = new
                 // Intent(NewRepairActivity.this,MachineBrandActivity.class);
                 if (!isOwnerDevice) {
-                    gotoEditActivity("选择品牌",Constants.E_DEVICE_LIST, Constants.E_ITEMS_brand,
+                    gotoEditActivity("选择品牌", Constants.E_DEVICE_LIST, Constants.E_ITEMS_brand,
                             PK_PROD_DEF, "", "", "品牌", tvBrand.getText().toString());
                 } else {
                     Constants.MyToast("已安装云盒子机器信息不可修改");
@@ -687,7 +689,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 // Intent(NewRepairActivity.this,MachineModelActivity.class);
                 if (!isOwnerDevice) {
                     if (!TextUtils.isEmpty(PK_PROD_DEF) && !TextUtils.isEmpty(PK_BRAND)) {
-                        gotoEditActivity("选择型号",Constants.E_DEVICE_LIST, Constants.E_ITEMS_model,
+                        gotoEditActivity("选择型号", Constants.E_DEVICE_LIST, Constants.E_ITEMS_model,
                                 PK_PROD_DEF, PK_BRAND, "", "型号", tvModel.getText().toString());
                     } else {
                         //Constants.ToastAction("请先选择产品和品牌");
@@ -709,11 +711,11 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     }
 
     // v1用来传nc类型id，v2用来传nc品牌id，v4用来传类型id
-    private void gotoEditActivity(String titleName,int editType, int itemType, String v1,
+    private void gotoEditActivity(String titleName, int editType, int itemType, String v1,
                                   String v2, String v3, String text, String itemName) {
 
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.P_TITLENAME,titleName);
+        bundle.putString(Constants.P_TITLENAME, titleName);
         bundle.putString(Constants.P_TITLETEXT, text);
         // bundle.putString(Constants.P_EDITRESULTSTRING, view.getContent());
         bundle.putInt(Constants.P_EDITTYPE, editType);
@@ -727,4 +729,13 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     @Override
     public void returnUploadPhoto(String url) {
     }
+
+    @Override
+    public void returnGetWarnMessage(NewRepairInfo info, String message) {
+        if (TextUtils.isEmpty(message)) {
+            message="请确认"+vmacoptel+"的手机号码保持通畅，我们会在服务响应时间(08:00-20:00)10分钟内联系你，请耐心等候";
+        }
+        showDialog(message, info);
+    }
+
 }

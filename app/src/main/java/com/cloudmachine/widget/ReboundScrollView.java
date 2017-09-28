@@ -5,8 +5,12 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ScrollView;
+
+import com.cloudmachine.chart.utils.AppLog;
 
 /**
  * 有弹性的ScrollView
@@ -41,6 +45,10 @@ public class ReboundScrollView extends ScrollView {
 
     //在手指滑动的过程中记录是否移动了布局
     private boolean isMoved = false;
+    public int deltaY;
+    Animation.AnimationListener mAnimListener;
+    private boolean isDown = true;
+    private boolean scrollVisible;
 
     public ReboundScrollView(Context context) {
         super(context);
@@ -58,13 +66,28 @@ public class ReboundScrollView extends ScrollView {
         init();
     }
 
+//    public void setScrollAnimListener(Animation.AnimationListener animListener) {
+//        mAnimListener = animListener;
+//    }
+
+    public void setScrollVisible(boolean scrollVisible) {
+        this.scrollVisible=scrollVisible;
+
+    }
+
     private void init() {
         setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        AppLog.print("onScrollChanged oldt___" + oldt + ", t__" + t);
+        super.onScrollChanged(l, t, oldl, oldt);
+    }
 
     @Override
     protected void onFinishInflate() {
+        AppLog.print("onFinishInflate____");
         super.onFinishInflate();
         if (getChildCount() > 0) {
             contentView = getChildAt(0);
@@ -74,6 +97,7 @@ public class ReboundScrollView extends ScrollView {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        AppLog.print("onLayout____");
         super.onLayout(changed, l, t, r, b);
 
         if (contentView == null) return;
@@ -88,7 +112,7 @@ public class ReboundScrollView extends ScrollView {
      */
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-
+        AppLog.print("dispatchTouchEvent____");
         if (contentView == null) {
             return super.dispatchTouchEvent(ev);
         }
@@ -97,6 +121,7 @@ public class ReboundScrollView extends ScrollView {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                AppLog.print("dispatchTouchEvent____actionDown");
 
                 //判断是否可以上拉和下拉
                 canPullDown = isCanPullDown();
@@ -104,9 +129,12 @@ public class ReboundScrollView extends ScrollView {
 
                 //记录按下时的Y值
                 startY = ev.getY();
+                isDown = true;
+                lastY = 0;
                 break;
 
             case MotionEvent.ACTION_UP:
+                AppLog.print("dispatchTouchEvent____actionUp");
 
                 if (!isMoved) break;  //如果没有移动布局， 则跳过执行
 
@@ -114,7 +142,9 @@ public class ReboundScrollView extends ScrollView {
                 TranslateAnimation anim = new TranslateAnimation(0, 0, contentView.getTop(),
                         originalRect.top);
                 anim.setDuration(ANIM_TIME);
-
+//                if (mAnimListener != null) {
+//                    anim.setAnimationListener(mAnimListener);
+//                }
                 contentView.startAnimation(anim);
 
                 // 设置回到正常的布局位置
@@ -128,6 +158,7 @@ public class ReboundScrollView extends ScrollView {
 
                 break;
             case MotionEvent.ACTION_MOVE:
+                AppLog.print("dispatchTouchEvent____actionMove");
 
                 //在移动的过程中， 既没有滚动到可以上拉的程度， 也没有滚动到可以下拉的程度
                 if (!canPullDown && !canPullUp) {
@@ -140,7 +171,8 @@ public class ReboundScrollView extends ScrollView {
 
                 //计算手指移动的距离
                 float nowY = ev.getY();
-                int deltaY = (int) (nowY - startY);
+                AppLog.print("nowY___" + nowY);
+                deltaY = (int) (nowY - startY);
 
                 //是否应该移动布局
                 boolean shouldMove =
@@ -157,6 +189,26 @@ public class ReboundScrollView extends ScrollView {
                             originalRect.right, originalRect.bottom + offset);
 
                     isMoved = true;  //记录移动了布局
+                    if (scrollVisible) {
+                        ViewGroup cotainer = (ViewGroup) getChildAt(0);
+                        View view = cotainer.getChildAt(1);
+                        AppLog.print("deltaY______" + deltaY);
+
+                        if (isDown) {
+                            if (lastY != 0) {
+                                float y = nowY - lastY;
+                                if (y > 0) {
+                                    view.setVisibility(GONE);
+                                    isDown = false;
+                                } else {
+                                    view.setVisibility(VISIBLE);
+                                    isDown = false;
+                                }
+                            }
+                            lastY = nowY;
+                            AppLog.print("isDown___" + isDown);
+                        }
+                    }
                 }
 
                 break;
@@ -167,11 +219,14 @@ public class ReboundScrollView extends ScrollView {
         return super.dispatchTouchEvent(ev);
     }
 
+    private float lastY;
+
 
     /**
      * 判断是否滚动到顶部
      */
     private boolean isCanPullDown() {
+        AppLog.print("isCanPullDown___");
         return getScrollY() == 0 ||
                 contentView.getHeight() < getHeight() + getScrollY();
     }
@@ -180,6 +235,7 @@ public class ReboundScrollView extends ScrollView {
      * 判断是否滚动到底部
      */
     private boolean isCanPullUp() {
+        AppLog.print("isCanPullUp____");
         return contentView.getHeight() <= getHeight() + getScrollY();
     }
 

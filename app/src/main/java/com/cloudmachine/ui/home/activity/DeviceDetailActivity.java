@@ -12,6 +12,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MyLocationStyle;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.AddDeviceActivity;
 import com.cloudmachine.activities.HistoricalTrackActivity;
@@ -34,13 +35,14 @@ import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.widget.CommonTitleView;
+import com.cloudmachine.widget.ReboundScrollView;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
-public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter, DeviceDetailModel> implements DeviceDetailContract.View, View.OnClickListener, AMapLocationListener {
+public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter, DeviceDetailModel> implements DeviceDetailContract.View, View.OnClickListener, AMapLocationListener{
     McDeviceInfo mcDeviceInfo;
     McDeviceLocation mcDeviceLoc;
     @BindView(R.id.device_detail_repair_record)
@@ -63,6 +65,15 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     TextView workStatusTv;
     @BindView(R.id.device_detail_bottom_layout)
     LinearLayout bottomLayout;
+    @BindView(R.id.device_info_cotainer)
+    LinearLayout infoCotainer;
+    @BindView(R.id.device_detail_item_container)
+    LinearLayout itemContainer;
+    @BindView(R.id.device_detail_rsv)
+    ReboundScrollView mScrollView;
+
+
+
     long deviceId;
     Location locNow;
     Bundle mBundle;
@@ -73,11 +84,24 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initView();
         setinfoWIndowHiden(false);
         startlocaction(this);
+        initMyLocation();
+        initView();
         updateDeviceName();
 
+
+    }
+
+    private void initMyLocation() {
+        MyLocationStyle myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
+        myLocationStyle.radiusFillColor(getResources().getColor(R.color.transparent));
+        myLocationStyle.strokeColor(getResources().getColor(R.color.transparent));
+//        myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER);
+//        myLocationStyle.showMyLocation(true);
+        aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
+        aMap.setMyLocationEnabled(true);
     }
 
     private void updateDeviceName() {
@@ -139,7 +163,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
 //        aMap.moveCamera(CameraUpdateFactory.newLatLngBoundsRect(builder.build(), 0, 0, DensityUtil.dip2px(this,100), 0));
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
         setMapZoomTo(ZOOM_DEFAULT);
-        aMap.moveCamera(CameraUpdateFactory.scrollBy(0, DensityUtil.dip2px(this,100)));
+        aMap.moveCamera(CameraUpdateFactory.scrollBy(0, DensityUtil.dip2px(this, 100)));
         Marker marker;
 
         if (mcDeviceInfo.getWorkStatus() == 1) {
@@ -152,11 +176,31 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     }
 
     private void initBottomAnim() {
+//        mScrollView.setScrollAnimListener(animListener);
+        mScrollView.setScrollVisible(true);
         bottomLayout.startAnimation(CommonUtils.getTraslateAnim());
         bottomLayout.setVisibility(View.VISIBLE);
-
-
     }
+//    Animation.AnimationListener animListener= new Animation.AnimationListener() {
+//        @Override
+//        public void onAnimationStart(Animation animation) {
+//            if (mScrollView.deltaY > 0) {
+//                itemContainer.setVisibility(View.GONE);
+//            } else if (mScrollView.deltaY<0){
+//                itemContainer.setVisibility(View.VISIBLE);
+//            }
+//        }
+//
+//        @Override
+//        public void onAnimationEnd(Animation animation) {
+//            AppLog.print("onAnimationEnd___");
+//        }
+//
+//        @Override
+//        public void onAnimationRepeat(Animation animation) {
+//
+//        }
+//    };
 
     @Override
     public void initPresenter() {
@@ -260,6 +304,10 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
             locNow = new Location(aMapLocation.getLatitude(), aMapLocation.getLongitude());
         }
         mlocClient.stopLocation();
+
     }
 
+
+
 }
+

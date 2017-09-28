@@ -1,16 +1,24 @@
 package com.cloudmachine.ui.home.activity.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
@@ -24,6 +32,7 @@ import com.amap.api.maps.model.Marker;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.BaseRecyclerAdapter;
 import com.cloudmachine.adapter.DeviceListAdpater;
+import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.helper.UserHelper;
@@ -37,6 +46,8 @@ import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.UMengKey;
+import com.cloudmachine.utils.locatecity.PingYinUtil;
+import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -51,7 +62,7 @@ import rx.functions.Action1;
  * 高德地图2D转3D  Amap刷新flus-->reload
  */
 
-public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel> implements DeviceContract.View, View.OnClickListener, BaseRecyclerAdapter.OnItemClickListener {
+public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel> implements Handler.Callback, DeviceContract.View, View.OnClickListener, BaseRecyclerAdapter.OnItemClickListener {
     private static final long DEFUALT_UNLOGIN_ID = -1;
     @BindView(R.id.device_ques_ans_tv)
     TextView homeQuestionAnsTv;
@@ -63,7 +74,8 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     TextView menuTv;
     @BindView(R.id.device_vp)
     ViewPager deviceVp;
-
+    @BindView(R.id.device_box_act_tv)
+    TextView boxActTv;
 
     List<McDeviceInfo> mDeviceList;
     PopupWindow menuPop, phonePop;
@@ -72,6 +84,13 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     long lasMemberId;
     int pageLen;
     List<View> viewList;
+    ClearEditTextView popSearchEdt;
+    View popLineView;
+    RecyclerView devicesListRlv;
+    List<ArticleInfo> infoList;
+    Handler mHandler;
+    int actIndex, actLen;
+
 
     @Override
     public void onResume() {
@@ -109,6 +128,10 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             menuTv.setVisibility(View.GONE);
             mPresenter.getDevices(Constants.MC_DevicesList_AllType);
             lasMemberId = DEFUALT_UNLOGIN_ID;
+        }
+        if (infoList == null) {
+            mHandler = new Handler(this);
+            mPresenter.getArticleList();
         }
     }
 
@@ -153,16 +176,22 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         if (mDeviceList == null) {
             return;
         }
+        int len = mDeviceList.size();
         if (menuPop == null) {
             View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.pop_home_menu, null);
             View menuPopBg = contentView.findViewById(R.id.pop_device_bg);
             View menuPopCo = contentView.findViewById(R.id.pop_device_contentlayout);
+            popLineView = contentView.findViewById(R.id.pop_device_line);
+            popSearchEdt = (ClearEditTextView) contentView.findViewById(R.id.pop_device_search_edt);
+            popSearchEdt.setOnEditorActionListener(serachActionListener);
+            popSearchEdt.addTextChangedListener(searchWather);
             menuPopCo.setOnClickListener(this);
             menuPopBg.setOnClickListener(this);
             devicesNumTv = (TextView) contentView.findViewById(R.id.pop_devie_num_tv);
-            RecyclerView devicesListRlv = (RecyclerView) contentView.findViewById(R.id.pop_device_list_rlv);
-            if (mDeviceList != null && mDeviceList.size() >= 4) {
+            devicesListRlv = (RecyclerView) contentView.findViewById(R.id.pop_device_list_rlv);
+            if (len >= 4) {
                 devicesListRlv.getLayoutParams().height = DensityUtil.dip2px(getActivity(), 427);
+
             }
 //            devicesListRlv.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
             devicesListRlv.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -172,12 +201,59 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             menuPop = CommonUtils.getAnimPop(contentView);
         } else {
             deviceListAdpater.updateItems(mDeviceList);
+            devicesListRlv.smoothScrollToPosition(0);
         }
-        devicesNumTv.setText("全部(" + mDeviceList.size() + ")");
-
-
+        devicesNumTv.setText("全部(" + len + ")");
+        if (len >= 20) {
+            popSearchEdt.setVisibility(View.VISIBLE);
+            popLineView.setVisibility(View.GONE);
+        } else {
+            popSearchEdt.setVisibility(View.GONE);
+            popLineView.setVisibility(View.VISIBLE);
+        }
         menuPop.showAtLocation(getActivity().getWindow().getDecorView(), Gravity.FILL, 0, 0);
     }
+
+    TextWatcher searchWather = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() > 0) {
+                String searchKey = s.toString();
+                List<McDeviceInfo> searchList = new ArrayList<>();
+                for (McDeviceInfo info : mDeviceList) {
+                    String deviceName = info.getName();
+                    if (deviceName != null) {
+                        String deviceNamePy = PingYinUtil.getPingYin(deviceName);
+                        if (deviceName.contains(searchKey) || deviceNamePy.contains(searchKey)) {
+                            searchList.add(info);
+                        }
+                    }
+                }
+                deviceListAdpater.updateItems(searchList);
+            } else {
+                deviceListAdpater.updateItems(mDeviceList);
+            }
+        }
+    };
+    TextView.OnEditorActionListener serachActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                ((InputMethodManager) getActivity().getApplication().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(popSearchEdt.getWindowToken(), 0);
+            }
+            return false;
+        }
+    };
 
 
     private void flush() {
@@ -253,6 +329,34 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         deviceVp.setCurrentItem(0);
     }
 
+    @Override
+    public void updateArticles(List<ArticleInfo> articleInfoList) {
+        infoList = articleInfoList;
+        if (infoList != null && infoList.size() > 0) {
+            boxActTv.setVisibility(View.VISIBLE);
+            if (infoList != null && infoList.size() > 0) {
+                actIndex = 0;
+                actLen = infoList.size();
+                setCurrentBoxAct();
+            }
+        }else{
+            boxActTv.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    private void setCurrentBoxAct() {
+        ArticleInfo info = infoList.get(actIndex);
+        if (info != null) {
+            boxActTv.setTag(info);
+            boxActTv.setText(info.getArtTitle());
+            if (actLen > 1) {
+                mHandler.sendEmptyMessageDelayed(Constants.HANDLER_CHANGE_BOX_ACT, 10000);
+            }
+        }
+    }
+
 
     private View getItemView(McDeviceInfo info, Marker marker) {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_deviceinfo, null);
@@ -299,9 +403,19 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     }
 
 
-    @OnClick({R.id.device_phone_imgBtn, R.id.device_menu_tv, R.id.device_ques_ans_tv, R.id.device_flush_imgBtn})
+    @OnClick({R.id.device_box_act_tv, R.id.device_phone_imgBtn, R.id.device_menu_tv, R.id.device_ques_ans_tv, R.id.device_flush_imgBtn})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.device_box_act_tv:
+                ArticleInfo info = (ArticleInfo) view.getTag();
+                if (info != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(QuestionCommunityActivity.H5_URL, info.getPicUrl());
+                    bundle.putString(QuestionCommunityActivity.SHARE_PIC, info.getShareAddress());
+                    bundle.putString(QuestionCommunityActivity.SHARE_LINK, info.getArtLink());
+                    Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle);
+                }
+                break;
             case R.id.phone_box_tv://客服热线-云盒子
                 CommonUtils.callPhone(getActivity(), Constants.CUSTOMER_PHONE_BOX);
                 break;
@@ -391,6 +505,17 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         Constants.toActivity(getActivity(), DeviceDetailActivity.class, bundle);
     }
 
+    @Override
+    public boolean handleMessage(Message msg) {
+        if (msg.what == Constants.HANDLER_CHANGE_BOX_ACT) {
+            ++actIndex;
+            actIndex = actLen > actIndex ? actIndex : 0;
+            setCurrentBoxAct();
+        }
+        return false;
+    }
+
+
     private class DevicePagerAdapter extends PagerAdapter {
         List<View> mViewList;
 
@@ -421,6 +546,12 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        if (mHandler!=null){
+            mHandler.removeMessages(Constants.HANDLER_CHANGE_BOX_ACT);
+        }
+        super.onDestroy();
+    }
 }
 

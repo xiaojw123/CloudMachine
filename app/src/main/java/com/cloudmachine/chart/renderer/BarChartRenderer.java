@@ -243,7 +243,6 @@ public class BarChartRenderer extends DataRenderer {
 
                         BarEntry entry = entries.get(j / 2);
                         float val = entry.getVal();
-                        AppLog.print("ner cos___index_____"+j);
                         setValueColor(j/2);
                         drawValue(c, dataSet.getValueFormatter(), val, entry, i, valuePoints[j],
                                 valuePoints[j + 1] + (val >= 0 ? posOffset : negOffset));

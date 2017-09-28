@@ -159,6 +159,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:pathPrefix="/yunbox"
+                    android:scheme="cloudm" />
+            </intent-filter>
         </activity>
 
         <!-- 微博分享Activity声明 -->
@@ -532,7 +542,7 @@
         <activity android:name=".ui.home.activity.RepairDetailMapActivity" />
         <activity android:name=".ui.home.activity.ConsumptionActivity" />
         <activity android:name=".ui.home.activity.RoleSelActiviy" />
-        <activity android:name=".activities.GuideActivityNew"></activity>
+        <activity android:name=".activities.ViewCouponActivityNew"></activity>
     </application>
 
 </manifest>

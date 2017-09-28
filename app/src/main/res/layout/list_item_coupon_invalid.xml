@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_106"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/bg_coupon_invalid">
+
+
+        <TextView
+            android:id="@+id/item_coupon_invalid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/item_coupon_invalid_price"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="@dimen/dimen_size_30"
+            android:text="¥"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/text_size_18_sp" />
+
+        <TextView
+            android:id="@+id/item_coupon_invalid_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_toRightOf="@+id/item_coupon_invalid"
+            android:text="50"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/text_size_37_sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="142dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/item_coupon_invalid_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="云盒子买一送一789券"
+                android:textColor="@color/cor8"
+                android:textSize="@dimen/text_size_16_sp" />
+
+            <TextView
+                android:id="@+id/item_coupon_invaild_limitInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_11"
+                android:text="满500可用，一次最多可用1张"
+                android:textColor="@color/cor10"
+                android:textSize="@dimen/text_size_14_sp" />
+
+            <TextView
+                android:id="@+id/item_coupon_invalidity_period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_11"
+                android:text="有效期：2017.10.12至2018.10.11"
+                android:textColor="@color/cor10"
+                android:textSize="@dimen/text_size_13_sp" />
+        </LinearLayout>
+
+
+        `
+
+
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/item_coupon_invalid_status_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_invaild_used"
+        android:layout_gravity="right"
+        />
+</FrameLayout>

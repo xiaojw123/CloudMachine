@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <FrameLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -16,25 +15,53 @@
     >
 
     <TextView
-        android:id="@+id/tv_use_type"
+        android:id="@+id/tv_amount_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="维修保养券"
         android:textColor="@color/cor1"
+        android:textSize="@dimen/siz3"
+        android:text="¥"
+        android:layout_marginTop="33dp"
+        />
+        <!--android:layout_alignBottom="@+id/tv_amount"-->
+
+    <TextView
+        android:id="@+id/tv_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/cor1"
+        android:textSize="@dimen/text_size_34_sp"
+        android:layout_marginBottom="-5dp"
+        android:layout_alignBottom="@+id/tv_amount_unit"
+        android:layout_marginLeft="@dimen/pad1"
+        android:layout_above="@+id/limitInfo"
+        />
+
+
+
+
+    <TextView
+        android:id="@+id/vaild_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/siz7"
+        android:singleLine="true"
+        android:layout_marginLeft="@dimen/dimen_size_90"
         android:layout_marginTop="@dimen/dimen_size_20"
-        android:textSize="@dimen/siz2"
         />
 
 
     <TextView
         android:id="@+id/tv_valid_data"
-        android:text="有效期：2017.10.15至2018.10.21"
         android:textColor="@color/cor1"
         android:textSize="@dimen/siz7"
-        android:layout_below="@+id/tv_use_type"
+        android:singleLine="true"
+        android:layout_below="@+id/vaild_title_tv"
+        android:layout_alignLeft="@+id/vaild_title_tv"
         android:layout_marginTop="@dimen/dimen_size_7"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
 
 
     <TextView
@@ -42,35 +69,13 @@
         android:layout_marginTop="@dimen/dimen_size_19"
         android:textColor="@color/cor10"
         android:textSize="@dimen/siz7"
-        android:layout_below="@+id/tv_valid_data"
+        android:layout_below="@+id/tv_amount_unit"
         android:layout_marginBottom="@dimen/dimen_size_16"
-        android:text="满100可用，仅耗材可用"
+        android:singleLine="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/cor1"
-        android:textSize="@dimen/siz3"
-        android:text="¥"
-        android:layout_toLeftOf="@+id/tv_amount"
-        android:layout_alignBottom="@+id/tv_amount"
-        android:layout_marginRight="@dimen/pad1"
-        android:layout_marginBottom="@dimen/dimen_size_5"
-        />
-
-    <TextView
-        android:id="@+id/tv_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/dimen_size_22"
-        android:text="100"
-        android:textColor="@color/cor1"
-        android:textSize="@dimen/text_size_34_sp"
-        />
 
 
 </RelativeLayout>

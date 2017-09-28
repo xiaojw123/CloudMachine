@@ -5,28 +5,23 @@
     android:id="@+id/home_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:openDrawer="start"
     android:fitsSystemWindows="true"
-    >
-
-
+    android:orientation="vertical"
+    tools:openDrawer="start">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-            <!--android:background="@drawable/bg_common_title"-->
+        android:orientation="vertical">
+        <!--android:background="@drawable/bg_common_title"-->
 
         <RelativeLayout
             android:id="@+id/home_title_layout1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_size_45"
             android:background="@drawable/bg_home_title"
-            android:paddingRight="@dimen/pad4"
-            >
+            android:paddingRight="@dimen/pad4">
 
             <ImageView
                 android:id="@+id/home_me_img"
@@ -43,40 +38,38 @@
                 android:id="@+id/home_me_img_alert"
                 android:layout_width="@dimen/dimen_size_8"
                 android:layout_height="@dimen/dimen_size_8"
-                android:background="@drawable/red_cricle_point"
-                android:layout_toRightOf="@+id/home_me_img"
                 android:layout_marginLeft="-15dp"
                 android:layout_marginTop="@dimen/dimen_size_10"
-                android:visibility="gone"
-                />
+                android:layout_toRightOf="@+id/home_me_img"
+                android:background="@drawable/red_cricle_point"
+                android:visibility="gone" />
 
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 android:layout_centerHorizontal="true"
-                >
-            <TextView
-                android:id="@+id/home_title_device"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="设备"
-                android:textColor="@color/cor8"
-                android:textSize="@dimen/siz3" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/home_title_device"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="设备"
+                    android:textColor="@color/cor8"
+                    android:textSize="@dimen/siz3" />
 
 
-            <TextView
-                android:id="@+id/home_title_maintenance"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="维修"
-                android:gravity="center"
-                android:layout_marginLeft="@dimen/dimen_size_37"
-                android:textColor="@color/cor10"
-                android:textSize="@dimen/siz3"
-                />
+                <TextView
+                    android:id="@+id/home_title_maintenance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dimen_size_37"
+                    android:gravity="center"
+                    android:text="维修"
+                    android:textColor="@color/cor10"
+                    android:textSize="@dimen/siz3" />
 
             </LinearLayout>
 
@@ -92,37 +85,36 @@
                 android:paddingRight="2dp"
                 android:paddingTop="10dp"
                 android:src="@drawable/icon_box"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
 
-
-            <ImageView
+            <com.cloudmachine.widget.NotfyImgView
                 android:id="@+id/home_actvite_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dimen_size_2"
-                android:layout_centerVertical="true"
-                android:src="@drawable/icon_activites"
                 android:layout_alignParentRight="true"
-                />
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_size_2"
+                android:src="@drawable/icon_activites" />
+
             <Button
                 android:id="@+id/box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="b"
-                android:onClick="cloudBoxTest"
                 android:layout_marginRight="2dp"
                 android:layout_toLeftOf="@id/home_actvite_img"
-                />
+                android:onClick="cloudBoxTest"
+                android:text="b"
+                android:visibility="gone" />
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="a"
-                android:onClick="activitiesTest"
                 android:layout_marginLeft="3dp"
                 android:layout_toRightOf="@+id/home_me_img"
-                />
+                android:onClick="activitiesTest"
+                android:text="a"
+                android:visibility="gone" />
 
 
         </RelativeLayout>
@@ -130,9 +122,7 @@
         <FrameLayout
             android:id="@+id/home_fragment_cotainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-
+            android:layout_height="match_parent" />
 
 
     </LinearLayout>
@@ -151,10 +141,9 @@
             android:id="@+id/home_head_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dimen_size_36"
-            android:paddingTop="@dimen/dimen_size_50"
             android:background="@drawable/home_menu_item_bg"
-            >
+            android:paddingBottom="@dimen/dimen_size_36"
+            android:paddingTop="@dimen/dimen_size_50">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -177,7 +166,10 @@
                     android:id="@+id/home_nickname_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pad1"
+                    android:layout_marginRight="@dimen/pad1"
                     android:layout_marginTop="@dimen/dimen_size_13"
+                    android:singleLine="true"
                     android:text="登录"
                     android:textColor="@color/cor8"
                     android:textSize="@dimen/siz3" />
@@ -199,14 +191,14 @@
                     android:drawableLeft="@drawable/icon_repair_history"
                     android:text="@string/repair_history" />
             </FrameLayout>
+
             <FrameLayout
                 android:id="@+id/item_my_order"
-                style="@style/HomeMenuContainerStyle"
-                >
+                style="@style/HomeMenuContainerStyle">
 
                 <TextView
-                    android:drawableLeft="@drawable/icon_my_order"
                     style="@style/HomeMenuTvStyle"
+                    android:drawableLeft="@drawable/icon_my_order"
                     android:text="@string/my_order" />
             </FrameLayout>
 
@@ -218,23 +210,23 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    >
-                <com.cloudmachine.widget.NotfyImgView
-                    android:id="@+id/item_message_nimg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/icon_message"
-                    android:layout_gravity="center_vertical"
-                    />
-                <TextView
-                    android:id="@+id/item_message_tv"
-                    style="@style/HomeMenuTvStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="8dp"
-                    android:layout_gravity="center_vertical"
-                    android:text="消息" />
+                    android:orientation="horizontal">
+
+                    <com.cloudmachine.widget.NotfyImgView
+                        android:id="@+id/item_message_nimg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/icon_message" />
+
+                    <TextView
+                        android:id="@+id/item_message_tv"
+                        style="@style/HomeMenuTvStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="消息" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -248,7 +240,6 @@
                     android:drawableLeft="@drawable/icon_ask"
                     android:text="@string/my_ask" />
             </FrameLayout>
-
 
 
         </LinearLayout>
@@ -286,28 +277,19 @@
         </LinearLayout>
 
 
-            <FrameLayout
-                android:id="@+id/item_about"
-                style="@style/HomeMenuContainerStyle"
-                android:layout_marginTop="@dimen/dimen_size_29"
-                >
+        <FrameLayout
+            android:id="@+id/item_about"
+            style="@style/HomeMenuContainerStyle"
+            android:layout_marginTop="@dimen/dimen_size_29">
 
-                <TextView
-                    style="@style/HomeMenuTvStyle"
-                    android:drawableLeft="@drawable/icon_about"
-                    android:text="@string/about_and_help" />
-            </FrameLayout>
-
-
-
-
-
+            <TextView
+                style="@style/HomeMenuTvStyle"
+                android:drawableLeft="@drawable/icon_about"
+                android:text="@string/about_and_help" />
+        </FrameLayout>
 
 
     </LinearLayout>
-
-
-
 
 
 </android.support.v4.widget.DrawerLayout>

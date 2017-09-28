@@ -1,6 +1,7 @@
 package com.cloudmachine.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.Html;
@@ -13,6 +14,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.PopupWindow;
 
 import com.cloudmachine.R;
+import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.chart.utils.AppLog;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
@@ -24,6 +26,18 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 
 public class CommonUtils {
 
+
+    public static  void showPermissionDialog(Context context){
+        CustomDialog.Builder builder=new CustomDialog.Builder(context);
+        builder.setMessage("需要开启定位服务，请到设置->找到位置权限，打开定位服务");
+        builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
 
     public static Animation getTraslateAnim(){
         TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1, Animation.RELATIVE_TO_SELF, 0);
@@ -89,20 +103,58 @@ public class CommonUtils {
         return pop;
     }
 
+//    public static String formartPrice(String price) {
+//        if (!TextUtils.isEmpty(price)) {
+//            if (price.contains(".")) {
+//                int index = price.indexOf(".");
+//                int len = price.length();
+//                if (index == len - 2 && (price.charAt(len - 1) == '0')) {
+//                    return price.substring(0, index);
+//                }
+//            }
+//            return price;
+//        }
+//        return "0";
+//    }
+
+
     public static String formartPrice(String price) {
         if (!TextUtils.isEmpty(price)) {
             if (price.contains(".")) {
                 int index = price.indexOf(".");
                 int len = price.length();
-                if (index == len - 2 && (price.charAt(len - 1) == '0')) {
+                int lastIndex = len - 1;
+                if (lastIndex > index) {
+                    // .0
+                    int index1 = index + 1;
+                    if (lastIndex == index1 && price.charAt(lastIndex) == '0') {
+                        return price.substring(0, index);
+                    }
+                    int index2 = index + 2;
+                    if (lastIndex >= index2) {
+                        if (price.charAt(index1) == '0'
+                                && price.charAt(index2) == '0') {
+                            return price.substring(0, index);
+                        } else {
+                            if (lastIndex > index2) {
+                                int index3=index + 3;
+                                return price.substring(0, index3);
+                            } else {
+                                return price;
+                            }
+                        }
+
+                    }
+
+                } else {
                     return price.substring(0, index);
                 }
+
             }
             return price;
         }
         return "0";
     }
-
     public static boolean checVersion(String curVerision, String onlineVersion) {
         if (TextUtils.isEmpty(onlineVersion) || TextUtils.isEmpty(curVerision)) {
             return false;

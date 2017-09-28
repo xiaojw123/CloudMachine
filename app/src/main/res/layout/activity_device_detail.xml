@@ -10,8 +10,8 @@
         android:id="@+id/device_detail_title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:common_shodow_visible="false"
         app:common_right_text="基本信息"
+        app:common_shodow_visible="false"
         app:common_title_name="斗山一号" />
 
 
@@ -22,122 +22,225 @@
         android:layout_below="@+id/device_detail_title_layout" />
 
 
-
-    <LinearLayout
-        android:id="@+id/device_detail_bottom_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        >
+<com.cloudmachine.widget.ReboundScrollView
+    android:id="@+id/device_detail_rsv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    >
 
 
-
-
-    <include
-        layout="@layout/list_item_deviceinfo"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_154"
-        android:layout_marginLeft="@dimen/dimen_size_8"
-        android:layout_marginRight="@dimen/dimen_size_8"
-        android:layout_marginBottom="@dimen/dimen_size_8"
-        android:orientation="vertical"
-        android:padding="@dimen/dimen_size_2"
-        android:background="@drawable/bg_card">
-
-        <FrameLayout
-            android:id="@+id/device_detail_repair_record"
+        <LinearLayout
+            android:id="@+id/device_detail_bottom_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingLeft="@dimen/pad1"
-            android:paddingRight="@dimen/dimen_size_6"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:clickable="true"
+    android:layout_alignParentBottom="true"
             >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textSize="@dimen/siz4"
-                android:textColor="@color/cor9"
-                android:drawableLeft="@drawable/ic_repair_record"
-                android:drawablePadding="@dimen/pad1"
-                android:text="维修记录" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
-                android:src="@drawable/arrow_right" />
-
-        </FrameLayout>
-        <View
-            style="@style/CommonLandscapeLine"
-            android:layout_marginLeft="@dimen/dimen_size_38" />
+            <!--<include-->
+            <!--layout="@layout/list_item_deviceinfo"-->
+            <!--/>-->
 
 
-        <FrameLayout
-            android:id="@+id/device_fence_layout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingLeft="@dimen/pad1"
-            android:paddingRight="@dimen/dimen_size_6"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:drawableLeft="@drawable/ic_elec_fence"
-                android:textSize="@dimen/siz4"
-                android:textColor="@color/cor9"
-                android:drawablePadding="@dimen/pad1"
-                android:text="电子围栏" />
+            <LinearLayout
+                android:id="@+id/device_info_cotainer"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_size_105"
+                android:layout_marginBottom="@dimen/dimen_size_6"
+                android:layout_marginLeft="@dimen/dimen_size_8"
+                android:layout_marginRight="@dimen/dimen_size_8"
+                android:background="@drawable/bg_card"
+                android:orientation="vertical"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:padding="@dimen/dimen_size_2">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
-                android:src="@drawable/arrow_right" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/pad1"
+                    android:paddingRight="@dimen/pad1">
 
-        </FrameLayout>
-        <View
-            style="@style/CommonLandscapeLine"
-            android:layout_marginLeft="@dimen/dimen_size_38" />
+                    <TextView
+                        android:id="@+id/device_info_loc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_toLeftOf="@+id/device_info_status"
+                        android:drawableLeft="@drawable/icon_map_loc"
+                        android:drawablePadding="@dimen/pad1"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:textColor="@color/cor9"
+                        android:textSize="@dimen/siz4" />
 
-
-        <FrameLayout
-            android:id="@+id/device_path_layout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingLeft="@dimen/pad1"
-            android:paddingRight="@dimen/dimen_size_6"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textSize="@dimen/siz4"
-                android:textColor="@color/cor9"
-                android:drawableLeft="@drawable/ic_track"
-                android:drawablePadding="@dimen/pad1"
-                android:text="轨迹统计" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
-                android:src="@drawable/arrow_right" />
-
-        </FrameLayout>
-
-    </LinearLayout>
-
-    </LinearLayout>
+                    <TextView
+                        android:id="@+id/device_info_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="工作中"
+                        android:textColor="@color/cor4"
+                        android:textSize="@dimen/siz5"
+                        android:visibility="gone" />
 
 
+                </RelativeLayout>
+
+                <View
+                    style="@style/CommonLandscapeLine"
+                    android:layout_marginLeft="@dimen/dimen_size_38" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/divider_line_vertical"
+                    android:dividerPadding="@dimen/dimen_size_15"
+                    android:orientation="horizontal"
+                    android:showDividers="middle">
+
+                    <TextView
+                        android:id="@+id/device_info_oil"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:drawableLeft="@drawable/icon_fuel"
+                        android:drawablePadding="@dimen/pad1"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/pad1"
+                        android:textColor="@color/cor10"
+                        android:textSize="@dimen/siz5" />
+
+
+                    <TextView
+                        android:id="@+id/device_info_timelen"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:drawableLeft="@drawable/icon_time"
+                        android:drawablePadding="@dimen/pad1"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/pad1"
+                        android:textColor="@color/cor10"
+                        android:textSize="@dimen/siz5" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/device_detail_item_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_size_154"
+                android:layout_marginBottom="@dimen/dimen_size_8"
+                android:layout_marginLeft="@dimen/dimen_size_8"
+                android:layout_marginRight="@dimen/dimen_size_8"
+                android:background="@drawable/bg_card"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_size_2">
+
+                <FrameLayout
+                    android:id="@+id/device_detail_repair_record"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/pad1"
+                    android:paddingRight="@dimen/dimen_size_6">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:drawableLeft="@drawable/ic_repair_record"
+                        android:drawablePadding="@dimen/pad1"
+                        android:text="维修记录"
+                        android:textColor="@color/cor9"
+                        android:textSize="@dimen/siz4" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:src="@drawable/arrow_right" />
+
+                </FrameLayout>
+
+                <View
+                    style="@style/CommonLandscapeLine"
+                    android:layout_marginLeft="@dimen/dimen_size_38" />
+
+
+                <FrameLayout
+                    android:id="@+id/device_fence_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/pad1"
+                    android:paddingRight="@dimen/dimen_size_6">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:drawableLeft="@drawable/ic_elec_fence"
+                        android:drawablePadding="@dimen/pad1"
+                        android:text="电子围栏"
+                        android:textColor="@color/cor9"
+                        android:textSize="@dimen/siz4" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:src="@drawable/arrow_right" />
+
+                </FrameLayout>
+
+                <View
+                    style="@style/CommonLandscapeLine"
+                    android:layout_marginLeft="@dimen/dimen_size_38" />
+
+
+                <FrameLayout
+                    android:id="@+id/device_path_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/pad1"
+                    android:paddingRight="@dimen/dimen_size_6">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:drawableLeft="@drawable/ic_track"
+                        android:drawablePadding="@dimen/pad1"
+                        android:text="轨迹统计"
+                        android:textColor="@color/cor9"
+                        android:textSize="@dimen/siz4" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:src="@drawable/arrow_right" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+</com.cloudmachine.widget.ReboundScrollView>
 </RelativeLayout>

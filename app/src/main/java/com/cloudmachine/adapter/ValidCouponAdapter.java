@@ -2,6 +2,7 @@ package com.cloudmachine.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,8 @@ public class ValidCouponAdapter extends RecyclerView.Adapter<ValidCouponAdapter.
 
 
     private ArrayList<CouponInfo> dataList;
-    private LayoutInflater        inflater;
-    private Context               mContext;
+    private LayoutInflater inflater;
+    private Context mContext;
 
     public ValidCouponAdapter(ArrayList<CouponInfo> dataList, Context context) {
         this.dataList = dataList;
@@ -38,16 +39,24 @@ public class ValidCouponAdapter extends RecyclerView.Adapter<ValidCouponAdapter.
 
     @Override
     public ValidCouponHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = null;
-        itemView = inflater.inflate(R.layout.list_item_validcoupon, parent, false);
+        View itemView = inflater.inflate(R.layout.list_item_validcoupon, parent, false);
         return new ValidCouponHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ValidCouponHolder holder, int position) {
+        String title=dataList.get(position).getTitle();
+        if (TextUtils.isEmpty(title)){
+            title=dataList.get(position).getUserType();
+        }
+        holder.mTvTitle.setText(title);
         holder.mTvAmount.setText(String.valueOf(dataList.get(position).getAmount()));
-        holder.mTvUseType.setText(dataList.get(position).getUserType());
-        holder.mTvLimitInfo.setText(dataList.get(position).getLimitInfo());
+        String remark = dataList.get(position).getRemark();
+        String limtInfo = dataList.get(position).getLimitInfo();
+        if (!TextUtils.isEmpty(remark)) {
+            limtInfo = remark;
+        }
+        holder.mTvLimitInfo.setText(limtInfo);
         holder.mTvValidDate.setText(new StringBuffer().append("有效期：")
                 .append(dataList.get(position).getStartTime())
                 .append("至")
@@ -71,20 +80,18 @@ public class ValidCouponAdapter extends RecyclerView.Adapter<ValidCouponAdapter.
 
     public static class ValidCouponHolder extends RecyclerView.ViewHolder {
 
-        private TextView  mTvAmount;
-        private TextView  mTvUseType;
-        private TextView  mTvLimitInfo;
-        private TextView  mTvValidDate;
+        private TextView mTvAmount;
+        private TextView mTvLimitInfo;
+        private TextView mTvValidDate;
         private ImageView mIvUsed;
         private ImageView mIvExpired;
+        private TextView mTvTitle;
 
         public ValidCouponHolder(View itemView) {
             super(itemView);
-
+            mTvTitle = (TextView) itemView.findViewById(R.id.vaild_title_tv);
             //优惠券金额
             mTvAmount = (TextView) itemView.findViewById(R.id.tv_amount);
-            //优惠券所属分类
-            mTvUseType = (TextView) itemView.findViewById(R.id.tv_use_type);
             //优惠券使用条件
             mTvLimitInfo = (TextView) itemView.findViewById(R.id.limitInfo);
             //有效期限

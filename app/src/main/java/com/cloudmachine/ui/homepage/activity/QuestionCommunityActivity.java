@@ -49,6 +49,7 @@ import com.cloudmachine.ui.homepage.model.QuestionCommunityModel;
 import com.cloudmachine.ui.homepage.presenter.QuestionCommunityPresenter;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileStorage;
 import com.cloudmachine.utils.FileUtils;
@@ -60,6 +61,7 @@ import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.widget.CommonTitleView;
+import com.google.gson.JsonObject;
 import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONObject;
@@ -104,6 +106,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private static final String[] UPLOAD_PIC_ITEMS = new String[]{"选择本地图片", "拍照"};
     public static final String H5_URL = "h5_url";
     public static final String H5_TITLE = "h5_title";
+    public static final String SHARE_LINK = "share_link";
+    public static final String SHARE_PIC = "share_pic";
     public static final String GO_TO_MY_ORDER = "gotoMyOrder";
     @BindView(R.id.common_h5_pb)
     ProgressBar mPb;
@@ -146,6 +150,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         if (bundle != null) {
             mTitle = bundle.getString(H5_TITLE);
             mUrl = bundle.getString(H5_URL);
+            shareLink = bundle.getString(SHARE_LINK);
+            sharePic = bundle.getString(SHARE_PIC);
         }
     }
 
@@ -168,6 +174,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         homeUrl = mUrl;
         AppLog.print("Common H5 URL__" + mUrl);
     }
+
 
     private void initSetting() {
         WebSettings settings = mWebView.getSettings();
@@ -389,7 +396,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 break;
             case REQUEST_PERMISSION://权限请求
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    this.finish();
+                    CommonUtils.showPermissionDialog(this);
                 } else {
                     if (isClickCamera) {
                         openCamera();
@@ -400,8 +407,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 break;
             case REQUEST_PERMISSION_PICK:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    ToastUtils.showToast(QuestionCommunityActivity.this, "权限被拒绝");
-                    this.finish();
+                    CommonUtils.showPermissionDialog(this);
                 } else {
                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                             REQUEST_PICK_IMAGE);
@@ -648,13 +654,39 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     break;
                 case Constants.HANDLER_JS_BODY:
                     JsBody body = (JsBody) msg.obj;
-                    h5Title = body.getCenter_title();
                     if (!TextUtils.isEmpty(body.getTitle())) {
                         shareTitle = body.getTitle();
                         shareLink = body.getLink();
                         shareDesc = body.getDesc();
-                        shareUrl(shareLink, shareTitle, shareDesc);
+                        shareUrl();
+                        break;
                     }
+                    if (!TextUtils.isEmpty(body.getCenter_title())) {
+                        h5Title = body.getCenter_title();
+                    }
+                    if (!TextUtils.isEmpty(body.getRight_event())) {
+                        rightEvent = body.getRight_event();
+                    }
+                    JsonObject scJobj = body.getShare_content();
+                    if (scJobj != null) {
+                        shareTitle = scJobj.get("title").getAsString();
+                        shareDesc = scJobj.get("desc").getAsString();
+                        if (TextUtils.isEmpty(shareLink)) {
+                            shareLink = scJobj.get("link").getAsString();
+                        }
+                        if (TextUtils.isEmpty(sharePic)) {
+                            sharePic = scJobj.get("image").getAsString();
+                        }
+                        AppLog.print("scObj 不为空___title_" + shareTitle + ", desc__" + shareDesc + ", lin__" + shareLink);
+                    } else {
+                        shareTitle = h5Title;
+                        shareDesc = SHAREDESC;
+                        if (TextUtils.isEmpty(shareLink)) {
+                            shareLink = mUrl;
+                        }
+                        AppLog.print("scObj___title_" + shareTitle + ", desc__" + shareDesc + ", lin__" + shareLink);
+                    }
+
                     if (!TextUtils.isEmpty(h5Title)) {
                         mWvTitle.setTitleName(h5Title);
                         String rightTitle = body.getRight_title();
@@ -675,27 +707,14 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                         }
                         if (SHARE.equals(rightTitle) || !TextUtils.isEmpty(body.getShare_title())) {
                             mWvTitle.setRightImg(R.drawable.ic_share, new View.OnClickListener() {
+
                                 @Override
                                 public void onClick(View v) {
-                                    if ("活动推广".equals(h5Title)){
-                                        if (!TextUtils.isEmpty(shareTitle)) {
-                                            shareUrl(shareLink, shareTitle, shareDesc);
-                                        } else {
-                                            Constants.callJsMethod(mWebView, "shareEvent()");
-                                        }
-                                    }else{
-                                        shareUrl(mUrl,h5Title, SHAREDESC);
+                                    if (TextUtils.isEmpty(shareLink)) {
+                                        Constants.callJsMethod(mWebView, rightEvent);
+                                    } else {
+                                        shareUrl();
                                     }
-//                                    if (mUrl != null && mUrl.contains("activityId")) {
-//                                        if (!TextUtils.isEmpty(shareTitle)) {
-//                                            shareUrl(shareLink, shareTitle, shareDesc);
-//                                        } else {
-//                                            Constants.callJsMethod(mWebView, "shareEvent()");
-//                                        }
-//                                    } else {
-//                                        shareUrl(h5Title, mUrl, SHAREDESC);
-//                                    }
-
                                 }
 
                             });
@@ -716,8 +735,9 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             }
         }
 
-        private void shareUrl(String sUrl, String sTitle, String sDesc) {
-            ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, sUrl, sTitle, sDesc, -1);
+        private void shareUrl() {
+            ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, shareLink, shareTitle, shareDesc, sharePic);
+            shareDialog.setLinkUrl(mUrl);
             shareDialog.show();
             MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
         }
@@ -746,4 +766,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private String shareLink;
     private String shareDesc;
     private String h5Title;
+    private String sharePic;
+    private String rightEvent;
+
 }

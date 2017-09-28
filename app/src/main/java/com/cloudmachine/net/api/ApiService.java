@@ -2,6 +2,7 @@ package com.cloudmachine.net.api;
 
 
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.CheckNumBean;
@@ -43,6 +44,12 @@ import rx.Observable;
  */
 
 public interface ApiService {
+    @GET("art/queryArticles")
+    Observable<BaseRespose<List<ArticleInfo>>> getArticleList(@Query("artStatus") int artStatus);
+
+    @GET("message/warningMessageReturn")
+     Observable<BaseRespose<JsonObject>> getWarnMessage(@Query("memberId") long memberId,@Query("mobile") String mobile);
+
      @GET("n/config/")
      Observable<BaseRespose<JsonObject>> getH5ConfigInfo();
      @GET("spread/getPopList")

@@ -29,9 +29,9 @@ import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.PermissionsChecker;
-import com.cloudmachine.utils.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -145,7 +145,7 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_FINE_LOCATION) {
             if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                ToastUtils.showToast(this, "权限被拒绝");
+                CommonUtils.showPermissionDialog(this);
             } else {
                 mlocClient.startLocation();
             }

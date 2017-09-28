@@ -143,8 +143,8 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
     };
     private TextView tvConsumptionTotalAmount;
     private CWInfo cwInfo;
-    private FrameLayout partLayout, worktimeLayout, tickeLayout;
-    private TextView partAmoutTv, worktimeAmoutTv, ticketAmoutTv;
+    private FrameLayout partLayout, worktimeLayout, tickeLayout,costLayout;
+    private TextView partAmoutTv, worktimeAmoutTv, ticketAmoutTv,costAmouTv;
 
 
     @Override
@@ -188,6 +188,8 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
         partAmoutTv = (TextView) findViewById(R.id.part_discount_amout);
         worktimeAmoutTv = (TextView) findViewById(R.id.worktime_discount_amout);
         ticketAmoutTv = (TextView) findViewById(R.id.ticket_discount_amout);
+        costLayout= (FrameLayout) findViewById(R.id.cost_discount_layout);
+        costAmouTv= (TextView) findViewById(R.id.cost_discount_amout);
         cons_totalmount_rl = (RelativeLayout) findViewById(R.id.rl_consumption_totalmount);
         cons_totalmount_rl.setOnClickListener(this);
         tvShouldPrice = (TextView) findViewById(R.id.tv_should_pay_price);
@@ -232,7 +234,8 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
                        String ndiscounttotalamount = workSettle.getNdiscounttotalamount();
                         tvConsumptionTotalAmount.setText("¥" + npartstotalamount);
 //                        tvDiscountAmount.setText("-¥" + ndiscounttotalamount);
-                        tvShouldPrice.setText("¥" + workSettle.getNloanamount());
+                        tvShouldPrice.setText("¥" + workSettle.getNtotalamount());
+                        tvPayPrice.setText("实付： ¥" + workSettle.getNloanamount());
                         if (!TextUtils.isEmpty(ndiscounttotalamount)) {
                             double a1 = Double.parseDouble(ndiscounttotalamount);
                             if (a1 > 0) {
@@ -256,6 +259,15 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
                                 ticketAmoutTv.setText("¥" + nmaxamount);
                             }
                         }
+                        String npaidinamount=workSettle.getNpaidinamount();
+                        if (!TextUtils.isEmpty(npaidinamount)){
+                            double a4=Double.parseDouble(npaidinamount);
+                            if (a4>0){
+                                costLayout.setVisibility(View.VISIBLE);
+                                costAmouTv.setText("¥"+npaidinamount);
+                            }
+                        }
+
                     }
                 }
                 break;
@@ -288,7 +300,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
             case Constants.HANDLER_GETPAYPRICE_SUCCESS:
                 PayPriceInfo payPriceInfo = (PayPriceInfo) msg.obj;
                 String amount = payPriceInfo.getAmount();
-                tvPayPrice.setText("实付： ¥" + amount);
+//                tvPayPrice.setText("实付： ¥" + amount);
                 break;
             case Constants.HANDLER_GETPAYPRICE_FAILD:
                 Constants.ToastAction((String) msg.obj);

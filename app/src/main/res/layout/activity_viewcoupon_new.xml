@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/coupon_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="卡券" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spa5"
+        android:layout_marginTop="-4dp"
+        android:background="@color/public_bg"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/coupon__title_valid_tv"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/main_bar_image_padding"
+            android:text="可用"
+            android:gravity="center"
+            android:textColor="@color/cor8"
+            android:textSize="@dimen/siz3" />
+
+
+        <TextView
+            android:id="@+id/coupon_title_invalid_tv"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/main_bar_image_padding"
+            android:text="不可用"
+            android:gravity="center"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/siz3" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/coupon_fragment_cotainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/public_bg"
-    android:orientation="vertical">
+    >
 
 
     <com.cloudmachine.widget.CommonTitleView
@@ -14,6 +14,8 @@
         app:common_title_name="统计" />
 
     <RelativeLayout
+        android:id="@+id/calenda_layout"
+        android:layout_below="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_40"
         android:clickable="true"
@@ -75,7 +77,14 @@
         style="@style/line_layout"
         android:layout_marginLeft="@dimen/public_layout_padding_left"
         />-->
-
+<LinearLayout
+    android:id="@+id/work_days_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone"
+    android:layout_below="@+id/calenda_layout"
+    >
     <RelativeLayout
         android:id="@+id/rl_work_days"
         android:clickable="false"
@@ -155,5 +164,19 @@
             android:background="@null"
             android:text="" />
     </RelativeLayout>
-
 </LinearLayout>
+
+    <TextView
+        android:id="@+id/work_days_empty_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_calenda_empt"
+        android:text="本月暂无统计数据"
+        android:layout_gravity="center_horizontal"
+        android:drawablePadding="@dimen/pad1"
+        android:textColor="@color/cor10"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
+
+</RelativeLayout>

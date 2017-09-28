@@ -27,11 +27,11 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.cloudmachine.R;
-import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
-import com.cloudmachine.utils.ToastUtils;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.utils.CommonUtils;
 
 import butterknife.BindView;
 
@@ -168,8 +168,10 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
 //            }
 //        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            AppLog.print("permission not grant,  then request");
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_FINE_LOCATION);
         } else {
+            AppLog.print("startLociation—————");
             mlocClient.startLocation();
         }
     }
@@ -177,12 +179,15 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        AppLog.print("reqeustPermissionResut____");
         if (requestCode == REQ_FINE_LOCATION) {
-            if (grantResults[0] == PermissionsActivity.PERMISSIONS_GRANTED) {
+        AppLog.print("reqeustPermissionResut____REQ_FINE_LOCATION");
+            if (grantResults[0] ==PackageManager.PERMISSION_GRANTED) {
+                AppLog.print("permisssion Grant");
                 mlocClient.startLocation();
             } else {
-                ToastUtils.showToast(getActivity(), "定位权限未开启，无法定位，请到设置/权限管理中开启");
+                AppLog.print("permisssion Bedien");
+                CommonUtils.showPermissionDialog(getActivity());
 //                AppLog.print("打开权限设置。。。。。");
 //                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -190,7 +195,9 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
 //                intent.setData(uri);
 //                startActivity(intent);
             }
+            return;
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

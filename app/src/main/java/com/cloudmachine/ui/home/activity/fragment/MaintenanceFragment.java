@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.home.activity.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -25,7 +26,9 @@ import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.EvaluationActivity;
 import com.cloudmachine.activities.RepairPayDetailsActivity;
+import com.cloudmachine.activities.SearchPoiActivity;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
+import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.bean.UnfinishedBean;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.OrderStatus;
@@ -53,6 +56,7 @@ import butterknife.OnClick;
  */
 
 public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, MSupervisorModel> implements MSupervisorContract.View, AMapLocationListener, AMap.OnCameraChangeListener, GeocodeSearch.OnGeocodeSearchListener {
+    private static final int REQCODE_LOC = 0x113;
     @BindView(R.id.repair_btn)
     RadiusButtonView repairBtn;
     @BindView(R.id.maintence_cur_location)
@@ -79,7 +83,6 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     UnfinishedBean mUnfinishBean;
 
 
-
     @Override
     protected void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
@@ -91,7 +94,6 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
 //            mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
 //        }
     }
-
 
 
     @Override
@@ -242,9 +244,13 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
 
     }
 
-    @OnClick({R.id.maintence_cardview, R.id.maintenance_order_container, R.id.radius_button_text})
+    @OnClick({R.id.maintence_cur_location,R.id.maintence_cardview, R.id.maintenance_order_container, R.id.radius_button_text})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.maintence_cur_location:
+                Intent intent=new Intent(getActivity(),SearchPoiActivity.class);
+                startActivityForResult(intent,REQCODE_LOC);
+                break;
             case R.id.maintence_cardview:
                 break;
             case R.id.maintenance_order_container:
@@ -278,16 +284,34 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
 
                 break;
             case R.id.radius_button_text:
-                if (UserHelper.isLogin(getActivity())) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(NewRepairActivity.DEFAULT_LOCAITOIN, curLocTv.getText().toString());
-                    Constants.toActivity(getActivity(), NewRepairActivity.class, bundle);
-                } else {
-                    Constants.toActivity(getActivity(), LoginActivity.class, null);
-                }
+                gotoNewRepair();
                 break;
         }
     }
 
+    private void gotoNewRepair() {
+        if (UserHelper.isLogin(getActivity())) {
+            Bundle bundle = new Bundle();
+            bundle.putString(NewRepairActivity.DEFAULT_LOCAITOIN, curLocTv.getText().toString());
+            Constants.toActivity(getActivity(), NewRepairActivity.class, bundle);
+        } else {
+            Constants.toActivity(getActivity(), LoginActivity.class, null);
+        }
+    }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQCODE_LOC) {
+            if (data != null) {
+                ResidentAddressInfo info = (ResidentAddressInfo) data.getSerializableExtra(Constants.P_SEARCHINFO);
+                if (info != null) {
+                    curLocTv.setText(info.getTitle());
+                    gotoNewRepair();
+                }
+            }
+
+        }
+    }
 }

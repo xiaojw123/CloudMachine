@@ -1,5 +1,7 @@
 package com.cloudmachine.ui.home.model;
 
+import com.google.gson.JsonObject;
+
 /**
  * Created by xiaojw on 2017/7/24.
  */
@@ -47,15 +49,15 @@ public class JsBody {
     private String right_event;
     private String share_title;
     private String selectAddress_event;
-//    private String share_content;
-//
-//    public String getShare_content() {
-//        return share_content;
-//    }
-//
-//    public void setShare_content(String share_content) {
-//        this.share_content = share_content;
-//    }
+    private JsonObject share_content;
+
+    public JsonObject getShare_content() {
+        return share_content;
+    }
+
+    public void setShare_content(JsonObject share_content) {
+        this.share_content = share_content;
+    }
 
     public String getClick_event() {
         return click_event;

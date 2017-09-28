@@ -343,6 +343,40 @@
                         android:text="0" />
                 </RelativeLayout>
                 </FrameLayout>
+
+
+
+
+                <FrameLayout
+                    android:id="@+id/cost_discount_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    >
+
+
+
+
+
+                    <View style="@style/CommonLandscapeLine" />
+
+                    <RelativeLayout
+                        style="@style/CommonTabContainerStyle">
+
+                        <TextView
+                            style="@style/personal_left_text"
+                            android:text="已付金额" />
+
+                        <TextView
+                            android:id="@+id/cost_discount_amout"
+                            style="@style/personal_edit_text"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/public_layout_padding_left"
+                            android:background="@null"
+                            android:text="0" />
+                    </RelativeLayout>
+                </FrameLayout>
             </LinearLayout>
 
             <!--<View-->

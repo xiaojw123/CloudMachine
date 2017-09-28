@@ -24,8 +24,9 @@
         android:layout_gravity="bottom"
         android:layout_marginLeft="@dimen/dimen_size_10"
         android:layout_marginRight="@dimen/dimen_size_10"
-        android:paddingBottom="@dimen/dimen_size_20"
+        android:paddingBottom="@dimen/dimen_size_5"
         >
+        <!--android:paddingBottom="@dimen/dimen_size_20"-->
 
         <TextView
             android:id="@+id/pop_devie_num_tv"
@@ -35,9 +36,29 @@
             android:text="设备(0)" />
 
         <View
+            android:id="@+id/pop_device_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_size_1"
-            android:background="@color/cor12" />
+            android:background="@color/cor12"
+            />
+        <com.cloudmachine.utils.widgets.ClearEditTextView
+            android:id="@+id/pop_device_search_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_14_sp"
+            android:paddingLeft="@dimen/pad1"
+            android:paddingRight="@dimen/pad1"
+            android:hint="请输入要搜索的关键字"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"
+            android:paddingTop="@dimen/dimen_size_5"
+            android:paddingBottom="@dimen/dimen_size_5"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginRight="@dimen/dimen_size_5"
+            android:background="@drawable/bg_device_search"
+            android:textColorHint="@color/cor11"
+            android:visibility="gone"
+            />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/pop_device_list_rlv"
@@ -45,6 +66,7 @@
             android:layout_height="wrap_content"
             android:overScrollMode="never"
             />
+
     </LinearLayout>
 
 

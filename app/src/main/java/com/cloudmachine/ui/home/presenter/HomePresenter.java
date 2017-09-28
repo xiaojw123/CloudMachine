@@ -1,6 +1,7 @@
 package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.bean.UnReadMessage;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.contract.HomeContract;
@@ -64,12 +65,12 @@ public class HomePresenter extends HomeContract.Presenter {
             protected void _onNext(JsonObject jsonObject) {
                 if (jsonObject != null) {
 //                    JSONObject pageJobj = jsonObject.get("pages");
-                    JsonElement pageJelemnt=jsonObject.get("pages");
-                    JsonObject  reslutJob=pageJelemnt.getAsJsonObject();
+                    JsonElement pageJelemnt = jsonObject.get("pages");
+                    JsonObject reslutJob = pageJelemnt.getAsJsonObject();
                     if (reslutJob != null) {
                         ApiConstants.AppBoxDetail = reslutJob.get("AppBoxDetail").getAsString();
-                        ApiConstants.AppCouponHelper =  reslutJob.get("AppCouponHelper").getAsString();
-                        ApiConstants.AppCommunity =  reslutJob.get("AppCommunity").getAsString();
+                        ApiConstants.AppCouponHelper = reslutJob.get("AppCouponHelper").getAsString();
+                        ApiConstants.AppCommunity = reslutJob.get("AppCommunity").getAsString();
                         ApiConstants.AppASKQuestion = reslutJob.get("AppASKQuestion").getAsString();
                         ApiConstants.AppMyQuestion = reslutJob.get("AppMyQuestion").getAsString();
                         ApiConstants.AppUseHelper = reslutJob.get("AppUseHelper").getAsString();
@@ -84,6 +85,23 @@ public class HomePresenter extends HomeContract.Presenter {
             @Override
             protected void _onError(String message) {
 
+            }
+        }));
+    }
+
+    @Override
+    public void getHomeBannerInfo() {
+        mRxManage.add(mModel.getHomeBannerInfo().subscribe(new RxSubscriber<ArrayList<HomeBannerBean>>(mContext, false) {
+            @Override
+            protected void _onNext(ArrayList<HomeBannerBean> homeBannerBeen) {
+                if (homeBannerBeen != null) {
+                    mView.updateActivitySize(homeBannerBeen.size());
+                }
+
+            }
+
+            @Override
+            protected void _onError(String message) {
             }
         }));
     }

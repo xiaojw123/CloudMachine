@@ -1,6 +1,7 @@
 package com.cloudmachine.activities;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -20,13 +21,24 @@ import cn.jpush.android.api.JPushInterface;
  */
 public class LoadingActivity extends BaseAutoLayoutActivity implements Callback {
     private Handler mHandler;
+    private static final String YUNBOX = "yunbox";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
+        Uri uriData = getIntent().getData();
+        String autority = null;
+        if (uriData != null) {
+            autority = uriData.getAuthority();
+        }
         mHandler = new Handler(this);
-        mHandler.sendEmptyMessageDelayed(Constants.HANDLER_TIMER, 500);
+        if (YUNBOX.equals(autority)) {
+            mHandler.sendEmptyMessageDelayed(Constants.HANDLER_JUMP_YUNBOX, 500);
+        } else {
+            mHandler.sendEmptyMessageDelayed(Constants.HANDLER_TIMER, 500);
+        }
         if (MemeberKeeper.getOauth(this) != null) {
             JPushInterface.setAliasAndTags(getApplicationContext(), MemeberKeeper.getOauth(this).getId().toString(), null, null);
         }                                                                //极光推送
@@ -43,6 +55,12 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
         switch (msg.what) {
             case Constants.HANDLER_TIMER:
                 redirectTo();
+                break;
+            case Constants.HANDLER_JUMP_YUNBOX:
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(HomeActivity.KEY_YUBOX,true);
+                Constants.toActivity(this, HomeActivity.class, bundle);
+                finish();
                 break;
             case Constants.HANDLER_SWITCH_MAINACTIVITY:
                 Constants.toActivity(this, HomeActivity.class, null);

@@ -50,6 +50,7 @@ import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.personal.contract.PersonalDataContract;
 import com.cloudmachine.ui.personal.model.PersonalDataModel;
 import com.cloudmachine.ui.personal.presenter.PersonalDataPresenter;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileStorage;
 import com.cloudmachine.utils.FileUtils;
@@ -370,7 +371,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 break;
             case REQUEST_PERMISSION://权限请求
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    PersonalDataActivity.this.finish();
+                    CommonUtils.showPermissionDialog(this);
                 } else {
                     if (isClickCamera) {
                         openCamera();
@@ -381,7 +382,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 break;
             case REQUEST_PERMISSION_PICK:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    PersonalDataActivity.this.finish();
+                    CommonUtils.showPermissionDialog(this);
                 } else {
                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                             REQUEST_PICK_IMAGE);

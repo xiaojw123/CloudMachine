@@ -2,6 +2,7 @@ package com.cloudmachine.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,8 @@ import java.util.ArrayList;
 public class InvalidCouponAdapter extends RecyclerView.Adapter<InvalidCouponAdapter.InvalidCouponHolder> {
 
     private ArrayList<CouponInfo> dataList;
-    private LayoutInflater        inflater;
-    private Context               mContext;
+    private LayoutInflater inflater;
+    private Context mContext;
 
 
     public InvalidCouponAdapter(ArrayList<CouponInfo> dataList, Context context) {
@@ -46,10 +47,18 @@ public class InvalidCouponAdapter extends RecyclerView.Adapter<InvalidCouponAdap
 
     @Override
     public void onBindViewHolder(InvalidCouponHolder holder, int position) {
-
+        String title=dataList.get(position).getTitle();
+        if (TextUtils.isEmpty(title)){
+            title=dataList.get(position).getUserType();
+        }
+        holder.mTvTitle.setText(title);
         holder.mTvAmount.setText(String.valueOf(dataList.get(position).getAmount()));
-        holder.mTvUseType.setText(dataList.get(position).getUserType());
-        holder.mTvLimitInfo.setText(dataList.get(position).getLimitInfo());
+        String limitInfo = dataList.get(position).getLimitInfo();
+        String remark = dataList.get(position).getRemark();
+        if (!TextUtils.isEmpty(remark)) {
+            limitInfo = remark;
+        }
+        holder.mTvLimitInfo.setText(limitInfo);
         holder.mTvValidDate.setText(new StringBuffer().append("有效期：")
                 .append(dataList.get(position).getStartTime())
                 .append("至")
@@ -72,21 +81,18 @@ public class InvalidCouponAdapter extends RecyclerView.Adapter<InvalidCouponAdap
     }
 
     public static class InvalidCouponHolder extends RecyclerView.ViewHolder {
-
-        private TextView  mTvAmount;
-        private TextView  mTvUseType;
-        private TextView  mTvLimitInfo;
-        private TextView  mTvValidDate;
+        private TextView mTvTitle;
+        private TextView mTvAmount;
+        private TextView mTvLimitInfo;
+        private TextView mTvValidDate;
         private ImageView mIvUsed;
         private ImageView mIvExpired;
 
         public InvalidCouponHolder(View itemView) {
             super(itemView);
-
+            mTvTitle= (TextView) itemView.findViewById(R.id.vaild_title_tv);
             //优惠券金额
             mTvAmount = (TextView) itemView.findViewById(R.id.tv_amount);
-            //优惠券所属分类
-            mTvUseType = (TextView) itemView.findViewById(R.id.tv_use_type);
             //优惠券使用条件
             mTvLimitInfo = (TextView) itemView.findViewById(R.id.limitInfo);
             //有效期限

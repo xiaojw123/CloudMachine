@@ -6,8 +6,8 @@ ext {
             compileVersion   : 25,
             minSdk           : 16,
             targetSdk        : 25,
-            version_code     : 136,
-            version_name     : "3.3.2"
+            version_code     : 138,
+            version_name     : "3.3.4"
     ]
     libraries = [
             support: "25.2.0",

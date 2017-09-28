@@ -82,7 +82,11 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
             MobclickAgent.onEvent(v.getContext(), UMengKey.count_ad_click);
             HomeBannerBean bean = (HomeBannerBean) v.getTag();
             if (bean != null) {
-                String url = !TextUtils.isEmpty(bean.adsLink) ? bean.adsLink : bean.picUrl;
+//                String url = !TextUtils.isEmpty(bean.adsLink) ? bean.adsLink : ;
+                String url=bean.picUrl;
+                String adsLink=bean.adsLink;
+                String shareAddress=bean.shareAddress;
+
 //                if (bean.skipType == 3) {
 //                    Intent wanaBoxIntent = new Intent(mContext, WanaCloudBox.class);
 //                    wanaBoxIntent.putExtra(Constants.P_WebView_Url, url);
@@ -109,6 +113,12 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
                 Intent intent = new Intent(mContext, QuestionCommunityActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_URL, url);
+                if (!TextUtils.isEmpty(adsLink)){
+                bundle.putString(QuestionCommunityActivity.SHARE_LINK,adsLink);
+                }
+                if (!TextUtils.isEmpty(shareAddress)){
+                    bundle.putString(QuestionCommunityActivity.SHARE_PIC,shareAddress);
+                }
 //                //分享标题
 //                bundle.putString(Constants.P_WebView_Title, bean.adsTitle);
 //                bundle.putBoolean(Constants.HOME_BANNER_SHARE, true);

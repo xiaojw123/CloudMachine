@@ -1,12 +1,14 @@
 package com.cloudmachine.ui.home.model;
 
 import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.bean.UnReadMessage;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.HomeContract;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -16,6 +18,12 @@ import rx.Observable;
  */
 
 public class HomeModel implements HomeContract.Model {
+    @Override
+    public Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo() {
+        return Api.getDefault(HostType.GUOSHUAI_HOST).GetHomeBannerInfo(1,0)
+                .compose(RxHelper.<ArrayList<HomeBannerBean>>handleResult());
+    }
+
     @Override
     public Observable<UnReadMessage> getMessageUntreatedCount(long memberId) {
 

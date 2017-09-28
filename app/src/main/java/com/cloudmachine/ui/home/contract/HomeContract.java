@@ -3,10 +3,12 @@ package com.cloudmachine.ui.home.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
+import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.bean.UnReadMessage;
 import com.cloudmachine.ui.home.model.PopItem;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -23,6 +25,8 @@ public interface HomeContract {
 
         void updatePromotionInfo(List<PopItem> items);
 
+        void updateActivitySize(int count);
+
 
     }
 
@@ -31,6 +35,7 @@ public interface HomeContract {
 
         Observable<List<PopItem>> getPromotionModel(long memberId);
         Observable<JsonObject>   getH5ConfigInfo();
+        Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo();
 
     }
 
@@ -40,6 +45,7 @@ public interface HomeContract {
 
         public abstract void getPromotionInfo(long memberId);
         public abstract  void getH5ConfigInfo();
+        public abstract void getHomeBannerInfo();
 
     }
 

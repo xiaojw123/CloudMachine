@@ -69,6 +69,8 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
     private SimpleDateFormat mDateFormat;
     private Date mDate;
     private String mReplace;
+    private TextView mEmptyTv;
+    private LinearLayout daysItemCotainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +92,7 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
     }
 
     private void initView() {
-        mDeviceId = getIntent().getLongExtra(Constants.P_DEVICEID,-1);
+        mDeviceId = getIntent().getLongExtra(Constants.P_DEVICEID, -1);
         calendarList = new ArrayList<>();//初始化集合
         //当月
         mDateFormat = new SimpleDateFormat("yyyy年MM月");
@@ -103,19 +105,21 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
         getPreMonth(calendar, calendarList);
 
         initTitleLayout();
+        mEmptyTv = (TextView) findViewById(R.id.work_days_empty_tv);
+        daysItemCotainer = (LinearLayout) findViewById(R.id.work_days_container);
         mIvCalendar = (ImageView) findViewById(R.id.iv_calendar);
         mIvCalendar.setOnClickListener(this);
         mSelectMonth = (TextView) findViewById(R.id.f11);//对应日历的月份(默认展示最近一个月)
         mSelectMonth.setText(splitString2(mDateFormat.format(mDate)));
-        mTvWorkDaysValue = (TextView)findViewById(R.id.tv_work_days_value);//工作天数
-        mTvTotalHoursValue = (TextView)findViewById(R.id.tv_total_hours_value);
+        mTvWorkDaysValue = (TextView) findViewById(R.id.tv_work_days_value);//工作天数
+        mTvTotalHoursValue = (TextView) findViewById(R.id.tv_total_hours_value);
         mTvAveHoursValue = (TextView) findViewById(R.id.tv_ave_hours_value);
-        mTvWorkRateValue = (TextView)findViewById(R.id.tv_work_rate_value);
+        mTvWorkRateValue = (TextView) findViewById(R.id.tv_work_rate_value);
     }
 
     private void initTitleLayout() {
 
-        title_layout = (CommonTitleView)findViewById(R.id.title_layout);
+        title_layout = (CommonTitleView) findViewById(R.id.title_layout);
         title_layout.setRightImg(R.drawable.coupon_des_normal, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,10 +137,22 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
         switch (msg.what) {
             case Constants.HANDLER_GETDATASTATISTICS_SUCCESS:
                 StatisticsInfo statisticsInfo = (StatisticsInfo) msg.obj;
-                mTvWorkDaysValue.setText(statisticsInfo.getWorkDay());
-                mTvTotalHoursValue.setText(statisticsInfo.getTotalWorkTime());
-                mTvAveHoursValue.setText(statisticsInfo.getAvgWorkTime());
-                mTvWorkRateValue.setText(statisticsInfo.getWorkRate());
+                if (statisticsInfo == null) {
+                    mEmptyTv.setVisibility(View.VISIBLE);
+                    daysItemCotainer.setVisibility(View.GONE);
+                    break;
+                } else {
+                    mEmptyTv.setVisibility(View.GONE);
+                    daysItemCotainer.setVisibility(View.VISIBLE);
+                }
+                String workDay = statisticsInfo.getWorkDay();
+                String toalWorkTime = statisticsInfo.getTotalWorkTime();
+                String avgWorkTime = statisticsInfo.getAvgWorkTime();
+                String workRate = statisticsInfo.getWorkRate();
+                mTvWorkDaysValue.setText(workDay);
+                mTvTotalHoursValue.setText(toalWorkTime);
+                mTvAveHoursValue.setText(avgWorkTime);
+                mTvWorkRateValue.setText(workRate);
                 if (!TextUtils.isEmpty(statisticsInfo.getDeviceName()) && statisticsInfo.getRanking() != 0 && !TextUtils.isEmpty(statisticsInfo.getLeading())) {
                     String strLine2 = statisticsInfo.getDeviceName() + "  累计工时数在云机械设备中排名" + statisticsInfo.getRanking() + ", 请继续保持哦。";
                     SpannableString spanLine2 = new SpannableString(strLine2);
@@ -299,7 +315,7 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
         if (mPopupWindow != null && mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
             mPopupWindow = null;
-            WindowManager.LayoutParams params =getWindow().getAttributes();
+            WindowManager.LayoutParams params = getWindow().getAttributes();
             params.alpha = 1f;
             getWindow().setAttributes(params);
         }

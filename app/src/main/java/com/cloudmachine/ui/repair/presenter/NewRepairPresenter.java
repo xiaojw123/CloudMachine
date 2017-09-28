@@ -1,7 +1,9 @@
 package com.cloudmachine.ui.repair.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.NewRepairInfo;
 import com.cloudmachine.ui.repair.contract.NewRepairContract;
+import com.google.gson.JsonObject;
 
 /**
  * 项目名称：CloudMachine
@@ -28,5 +30,25 @@ public class NewRepairPresenter extends NewRepairContract.Presenter {
 
             }
         }));
+    }
+
+    @Override
+    public void getWarnMessage(long memeberId, String tel, final NewRepairInfo info) {
+        mRxManage.add(mModel.getWarnMessage(memeberId, tel).subscribe(new RxSubscriber<JsonObject>(mContext) {
+            @Override
+            protected void _onNext(JsonObject jsonObject) {
+                if (jsonObject != null) {
+                    mView.returnGetWarnMessage(info, jsonObject.get("warningMessage").getAsString());
+                } else {
+                    mView.returnGetWarnMessage(info, null);
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+                mView.returnGetWarnMessage(info, null);
+            }
+        }));
+
     }
 }

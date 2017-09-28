@@ -247,6 +247,8 @@ public class Constants {
     public static final int HANDLER_HIDEN_CLOSE_BTN = HANDLER_SHOW_CLOSE_BTN + 1;
     public static final int HANDLER_ALIPAY_RESULT = HANDLER_HIDEN_CLOSE_BTN + 1;
     public static final int HANDLER_JUMP_MY_ORDER = HANDLER_ALIPAY_RESULT + 1;
+    public static final int HANDLER_JUMP_YUNBOX = HANDLER_JUMP_MY_ORDER + 1;
+    public static final int HANDLER_CHANGE_BOX_ACT = HANDLER_JUMP_YUNBOX + 1;
 
     public static final String OS_PLATFORM = "Android";
     public static final String URL_H5_ARGUMENT = "http://www.cloudm.com/agreement";

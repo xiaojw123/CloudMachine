@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -35,6 +36,7 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
     private int imageSource = -1;
     private String iconUrl;
     private SHARE_MEDIA mMedia;
+    private String mLinkUrl;
 
     public ShareDialog(Context context, String webpageUrl, String msgTitle, String msgDesc, int resource) {
         super(context, R.style.ShareDialog);
@@ -63,6 +65,9 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
         setContentView(view);
         initWindow();
         initView();
+    }
+    public void setLinkUrl(String linkUrl){
+        mLinkUrl=linkUrl;
     }
 
     /**
@@ -108,7 +113,7 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
             case R.id.iv_copylink:
 //                webpageUrl
                 ClipboardManager cm = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                cm.setText(webpageUrl);
+                cm.setText(mLinkUrl);
                 ToastUtils.showCenterToast(v.getContext(), "复制成功");
                 dismiss();
                 break;
@@ -152,13 +157,19 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
                 if (grant) {
                     UMWeb web = new UMWeb(webpageUrl);
                     web.setTitle(msgTitle);
-                    web.setThumb(new UMImage(mContext, R.drawable.corner));
+                    UMImage umImage=null;
+                    if (!TextUtils.isEmpty(iconUrl)){
+                        umImage=new UMImage(mContext,iconUrl);
+                    }else{
+                        umImage=new UMImage(mContext, R.drawable.corner);
+                    }
+                    web.setThumb(umImage);
                     web.setDescription(msgDesc);
                     ShareAction shareAction = new ShareAction((Activity) mContext);
                     AppLog.print("setPlatform__");
                     shareAction.setPlatform(mMedia).withMedia(web).setCallback(ShareDialog.this).share();
                 } else {
-                    ToastUtils.showToast(mContext, "需要相关权限，请到设置/权限管理中设置允许");
+                    CommonUtils.showPermissionDialog(mContext);
                 }
             }
         });

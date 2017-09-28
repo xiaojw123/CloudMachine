@@ -11,6 +11,25 @@
         android:background="@color/white"
         />
 
+
+    <TextView
+        android:id="@+id/device_box_act_tv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_44"
+        android:singleLine="true"
+        android:background="@drawable/bg_card"
+        android:layout_marginLeft="@dimen/dimen_size_8"
+        android:layout_marginRight="@dimen/dimen_size_8"
+        android:textSize="@dimen/text_size_14_sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_size_2"
+        android:drawableRight="@drawable/ic_box_arrow_right"
+        android:textColor="@color/cor9"
+        android:paddingLeft="@dimen/dimen_size_12"
+        android:paddingRight="@dimen/dimen_size_12"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        />
     <TextView
         android:id="@+id/device_menu_tv"
         android:layout_width="@dimen/dimen_size_44"
@@ -19,12 +38,12 @@
         android:drawableTop="@drawable/ic_menu"
         android:text="@string/all"
         android:layout_alignRight="@+id/device_ques_ans_tv"
-        android:layout_marginTop="@dimen/dimen_size_5"
+        android:layout_marginTop="@dimen/dimen_size_6"
         android:textSize="@dimen/siz8"
         android:gravity="center_horizontal"
         android:textColor="@color/cor9"
         android:paddingTop="@dimen/dimen_size_5"
-        android:visibility="gone"
+        android:layout_below="@+id/device_box_act_tv"
         />
 
     <TextView

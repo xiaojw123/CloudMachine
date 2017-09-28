@@ -1,6 +1,7 @@
 package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.contract.DeviceContract;
@@ -47,6 +48,22 @@ public class DevicePresenter extends DeviceContract.Prensenter {
 
             }
         }));
+    }
+
+    @Override
+    public void getArticleList() {
+        mRxManage.add(mModel.getArticles().subscribe(new RxSubscriber<List<ArticleInfo>>(mContext) {
+            @Override
+            protected void _onNext(List<ArticleInfo> articleInfos) {
+                mView.updateArticles(articleInfos);
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+
     }
 
 

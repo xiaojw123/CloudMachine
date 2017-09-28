@@ -1,9 +1,10 @@
 package com.cloudmachine.ui.repair.model;
 
+import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.ui.repair.contract.NewRepairContract;
+import com.google.gson.JsonObject;
 
 import java.io.File;
 
@@ -36,5 +37,10 @@ public class NewRepairModel implements NewRepairContract.Model {
 
         return Api.getDefault(HostType.CLOUDM_HOST).upLoadPhoto(requestBody)
                 .compose(RxHelper.<String>handleResult());
+    }
+
+    @Override
+    public Observable<JsonObject> getWarnMessage(long memeberId, String tel) {
+        return Api.getDefault(HostType.GUOSHUAI_HOST).getWarnMessage(memeberId,tel).compose(RxHelper.<JsonObject>handleResult());
     }
 }

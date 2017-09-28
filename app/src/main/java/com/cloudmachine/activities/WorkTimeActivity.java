@@ -114,7 +114,6 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
         wtEmptTv = (TextView) findViewById(R.id.wt_empt_tv);
         wtFormatLlt = (LinearLayout) findViewById(R.id.wt_form_llt);
         daily_layout = findViewById(R.id.daily_layout);
-        findViewById(R.id.wt_form_llt);
         daily_title = (TextView) findViewById(R.id.daily_title);
         daily_layout.setOnClickListener(this);
 
@@ -303,6 +302,20 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
                     wtFormatLlt.setVisibility(View.GONE);
                     break;
                 }
+                boolean istTime = false;
+                for (ScanningWTInfo info : wtInfo) {
+                    float workTime = info.getDayWorkHour();
+                    if (workTime != 0) {
+                        istTime = true;
+                    }
+                }
+                if (!istTime) {
+                    wtEmptTv.setVisibility(View.VISIBLE);
+                    wtFormatLlt.setVisibility(View.GONE);
+                    break;
+                }
+                wtEmptTv.setVisibility(View.GONE);
+                wtFormatLlt.setVisibility(View.VISIBLE);
                 int len = wtInfo.size();
                 int s = len % SHOWNUM;
                 if (s != 0) {
@@ -367,24 +380,37 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
         if (null == showWTInof) {
+            wtEmptTv.setVisibility(View.VISIBLE);
             return;
         }
         if (null == showWTInof[page]) {
+            wtEmptTv.setVisibility(View.VISIBLE);
             return;
         }
+
         int len = showWTInof[page].length;
         if (page == pageNum - 1) {
             len = showNum;
         }
-
-
+        boolean isData = false;
         for (int i = 0; i < len; i++) {
+            float workTime = showWTInof[page][len - i - 1].getDayWorkHour();
+            if (workTime != 0) {
+                isData = true;
+            }
             xVals.add(
                     Constants.changeDateFormat2(showWTInof[page][len - i - 1].getCollectionDate(),
                             "yyyy-MM-dd", "MM-dd", new int[]{0}, new String[]{"今日"}));
 
-            yVals1.add(new BarEntry(showWTInof[page][len - i - 1].getDayWorkHour(), i));
+            yVals1.add(new BarEntry(workTime, i));
         }
+        if (!isData) {
+            wtEmptTv.setVisibility(View.VISIBLE);
+            mChart.setVisibility(View.GONE);
+            return;
+        }
+        mChart.setVisibility(View.VISIBLE);
+        wtEmptTv.setVisibility(View.GONE);
 //	        xVals.add("D");
 //	        BarEntry barr = new BarEntry(1,1);
 //	        barr.setData(data)
@@ -624,7 +650,7 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
             public void onAnimationEnd(Animator animation) {
                 daily_layout.setVisibility(View.VISIBLE);
                 if (mShowAction == null) {
-                    mShowAction=new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                    mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
                             Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
                             -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
                     mShowAction.setDuration(500);
