@@ -19,6 +19,7 @@ import com.cloudmachine.autolayout.widgets.SlideView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.MemberInfo;
 import com.cloudmachine.bean.MemberInfoSlide;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.OnItemClickListener;
 import com.cloudmachine.listener.RecyclerItemClickListener;
@@ -62,6 +63,7 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
         mHandler = new Handler(this);
         getIntentData();
         initView();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_MEMBER);
     }
 
 
@@ -198,8 +200,10 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
             }
         });
         builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                MobclickAgent.onEvent(DeviceMcMemberActivity.this,MobEvent.COUNT_MEMEBER_DELETE);
                 dialog.dismiss();
                 new DevicesDeleteMemberAsync(DeviceMcMemberActivity.this, mHandler).execute(String.valueOf(curMemberId),
                         String.valueOf(deviceId));

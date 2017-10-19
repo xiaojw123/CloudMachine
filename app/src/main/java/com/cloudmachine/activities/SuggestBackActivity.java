@@ -1,7 +1,6 @@
 package com.cloudmachine.activities;
 
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,12 +12,14 @@ import android.widget.EditText;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.FeedBackAsync;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
 import com.cloudmachine.widget.CommonTitleView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 意见反馈
@@ -42,7 +43,7 @@ OnClickListener, Callback{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.suggestionback);
-		 
+		MobclickAgent.onEvent(SuggestBackActivity.this, MobEvent.SETTING_FEEDBACK);
 		mContext = this;
 		mHandler = new Handler(this);
 		imageLoader.init(ImageLoaderConfiguration.createDefault(this));

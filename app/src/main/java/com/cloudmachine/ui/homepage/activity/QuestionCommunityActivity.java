@@ -40,6 +40,7 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.model.JsBody;
@@ -131,6 +132,16 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         initParams();
         initView();
         initRxManager();
+        MobclickAgent.onEvent(this, MobEvent.TIME_H5_PAGE);
+        if (mUrl != null) {
+            if (mUrl.equals(ApiConstants.AppCouponHelper)) {
+                MobclickAgent.onEvent(this, MobEvent.TIME_H5_COUPON_HELP_PAGE);
+            } else {
+                if (mUrl.contains("yunbox")) {
+                    MobclickAgent.onEvent(this, MobEvent.TIME_H5_YUN_BOX_PAGE);
+                }
+            }
+        }
     }
 
     private void initRxManager() {

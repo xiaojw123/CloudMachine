@@ -277,16 +277,41 @@
         </LinearLayout>
 
 
-        <FrameLayout
+        <!--<FrameLayout-->
+            <!--android:id="@+id/item_about"-->
+            <!--style="@style/HomeMenuContainerStyle"-->
+            <!--android:layout_marginTop="@dimen/dimen_size_29"-->
+            <!--&gt;-->
+
+            <!--<TextView-->
+                <!--style="@style/HomeMenuTvStyle"-->
+                <!--android:drawableLeft="@drawable/icon_about"-->
+                <!--android:text="@string/about_and_help" />-->
+        <!--</FrameLayout>-->
+
+
+        <LinearLayout
             android:id="@+id/item_about"
             style="@style/HomeMenuContainerStyle"
-            android:layout_marginTop="@dimen/dimen_size_29">
+            android:layout_marginTop="@dimen/dimen_size_29"
+            >
+
+            <com.cloudmachine.widget.NotfyImgView
+                android:id="@+id/item_about_niv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/icon_about"
+                />
 
             <TextView
                 style="@style/HomeMenuTvStyle"
-                android:drawableLeft="@drawable/icon_about"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="8dp"
                 android:text="@string/about_and_help" />
-        </FrameLayout>
+        </LinearLayout>
 
 
     </LinearLayout>

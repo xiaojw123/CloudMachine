@@ -15,6 +15,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
@@ -23,6 +24,7 @@ import com.cloudmachine.utils.URLs;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
 import com.google.gson.Gson;
+import com.umeng.analytics.MobclickAgent;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -45,6 +47,7 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
         setContentView(R.layout.edit_personal_info);
         info = getIntent().getStringExtra("info");
         initView();
+        MobclickAgent.onEvent(this, MobEvent.TIME_PROFILE_EDIT);
     }
 
     @Override

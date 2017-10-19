@@ -12,7 +12,9 @@ import com.cloudmachine.adapter.PhotoListAdapter;
 import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.WorkDetailBean;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.utils.Constants;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
@@ -33,6 +35,7 @@ public class PayDeviceInfoActivity extends BaseAutoLayoutActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_device_info);
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_DEVICE_INFO);
         WorkDetailBean workDetail = (WorkDetailBean) getIntent().getSerializableExtra(Constants.WORK_DETAIL);
         String flag=getIntent().getStringExtra(Constants.FLAG);
         logoList = getIntent().getStringArrayListExtra(Constants.LOGO_LIST);

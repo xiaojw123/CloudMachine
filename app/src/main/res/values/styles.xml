@@ -751,6 +751,13 @@
         <item name="android:textSize">@dimen/public_textsize_big</item>
         <item name="android:textColor">@color/ranking_color</item>
     </style>
+    
+    <style name="CustomCheckgBoxStyle" parent="@android:style/Widget.CompoundButton.CheckBox">
+
+        <item name="android:colorControlActivated">@color/colorAccent</item>
+        <item name="android:colorControlNormal">@color/colorPrimary</item>
+
+    </style>
 
 
 </resources>

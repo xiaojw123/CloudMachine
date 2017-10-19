@@ -12,10 +12,12 @@ import android.view.View.OnClickListener;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.UpdatePwdAsync;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
+import com.umeng.analytics.MobclickAgent;
 
 public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callback{
 
@@ -33,6 +35,7 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 		mContext = this;
 		mHandler = new Handler(this);
 		initView();
+		MobclickAgent.onEvent(this, MobEvent.TIME_CHANGEPASSWORD);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.CommentsInfo;
 import com.cloudmachine.bean.DisadvantageBean;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.GetEvaluateInfoTask;
 import com.cloudmachine.net.task.GetTagInfoAsync;
 import com.cloudmachine.net.task.SubmitCommentAsync;
@@ -28,6 +29,7 @@ import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.tagview.TagBaseAdapter;
 import com.cloudmachine.utils.widgets.tagview.TagCloudLayout;
 import com.cloudmachine.utils.widgets.tagview.TagCloudLayout.TagItemClickListener;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,6 +146,7 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
                         ToastUtils.showToast(EvaluationActivity.this,"评分区间【1-5】");
                         return;
                     }
+                    MobclickAgent.onEvent(EvaluationActivity.this,MobEvent.TIME_REPAIR_COMMENT);
                     new SubmitCommentAsync(mContext, mHandler, css_work_no, String
                             .valueOf(rating), cust_telString, sbAdvantage
                             .toString(), sbjEdt.getText().toString()).execute();

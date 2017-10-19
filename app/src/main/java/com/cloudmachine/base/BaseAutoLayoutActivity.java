@@ -18,7 +18,6 @@ import com.cloudmachine.utils.AppManager;
 import com.cloudmachine.utils.LoadingDialog;
 import com.cloudmachine.utils.StatusBarCompat;
 import com.cloudmachine.utils.TUtil;
-import com.cloudmachine.utils.UMListUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
@@ -34,7 +33,6 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        UMListUtil.getUMListUtil().sendStruEvent(this.getClass().getSimpleName(), this);//发送结构化事件
         super.onCreate(savedInstanceState);
         //初始化状态栏系列事件
         doBeforeSetcontentView();
@@ -101,22 +99,21 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 
     @Override
     protected void onResume() {
-        UMListUtil.getUMListUtil().startCustomEvent(this);//页面时长统计开始
         super.onResume();
+        MobclickAgent.onPageStart(getClass().getName());
         MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
-        UMListUtil.getUMListUtil().endCustomEvent(this);//页面时长统计结束
         super.onPause();
+        MobclickAgent.onPageEnd(getClass().getName());
         MobclickAgent.onPause(this);
     }
 
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
-        UMListUtil.getUMListUtil().removeList(this.getClass().getSimpleName());
         super.onDestroy();
         if (mPresenter != null)
             mPresenter.onDestroy();

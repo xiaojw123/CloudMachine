@@ -37,6 +37,7 @@ import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.EditListInfo;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.updateDeviceInfoAsync;
 import com.cloudmachine.net.task.updateDeviceInfoByKeyAsync;
@@ -366,6 +367,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 break;
             case R.id.device_name:
                 //MobclickAgent.onEvent(mContext,UMengKey.time_machine_info_edit);
+                MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_INFO_EDIT);
                 gotoEditActivity(device_name, Constants.E_DEVICE_TEXT, Constants.E_ITEMS_deviceName);
                 break;
             case R.id.device_type:

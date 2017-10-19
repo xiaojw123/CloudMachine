@@ -35,7 +35,7 @@ public class URLs {
     //获取个人信息
     public static String MEMBER_INFO = ApiConstants.CLOUDM_HOST + "member/getMemberInfoById";
     //与我相关
-    public static String GETCODE_URL = ApiConstants.CLOUDM_HOST + "member/getCode";
+    public static String GETCODE_URL = ApiConstants.CAITINGTING_HOST + "member/getCode";
     public static String USERSCORE_URL = ApiConstants.CLOUDM_HOST + "member/userScoreInfo";
     public static String INSERTSIGNPOINT_URL = ApiConstants.CLOUDM_HOST + "member/insertSignPoint";
 
@@ -43,8 +43,7 @@ public class URLs {
     public static String CHECKCODE_URL = ApiConstants.CLOUDM_HOST + "member/checkCode";
     public static String EDITINFO_URL = ApiConstants.CLOUDM_HOST + "member/editInfoByKey";
 
-    public static String USER_URL = ApiConstants.CLOUDM_HOST + "member/regist";
-    public static String REGISTNEW_URL = ApiConstants.CLOUDM_HOST + "member/registNew";
+    public static String REGISTNEW_URL = ApiConstants.GUOSHUAI_HOST + "member/registerNew";
     public static String FORGETPWD_URL = ApiConstants.CLOUDM_HOST + "member/forgetPwd";
     public static String UPDATEPWD_URL = ApiConstants.CLOUDM_HOST + "member/modifyPwd";
     public static String BLOG_SEARCH = ApiConstants.CLOUDM_HOST + "community/search";

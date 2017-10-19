@@ -24,11 +24,12 @@ import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
-import com.cloudmachine.base.BaseActivity;
-import com.cloudmachine.net.task.LocusListAsync;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.LocationXY;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.bean.McDeviceLocation;
+import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.net.task.LocusListAsync;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
@@ -42,7 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class HistoricalTrackActivity extends BaseActivity implements AMap.OnMapLoadedListener,OnClickListener,
+public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements AMap.OnMapLoadedListener,OnClickListener,
 Callback{
 
 //	private static final double[][] data = {{30.273548,119.997108},{30.272933,119.99681},
@@ -93,9 +94,15 @@ Callback{
 		getIntentData();
 		initView();
 		initRoadData();
+		MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_HISTORYLOCUS);
 //		moveLooper();
 	}
-	
+
+	@Override
+	public void initPresenter() {
+
+	}
+
 	private void getIntentData(){
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();

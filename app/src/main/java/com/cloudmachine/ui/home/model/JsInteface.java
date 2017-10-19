@@ -12,6 +12,7 @@ import com.cloudmachine.activities.SearchPoiActivity;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
+import com.cloudmachine.utils.VersionU;
 import com.google.gson.Gson;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -42,6 +43,12 @@ public class JsInteface {
         mHandler = handler;
 
     }
+    public String getVersionName(){
+        return VersionU.getVersionName();
+    }
+    public String getVersionCode(){
+        return VersionU.getVersionCode();
+    }
 
     @JavascriptInterface
     public void opayOrderPayOk(String str) {
@@ -54,9 +61,9 @@ public class JsInteface {
                 PayInfo info = gson.fromJson(infoJson, PayInfo.class);
                 if (info != null) {
                     int payType = info.getPayType();
-                    if (payType == 101) {
+                    if (payType == 10||payType==101) {
                         payByWeiXin(info);
-                    } else if (payType == 102) {
+                    } else if (payType == 11||payType==102) {
                         payByAliPay(info.getSign());
                     }
                 } else {

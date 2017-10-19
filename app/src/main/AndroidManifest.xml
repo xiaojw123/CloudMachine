@@ -6,7 +6,10 @@
     <permission
         android:name="com.cloudmachine.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
-
+    <!--TODO:需验证对版本更新影响-->
+    <!--<permission android:name="android.permission.ACCESS_ALL_DOWNLOADS"-->
+        <!--android:protectionLevel="signature"/>-->
+    <uses-permission android:name="android.permission.ACCESS_ALL_DOWNLOADS" />
     <!-- 测试permissionDispatcher -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -251,7 +254,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".activities.FindPasswordActivity"
+            android:name=".ui.login.acticity.FindPasswordActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
         <activity
@@ -355,10 +358,6 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="adjustPan|adjustUnspecified|stateHidden" />
-        <activity
-            android:name=".activities.ViewCouponActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".activities.RepairPayDetailsActivity"
             android:screenOrientation="portrait"
@@ -517,12 +516,12 @@
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="f2d4c2e7ac5f3f997b8278ab" />
-        <!-- <meta-data -->
-        <!-- android:name="com.google.android.gms.version" -->
-        <!-- android:value="@integer/google_play_services_version" /> &lt;!&ndash; </>值来自开发者平台取得的AppKey &ndash;&gt; -->
+    <!--UMENG_APPKEY
+        线上环境:59e5ba57677baa51d3000b93
+        测试环境:57bd696d67e58e71d3000d02-->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="57bd696d67e58e71d3000d02" />
+            android:value="59e5ba57677baa51d3000b93" />
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="cloudm" />
@@ -542,7 +541,8 @@
         <activity android:name=".ui.home.activity.RepairDetailMapActivity" />
         <activity android:name=".ui.home.activity.ConsumptionActivity" />
         <activity android:name=".ui.home.activity.RoleSelActiviy" />
-        <activity android:name=".activities.ViewCouponActivityNew"></activity>
+        <activity android:name=".activities.ViewCouponActivityNew" />
+        <activity android:name=".activities.ConponSecListActivity"/>
     </application>
 
 </manifest>

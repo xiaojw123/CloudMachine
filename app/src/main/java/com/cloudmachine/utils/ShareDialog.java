@@ -15,7 +15,9 @@ import android.widget.ImageView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.tbruyelle.rxpermissions.RxPermissions;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -101,7 +103,7 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
         ivSession.setOnClickListener(this);
         ivTimeline.setOnClickListener(this);
         ivCopyLink.setOnClickListener(this);
-
+        MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_APP);
     }
 
     @Override
@@ -112,33 +114,39 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
                 break;
             case R.id.iv_copylink:
 //                webpageUrl
+                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_COPY);
                 ClipboardManager cm = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 cm.setText(mLinkUrl);
                 ToastUtils.showCenterToast(v.getContext(), "复制成功");
                 dismiss();
                 break;
             case R.id.iv_qq:
+                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_QQ);
                 mMedia = SHARE_MEDIA.QQ;
                 shareSocialUrl();
                 dismiss();
                 break;
             case R.id.iv_qq_zone:
+                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_QZONE);
                 mMedia = SHARE_MEDIA.QZONE;
                 shareSocialUrl();
                 dismiss();
                 break;
             case R.id.iv_weibo:
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_SHARE_WEIBO);
                 mMedia = SHARE_MEDIA.SINA;
                 shareSocialUrl();
                 dismiss();
                 break;
 
             case R.id.iv_session:  // 分享给微信朋友
+                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_WECHAT);
                 mMedia = SHARE_MEDIA.WEIXIN;
                 shareSocialUrl();
                 dismiss();
                 break;
             case R.id.iv_timeline: // 分享到朋友圈
+                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_FRIENDS);
                 AppLog.print("case1 分享--->wechat");
                 mMedia = SHARE_MEDIA.WEIXIN_CIRCLE;
                 shareSocialUrl();

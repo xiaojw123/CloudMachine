@@ -27,6 +27,9 @@ public interface HomeContract {
 
         void updateActivitySize(int count);
 
+        void updateH5View();
+
+
 
     }
 
@@ -39,7 +42,7 @@ public interface HomeContract {
 
     }
 
-    public abstract class Presenter extends BasePresenter<HomeContract.View, HomeContract.Model> {
+     abstract class Presenter extends BasePresenter<HomeContract.View, HomeContract.Model> {
         public abstract void updateUnReadMessage(long memberId);
 
 

@@ -55,4 +55,7 @@ public class NotfyImgView extends ImageView {
         isNotifyVisbile = isVisible;
         invalidate();
     }
+    public boolean isNotifyVisbile(){
+        return  isNotifyVisbile;
+    }
 }

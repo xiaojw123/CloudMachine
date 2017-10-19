@@ -9,7 +9,10 @@ public class ApiConstants {
 //    public static String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3/";
 //    public static String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3/";
 //    public static String XIEXIN_HOST = "http://ask.test.cloudm.com/";
-//    public static String H5_HOST = "http://h5.test.cloum.com/";
+//    public static String H5_HOST = "http://h5.test.cloudm.com/";
+
+
+    //http://192.168.1.109:18088/
 
 /*线上环境*/
     public static  String CLOUDM_HOST = "http://api.cloudm.com/cloudm3/yjx/";
@@ -17,6 +20,15 @@ public class ApiConstants {
     public static String CAITINGTING_HOST = "http://api.cloudm.com/cloudm3/";
     public static String XIEXIN_HOST = "http://ask.cloudm.com/";
     public static String H5_HOST = "http://h5.cloudm.com/";
+
+    /*109*/
+//    public static  String CLOUDM_HOST = "http://192.168.1.109:18088/cloudm3/yjx/";
+//    public static  String GUOSHUAI_HOST = "http://192.168.1.109:18088/cloudm3/";
+//    public static String CAITINGTING_HOST = "http://192.168.1.109:18088/cloudm3/";
+//    public static String XIEXIN_HOST = "http://ask.cloudm.com/";
+//    public static String H5_HOST = "http://h5.cloudm.com/";
+
+
 
 
 

@@ -15,6 +15,8 @@ import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.bean.ScoreInfo;
 import com.cloudmachine.bean.UnReadMessage;
 import com.cloudmachine.bean.UserInfo;
+import com.cloudmachine.ui.home.model.CouponBean;
+import com.cloudmachine.ui.home.model.OrderCouponBean;
 import com.cloudmachine.ui.home.model.PopItem;
 import com.cloudmachine.ui.home.model.RoleBean;
 import com.cloudmachine.ui.home.model.SiteBean;
@@ -25,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.RequestBody;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -44,20 +48,47 @@ import rx.Observable;
  */
 
 public interface ApiService {
+    @POST("member/registerNew")
+    Observable<BaseRespose<JsonObject>> register(@FieldMap Map<String, String> parmasMap);
+    @POST("member/forgetPwd")
+    Observable<BaseRespose<JsonObject>> forgetPassword(@Field("mobile") String mobile, @Field("pwd") String pwd, @Field("code") String code);
+    @POST("member/getCode")
+    Observable<BaseRespose<JsonObject>> getCode(@Field("mobile") String mobile, @Field("type") String type);
+
+    @GET("pay/getPaySign")
+    Observable<BaseRespose<JsonObject>> getPaySign(@Query("memberId") long memberId, @Query("orderNum") String orderNum, @Query("payType") int payType, @Query("coupons") String coupons);
+
+    @GET("pay/orderCoupon")
+    Observable<BaseRespose<OrderCouponBean>> getOrderCouponList(@Query("memberId") long memberId, @Query("orderNum") String orderNum);
+
+    //获取可用优惠券
+    @GET("app/userCoupon/myCouponBase")
+    Observable<BaseRespose<CouponBean>> getAvalidCouponList(@Query("memberId") long memberId);
+
+    //获取不可用优惠券
+    @GET("app/userCoupon/myInvalidCoupon")
+    Observable<BaseRespose<CouponBean>> getInvaildCouponList(@Query("memberId") long memberId);
+
+    //获取可用优惠券详情
+    @GET("app/userCoupon/myCouponDetail")
+    Observable<BaseRespose<CouponBean>> getMyCouponDetailList(@Query("memberId") long memberId, @Query("couponBaseId") int couponBaseId);
+
     @GET("art/queryArticles")
     Observable<BaseRespose<List<ArticleInfo>>> getArticleList(@Query("artStatus") int artStatus);
 
     @GET("message/warningMessageReturn")
-     Observable<BaseRespose<JsonObject>> getWarnMessage(@Query("memberId") long memberId,@Query("mobile") String mobile);
+    Observable<BaseRespose<JsonObject>> getWarnMessage(@Query("memberId") long memberId, @Query("mobile") String mobile);
 
-     @GET("n/config/")
-     Observable<BaseRespose<JsonObject>> getH5ConfigInfo();
-     @GET("spread/getPopList")
-     Observable<BaseRespose<List<PopItem>>> getPopList(@Query("memberId") long memberid);
+    @GET("n/config/")
+    Observable<BaseRespose<JsonObject>> getH5ConfigInfo();
+
+    @GET("spread/getPopList")
+    Observable<BaseRespose<List<PopItem>>> getPopList(@Query("memberId") long memberid);
 
 
     @GET("device/deleteMsg")
-    Observable<BaseRespose<String>>   deleteMsg(@Query("memberId") long memberId,@Query("messageId") long messageId);
+    Observable<BaseRespose<String>> deleteMsg(@Query("memberId") long memberId, @Query("messageId") long messageId);
+
     //获取系统消息
     @GET("device/getSystemMessages")
     Observable<BaseRespose<List<MessageBO>>> getSystemMsg(@Query("memberId") long memberId);
@@ -65,40 +96,45 @@ public interface ApiService {
     //获取消息列表
     @GET("device/getAllMessages")
     Observable<BaseRespose<List<MessageBO>>> getAllMsg(@Query("memberId") long memberId);
+
     //问卷调查
     @GET("question/need")
     Observable<BaseRespose<MessageBO>> questionNeed(@Query("memberId") long memberId);
 
 
     @GET("device/acceptMessage")
-    Observable<BaseRespose<String>> acceptMsg(@Query("memberId") long memberId,@Query("messageId") String messageId);
+    Observable<BaseRespose<String>> acceptMsg(@Query("memberId") long memberId, @Query("messageId") String messageId);
+
     @GET("device/rejectMessage")
-    Observable<BaseRespose<String>> rejectMsg(@Query("memberId") long memberId,@Query("messageId") String messageId);
+    Observable<BaseRespose<String>> rejectMsg(@Query("memberId") long memberId, @Query("messageId") String messageId);
+
     @GET("device/updateMessageStatus")
-    Observable<BaseRespose<String>> updateMsgStatus(@Query("memberId") long memberId,@Query("messageId") String messageId);
-
-
+    Observable<BaseRespose<String>> updateMsgStatus(@Query("memberId") long memberId, @Query("messageId") String messageId);
 
 
     @GET("device/queryWorkDetail")
-    Observable<BaseRespose<BOInfo>> getBOInfo(@QueryMap Map<String,String> map);
+    Observable<BaseRespose<BOInfo>> getBOInfo(@QueryMap Map<String, String> map);
+
     @GET("device/queryWorkDetail")
-    Observable<BaseRespose<CWInfo>> getCWInfo(@QueryMap Map<String,String> map);
+    Observable<BaseRespose<CWInfo>> getCWInfo(@QueryMap Map<String, String> map);
 
     @GET("repairStation/updateMemberRemark")
     Observable<BaseRespose<String>> updateMemberRemark(@Query("fid") long fid, @Query("memberId") long memberId, @Query("deviceId") long deviceId, @Query("remark") String remark, @Query("roleId") long roleId);
+
     @GET("repairStation/getRoleTypeList")
     Observable<BaseRespose<List<RoleBean>>> getRoleList();
+
     @GET("repairStation/favoriteSites")
     Observable<BaseRespose<SiteBean>> getSitesInfo(@Query("lng") double lng, @Query("lat") double lat);
 
     @GET("device/getRepairList")
-    Observable<BaseRespose<RepairListInfo>> getRepairList(@QueryMap Map<String,String> map);
+    Observable<BaseRespose<RepairListInfo>> getRepairList(@QueryMap Map<String, String> map);
 
     @GET("device/getRepairList")
     Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId);
+
     @GET("device/getRepairList")
-    Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId,@Query("deviceId") long deviceId);
+    Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId, @Query("deviceId") long deviceId);
 
     @GET("device/getDevice")
     Observable<BaseRespose<McDeviceBasicsInfo>> getDeviceInfo(@Query("deviceId") String deviceId, @Query("memberId") long memberId);
@@ -135,14 +171,6 @@ public interface ApiService {
     @POST("kindEditorUpload")
     Observable<BaseRespose<String>> upLoadPhoto(@Part("file\"; filename=\"avatar.png\"") RequestBody file);
 
-    /**
-     * 拿到用户签到信息
-     *
-     * @param memberId
-     * @return
-     */
-    @GET("member/insertSignPoint")
-    Observable<JsonObject> getUserInsertSignInfo(@Query("memberId") String memberId);
 
     /**
      * 获得轮播图
@@ -303,8 +331,3 @@ public interface ApiService {
 }
 
 
-/**
- * 拿到用户积分信息
- */
-   /* @GET("member/userScoreInfo")
-    Observable<BaseRespose<ScoreInfo>> getUserScoreInfo(@Query("memberId") String memberId);*/

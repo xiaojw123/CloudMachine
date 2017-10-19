@@ -345,6 +345,7 @@
     <string name="start_end_time_error">结束时间不能早于开始时间哦!</string>
     <!-- Agent -->
     <string name="agent_no_phone">网点电话为空，请稍后重试</string>
+    <string name="use">使用</string>
 
 
 </resources>

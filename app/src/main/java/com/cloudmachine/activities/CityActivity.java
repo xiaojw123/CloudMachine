@@ -38,6 +38,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.LocationSource;
 import com.cloudmachine.R;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.locatecity.City;
@@ -47,6 +48,7 @@ import com.cloudmachine.utils.locatecity.MyLetterListView;
 import com.cloudmachine.utils.locatecity.MyLetterListView.OnTouchingLetterChangedListener;
 import com.cloudmachine.utils.locatecity.PingYinUtil;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -92,6 +94,7 @@ public class CityActivity extends Activity implements OnScrollListener, TextWatc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city);
+        MobclickAgent.onEvent(this, MobEvent.TIME_REPAIR_CREATE_LOCATION_CITY);
         inflater = LayoutInflater.from(this);
         allCity_lists = new ArrayList<>();
         city_hot = new ArrayList<>();

@@ -25,11 +25,13 @@ import com.cloudmachine.R;
 import com.cloudmachine.activities.GalleryActivity;
 import com.cloudmachine.activities.ImagePagerActivity;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.PermissionsListAsync;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.utils.photo.util.ImageItem;
 import com.cloudmachine.utils.widgets.BadgeView;
@@ -247,8 +249,9 @@ public class Constants {
     public static final int HANDLER_HIDEN_CLOSE_BTN = HANDLER_SHOW_CLOSE_BTN + 1;
     public static final int HANDLER_ALIPAY_RESULT = HANDLER_HIDEN_CLOSE_BTN + 1;
     public static final int HANDLER_JUMP_MY_ORDER = HANDLER_ALIPAY_RESULT + 1;
-    public static final int HANDLER_JUMP_YUNBOX = HANDLER_JUMP_MY_ORDER + 1;
-    public static final int HANDLER_CHANGE_BOX_ACT = HANDLER_JUMP_YUNBOX + 1;
+    public static final int HANDLER_H5_JUMP = HANDLER_JUMP_MY_ORDER + 1;
+    public static final int HANDLER_CHANGE_BOX_ACT = HANDLER_H5_JUMP + 1;
+    public static final int HANDLER_RESULT_APLIPAY = HANDLER_CHANGE_BOX_ACT + 1;
 
     public static final String OS_PLATFORM = "Android";
     public static final String URL_H5_ARGUMENT = "http://www.cloudm.com/agreement";
@@ -324,7 +327,8 @@ public class Constants {
     public static final String URL_GETINFOS = ApiConstants.CLOUDM_HOST + "pay/getInfos";
     public static final String URL_YUNBOXPAY = ApiConstants.CLOUDM_HOST + "pay/yunBoxPay";
     public static final String URL_GETPAYPRICE = ApiConstants.CLOUDM_HOST + "pay/payPrice";
-    public static final String URL_CWPAY = ApiConstants.CLOUDM_HOST + "pay/cwPay";
+//    public static final String URL_CWPAY = ApiConstants.CLOUDM_HOST + "pay/cwPay";
+    public static final String URL_CWPAY = ApiConstants.CLOUDM_HOST + "pay/getPaySign";
     public static final String URL_CHECK_PAY = ApiConstants.CLOUDM_HOST + "pay/checkPay";
     public static final String URL_YUNBOXSTOREVOLUME = ApiConstants.CLOUDM_HOST + "pay/yunBoxStoreVolume";
     public static final String URL_SAVEARRIVALNOTICE = ApiConstants.CLOUDM_HOST + "pay/saveArrivalNotice";
@@ -369,7 +373,7 @@ public class Constants {
     public static final String P_EDIT_LIST_VALUE1 = "editListValue1";
     public static final String P_EDIT_LIST_VALUE2 = "editListValue2";
     public static final String P_EDIT_LIST_VALUE3 = "editListValue3";
-    public static final String P_EDIT_LIST_ITEM_NAME="editlistItemName";
+    public static final String P_EDIT_LIST_ITEM_NAME = "editlistItemName";
 
     public static final String P_DEVICEINFO_devicePhoto = "devicePhoto";
     public static final String P_DEVICEINFO_nameplatePhoto = "nameplatePhoto";
@@ -1143,7 +1147,6 @@ public class Constants {
     private static final void showDialog(final Context context,
                                          final Handler handler, int mustUpdate, String message, final String link) {
 
-//        alertDialog=new CustomDialog.b;
         CustomDialog.Builder builder = new CustomDialog.Builder(context);
         if (mustUpdate == 1) {
             builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -1157,15 +1160,22 @@ public class Constants {
                 }
             });
         } else {
-            builder.setNegativeButton("稍后", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
+
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    if (context instanceof BaseAutoLayoutActivity) {
+                        ((BaseAutoLayoutActivity) context).mRxManager.post(HomeActivity.RXEVENT_UPDATE_REMIND, null);
+                    }
+
                     dialog.dismiss();
+
                 }
             });
         }
         builder.setMessage(message);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -1244,6 +1254,9 @@ public class Constants {
                         .getSystemService(context.DOWNLOAD_SERVICE);
                 Uri uri = Uri.parse(link);
                 Request request = new Request(uri);
+                request.setAllowedOverRoaming(false);
+                //通知栏显示
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                 // 设置允许使用的网络类型，这里是移动网络和wifi都可以
                 request.setAllowedNetworkTypes(Request.NETWORK_MOBILE
                         | Request.NETWORK_WIFI);
@@ -1251,8 +1264,12 @@ public class Constants {
                 // 禁止发出通知，既后台下载，如果要使用这一句必须声明一个权限：android.permission.DOWNLOAD_WITHOUT_NOTIFICATION
                 // request.setShowRunningNotification(false);
                 // 不显示下载界面
-                request.setVisibleInDownloadsUi(true);
                 request.setTitle("云机械");
+                request.setDescription("正在下载中...");
+                request.setVisibleInDownloadsUi(true);
+                //设置下载的路径
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Constants.APK_NAME);
+                //设置下载的路径
                 // 设置下载后文件存放的位置,如果sdcard不可用，那么设置这个将报错，因此最好不设置如果sdcard可用，下载后的文件
                 // 在/mnt/sdcard/Android/data/packageName/files目录下面，如果sdcard不可用,设置了下面这个将报错，不设置，下载后的文件在/cache这个
                 // 目录下面
@@ -1268,6 +1285,7 @@ public class Constants {
             intent.setAction("android.intent.action.VIEW");
             Uri content_url = Uri.parse(link);
             intent.setData(content_url);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             context.startActivity(intent);
         }
 
@@ -1496,6 +1514,6 @@ public class Constants {
     }
 
     public static final String CURRENT_LOC = "当前位置";
-
+    public static final String APK_NAME = "cloudm.apk";
 
 }

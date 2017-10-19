@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
@@ -21,7 +23,7 @@ import cn.jpush.android.api.JPushInterface;
  */
 public class LoadingActivity extends BaseAutoLayoutActivity implements Callback {
     private Handler mHandler;
-    private static final String YUNBOX = "yunbox";
+
 
 
     @Override
@@ -33,9 +35,13 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
         if (uriData != null) {
             autority = uriData.getAuthority();
         }
+        AppLog.print("loadig Act autoriy____"+autority);
         mHandler = new Handler(this);
-        if (YUNBOX.equals(autority)) {
-            mHandler.sendEmptyMessageDelayed(Constants.HANDLER_JUMP_YUNBOX, 500);
+        if (!TextUtils.isEmpty(autority)) {
+            Message message=new Message();
+            message.what=Constants.HANDLER_H5_JUMP;
+            message.obj=autority;
+            mHandler.sendMessageDelayed(message, 500);
         } else {
             mHandler.sendEmptyMessageDelayed(Constants.HANDLER_TIMER, 500);
         }
@@ -56,9 +62,9 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
             case Constants.HANDLER_TIMER:
                 redirectTo();
                 break;
-            case Constants.HANDLER_JUMP_YUNBOX:
+            case Constants.HANDLER_H5_JUMP:
                 Bundle bundle = new Bundle();
-                bundle.putBoolean(HomeActivity.KEY_YUBOX,true);
+                bundle.putString(HomeActivity.KEY_H5_AUTORITY,(String) msg.obj);
                 Constants.toActivity(this, HomeActivity.class, bundle);
                 finish();
                 break;

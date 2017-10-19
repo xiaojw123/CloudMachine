@@ -696,6 +696,7 @@
     <dimen name="mc_info_window_icon_r">12dp</dimen> -->
     <dimen name="read_point_width">1dp</dimen>
     <dimen name="dimen_size_26">26dp</dimen>
+    <dimen name="dimen_size_35">35dp</dimen>
 
 
     <!--xhdpi 1280*720-->

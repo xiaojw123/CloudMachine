@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.ui.home.contract.RemarkInfoContract;
 import com.cloudmachine.ui.home.model.RemarkInfoModel;
 import com.cloudmachine.ui.home.model.RoleBean;
@@ -19,6 +20,7 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
 import com.cloudmachine.utils.widgets.wheelview.WheelView;
 import com.cloudmachine.widget.CommonTitleView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +62,7 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
         ButterKnife.bind(this);
         initView();
         mPresenter.updateRoleListView();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_MEMBER_INFO);
     }
 
 

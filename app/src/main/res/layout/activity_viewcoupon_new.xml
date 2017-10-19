@@ -10,13 +10,15 @@
         android:id="@+id/coupon_title_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:common_title_name="卡券" />
+        app:common_title_name="卡券"
+
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/spa5"
-        android:layout_marginTop="-4dp"
         android:background="@color/public_bg"
+        android:layout_marginTop="-4dp"
         android:orientation="horizontal">
 
         <TextView
@@ -25,10 +27,9 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="@dimen/main_bar_image_padding"
             android:text="可用"
             android:gravity="center"
-            android:textColor="@color/cor8"
+            android:textColor="@color/coupon_title_textcolor"
             android:textSize="@dimen/siz3" />
 
 
@@ -38,10 +39,9 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="@dimen/main_bar_image_padding"
             android:text="不可用"
             android:gravity="center"
-            android:textColor="@color/cor10"
+            android:textColor="@color/coupon_title_textcolor"
             android:textSize="@dimen/siz3" />
 
     </LinearLayout>

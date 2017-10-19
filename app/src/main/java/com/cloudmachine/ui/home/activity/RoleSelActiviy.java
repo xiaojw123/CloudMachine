@@ -17,8 +17,10 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.listener.RecyclerItemClickListener;
 import com.cloudmachine.ui.home.model.RoleBean;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class RoleSelActiviy extends BaseAutoLayoutActivity {
                 finish();
             }
         }));
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_MEMBER_ROLE);
     }
 
     @Override

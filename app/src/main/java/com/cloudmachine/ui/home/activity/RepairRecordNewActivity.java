@@ -19,6 +19,7 @@ import com.cloudmachine.bean.FinishBean;
 import com.cloudmachine.bean.RepairHistoryInfo;
 import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.bean.UnfinishedBean;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.OrderStatus;
 import com.cloudmachine.ui.home.contract.RepairHistoryContract;
 import com.cloudmachine.ui.home.model.RepairHistoryModel;
@@ -27,6 +28,7 @@ import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.ui.repair.activity.RepairFinishDetailActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.widgets.XListView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
@@ -53,6 +55,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_device_repair);
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_HISTORY);
         initView();
     }
 

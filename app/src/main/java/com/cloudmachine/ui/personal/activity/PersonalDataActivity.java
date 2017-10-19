@@ -41,6 +41,7 @@ import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.api.HostType;
@@ -151,6 +152,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         ButterKnife.bind(this);
         getIntentData();
         initView();
+        MobclickAgent.onEvent(this, MobEvent.TIME_PROFILE);
 
     }
 
@@ -233,7 +235,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 Constants.toActivityForR(PersonalDataActivity.this, EditPersonalActivity.class, bundle, REQUEST_UPDATE);
                 break;
             case R.id.my_pwd:
-                MobclickAgent.onEvent(mContext, UMengKey.count_changepassword);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_CHANGEPASSWORD);
                 Constants.toActivityForR(PersonalDataActivity.this, UpdatePwdActivity.class, null, PSW_UPDATE);
                 break;
             //同步微信信息
@@ -667,6 +669,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     }
 
     public void exitLogin(View view) {
+        MobclickAgent.onEvent(this,MobEvent.COUNT_LOGOUT);
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         builder.setMessage("你确认退出？");
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

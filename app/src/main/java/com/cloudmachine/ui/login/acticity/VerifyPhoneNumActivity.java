@@ -18,12 +18,13 @@ import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.CheckNumBean;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.bean.CheckNumBean;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.login.contract.VerifyPhoneNumContract;
 import com.cloudmachine.ui.login.model.VerifyPhoneNumModel;
@@ -105,6 +106,7 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_phonenum);
         ButterKnife.bind(this);
+        MobclickAgent.onEvent(VerifyPhoneNumActivity.this, MobEvent.WXBIND);
         getIntentData();
         initView();
     }
@@ -161,7 +163,6 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                 }
               /*  mPresenter.bindWx(mUnionid,mOpenid,mAccount
                 ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);*/
-
                 mPresenter.wxBind(mUnionid, mOpenid, mAccount
                         , mCode, mInvitationValue, mPwd, mNickname, mHeadimgurl, mobileType);
 

@@ -45,10 +45,12 @@ import java.io.Serializable;
 import java.util.Hashtable;
 
 import cn.jpush.android.api.JPushInterface;
-
+/*正式环境
+* UMENT_APPKEY修改
+* 日志管理 IS_RELEASE true关闭*/
 public class MyApplication extends Application {
-    /*日志oc*/
-    public static final boolean IS_RELEASE=false;
+
+    public static final boolean IS_RELEASE=true;
     private static MyApplication baseApplication;
     public static Context mContext;
 

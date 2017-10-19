@@ -1,28 +1,20 @@
 package com.cloudmachine.activities;
 
 
-import android.app.Fragment;
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.adapter.GetCouponAdapter;
 import com.cloudmachine.adapter.InvalidCouponAdapter;
-import com.cloudmachine.bean.CouponInfo;
-import com.cloudmachine.listener.RecyclerItemClickListener;
-import com.cloudmachine.net.task.GetCouponAsync;
-import com.cloudmachine.utils.Constants;
+import com.cloudmachine.base.BaseFragment;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.ui.home.contract.MyCouponContract;
+import com.cloudmachine.ui.home.model.CouponItem;
+import com.cloudmachine.ui.home.model.MyCouponModel;
+import com.cloudmachine.ui.home.presenter.MyCouponPresenter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 项目名称：CloudMachine
@@ -34,79 +26,55 @@ import java.util.ArrayList;
  * 修改备注：
  */
 
-public class InvalidCouponFragment extends Fragment implements Handler.Callback{
+public class InvalidCouponFragment extends BaseFragment<MyCouponPresenter, MyCouponModel> implements MyCouponContract.View {
 
-    private View                  viewParent;
-    private Context               mContext;
-    private Handler               mHandler;
-    private ListView              lvInvaliCoupon;
-    private ArrayList<CouponInfo> dataList;
-    private GetCouponAdapter      getCouponAdapter;
-    private ListView              lvInvaliCoupon1;
-    private RecyclerView          mRecyclerView;
-    private InvalidCouponAdapter  mInvalidCouponAdapter;
+    private RecyclerView mRecyclerView;
+    private InvalidCouponAdapter mInvalidCouponAdapter;
     private View empTv;
 
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
-
-        if (null != viewParent) {
-            ViewGroup parent = (ViewGroup) viewParent.getParent();
-            if (null != parent) {
-                parent.removeView(viewParent);
-            }
-        } else {
-            viewParent = inflater.inflate(R.layout.fragment_invali_coupon, null);
-            mContext = getActivity();
-            mHandler = new Handler(this);
-            initView();
-
-        }
-
-        return viewParent;
-    }
-
-    private void initView() {
-        dataList = new ArrayList<>();
-        ViewCouponActivity viewCouponActivity = (ViewCouponActivity) getActivity();
-        empTv=viewParent.findViewById(R.id.empt_tv);
+    protected void initView() {
+        empTv = viewParent.findViewById(R.id.empt_tv);
         mRecyclerView = (RecyclerView) viewParent.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setHasFixedSize(true);
-        mInvalidCouponAdapter = new InvalidCouponAdapter(dataList, getActivity());
+        mInvalidCouponAdapter = new InvalidCouponAdapter(null, getActivity());
         mRecyclerView.setAdapter(mInvalidCouponAdapter);
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
+        mPresenter.getInavaildCouponList(UserHelper.getMemberId(getActivity()));
+    }
 
-            }
-        }));
-        new GetCouponAsync(mHandler, "2", null, viewCouponActivity).execute();
+
+    @Override
+    protected void initPresenter() {
+        mPresenter.setVM(this, mModel);
     }
 
     @Override
-    public boolean handleMessage(Message msg) {
-        switch (msg.what) {
-            case Constants.HANDLER_GETCOUPONS_SUCCESS:
-                ArrayList<CouponInfo> data = (ArrayList<CouponInfo>) msg.obj;
-                if (null != data&&data.size()>0) {
-                    empTv.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    dataList.addAll(data);
-                    mInvalidCouponAdapter.notifyDataSetChanged();
-                }else{
-                    empTv.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
-                }
+    protected int getLayoutResource() {
+        return R.layout.fragment_invali_coupon;
+    }
 
-                break;
-            case Constants.HANDLER_GETCOUPONS_FAILD:
-                Constants.ToastAction((String) msg.obj);
-                break;
+    @Override
+    public void updateAvaildCouponListView(int sumNum,int sumAmount, List<CouponItem> couponBOList) {
+
+    }
+
+    @Override
+    public void updateInavaildCouponListView(int sumNum,List<CouponItem> couponBOList) {
+        ((ViewCouponActivityNew)getActivity()).setInvaildNum(sumNum);
+        if (null != couponBOList && couponBOList.size() > 0) {
+            empTv.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mInvalidCouponAdapter.updateItems(couponBOList);
+        } else {
+            empTv.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
         }
-        return false;
+    }
+
+    @Override
+    public void updateMyCouponDetailListView(int sumAmount,List<CouponItem> couponBOList) {
+
     }
 }

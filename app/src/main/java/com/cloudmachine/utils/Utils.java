@@ -233,6 +233,7 @@ public class Utils {
 			return new BasicNameValuePair(name,value);
 		return null;
 	}
+
 	
 	public static String getPwdStr(String pwd){
 			/*String md5Str = EncryptUtils.MD5(pwd);

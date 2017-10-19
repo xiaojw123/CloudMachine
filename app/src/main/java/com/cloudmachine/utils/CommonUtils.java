@@ -20,11 +20,19 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 
+import java.math.BigDecimal;
+
 /**
  * Created by xiaojw on 2017/5/20.
  */
 
 public class CommonUtils {
+
+    public static double subtractDouble(double a,double b){
+        BigDecimal aDecimal=new BigDecimal(Double.toString(a));
+        BigDecimal bigDecimal=new BigDecimal(Double.toString(b));
+        return Math.max(aDecimal.subtract(bigDecimal).doubleValue(),0);
+    }
 
 
     public static  void showPermissionDialog(Context context){

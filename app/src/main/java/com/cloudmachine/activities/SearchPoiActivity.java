@@ -31,8 +31,8 @@ import com.cloudmachine.adapter.SearchPoiListAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.UMListUtil;
 import com.cloudmachine.utils.UMengKey;
 import com.umeng.analytics.MobclickAgent;
 
@@ -63,6 +63,7 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_poi);
+        MobclickAgent.onEvent(this, MobEvent.TIME_REPAIR_CREATE_LOCATION);
         mContext = this;
         mHandler = new Handler(this);
         getIntentData();
@@ -180,8 +181,6 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        // TODO Auto-generated method stub
-        MobclickAgent.onPageStart(UMengKey.time_repair_create_location);
         ResidentAddressInfo info = dataResult.get(position);
         List<ResidentAddressInfo> infoList = DataSupport.findAll(ResidentAddressInfo.class);
         if (infoList == null) {
@@ -211,7 +210,6 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
         for (ResidentAddressInfo aa : a) {
             AppLog.print("后a___positoin__" + aa.getPosition());
         }
-        UMListUtil.getUMListUtil().sendStruEvent("time_repair_create_location", mContext);
         Intent intent = new Intent();
         intent.putExtra(Constants.P_SEARCHINFO, info);
         setResult(RESULT_OK, intent);
@@ -327,7 +325,6 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
 
     @Override
     protected void onDestroy() {
-        UMListUtil.getUMListUtil().removeList("time_repair_create_location");
         super.onDestroy();
     }
 }

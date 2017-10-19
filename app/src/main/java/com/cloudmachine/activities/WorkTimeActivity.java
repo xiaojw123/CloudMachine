@@ -30,13 +30,14 @@ import com.cloudmachine.chart.data.BarEntry;
 import com.cloudmachine.chart.data.Entry;
 import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.listener.OnChartValueSelectedListener;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.DailyWorkDitailsListAsync;
 import com.cloudmachine.net.task.GetWorkTimeListAsync;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ResV;
-import com.cloudmachine.utils.UMListUtil;
 import com.cloudmachine.utils.mpchart.DailyWorkYAxisValueFormatter;
 import com.cloudmachine.widget.CommonTitleView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -103,9 +104,9 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_work_time);
-        UMListUtil.getUMListUtil().sendStruEvent("WorkTimeActivity", this);
         mHandler = new Handler(this);
         initView();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WORKTIME);
 
     }
 
@@ -255,7 +256,6 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
     @Override
     public void onDestroy() {
         // TODO Auto-generated method stub
-        UMListUtil.getUMListUtil().removeList("WorkTimeFragment");
         super.onDestroy();
     }
 
@@ -800,8 +800,10 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
             }
         });
         title_layout.setRightClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(WorkTimeActivity.this,MobEvent.COUNT_WORKTIME_STATIS);
                 Constants.toActivity(WorkTimeActivity.this, StatisticsActivity.class, getIntent().getExtras());
             }
         });

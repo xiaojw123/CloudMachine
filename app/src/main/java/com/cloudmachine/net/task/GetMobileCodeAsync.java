@@ -1,22 +1,22 @@
 package com.cloudmachine.net.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.URLs;
 import com.google.gson.Gson;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetMobileCodeAsync extends ATask {
 
@@ -40,7 +40,7 @@ public class GetMobileCodeAsync extends ATask {
 		list.add(new BasicNameValuePair("type", type));
 		String result = null;
 		try {
-			result = httpRequest.post(URLs.GETCODE_URL, list);
+			result = httpRequest.get(URLs.GETCODE_URL, list);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();

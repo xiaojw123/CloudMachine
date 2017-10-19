@@ -200,7 +200,33 @@ public class HttpURLConnectionImp implements IHttp {
     @Override
     public String get(String urlString, List<NameValuePair> params)
             throws Exception {
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("osPlatform=Android");
+        stringBuffer.append("&osVersion="
+                + URLEncoder.encode(VersionU.getVersionName(), "UTF-8"));
+        int size = params.size();
+        for (int a = 0; a < size; a++) {
+            if (params.get(a) != null) {
+                String key = params.get(a).getName();
+                //                    	  if (a == 0) {
+                //                              stringBuffer.append(key + "="
+                //                                      + URLEncoder.encode(params.get(a).getValue(), "UTF-8"));
+                //                        } else {
+                if (params.get(a).getValue() == null) {
+                    stringBuffer.append("&" + key + "="
+                            + URLEncoder.encode("", "UTF-8"));
+                } else {
+                    stringBuffer.append("&" + key + "="
+                            + URLEncoder.encode(params.get(a).getValue(), "UTF-8"));
+                }
+
+                //                        }
+            }
+
+        }
         String resultString = "";
+        urlString+="?"+stringBuffer.toString();
+        AppLog.printURl(urlString);
         URL url = new URL(urlString);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url
                 .openConnection();

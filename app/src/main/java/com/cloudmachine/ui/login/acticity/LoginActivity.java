@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cloudmachine.MyApplication;
 import com.cloudmachine.R;
-import com.cloudmachine.activities.FindPasswordActivity;
 import com.cloudmachine.autolayout.widgets.CircleTextImageView;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
@@ -31,6 +30,7 @@ import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
@@ -44,7 +44,6 @@ import com.cloudmachine.ui.login.presenter.LoginPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.AppMsg;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
@@ -94,6 +93,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         this.mContext = this;
         getIntentData();
         initView();
+        MobclickAgent.onEvent(this,MobEvent.TIME_LOGIN);
 //        initRxManager();
     }
 
@@ -196,7 +196,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         login_btn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                MobclickAgent.onEvent(mContext, UMengKey.count_login);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_LOGIN);
                 // TODO Auto-generated method stub
                 doCheck();
             }
@@ -253,13 +253,13 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                 finish();
                 break;
             case R.id.right_layout:
-                MobclickAgent.onEvent(mContext, UMengKey.count_register);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_REGISTER);
                 it = new Intent(this, FindPasswordActivity.class);
                 it.putExtra("type", 3);
                 startActivityForResult(it, 0);
                 break;
             case R.id.forget_pw_tv:
-                MobclickAgent.onEvent(mContext, UMengKey.count_forgotpassword);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_FORGOTPASSWORD);
                 it = new Intent(this, FindPasswordActivity.class);
                 it.putExtra(FindPasswordActivity.HASINVITATIONCODE, true);
                 it.putExtra("type", 1);

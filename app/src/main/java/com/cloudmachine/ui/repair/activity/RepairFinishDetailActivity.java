@@ -13,6 +13,7 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.WorkSettleBean;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.ui.home.activity.ConsumptionActivity;
 import com.cloudmachine.ui.home.activity.PayDeviceInfoActivity;
 import com.cloudmachine.ui.repair.contract.RepairFinishContract;
@@ -20,6 +21,7 @@ import com.cloudmachine.ui.repair.model.RepairFinishModel;
 import com.cloudmachine.ui.repair.presenter.RepairFinishPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.widget.CommonTitleView;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +65,7 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reparir_finsih_detail);
         ButterKnife.bind(this);
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_PAY_FINISHED);
         orderNum = getIntent().getStringExtra("orderNum");
         String flag = getIntent().getStringExtra("flag");
         finishCtv.setRightClickListener(this);

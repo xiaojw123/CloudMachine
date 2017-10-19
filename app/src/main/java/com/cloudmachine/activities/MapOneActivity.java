@@ -54,6 +54,7 @@ import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.bean.McDeviceCircleFence;
 import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.AddCircleFenchAsync;
 import com.cloudmachine.net.task.DeleteFenceAsync;
 import com.cloudmachine.net.task.DevicesBasicsInfoAsync;
@@ -121,6 +122,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_one);
         initView(savedInstanceState);
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_FENCE);
     }
 
     @Override
@@ -196,8 +198,10 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         public void onClick(View v) {
             String rightTitle = titleView.getRightText();
             if (DELETE.equals(rightTitle)) {
+                MobclickAgent.onEvent(MapOneActivity.this,MobEvent.COUNT_FENCE_DELETE);
                 deleteFence();
             } else if (NEWSET.equals(rightTitle)) {
+                MobclickAgent.onEvent(MapOneActivity.this,MobEvent.COUNT_FENCE_ADD);
                 if (myMarker != null && !myMarker.isRemoved()) {
                     myMarker.remove();
                     locRaiduMark = aMap.addMarker(getMarkerLocOptions(MapOneActivity.this, myMarker.getPosition(), MAP_DRAG));
@@ -256,6 +260,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
 //        if (null != myMarker && myMarker.isInfoWindowShown()) {
 //            myMarker.hideInfoWindow();
 //        }
+        MobclickAgent.onEvent(this,MobEvent.COUNT_FENCE_EDIT);
         if (!isEnclosure) {
             showEditDialog();
             isEnclosure = true;
@@ -313,6 +318,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
                         latStr = String.valueOf(pos.latitude);
                         lngStr = String.valueOf(pos.longitude);
                     }
+                    MobclickAgent.onEvent(MapOneActivity.this,MobEvent.COUNT_FENCE_CONFIRM);
                     new AddCircleFenchAsync(MapOneActivity.this, mHandler, latStr,
                             lngStr, mDeviceInfo.getId(), radiu).execute();
                 }

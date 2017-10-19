@@ -6,50 +6,65 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.support.v4.content.FileProvider;
 
 import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.PhotosGallery;
+
+import java.io.File;
 
 public class DownloadReceiver extends BroadcastReceiver {
 
-	private static Context context;
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
-		this.context = context;
-		String action = intent.getAction();
-		if(null!=action&&action.length()>0){
-			if(DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())){
-				long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-				if(completeDownloadId == MySharedPreferences.getSharedPLong(Constants.KEY_DownloadId)){
-					try {
-						DownloadManager downloadManager = (DownloadManager) context.getSystemService(context.DOWNLOAD_SERVICE); 
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        AppLog.print("onReceive___1");
+        // TODO Auto-generated method stub
+        String action = intent.getAction();
+        if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
+            AppLog.print("onReceive___3");
+            long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            if (completeDownloadId == MySharedPreferences.getSharedPLong(Constants.KEY_DownloadId)) {
+                AppLog.print("onReceive___4");
+                try {
+                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(context.DOWNLOAD_SERVICE);
 //						downloadManager.openDownloadedFile(completeDownloadId);
-						Cursor c = downloadManager.query(new DownloadManager.Query().setFilterById(completeDownloadId));
-						c.moveToFirst();
-						String str = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                    Cursor c = downloadManager.query(new DownloadManager.Query().setFilterById(completeDownloadId));
+                    c.moveToFirst();
+                    String str = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
 
-						context.startActivity(getApkFileIntent(str));
-						
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-	}
+                    context.startActivity(getApkFileIntent(context, str));
 
-	public static Intent getApkFileIntent( String param ) {
-		 
-        Intent intent = new Intent();  
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+    }
+
+    public static Intent getApkFileIntent(Context context, String param) {
+        AppLog.print("onReceive___5");
+        File apkFile =
+                new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), Constants.APK_NAME);
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(Intent.ACTION_VIEW);
-        Uri uri = Uri.parse(param);
-        uri = PhotosGallery.getPhotosUri(context,uri);
-        intent.setDataAndType(uri,"application/vnd.android.package-archive"); 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri apkUri = FileProvider.getUriForFile(context, "com.cloudmachine.fileprovider", apkFile);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+        }
+//        Uri uri = Uri.parse(param);
+//        uri = PhotosGallery.getPhotosUri(context,uri);
+//        intent.setDataAndType(uri,"application/vnd.android.package-archive");
         return intent;
     }
- 
+
 }

@@ -4,12 +4,13 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-import com.cloudmachine.net.ATask;
-import com.cloudmachine.net.HttpURLConnectionImp;
-import com.cloudmachine.net.IHttp;
+import com.cloudmachine.activities.RepairPayDetailsActivity;
 import com.cloudmachine.bean.AliPayBean;
 import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.bean.WeiXinEntityBean;
+import com.cloudmachine.net.ATask;
+import com.cloudmachine.net.HttpURLConnectionImp;
+import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.Utils;
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +39,17 @@ public class CWPayAsync extends ATask {
     private Context context;
     private String payType;
     private String orderNum;
-    private long userCouponId;
+    private String userCouponId;
 
-    public CWPayAsync(Handler handler, Context context, String payType, String orderNum, long userCouponId) {
+    public CWPayAsync(Handler handler, Context context, String payType, String orderNum, String userCouponId) {
         this.handler = handler;
         this.context = context;
         this.payType = payType;
         this.orderNum = orderNum;
         this.userCouponId = userCouponId;
-        try{
+        try {
             memberId = String.valueOf(MemeberKeeper.getOauth(context).getId());
-        }catch(Exception e){
+        } catch (Exception e) {
             Constants.ToastAction(e.toString());
         }
     }
@@ -64,6 +66,7 @@ public class CWPayAsync extends ATask {
             return null;
         }
     }
+
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
@@ -77,27 +80,29 @@ public class CWPayAsync extends ATask {
 
         Message msg = Message.obtain();
         if (isSuccess) {
-            try{
-                if (payType.equals("102")) {
+            try {
+                if (payType.equals(RepairPayDetailsActivity.PAY_TYPE_ALIPAY)) {
                     Gson gson = new Gson();
-                    BaseBO<AliPayBean> bo = gson.fromJson(result, new TypeToken<BaseBO<AliPayBean>>(){}.getType());
+                    BaseBO<AliPayBean> bo = gson.fromJson(result, new TypeToken<BaseBO<AliPayBean>>() {
+                    }.getType());
                     msg.what = Constants.HANDLER_GETCWPAY_SUCCESS;
                     msg.obj = bo.getResult();
                     handler.sendMessage(msg);
-                } else if (payType.equals("101")){
+                } else if (payType.equals(RepairPayDetailsActivity.PAY_TYPE_WECHAT)) {
                     Gson gson = new Gson();
-                    BaseBO<WeiXinEntityBean> bo = gson.fromJson(result, new TypeToken<BaseBO<WeiXinEntityBean>>(){}.getType());
+                    BaseBO<WeiXinEntityBean> bo = gson.fromJson(result, new TypeToken<BaseBO<WeiXinEntityBean>>() {
+                    }.getType());
                     msg.what = Constants.HANDLER_GETCWPAY_SUCCESS;
                     msg.obj = bo.getResult();
                     handler.sendMessage(msg);
                 }
 
                 return;
-            }catch(Exception e){
+            } catch (Exception e) {
             }
 
             //缓存数据第4步
-            if(!isHaveCache){
+            if (!isHaveCache) {
                 msg.what = Constants.HANDLER_GETCWPAY_FAILD;
                 msg.obj = message;
                 handler.sendMessage(msg);
@@ -117,9 +122,7 @@ public class CWPayAsync extends ATask {
         list.add(Utils.addBasicValue("memberId", memberId));
         list.add(Utils.addBasicValue("payType", payType));
         list.add(Utils.addBasicValue("orderNum", orderNum));
-        if (userCouponId != -1) {
-            list.add(Utils.addBasicValue("userCouponId", String.valueOf(userCouponId)));
-        }
+        list.add(new BasicNameValuePair("coupons", userCouponId));
         return list;
     }
 }

@@ -23,6 +23,7 @@ import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.navigation.NativeDialog;
 import com.cloudmachine.navigation.other.Location;
@@ -33,7 +34,6 @@ import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.widget.CommonTitleView;
 import com.cloudmachine.widget.ReboundScrollView;
 import com.umeng.analytics.MobclickAgent;
@@ -89,6 +89,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         initMyLocation();
         initView();
         updateDeviceName();
+        MobclickAgent.onEvent(this,MobEvent.TIME_MACHINE_DETECTION);
 
 
     }
@@ -240,6 +241,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 if (mBundle == null) {
                     mBundle = new Bundle();
                 }
+                MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_INFO);
                 mBundle.putBoolean(AddDeviceActivity.IMG_TITLE_SHOW, true);
                 mBundle.putBoolean(AddDeviceActivity.DEVICE_SHOW, true);
                 mBundle.putInt(Constants.P_ADDMCDEVICETYPE, 0);
@@ -248,6 +250,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 break;
 
             case R.id.navigation_tv:
+                MobclickAgent.onEvent(this,MobEvent.COUNT_LOCATION_NAVIGATION);
                 Location locEnd = new Location(mcDeviceLoc.getLat(), mcDeviceLoc.getLng(), mcDeviceLoc.getPosition());
                 if (locNow == null) {
                     ToastUtils.showToast(this, "无法定位当前位置");
@@ -269,7 +272,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 Constants.toActivity(this, HistoricalTrackActivity.class, mBundle);
                 break;
             case R.id.device_info_timelen:
-                MobclickAgent.onEvent(mContext, UMengKey.count_machine_worktime_detai);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_WORKTIME_TIME);
                 Bundle b_wt = new Bundle();
                 b_wt.putLong(Constants.P_DEVICEID, deviceId);
                 Constants.toActivity(this, WorkTimeActivity.class, b_wt, false);

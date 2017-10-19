@@ -233,7 +233,7 @@
                         android:layout_toLeftOf="@+id/arrowTip7"
                         android:layout_toStartOf="@+id/arrowTip7"
                         android:background="@null"
-                        android:text="请选择" />
+                        android:text="无可用" />
                 </RelativeLayout>
 
 

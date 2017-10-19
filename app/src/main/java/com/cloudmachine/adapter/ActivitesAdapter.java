@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.bean.HomeBannerBean;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
-import com.cloudmachine.utils.UMengKey;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -79,7 +79,8 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
 
         @Override
         public void onClick(View v) {
-            MobclickAgent.onEvent(v.getContext(), UMengKey.count_ad_click);
+            MobclickAgent.onEvent(v.getContext(),MobEvent.COUNT_AD_CLICK);
+            MobclickAgent.onEvent(v.getContext(), MobEvent.TIME_H5_AD_PAGE);
             HomeBannerBean bean = (HomeBannerBean) v.getTag();
             if (bean != null) {
 //                String url = !TextUtils.isEmpty(bean.adsLink) ? bean.adsLink : ;

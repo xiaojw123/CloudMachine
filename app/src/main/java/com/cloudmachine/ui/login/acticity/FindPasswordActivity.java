@@ -1,4 +1,4 @@
-package com.cloudmachine.activities;
+package com.cloudmachine.ui.login.acticity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudmachine.R;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
@@ -77,6 +78,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forget_change_pssword);
+        MobclickAgent.onEvent(this, MobEvent.TIME_REGISTER);
         this.mContext = this;
         mHandler = new Handler(this);
         type = getIntent().getIntExtra("type", 1);
@@ -189,7 +191,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                     if (phoneString != null && phoneString.length() == 11) {
                         if (validate_num == 0) {
                             show();
-                            new GetMobileCodeAsync(phoneString, "2", mContext, mHandler).execute();
+                            new GetMobileCodeAsync(phoneString, "1", mContext, mHandler).execute();
                         }
                     } else {
                         Toast.makeText(FindPasswordActivity.this, "请输入手机号", Toast.LENGTH_SHORT).show();
@@ -229,6 +231,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 } else {
                     inviteCode = "-1";
                 }
+                MobclickAgent.onEvent(this,MobEvent.COUNT_LOGIN);
                 new RegisterNewAsync(phone, Utils.getPwdStr(pwdStr), code, mContext, mHandler, inviteCode).execute();
             }
         } else {

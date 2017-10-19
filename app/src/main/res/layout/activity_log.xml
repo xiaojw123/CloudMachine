@@ -20,7 +20,7 @@
 
             <TextView
                 style="@style/login_left_text"
-                android:text="@string/common_cancel"/>
+                android:text="@string/common_cancel" />
         </LinearLayout>
 
         <LinearLayout
@@ -35,13 +35,13 @@
             <TextView
                 style="@style/login_left_text"
                 android:layout_height="wrap_content"
-                android:text="@string/login_title_right"/>
+                android:text="@string/login_title_right" />
         </LinearLayout>
 
         <TextView
             style="@style/login_mid_text"
             android:layout_centerInParent="true"
-            android:text="@string/login_title"/>
+            android:text="@string/login_title" />
     </RelativeLayout>
 
     <com.cloudmachine.autolayout.widgets.CircleTextImageView

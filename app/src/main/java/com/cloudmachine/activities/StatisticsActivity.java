@@ -25,11 +25,11 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.StatisticsInfo;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.StatisticsAsync;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.UMListUtil;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
@@ -78,7 +78,7 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
         setContentView(R.layout.fragment_statistics);
         mHandler = new Handler(this);
         initView();
-        UMListUtil.getUMListUtil().sendStruEvent("StatisticsActivity", this);
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WORKTIME_STATISTICS);
     }
 
 
@@ -141,14 +141,19 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
                     mEmptyTv.setVisibility(View.VISIBLE);
                     daysItemCotainer.setVisibility(View.GONE);
                     break;
-                } else {
-                    mEmptyTv.setVisibility(View.GONE);
-                    daysItemCotainer.setVisibility(View.VISIBLE);
                 }
                 String workDay = statisticsInfo.getWorkDay();
                 String toalWorkTime = statisticsInfo.getTotalWorkTime();
                 String avgWorkTime = statisticsInfo.getAvgWorkTime();
                 String workRate = statisticsInfo.getWorkRate();
+                if (TextUtils.isEmpty(workDay) && TextUtils.isEmpty(toalWorkTime) && TextUtils.isEmpty(avgWorkTime) & TextUtils.isEmpty(workRate)) {
+                    mEmptyTv.setVisibility(View.VISIBLE);
+                    daysItemCotainer.setVisibility(View.GONE);
+                    break;
+                } else {
+                    mEmptyTv.setVisibility(View.GONE);
+                    daysItemCotainer.setVisibility(View.VISIBLE);
+                }
                 mTvWorkDaysValue.setText(workDay);
                 mTvTotalHoursValue.setText(toalWorkTime);
                 mTvAveHoursValue.setText(avgWorkTime);
@@ -333,6 +338,5 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
     @Override
     public void onDestroy() {
         super.onDestroy();
-        UMListUtil.getUMListUtil().removeList("StatisticsFragment");
     }
 }

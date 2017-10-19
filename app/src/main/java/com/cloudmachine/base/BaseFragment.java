@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.utils.LoadingDialog;
 import com.cloudmachine.utils.TUtil;
-import com.cloudmachine.utils.UMListUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -38,7 +38,6 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        UMListUtil.getUMListUtil().sendStruEvent(this.getClass().getSimpleName(), this.getActivity());
         if (null != viewParent) {
             ViewGroup parent = (ViewGroup) viewParent.getParent();
             if (null != parent) {
@@ -53,7 +52,6 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
             if (mPresenter != null) {
                 mPresenter.mContext = this.getActivity();
             }
-            UMListUtil.getUMListUtil().sendStruEvent(this.getClass().getSimpleName(), getActivity());
             initPresenter();
             initView(savedInstanceState);
             initView();
@@ -74,13 +72,13 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
     @Override
     public void onResume() {
         super.onResume();
-        UMListUtil.getUMListUtil().startCustomEvent(this);
+        MobclickAgent.onPageStart(getClass().getName());
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        UMListUtil.getUMListUtil().endCustomEvent(this);
+        MobclickAgent.onPageEnd(getClass().getName());
     }
 
     @Override
@@ -90,7 +88,6 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
             mUnbinder.unbind();
             mUnbinder=null;
         }
-        UMListUtil.getUMListUtil().removeList(this.getClass().getSimpleName());
         if (mPresenter != null)
             mPresenter.onDestroy();
         if (mRxManager!=null)

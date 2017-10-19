@@ -122,6 +122,7 @@ public class UploadPhotoUtils {
 
                 if (uploadResult.getError() == 0) {
                     // 返回url
+
                     url = uploadResult.getUrl();
                     msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
                     msg.obj = url;

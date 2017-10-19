@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,11 +36,14 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.AboutCloudActivity;
-import com.cloudmachine.activities.ViewCouponActivity;
+import com.cloudmachine.activities.PermissionsActivity;
+import com.cloudmachine.activities.ViewCouponActivityNew;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.VersionInfo;
+import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.GetVersionAsync;
@@ -56,9 +61,9 @@ import com.cloudmachine.ui.personal.activity.PersonalDataActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
+import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ResV;
-import com.cloudmachine.utils.UMengKey;
-import com.cloudmachine.utils.VerisonCheckSP;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.VersionU;
 import com.cloudmachine.widget.NotfyImgView;
 import com.umeng.analytics.MobclickAgent;
@@ -69,21 +74,29 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.functions.Action1;
 
+/*
+* 更新通知提醒需测试*/
 public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeModel> implements Handler.Callback, HomeContract.View, View.OnClickListener {
-    public static final String KEY_YUBOX = "key_yunbox";
+    public static final String RXEVENT_UPDATE_REMIND = "rxevent_update_remind";
+    public static final String KEY_H5_AUTORITY = "key_h5_autority";
+    private static final String AUTORITY_YUNBOX = "yunbox";
+    private static final String AUTORITY_MYORDER = "myOrder";
     public static boolean isForeground = false;
     public static final String MESSAGE_RECEIVED_ACTION = "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
     public static final String KEY_MESSAGE = "message";
     public static final String KEY_EXTRAS = "extras";
+    private static final String ACT_SP_NAME = "activities_sp";
+    private static final String KEY_ACT_SIZE = "key_act_size";
+    public static final int PEM_REQCODE_WRITESD = 0x113;
+    private String downLoadLink;
     @BindView(R.id.home_me_img)
     ImageView homeMeImg;
     @BindView(R.id.home_box_img)
     ImageView homeBoxImg;
     @BindView(R.id.home_actvite_img)
     NotfyImgView homeActviteImg;
-
-
     @BindView(R.id.home_drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.home_head_img)
@@ -101,7 +114,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     @BindView(R.id.item_qr_code)
     FrameLayout itemQrCode;
     @BindView(R.id.item_about)
-    FrameLayout itemAbout;
+    LinearLayout itemAbout;
     @BindView(R.id.home_me_layout)
     LinearLayout homeMeLayout;
     @BindView(R.id.home_head_layout)
@@ -122,6 +135,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     View meAlert;
     @BindView(R.id.item_my_order)
     FrameLayout itemMyOrder;
+    @BindView(R.id.item_about_niv)
+    NotfyImgView aboutNimg;
 
 
     ImageView promotionImg;
@@ -140,16 +155,43 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         MobclickAgent.enableEncrypt(true); // 友盟统计
-        MobclickAgent.onEvent(this, UMengKey.time_home_map);
+        MobclickAgent.onEvent(this, MobEvent.TIME_HOME);
         mHandler = new Handler(this);
         registerMessageReceiver();
         showFragment(deviceTv);
         mPresenter.getH5ConfigInfo();
-        boolean isBox = getIntent().getBooleanExtra(KEY_YUBOX, false);
-        if (isBox) {
-            jumpCloudBox();
-        }
+        initUpdateConfig();
+        new GetVersionAsync(mContext, mHandler).execute();
     }
+
+    private String getAuthory() {
+        return getIntent().getStringExtra(KEY_H5_AUTORITY);
+    }
+
+
+    private void initUpdateConfig() {
+        checkAppVersion();
+        mRxManager.on(RXEVENT_UPDATE_REMIND, new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                checkAppVersion();
+            }
+        });
+
+    }
+
+    private void checkAppVersion() {
+        String newVersion = MySharedPreferences.getSharedPString(Constants.KEY_NewVersion);
+        if (!TextUtils.isEmpty(newVersion)) {
+            boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), newVersion);
+            if (isUpdate) {
+                meAlert.setVisibility(View.VISIBLE);
+                aboutNimg.setNotifyPointVisible(true);
+            }
+        }
+
+    }
+
 
     private void showFragment(View titleView) {
         FragmentManager fm = getFragmentManager();
@@ -271,17 +313,21 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         } else {
             homeHeadImg.setImageResource(R.drawable.ic_default_head);
             homeNicknameTv.setText("登录");
-            meAlert.setVisibility(View.GONE);
+            if (aboutNimg.isNotifyVisbile()) {
+                meAlert.setVisibility(View.VISIBLE);
+            } else {
+                meAlert.setVisibility(View.GONE);
+            }
             itmeMessageNimg.setNotifyPointVisible(false);
         }
         mPresenter.getHomeBannerInfo();
-        long time = VerisonCheckSP.getTime(this);
-        if (time != 0
-                && System.currentTimeMillis() - time < 1000 * 60 * 60 * 24) {
+//        long time = VerisonCheckSP.getTime(this);
+//        if (time != 0
+//                && System.currentTimeMillis() - time < 1000 * 60 * 60 * 24) {
+//
+//        } else {
 
-        } else {
-            new GetVersionAsync(mContext, mHandler).execute();
-        }
+//        }
 
     }
 
@@ -310,6 +356,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.item_my_order:
+                MobclickAgent.onEvent(this,MobEvent.TIME_H5_MY_ORDER_PAGE);
                 Bundle bundle = new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppOrderList);
                 Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
@@ -355,6 +402,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 break;
             case R.id.item_ask://我的提问
                 if (UserHelper.isLogin(this)) {
+                    MobclickAgent.onEvent(this,MobEvent.TIME_H5_MY_ASK_PAGE);
                     Bundle askBundle = new Bundle();
                     askBundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppMyQuestion);
                     Constants.toActivity(this, QuestionCommunityActivity.class, askBundle, false);
@@ -371,14 +419,15 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 break;
             case R.id.item_card_coupon://卡券
                 if (UserHelper.isLogin(this)) {
-                    Constants.toActivity(this, ViewCouponActivity.class, null, false);
+//                    Constants.toActivity(this, ViewCouponActivity.class, null, false);
+                    //TODO: 2017/9/29 优惠券改版-code138
+                    Constants.toActivity(this, ViewCouponActivityNew.class, null, false);
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
                 break;
             case R.id.item_qr_code://我的二维码
                 if (UserHelper.isLogin(this)) {
-
                     Bundle codeB = new Bundle();
 //                codeB.putString(MEMBER_ID, String.valueOf(memberId));
                     Constants.toActivity(this, MyQRCodeActivity.class, codeB);
@@ -424,7 +473,9 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             meAlert.setVisibility(View.VISIBLE);
         } else {
             itmeMessageNimg.setNotifyPointVisible(false);
-            meAlert.setVisibility(View.GONE);
+            if (!aboutNimg.isNotifyVisbile()) {
+                meAlert.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -466,6 +517,18 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         editor.commit();
     }
 
+    @Override
+    public void updateH5View() {
+        String authory = getAuthory();
+        if (AUTORITY_YUNBOX.equals(authory)) {
+            jumpH5Page(ApiConstants.AppBoxDetail);
+        } else if (AUTORITY_MYORDER.equals(authory)) {
+            if (UserHelper.isLogin(this)) {
+                jumpH5Page(ApiConstants.AppOrderList);
+            }
+        }
+    }
+
     private int curAdPos;
 
     private void showItemPop(int pos) {
@@ -490,9 +553,10 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     if (popupType != 1) {
                         if (popupType == 3) {
                             dismissPop();
-                            Constants.toActivity(HomeActivity.this, ViewCouponActivity.class, null, false);
+                            Constants.toActivity(HomeActivity.this, ViewCouponActivityNew.class, null, false);
                         } else {
                             if (!TextUtils.isEmpty(jumpLink)) {
+                                MobclickAgent.onEvent(HomeActivity.this,MobEvent.COUNT_HOME_ALERT_AD_CLICK);
                                 dismissPop();
                                 Bundle bundle = new Bundle();
                                 bundle.putString(QuestionCommunityActivity.H5_URL, jumpLink);
@@ -512,6 +576,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
+
             case Constants.HANDLER_GETVERSION_SUCCESS:
                 VersionInfo vInfo = (VersionInfo) msg.obj;
                 if (null != vInfo) {
@@ -524,7 +589,14 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 }
                 break;
             case Constants.HANDLER_VERSIONDOWNLOAD:
-                Constants.versionDownload(HomeActivity.this, (String) msg.obj);
+                downLoadLink = (String) msg.obj;
+                PermissionsChecker checker = new PermissionsChecker(this);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    PermissionsActivity.startActivityForResult(this, PEM_REQCODE_WRITESD,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                } else {
+                    Constants.versionDownload(HomeActivity.this, downLoadLink);
+                }
                 break;
         }
         return false;
@@ -562,18 +634,22 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     private long ExitTime = 0;
 
 
-    public void jumpCloudBox() {
+    public void jumpH5Page(String h5Url) {
         Bundle bundle = new Bundle();
-        bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.H5_HOST+"n/order/yunbox");
+        bundle.putString(QuestionCommunityActivity.H5_URL, h5Url);
         Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
     }
 
-//    public void activitiesTest(View view) {
-//        Bundle bundle = new Bundle();
-//        bundle.putString(QuestionCommunityActivity.H5_URL, "http://h5.cloudm.com/n/hd/spread?extendSource=1&activityId=19");
-//        Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
-//    }
 
-    private static final String ACT_SP_NAME = "activities_sp";
-    private static final String KEY_ACT_SIZE = "key_act_size";
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+            ToastUtils.showToast(this, "更新失败！！");
+            CommonUtils.showPermissionDialog(this);
+        } else {
+            Constants.versionDownload(HomeActivity.this, downLoadLink);
+        }
+
+    }
 }

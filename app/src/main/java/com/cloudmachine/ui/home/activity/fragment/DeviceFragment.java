@@ -35,6 +35,7 @@ import com.cloudmachine.adapter.DeviceListAdpater;
 import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.McDeviceLocation;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
@@ -417,9 +418,13 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 }
                 break;
             case R.id.phone_box_tv://客服热线-云盒子
+                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_CALL_CLICK);
+                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_CALL_YUNBOX_CLICK);
                 CommonUtils.callPhone(getActivity(), Constants.CUSTOMER_PHONE_BOX);
                 break;
             case R.id.phone_repair_tv://客服热线-报修
+                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_CALL_CLICK);
+                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_CALL_REPAIR_CLICK);
                 CommonUtils.callPhone(getActivity(), Constants.CUSTOMER_PHONE_REPAIR);
                 break;
             case R.id.device_phone_imgBtn:
@@ -440,7 +445,8 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 gotoDeviceDetail((McDeviceInfo) marker.getObject());
                 break;
             case R.id.device_ques_ans_tv://问答
-                MobclickAgent.onEvent(getActivity(), UMengKey.time_ask_page);
+                MobclickAgent.onEvent(getActivity(), MobEvent.TIME_H5_COMMUNITY_PAGE);
+                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_ASK_CLICK);
                 Bundle bundle = new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppCommunity);
                 Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle);
@@ -451,7 +457,8 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 break;
 
             case R.id.device_menu_tv:
-                MobclickAgent.onEvent(getActivity(), UMengKey.count_menu_open);
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_MENU_OPEN);
+                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_ALL_LIST_CLICK);
                 showMenuPop();
                 break;
         }
@@ -499,6 +506,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         if (menuPop != null && menuPop.isShowing()) {
             menuPop.dismiss();
         }
+        MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_CLICK_MACHINE_DETAIL);
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.MC_DEVICEINFO, info);
 //        bundle.putSerializable(Constants.MC_LOC_NOW, locNow);

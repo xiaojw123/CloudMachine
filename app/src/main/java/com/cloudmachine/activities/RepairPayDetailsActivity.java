@@ -1,57 +1,52 @@
 package com.cloudmachine.activities;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.BounceInterpolator;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.cloudmachine.R;
-import com.cloudmachine.adapter.GetCouponAdapter;
 import com.cloudmachine.alipay.PayResult;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.AliPayBean;
 import com.cloudmachine.bean.CWInfo;
-import com.cloudmachine.bean.CouponInfo;
-import com.cloudmachine.bean.PayPriceInfo;
 import com.cloudmachine.bean.WeiXinEntityBean;
 import com.cloudmachine.bean.WorkSettleBean;
-import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.task.CWPayAsync;
-import com.cloudmachine.net.task.GetCouponAsync;
 import com.cloudmachine.net.task.GetWorkDetailAsync;
-import com.cloudmachine.net.task.PayPriceAsync;
 import com.cloudmachine.ui.home.activity.ConsumptionActivity;
 import com.cloudmachine.ui.home.activity.PayDeviceInfoActivity;
+import com.cloudmachine.ui.home.contract.ViewRepairContract;
+import com.cloudmachine.ui.home.model.CouponItem;
+import com.cloudmachine.ui.home.model.OrderCouponBean;
+import com.cloudmachine.ui.home.model.ViewRepairModel;
+import com.cloudmachine.ui.home.presenter.ViewRepairPresenter;
 import com.cloudmachine.ui.repair.activity.ViewRepairActivity;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
-import com.rey.material.app.BottomSheetDialog;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
 
-import java.util.ArrayList;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.functions.Action1;
 
 /**
@@ -64,107 +59,99 @@ import rx.functions.Action1;
  * 修改备注：
  */
 
-public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements Handler.Callback, View.OnClickListener {
+public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairPresenter, ViewRepairModel> implements ViewRepairContract.View, Handler.Callback, View.OnClickListener {
+    private static final int REQ_CODE_SEL_COUPON = 0x001;
     public static final String FINISH_PAY_DETAIL = "finish_pay_detail";
-    private String orderNum;
-    private String flag;
-    private Context context;
+    private static final String FORMAT_REAL_PAY = "实付： ¥%s";
+    public static final String PAY_TYPE_WECHAT = "10";
+    public static final String PAY_TYPE_ALIPAY = "11";
+    @BindView(R.id.pay_deviceinfo_fl)
+    FrameLayout infoFl;
+    @BindView(R.id.tv_should_pay_price)
+    TextView tvShouldPrice;
+    @BindView(R.id.rl_weixin_pay)
+    RelativeLayout mRlWeiXinPay;
+    @BindView(R.id.rl_alipay)
+    RelativeLayout mRlAliPay;
+    @BindView(R.id.rl_coupon)
+    RelativeLayout mRlCoupon;
+    @BindView(R.id.tv_man_hour)
+    TextView tvManHour;
+    @BindView(R.id.cb_weixin_pay)
+    CheckBox mCbWeiXinPay;
+    @BindView(R.id.cb_alipay)
+    CheckBox mCbAliPay;
+    @BindView(R.id.tv_pay_price)
+    TextView tvPayPrice;
+    @BindView(R.id.btn_topay)
+    Button btnToPay;
+    @BindView(R.id.select3)
+    TextView tvCoupon;
+    @BindView(R.id.part_discount_layout)
+    FrameLayout partLayout;
+    @BindView(R.id.worktime_discount_layout)
+    FrameLayout worktimeLayout;
+    @BindView(R.id.ticket_discount_layout)
+    FrameLayout tickeLayout;
+    @BindView(R.id.cost_discount_layout)
+    FrameLayout costLayout;
+    @BindView(R.id.part_discount_amout)
+    TextView partAmoutTv;
+    @BindView(R.id.worktime_discount_amout)
+    TextView worktimeAmoutTv;
+    @BindView(R.id.ticket_discount_amout)
+    TextView ticketAmoutTv;
+    @BindView(R.id.cost_discount_amout)
+    TextView costAmouTv;
+    @BindView(R.id.rl_consumption_totalmount)
+    RelativeLayout cons_totalmount_rl;
+    @BindView(R.id.tv_consumption_totalmount)
+    TextView tvConsumptionTotalAmount;
+    private OrderCouponBean mOrderCouponBean;
+    private CWInfo cwInfo;
     private Handler mHandler;
-    private FrameLayout infoFl;
-    private TextView tvShouldPrice;
-    private RelativeLayout mRlWeiXinPay;
-    private RelativeLayout mRlAliPay;
-    private RelativeLayout mRlCoupon;
-    private TextView tvManHour;
-    private CheckBox mCbWeiXinPay;
-    private CheckBox mCbAliPay;
-    private TextView tvPayPrice;
-    private Button btnToPay;
-    int couponCount = 1;
-    private ArrayList<CouponInfo> couponData;
-    private int height;
-    private int couponHeight;
-    private RelativeLayout root;
-    private Button btnCancel;
-    private BottomSheetDialog couponDialog;
-    private ListView lvCoupon;
-    private GetCouponAdapter getCouponAdapter;
-    private long couponId = -1;
-    private TextView tvCoupon;
+    private double realPayAmount;
     private String payType;
     private String partnerId;
     private String prepayId;
     private String nonceStr;
     private String timestamp;
-    private String sign1;
     private String sign;
-    private static final int SDK_PAY_FLAG = 1;
-    private boolean hasCouponData = false;//是否获得优惠券数据
-    private int selectCouponCode = 0x001;
-    private RelativeLayout cons_totalmount_rl;
-
-    @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler() {
-        @SuppressWarnings("unused")
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case SDK_PAY_FLAG: {
-                    @SuppressWarnings("unchecked")
-                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
-                    /**
-                     对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
-                     */
-                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
-                    String resultStatus = payResult.getResultStatus();
-                    // 判断resultStatus 为9000则代表支付成功
-                    if (TextUtils.equals(resultStatus, "9000")) {
-                        // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-                        Toast.makeText(RepairPayDetailsActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
-                        Bundle b = new Bundle();
-                        b.putString("paymentResult", "支付成功");
-                        finish();
-//                        Constants.toActivity(RepairPayDetailsActivity.this, PaymentResultsActivity.class, b, true);
-                    } else {
-                        // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
-                        Toast.makeText(RepairPayDetailsActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
-                        Bundle b = new Bundle();
-                        b.putString("paymentResult", "支付失败");
-                        finish();
-//                        Constants.toActivity(RepairPayDetailsActivity.this, PaymentResultsActivity.class, b, false);
-                    }
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-
-        ;
-    };
-    private TextView tvConsumptionTotalAmount;
-    private CWInfo cwInfo;
-    private FrameLayout partLayout, worktimeLayout, tickeLayout,costLayout;
-    private TextView partAmoutTv, worktimeAmoutTv, ticketAmoutTv,costAmouTv;
-
+    private String useCouponId;
+    private String orderNum;
+    private String flag;
+    private String formartPayAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repair_detail);
-        context = this;
-        mHandler = new Handler(this);
-        initIntentData();
+        ButterKnife.bind(this);
+        MobclickAgent.onEvent(this,MobEvent.REPAIR_PAY_ORDER);
+        initParams();
         initView();
-        couponData = new ArrayList<>();
         initRxManager();
-        //拿到工单详情
-        new GetWorkDetailAsync(mHandler, context, orderNum, flag).execute();
-        if (null != orderNum) {
-            //拿到可用优惠券
-            new GetCouponAsync(mHandler, "0", orderNum, context).execute();
-        }
+        new GetWorkDetailAsync(mHandler, this, orderNum, flag).execute();
+    }
 
 
+    private void initView() {
+        mRlCoupon.setEnabled(false);
+        tvShouldPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+    }
+
+
+    private void initParams() {
+        mHandler = new Handler(this);
+        Intent intent = this.getIntent();
+        Bundle buldle = intent.getExtras();
+        orderNum = buldle.getString("orderNum");
+        flag = buldle.getString("flag");
+    }
+
+    @Override
+    public void initPresenter() {
+        mPresenter.setVM(this, mModel);
     }
 
     private void initRxManager() {
@@ -177,65 +164,40 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
     }
 
     @Override
-    public void initPresenter() {
-
-    }
-
-    private void initView() {
-        partLayout = (FrameLayout) findViewById(R.id.part_discount_layout);
-        tickeLayout = (FrameLayout) findViewById(R.id.ticket_discount_layout);
-        worktimeLayout = (FrameLayout) findViewById(R.id.worktime_discount_layout);
-        partAmoutTv = (TextView) findViewById(R.id.part_discount_amout);
-        worktimeAmoutTv = (TextView) findViewById(R.id.worktime_discount_amout);
-        ticketAmoutTv = (TextView) findViewById(R.id.ticket_discount_amout);
-        costLayout= (FrameLayout) findViewById(R.id.cost_discount_layout);
-        costAmouTv= (TextView) findViewById(R.id.cost_discount_amout);
-        cons_totalmount_rl = (RelativeLayout) findViewById(R.id.rl_consumption_totalmount);
-        cons_totalmount_rl.setOnClickListener(this);
-        tvShouldPrice = (TextView) findViewById(R.id.tv_should_pay_price);
-        infoFl = (FrameLayout) findViewById(R.id.pay_deviceinfo_fl);
-        mRlWeiXinPay = (RelativeLayout) findViewById(R.id.rl_weixin_pay);
-        infoFl.setOnClickListener(this);
-        mRlWeiXinPay.setOnClickListener(this);
-        mRlAliPay = (RelativeLayout) findViewById(R.id.rl_alipay);
-        mRlAliPay.setOnClickListener(this);
-        mRlCoupon = (RelativeLayout) findViewById(R.id.rl_coupon);
-        mRlCoupon.setOnClickListener(this);
-        tvManHour = (TextView) findViewById(R.id.tv_man_hour);
-        mCbWeiXinPay = (CheckBox) findViewById(R.id.cb_weixin_pay);
-        mCbAliPay = (CheckBox) findViewById(R.id.cb_alipay);
-        tvPayPrice = (TextView) findViewById(R.id.tv_pay_price);
-        btnToPay = (Button) findViewById(R.id.btn_topay);
-        btnToPay.setOnClickListener(this);
-        tvCoupon = (TextView) findViewById(R.id.select3);
-        tvConsumptionTotalAmount = (TextView) findViewById(R.id.tv_consumption_totalmount);
-        tvShouldPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-    }
-
-
-    private void initIntentData() {
-        Intent intent = this.getIntent();
-        Bundle buldle = intent.getExtras();
-        orderNum = buldle.getString("orderNum");
-        flag = buldle.getString("flag");
-    }
-
-    @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
+            case Constants.HANDLER_RESULT_APLIPAY:
+                PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+                String resultStatus = payResult.getResultStatus();
+                // 判断resultStatus 为9000则代表支付成功
+                if (TextUtils.equals(resultStatus, "9000")) {
+                    // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
+                    Toast.makeText(RepairPayDetailsActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                    Bundle b = new Bundle();
+                    b.putString("paymentResult", "支付成功");
+                    finish();
+                } else {
+                    // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
+                    Toast.makeText(RepairPayDetailsActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+                    Bundle b = new Bundle();
+                    b.putString("paymentResult", "支付失败");
+                    finish();
+                }
+                break;
             case Constants.HANDLER_GET_CWDETAIL_SUCCESS:
                 cwInfo = (CWInfo) msg.obj;
                 if (null != cwInfo) {
                     WorkSettleBean workSettle = cwInfo.getWorkSettle();
                     if (null != workSettle) {
-                       String nrepairworkhourcost = workSettle.getNrepairworkhourcost();
+                        String nrepairworkhourcost = workSettle.getNrepairworkhourcost();
                         tvManHour.setText(nrepairworkhourcost);
-                      String  npartstotalamount = workSettle.getNpartstotalamount();
-                       String ndiscounttotalamount = workSettle.getNdiscounttotalamount();
+                        String npartstotalamount = workSettle.getNpartstotalamount();
+                        String ndiscounttotalamount = workSettle.getNdiscounttotalamount();
                         tvConsumptionTotalAmount.setText("¥" + npartstotalamount);
 //                        tvDiscountAmount.setText("-¥" + ndiscounttotalamount);
                         tvShouldPrice.setText("¥" + workSettle.getNtotalamount());
-                        tvPayPrice.setText("实付： ¥" + workSettle.getNloanamount());
+                        formartPayAmount =workSettle.getNloanamount();
+                        realPayAmount = Double.parseDouble(formartPayAmount);
                         if (!TextUtils.isEmpty(ndiscounttotalamount)) {
                             double a1 = Double.parseDouble(ndiscounttotalamount);
                             if (a1 > 0) {
@@ -259,54 +221,30 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
                                 ticketAmoutTv.setText("¥" + nmaxamount);
                             }
                         }
-                        String npaidinamount=workSettle.getNpaidinamount();
-                        if (!TextUtils.isEmpty(npaidinamount)){
-                            double a4=Double.parseDouble(npaidinamount);
-                            if (a4>0){
+                        String npaidinamount = workSettle.getNpaidinamount();
+                        if (!TextUtils.isEmpty(npaidinamount)) {
+                            double a4 = Double.parseDouble(npaidinamount);
+                            if (a4 > 0) {
                                 costLayout.setVisibility(View.VISIBLE);
-                                costAmouTv.setText("¥"+npaidinamount);
+                                costAmouTv.setText("¥" + npaidinamount);
                             }
                         }
 
                     }
                 }
+                mPresenter.getOrderCoupon(mRlCoupon, UserHelper.getMemberId(this), orderNum);
                 break;
             case Constants.HANDLER_GET_WORKDETAIL_FAILD:
                 Constants.ToastAction((String) msg.obj);
                 break;
-            case Constants.HANDLER_GETCOUPONS_SUCCESS:
-                couponData.clear();
-                ArrayList<CouponInfo> data = (ArrayList<CouponInfo>) msg.obj;
-                if (null != data && data.size() > 0) {
-                    couponData.addAll(data);
-                    hasCouponData = true;
-                    couponCount = couponData.size();
-                    couponId = couponData.get(0).getId();
-                    if (data.size() > 0) {
-                        tvCoupon.setText("-¥" + String.valueOf(data.get(0).getAmount()));
-                    } else {
-                        tvCoupon.setText("无可用");
-                    }
-                } else {
-                    tvCoupon.setText("无可用");
-                }
-                //拿到需要支付金额
-                new PayPriceAsync(context, mHandler, orderNum, "302", String.valueOf(couponId)).execute();
-//                tvCoupon.setText("请选择");
-                break;
             case Constants.HANDLER_GETCOUPONS_FAILD:
                 Constants.ToastAction((String) msg.obj);
-                break;
-            case Constants.HANDLER_GETPAYPRICE_SUCCESS:
-                PayPriceInfo payPriceInfo = (PayPriceInfo) msg.obj;
-                String amount = payPriceInfo.getAmount();
-//                tvPayPrice.setText("实付： ¥" + amount);
                 break;
             case Constants.HANDLER_GETPAYPRICE_FAILD:
                 Constants.ToastAction((String) msg.obj);
                 break;
             case Constants.HANDLER_GETCWPAY_SUCCESS:
-                if (payType.equals("101")) {
+                if (payType.equals(PAY_TYPE_WECHAT)) {
                     WeiXinEntityBean entityBean = (WeiXinEntityBean) msg.obj;
                     partnerId = entityBean.getPartnerid();
                     prepayId = entityBean.getPrepayid();
@@ -314,7 +252,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
                     timestamp = entityBean.getTimestamp();
                     sign = entityBean.getSign();
                     payWeiXin();
-                } else if (payType.equals("102")) {
+                } else if (payType.equals(PAY_TYPE_ALIPAY)) {
                     AliPayBean aliPayBean = (AliPayBean) msg.obj;
                     String signInfo = aliPayBean.getSign();
                     payV2(signInfo);
@@ -327,6 +265,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
         return false;
     }
 
+    @OnClick({R.id.rl_consumption_totalmount, R.id.pay_deviceinfo_fl, R.id.rl_alipay, R.id.rl_weixin_pay, R.id.rl_coupon, R.id.btn_topay})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -359,12 +298,20 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
                 mCbAliPay.setChecked(!mCbWeiXinPay.isChecked());
                 break;
             case R.id.rl_coupon:
-                //showCounponDialog();
-                Bundle cbundle = new Bundle();
-                cbundle.putSerializable("couponData", couponData);
-                Constants.toActivityForR(RepairPayDetailsActivity.this
-                        , ViewRepairActivity.class
-                        , cbundle, selectCouponCode);
+                if (mOrderCouponBean != null) {
+                    Bundle cbundle = new Bundle();
+                    cbundle.putParcelable(ViewRepairActivity.ORDER_COUPON, mOrderCouponBean);
+                    if ("不使用".equals(tvCoupon.getText())) {
+                        cbundle.putBoolean(ViewRepairActivity.KEY_IS_USED, false);
+                    } else {
+                        cbundle.putBoolean(ViewRepairActivity.KEY_IS_USED, true);
+                    }
+                    Constants.toActivityForR(RepairPayDetailsActivity.this
+                            , ViewRepairActivity.class
+                            , cbundle, REQ_CODE_SEL_COUPON);
+                } else {
+                    ToastUtils.showToast(this, "暂无可用优惠券");
+                }
                 break;
             case R.id.btn_topay:
                 if (!mCbAliPay.isChecked() && !mCbWeiXinPay.isChecked()) {
@@ -372,96 +319,17 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
                     return;
                 }
                 if (mCbWeiXinPay.isChecked()) {
-                    payType = "101";
+                    MobclickAgent.onEvent(this,MobEvent.COUNT_PAY_WECHAT);
+                    payType = PAY_TYPE_WECHAT;
                 } else if (mCbAliPay.isChecked()) {
-                    payType = "102";
+                    MobclickAgent.onEvent(this,MobEvent.COUNT_PAY_ALIPAY);
+                    payType = PAY_TYPE_ALIPAY;
                 }
-                new CWPayAsync(mHandler, context, payType, orderNum, couponId).execute();
+                new CWPayAsync(mHandler, this, payType, orderNum, useCouponId).execute();
                 break;
         }
     }
 
-    //弹出优惠券列表
-    private void showCounponDialog() {
-        //查看优惠券弹窗除listview其余部分的高度
-        int measureHeight = GetViewHeight(R.layout.dialog_counpon);
-        //listview单个条目的高度
-        int itemCouponHeight = GetViewHeight(R.layout.list_item_coupon);
-        //Constants.MyLog("条目数量"+couponCount);
-        if (couponCount <= 0) {
-            return;
-        }
-
-        //总体高度
-        int totalHeight = measureHeight + couponCount * itemCouponHeight + dip2px(60);
-        //屏幕高度
-        height = getScreenHeight();
-        if (totalHeight > (height / 3) * 2) {
-            couponHeight = (height / 3) * 2;
-        } else {
-            couponHeight = totalHeight;
-        }
-
-        initCouponView();
-        couponDialog = new BottomSheetDialog(RepairPayDetailsActivity.this);
-        couponDialog.contentView(root)
-                .heightParam(couponHeight)
-                .inDuration(500)
-                .outDuration(500)
-                .inInterpolator(new BounceInterpolator())
-                .outInterpolator(new AnticipateInterpolator())
-                .show();
-    }
-
-    private void initCouponView() {
-
-        root = (RelativeLayout) LayoutInflater.from(RepairPayDetailsActivity.this).
-                inflate(R.layout.dialog_counpon, null);
-        btnCancel = (Button) root.findViewById(R.id.btn_cancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                couponDialog.dismiss();
-            }
-        });
-        lvCoupon = (ListView) root.findViewById(R.id.lv_coupon);
-        getCouponAdapter = new GetCouponAdapter(context, couponData, 0);
-        lvCoupon.setAdapter(getCouponAdapter);
-        getCouponAdapter.notifyDataSetChanged();
-        lvCoupon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                couponId = couponData.get(position).getId();
-                tvCoupon.setText("-¥" + String.valueOf(couponData.get(position).getAmount()));
-                new PayPriceAsync(context, mHandler, orderNum, "302", String.valueOf(couponId)).execute();
-                couponDialog.dismiss();
-            }
-        });
-    }
-
-    public int GetViewHeight(int resource) {
-
-        View view = LayoutInflater.from(context).inflate(resource, null);
-        view.setLayoutParams(new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT));
-        int parameterW = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        int parameterH = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        view.measure(parameterW, parameterH);
-        int measuredHeight = view.getMeasuredHeight();
-        int measuredWidth = view.getMeasuredWidth();
-        return measuredHeight;
-    }
-
-    public int getScreenHeight() {
-        WindowManager wm = this.getWindowManager();
-        int width = wm.getDefaultDisplay().getWidth();
-        int height = wm.getDefaultDisplay().getHeight();
-        return height;
-    }
-
-    public int dip2px(float dpValue) {
-        final float scale = getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
 
     public void payV2(final String orderInfo) {
         Runnable payRunnable = new Runnable() {
@@ -470,12 +338,11 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
             public void run() {
                 PayTask alipay = new PayTask(RepairPayDetailsActivity.this);
                 Map<String, String> result = alipay.payV2(orderInfo, true);
-                Log.i("msp", result.toString());
 
                 Message msg = new Message();
-                msg.what = SDK_PAY_FLAG;
+                msg.what = Constants.HANDLER_RESULT_APLIPAY;
                 msg.obj = result;
-                handler.sendMessage(msg);
+                mHandler.sendMessage(msg);
             }
         };
 
@@ -505,14 +372,48 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity implements 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        AppLog.print("onActivityResult____recode__" + requestCode + ", rescode__" + resultCode);
-        if (requestCode == selectCouponCode) {
+        if (requestCode == REQ_CODE_SEL_COUPON) {
             if (data != null) {
-                long couponId = data.getLongExtra("couponId", -1);
-                String amount = data.getStringExtra("amount");
-                tvCoupon.setText("-¥" + amount);
-                new PayPriceAsync(context, mHandler, orderNum, "302", String.valueOf(couponId)).execute();
+                boolean isCouponUsed = data.getBooleanExtra(ViewRepairActivity.KEY_IS_USED, false);
+                if (isCouponUsed) {
+                    useCouponId = data.getStringExtra("couponId");
+                    int amount = data.getIntExtra("amount", 0);
+                    tvCoupon.setText("-¥" + amount);
+                    tvPayPrice.setText(String.format(FORMAT_REAL_PAY, CommonUtils.formartPrice(String.valueOf(CommonUtils.subtractDouble(realPayAmount,amount)))));
+                } else {
+                    tvCoupon.setText("不使用");
+                    tvPayPrice.setText(String.format(FORMAT_REAL_PAY, formartPayAmount));
+                }
             }
         }
     }
+
+    @Override
+    public void updateOrderCouponView(OrderCouponBean orderCouponBean) {
+        if (orderCouponBean != null && orderCouponBean.getUseAmount() > 0) {
+            useCouponId="";
+            mOrderCouponBean = orderCouponBean;
+            for (CouponItem item : mOrderCouponBean.getCouponList()) {
+                int useNum = item.getUseNum();
+                if (useNum > 0) {
+                    if (useCouponId.contains("_")) {
+                        useCouponId += ",";
+                    }
+                    useCouponId += item.getCouponBaseId() + "_" + useNum;
+                }
+            }
+            tvCoupon.setText("-¥" + String.valueOf(orderCouponBean.getUseAmount()));
+            tvPayPrice.setText(String.format(FORMAT_REAL_PAY, CommonUtils.formartPrice(String.valueOf(CommonUtils.subtractDouble(realPayAmount,orderCouponBean.getUseAmount())))));
+        } else {
+            tvCoupon.setText("不使用");
+            tvPayPrice.setText(String.format(FORMAT_REAL_PAY, formartPayAmount));
+        }
+    }
+
+    @Override
+    public void updateOrderCouponError() {
+            tvPayPrice.setText(String.format(FORMAT_REAL_PAY, formartPayAmount));
+    }
+
+
 }

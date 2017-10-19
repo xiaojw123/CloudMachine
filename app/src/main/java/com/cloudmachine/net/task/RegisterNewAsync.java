@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
@@ -50,7 +51,7 @@ public class RegisterNewAsync extends ATask {
 		}
 		String result = null;
 		try {
-			result = httpRequest.post(URLs.REGISTNEW_URL, list);
+			result = httpRequest.get(URLs.REGISTNEW_URL, list);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -70,6 +71,7 @@ public class RegisterNewAsync extends ATask {
 	protected void decodeJson(String result) {
 		// TODO Auto-generated method stub
 		//缓存数据第3步
+		AppLog.print("rest___");
 		super.decodeJson(result);
 		Message msg = Message.obtain();
 		if (isSuccess) {

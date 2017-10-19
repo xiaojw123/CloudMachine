@@ -16,11 +16,12 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cloudmachine.R;
-import com.cloudmachine.helper.OrderStatus;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.ScreenInfo;
 import com.cloudmachine.bean.WorkDetailBean;
+import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.helper.OrderStatus;
 import com.cloudmachine.ui.home.contract.RepairDetailContract;
 import com.cloudmachine.ui.home.model.RepairDetailModel;
 import com.cloudmachine.ui.home.model.SiteBean;
@@ -28,6 +29,7 @@ import com.cloudmachine.ui.home.presenter.RepairDetailPresenter;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.widget.CommonTitleView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +77,11 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
         String orderNum = getIntent().getStringExtra("orderNum");
         flag = getIntent().getStringExtra("flag");
         String nstatus = getIntent().getStringExtra("nstatus");
+        if (OrderStatus.WAIT.equals(nstatus)){
+            MobclickAgent.onEvent(this, MobEvent.REPAIR_WAIT_ACCEPT);
+        }else if (OrderStatus.ING.equals(nstatus)){
+            MobclickAgent.onEvent(this,MobEvent.REPAIR_REPARING);
+        }
         repairDetailCtv.setTitleName(nstatus);
         if (OrderStatus.CANCEL.equals(nstatus) || OrderStatus.WAIT.equals(nstatus)) {
             isRepairing = false;

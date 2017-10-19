@@ -2,8 +2,8 @@ package com.cloudmachine.net;
 
 import android.os.AsyncTask;
 
-import com.cloudmachine.R;
 import com.cloudmachine.MyApplication;
+import com.cloudmachine.R;
 import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UIHelper;

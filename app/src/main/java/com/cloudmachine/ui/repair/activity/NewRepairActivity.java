@@ -43,6 +43,7 @@ import com.cloudmachine.bean.NewRepairInfo;
 import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.DeviceHelper;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.RecyclerItemClickListener;
 import com.cloudmachine.net.task.MachineTypesListAsync;
@@ -58,6 +59,7 @@ import com.cloudmachine.utils.PictureUtil;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
+import com.cloudmachine.utils.URLs;
 import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.utils.photo.util.PublicWay;
 import com.cloudmachine.utils.photo.util.Res;
@@ -263,6 +265,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private OnClickListener btnSubmitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(NewRepairActivity.this,MobEvent.TIME_REPAIR_CREATE);
             submitRepairInfo();
         }
     };
@@ -466,6 +469,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         switch (msg.what) {
             case Constants.HANDLER_NEWREPAIR_SUCCESS:
                 ToastUtils.showToast(this, "报修成功");
+                FileUtils.clearComprressFile();
                 finish();
                 break;
             case Constants.HANDLER_NEWREPAIR_FAILD:
@@ -548,7 +552,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                     String fileName = String.valueOf(System.currentTimeMillis());
                     Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(i));
                     String filename = FileUtils.saveBitmap(smallBitmap, fileName);
-                    UploadPhotoUtils.getInstance(this).upLoadFile(filename, "http://api.test.cloudm.com/kindEditorUpload", mHandler);
+                    UploadPhotoUtils.getInstance(this).upLoadFile(filename, URLs.UPLOAD_IMG_PATH, mHandler);
                 }
 
                 selectedPhotos.addAll(photos);
@@ -663,6 +667,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         switch (v.getId()) {
 
             case R.id.iv_type:
+                MobclickAgent.onEvent(this,MobEvent.TIME_REPAIR_CREATE_ATTRIBUTE);
                 // Intent typeIntent = new
                 // Intent(NewRepairActivity.this,MachineTypeActivity.class);
                 if (!isOwnerDevice) {
@@ -674,6 +679,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
                 break;
             case R.id.iv_brand:
+                MobclickAgent.onEvent(this,MobEvent.TIME_REPAIR_CREATE_ATTRIBUTE);
                 // Intent brandIntent = new
                 // Intent(NewRepairActivity.this,MachineBrandActivity.class);
                 if (!isOwnerDevice) {
@@ -685,6 +691,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
                 break;
             case R.id.iv_model:
+                MobclickAgent.onEvent(this,MobEvent.TIME_REPAIR_CREATE_ATTRIBUTE);
                 // Intent modelIntent = new
                 // Intent(NewRepairActivity.this,MachineModelActivity.class);
                 if (!isOwnerDevice) {

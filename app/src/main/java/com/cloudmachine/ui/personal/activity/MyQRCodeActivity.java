@@ -21,9 +21,11 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.chart.utils.AppLog;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -101,6 +103,7 @@ public class MyQRCodeActivity extends BaseAutoLayoutActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myqrcode);
         ButterKnife.bind(this);
+        MobclickAgent.onEvent(this, MobEvent.RQCODE);
         initView();
         //检查权限(6.0以上做权限判断)
         AppLog.print("权限检查");
@@ -110,6 +113,7 @@ public class MyQRCodeActivity extends BaseAutoLayoutActivity {
         } else {
             initLocation();
         }
+
 
 
 //        Timer timer = new Timer();

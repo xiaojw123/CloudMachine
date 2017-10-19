@@ -31,6 +31,7 @@ import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.bean.UnfinishedBean;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.OrderStatus;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.activity.RepairDetailMapActivity;
@@ -42,7 +43,6 @@ import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.ui.repair.activity.RepairFinishDetailActivity;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.UMengKey;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -86,10 +86,10 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     @Override
     protected void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
-        MobclickAgent.onEvent(getActivity(), UMengKey.time_repair_soldiers);
         setinfoWIndowHiden(false);
         initGeocoder();
         startlocaction(this);
+        MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_REPAIR);
 //        if (UserHelper.isLogin(getActivity())) {
 //            mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
 //        }

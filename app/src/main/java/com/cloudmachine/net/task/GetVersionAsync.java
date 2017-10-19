@@ -14,7 +14,6 @@ import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UIHelper;
-import com.cloudmachine.utils.VerisonCheckSP;
 import com.cloudmachine.utils.VersionU;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -35,8 +34,8 @@ public class GetVersionAsync extends ATask {
 	public GetVersionAsync(Context context,Handler handler){
 		this.context = context;
 		this.handler = handler;
-		VerisonCheckSP.insertTime(context,
-				System.currentTimeMillis());
+//		VerisonCheckSP.insertTime(context,
+//				System.currentTimeMillis());
 	}
 	
 	@Override

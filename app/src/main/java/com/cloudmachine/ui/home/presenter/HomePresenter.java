@@ -78,12 +78,13 @@ public class HomePresenter extends HomeContract.Presenter {
                         ApiConstants.AppOrderList = reslutJob.get("AppOrderList").getAsString();
                     }
                 }
-
+                mView.updateH5View();
 
             }
 
             @Override
             protected void _onError(String message) {
+                mView.updateH5View();
 
             }
         }));

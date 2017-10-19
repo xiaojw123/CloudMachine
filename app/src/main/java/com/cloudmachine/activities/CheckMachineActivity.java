@@ -14,9 +14,11 @@ import android.widget.ListView;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.OwnDeviceAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.utils.Constants;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 
@@ -33,6 +35,7 @@ public class CheckMachineActivity extends BaseAutoLayoutActivity implements Call
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_machine);
+        MobclickAgent.onEvent(this, MobEvent.TIME_REPAIR_CREATE_DEVICE);
         mContext = this;
         mHandler = new Handler(this);
         initView();

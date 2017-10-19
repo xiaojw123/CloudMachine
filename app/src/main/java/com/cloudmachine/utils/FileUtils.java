@@ -506,16 +506,16 @@ public class FileUtils {
         long currentTime = System.currentTimeMillis();
         LinkedList<File> list = new LinkedList<File>();
         File dir = new File(fileAbsolutePath);
-            File file[] = dir.listFiles();
-            for (int i = 0; i < file.length; i++) {
-                if (file[i].isDirectory()) {
-                    list.add(file[i]);
-                } else {
-                    long lastModified = file[i].lastModified();// 获取文件最后修改的时间
-                    if (currentTime - lastModified > expiredTime) {
-                        file[i].delete();
-                    }
+        File file[] = dir.listFiles();
+        for (int i = 0; i < file.length; i++) {
+            if (file[i].isDirectory()) {
+                list.add(file[i]);
+            } else {
+                long lastModified = file[i].lastModified();// 获取文件最后修改的时间
+                if (currentTime - lastModified > expiredTime) {
+                    file[i].delete();
                 }
+            }
         }
         File tmp;
         while (!list.isEmpty()) {
@@ -676,34 +676,6 @@ public class FileUtils {
 
     }
 
-    public static String saveBitmap(Context context, Bitmap bm, String picName) {
-        try {
-            File f = new File(SDPATH, picName + ".JPEG");
-            if (!f.getParentFile().exists()) {
-                f.getParentFile().mkdirs();
-            }
-            Uri imageUri = FileProvider.getUriForFile(context, "com.cloudmachine.fileprovider", f);
-            Intent intent = new Intent();
-            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            context.startActivity(intent);
-            if (f.exists()) {
-                f.delete();
-            }
-
-
-            FileOutputStream out = new FileOutputStream(f);
-            bm.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-            return f.getPath();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public static String saveBitmap(Bitmap bm, String picName) {
         try {
@@ -713,9 +685,9 @@ public class FileUtils {
             if (f.exists()) {
                 f.delete();
             }
-//            f.mkdirs();
-//            f.createNewFile();
-
+            if (!f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
+            }
             AppLog.print("file__f_" + f + ", name_" + f.getName());
             FileOutputStream out = new FileOutputStream(f);
             AppLog.print("out 1");
@@ -731,6 +703,16 @@ public class FileUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void clearComprressFile(){
+        File f = new File(SDPATH);
+        if (f.exists()){
+            for (File file:f.listFiles()){
+                file.delete();
+            }
+        }
+
     }
 
     public static File saveBitmap2File(Context context, Bitmap bm, String picName) {

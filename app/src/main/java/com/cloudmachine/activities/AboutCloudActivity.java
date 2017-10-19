@@ -1,7 +1,9 @@
 package com.cloudmachine.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -16,12 +18,16 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.VersionInfo;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.GetVersionAsync;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ShareDialog;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.VersionU;
 import com.umeng.analytics.MobclickAgent;
@@ -43,12 +49,14 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
     private FrameLayout mFeedback;
     private boolean updateVersion = false;
     private FrameLayout mUseHelp, mShareApp;
+    private String downLoadLink;
 //    private Button envirBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_cloud);
+        MobclickAgent.onEvent(this, MobEvent.SETTING_ABOAT);
         getIntentData();
         mContext = this;
         mHandler = new Handler(this);
@@ -118,8 +126,14 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
                         getResources().getString(R.string.get_version_error));
                 break;
             case Constants.HANDLER_VERSIONDOWNLOAD:
-                Constants
-                        .versionDownload(AboutCloudActivity.this, (String) msg.obj);
+                downLoadLink=(String) msg.obj;
+                PermissionsChecker checker = new PermissionsChecker(this);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    PermissionsActivity.startActivityForResult(this, HomeActivity.PEM_REQCODE_WRITESD,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                } else {
+                    Constants.versionDownload(this, downLoadLink);
+                }
                 break;
         }
         return false;
@@ -161,6 +175,7 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
                 break;
             case R.id.use_help_fl:
 //                Constants.toActivity(AboutCloudActivity.this, UseHelpActivity.class, null);
+                MobclickAgent.onEvent(this,MobEvent.TIME_H5_USE_HELP_PAGE);
                 Bundle bundle=new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppUseHelper);
                 Constants.toActivity(AboutCloudActivity.this, QuestionCommunityActivity.class, bundle);
@@ -173,6 +188,18 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
 
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode==PermissionsActivity.PERMISSIONS_DENIED){
+            ToastUtils.showToast(this,"更新失败！！");
+            CommonUtils.showPermissionDialog(this);
+        }else{
+            Constants.versionDownload(this, downLoadLink);
+        }
+
+    }
+
     //分享信息
     private static final String SESSIONTITLE = "云机械";
     private static final String SESSIONDESCRIPTION = "我的工程机械设备都在云机械APP，你的设备在哪里，赶紧加入吧！";

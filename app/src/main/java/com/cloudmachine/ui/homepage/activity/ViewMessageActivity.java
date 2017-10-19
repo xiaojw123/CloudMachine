@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.MessageListAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.OnItemClickListener;
 import com.cloudmachine.bean.MessageBO;
@@ -19,6 +20,7 @@ import com.cloudmachine.ui.home.presenter.ViewMessagePresenter;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.chart.utils.AppLog;
+import com.umeng.analytics.MobclickAgent;
 import com.yanzhenjie.recyclerview.swipe.Closeable;
 import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
@@ -58,6 +60,8 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
         mContext = this;
         memberId = UserHelper.getMemberId(this);
         mPresenter.questionNeed(memberId);
+        MobclickAgent.onEvent(this, MobEvent.TIME_MESSAGE_LIST);
+
     }
 
     private void initRecyclerView() {
@@ -165,6 +169,7 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
                 title = "问卷调查";
             }
             if (!TextUtils.isEmpty(url)) {
+                MobclickAgent.onEvent(this,MobEvent.TIME_MESSAGE_DETAIL);
                 Bundle bundle = new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_TITLE, title);
                 bundle.putString(QuestionCommunityActivity.H5_URL, url);

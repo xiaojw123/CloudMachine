@@ -15,7 +15,9 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.WorkSettleBean;
 import com.cloudmachine.bean.WorkcollarListBean;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.utils.Constants;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class ConsumptionActivity extends BaseAutoLayoutActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consumption);
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_MATERIAL);
         CWInfo info = (CWInfo) getIntent().getSerializableExtra(Constants.CWINFO);
         LinearLayout consumptionLLt = (LinearLayout) findViewById(R.id.consumption_container_llt);
         if (info == null) {

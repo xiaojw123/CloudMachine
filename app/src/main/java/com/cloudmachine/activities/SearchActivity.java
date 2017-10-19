@@ -29,16 +29,16 @@ import com.cloudmachine.adapter.McSearchAdapter;
 import com.cloudmachine.adapter.McSearchMemberAdapter;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.McDeviceInfo;
+import com.cloudmachine.bean.MemberInfo;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.DevicesListAsync;
 import com.cloudmachine.net.task.GivePermissionNewAsync;
 import com.cloudmachine.net.task.SearchMemberAsync;
-import com.cloudmachine.bean.McDeviceInfo;
-import com.cloudmachine.bean.MemberInfo;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UIHelper;
-import com.cloudmachine.utils.UMListUtil;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.widgets.XListView;
 import com.cloudmachine.utils.widgets.XListView.IXListViewListener;
@@ -78,6 +78,7 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        MobclickAgent.onEvent(this, MobEvent.SEARCH);
         mContext = this;
         mHandler = new Handler(this);
         getIntentData();
@@ -234,6 +235,7 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
     }
 
     public void addMember(MemberInfo info) {
+        MobclickAgent.onEvent(this,MobEvent.COUNT_MEMEBER_ADD);
         mInfo = info;
         mHandler.sendEmptyMessage(Constants.HANDLER_ADDMEMBER);
 
@@ -338,7 +340,6 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
                 } else {
                     ToastUtils.showToast(this, "移交成功，等待对方确认");
                 }
-                UMListUtil.getUMListUtil().sendStruEvent("AddMemberSuccess", mContext);
                 finish();
                 break;
             case Constants.HANDLER_ADDMEMBER_FAIL:

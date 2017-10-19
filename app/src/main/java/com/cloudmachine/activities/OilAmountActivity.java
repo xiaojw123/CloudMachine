@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.DynamicWave;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.GetOilLevelListAsync;
 import com.cloudmachine.bean.ScanningOilLevelInfo;
 import com.cloudmachine.bean.ScanningOilLevelInfoArray;
@@ -38,6 +39,7 @@ import com.cloudmachine.chart.data.LineData;
 import com.cloudmachine.chart.data.LineDataSet;
 import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.listener.OnChartValueSelectedListener;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -75,6 +77,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         getIntentData();
         initView();
         new GetOilLevelListAsync(deviceId, mContext, mHandler).execute();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WATERLEVEL);
     }
 
     @Override
