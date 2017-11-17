@@ -39,6 +39,7 @@ import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.contract.DeviceContract;
 import com.cloudmachine.ui.home.model.DeviceModel;
 import com.cloudmachine.ui.home.presenter.DevicePresenter;
@@ -285,6 +286,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         mDeviceList = new ArrayList<>(deviceList);
         viewList = new ArrayList<>();
         List<McDeviceInfo> myDevices = new ArrayList<>();
+        LatLngBounds.Builder b = LatLngBounds.builder();
         for (McDeviceInfo info : deviceList) {
             if (info.getType() == 1) {
                 myDevices.add(info);
@@ -299,6 +301,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             }
             LatLng latLng = new LatLng(lat, lng);
             builder.include(latLng);
+            b.include(latLng);
             if (info.getWorkStatus() == 1) {
                 marker = aMap.addMarker(getMarkerOptions(getActivity(), latLng, R.drawable.icon_machine_work));
             } else {
@@ -319,6 +322,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         if (pageLen > 0) {
             if (pageLen > 1) {
                 setMapZoomTo(ZOOM_HOME);
+                aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(b.build(), 0));
             } else {
                 setMapZoomTo(ZOOM_DEFAULT);
             }
@@ -328,6 +332,10 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         deviceVp.addOnPageChangeListener(onPageChangeL);
         deviceVp.setAdapter(new DevicePagerAdapter(viewList));
         deviceVp.setCurrentItem(0);
+        if (!UserHelper.getGuideTag(getActivity())) {
+            UserHelper.insertGuideTag(getActivity(), true);
+            ((HomeActivity) getActivity()).updateGuide(mDeviceList);
+        }
     }
 
     @Override
@@ -340,7 +348,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 actLen = infoList.size();
                 setCurrentBoxAct();
             }
-        }else{
+        } else {
             boxActTv.setVisibility(View.GONE);
         }
 
@@ -418,13 +426,13 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 }
                 break;
             case R.id.phone_box_tv://客服热线-云盒子
-                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_CALL_CLICK);
-                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_CALL_YUNBOX_CLICK);
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_CALL_CLICK);
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_CALL_YUNBOX_CLICK);
                 CommonUtils.callPhone(getActivity(), Constants.CUSTOMER_PHONE_BOX);
                 break;
             case R.id.phone_repair_tv://客服热线-报修
-                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_CALL_CLICK);
-                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_CALL_REPAIR_CLICK);
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_CALL_CLICK);
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_CALL_REPAIR_CLICK);
                 CommonUtils.callPhone(getActivity(), Constants.CUSTOMER_PHONE_REPAIR);
                 break;
             case R.id.device_phone_imgBtn:
@@ -446,7 +454,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 break;
             case R.id.device_ques_ans_tv://问答
                 MobclickAgent.onEvent(getActivity(), MobEvent.TIME_H5_COMMUNITY_PAGE);
-                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_ASK_CLICK);
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_ASK_CLICK);
                 Bundle bundle = new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppCommunity);
                 Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle);
@@ -458,7 +466,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
             case R.id.device_menu_tv:
                 MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_MENU_OPEN);
-                MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_HOME_ALL_LIST_CLICK);
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_ALL_LIST_CLICK);
                 showMenuPop();
                 break;
         }
@@ -506,7 +514,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         if (menuPop != null && menuPop.isShowing()) {
             menuPop.dismiss();
         }
-        MobclickAgent.onEvent(getActivity(),MobEvent.COUNT_CLICK_MACHINE_DETAIL);
+        MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_CLICK_MACHINE_DETAIL);
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.MC_DEVICEINFO, info);
 //        bundle.putSerializable(Constants.MC_LOC_NOW, locNow);
@@ -556,7 +564,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     @Override
     public void onDestroy() {
-        if (mHandler!=null){
+        if (mHandler != null) {
             mHandler.removeMessages(Constants.HANDLER_CHANGE_BOX_ACT);
         }
         super.onDestroy();

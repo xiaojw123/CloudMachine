@@ -41,8 +41,10 @@ import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.helper.QiniuManager;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.model.JsBody;
 import com.cloudmachine.ui.home.model.JsInteface;
 import com.cloudmachine.ui.homepage.contract.QuestionCommunityContract;
@@ -63,6 +65,8 @@ import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.widget.CommonTitleView;
 import com.google.gson.JsonObject;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
 import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONObject;
@@ -93,6 +97,7 @@ import rx.schedulers.Schedulers;
 @SuppressLint("SetJavaScriptEnabled")
 public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCommunityPresenter, QuestionCommunityModel>
         implements QuestionCommunityContract.View {
+    public static final String FAILED_WX_PAY = "failed_wx_pay";
     private static final int REQUEST_PICK_IMAGE = 0x001; //相册选取
     private static final int REQUEST_CAPTURE = 0x002;  //拍照
     private static final int REQUEST_PICTURE_CUT = 0x003;  //剪裁图片
@@ -100,7 +105,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private static final int REQUEST_PERMISSION_PICK = 0x005;  //权限请求
     private static final int FLUSH_PAGE = 0x1330;
     private static final String PARAMS_KEY_MYID = "myid";
-    private static final String PARAMS_KEY_MEMBERID = "memberId";
+    public static final String PARAMS_KEY_MEMBERID = "memberId";
     private static final String JS_INTERFACE_NAME = "webkit";
     private static final String SHARE = "分享";
     private static final String SHAREDESC = "内容源自云机械APP";
@@ -110,6 +115,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     public static final String SHARE_LINK = "share_link";
     public static final String SHARE_PIC = "share_pic";
     public static final String GO_TO_MY_ORDER = "gotoMyOrder";
+    public static final String QR_CODE = "qr_code";
     @BindView(R.id.common_h5_pb)
     ProgressBar mPb;
     @BindView(R.id.common_h5_wv)
@@ -122,6 +128,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private String mTitle;
     private String imagePath;
     private boolean isClickCamera;
+    String mAlertType;
+    boolean isQrCode;
 
 
     @Override
@@ -151,6 +159,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 mHandler.sendEmptyMessage(Constants.HANDLER_JUMP_MY_ORDER);
             }
         });
+        mRxManager.on(FAILED_WX_PAY, new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                Constants.callJsMethod(mWebView, "callbackDSFPayResultCancelOrError()");
+            }
+        });
 
     }
 
@@ -163,6 +177,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             mUrl = bundle.getString(H5_URL);
             shareLink = bundle.getString(SHARE_LINK);
             sharePic = bundle.getString(SHARE_PIC);
+            isQrCode = bundle.getBoolean(QR_CODE);
         }
     }
 
@@ -181,7 +196,11 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         mWebView.setWebChromeClient(new MyWebChromeClient());
         mWebView.setWebViewClient(new H5WebClient());
         mWebView.addJavascriptInterface(new JsInteface(this, mHandler), JS_INTERFACE_NAME);
-        loadUrl();
+        if (isQrCode) {
+            mWebView.loadUrl(mUrl);
+        } else {
+            loadUrl();
+        }
         homeUrl = mUrl;
         AppLog.print("Common H5 URL__" + mUrl);
     }
@@ -276,7 +295,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
     private void showUpLoadImgDialog() {
         new AlertDialog.Builder(QuestionCommunityActivity.this)
-                .setTitle("头像照片")
+                .setTitle("上传照片")
                 .setItems(UPLOAD_PIC_ITEMS, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -353,6 +372,13 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case HomeActivity.PEM_REQCODE_WRITESD:
+                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                    CommonUtils.showPermissionDialog(this);
+                } else {
+                    clearWebCahe();
+                }
+                break;
             case Constants.REQUEST_ToSearchActivity:
                 if (data != null) {
                     Bundle bundle = data.getExtras();
@@ -381,29 +407,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 break;
             case REQUEST_CAPTURE://拍照
                 if (resultCode == RESULT_OK) {
-                    cropPhoto();
+//                    cropPhoto();
+                    handleImgUri();
                 }
                 break;
             case REQUEST_PICTURE_CUT://裁剪完成
-                if (data != null) {
-                    Bitmap bitmap;
-                    try {
-                        if (isClickCamera) {
-                            bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
-                        } else {
-                            bitmap = BitmapFactory.decodeFile(imagePath);
-                        }
-                        // iv.setImageBitmap(bitmap);
-                        //Bitmap photo = extras.getParcelable("data");
-                        String imString = savePhotoToSDCard(bitmap);
-                        compressPicture(imString);
-//                    new ImageUploadAsync(handler, imString, 1111).execute();
-//                    UploadPhotoUtils.getInstance(this).upLoadFile(imString, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                handleImgUri();
                 break;
             case REQUEST_PERMISSION://权限请求
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
@@ -427,6 +436,26 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
         }
 
+    }
+
+    private void handleImgUri() {
+        Bitmap bitmap;
+        try {
+            if (isClickCamera) {
+                bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
+            } else {
+                bitmap = BitmapFactory.decodeFile(imagePath);
+            }
+            // iv.setImageBitmap(bitmap);
+            //Bitmap photo = extras.getParcelable("data");
+            String imString = savePhotoToSDCard(bitmap);
+            compressPicture(imString);
+//                    new ImageUploadAsync(handler, imString, 1111).execute();
+//                    UploadPhotoUtils.getInstance(this).upLoadFile(imString, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadUrl() {
@@ -461,10 +490,26 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 .subscribe(new Action1<File>() {
                     @Override
                     public void call(File file) {   //http:///excamaster
-                        Long wjdxId = UserHelper.getWjdxID(mContext);
-                        if (wjdxId != null) {
-                            UploadPhotoUtils.getInstance(mContext).upLoadForH5File(file, ApiConstants.XIEXIN_HOST + "excamaster/yjxapi/uploadpicture?pictype=1&?myid=" + wjdxId, mHandler);
-//                            UploadPhotoUtils.getInstance(mContext).upLoadForH5File(file, "http://121.40.130.218:8980/excamaster/yjxapi/uploadpicture?pictype=1&?myid=" + wjdxId, mHandler);
+                        if (JsInteface.UPLOAD_QINIU_IMG.equals(mAlertType)) {
+                            QiniuManager.getUploadManager().put(file, "img_qrcode/a/" + file.getName(), QiniuManager.uptoken, new UpCompletionHandler() {
+                                @Override
+                                public void complete(String key, ResponseInfo info, JSONObject response) {
+                                    if (info.isOK()) {
+                                        Message msg = mHandler.obtainMessage();
+                                        msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
+                                        msg.obj = QiniuManager.origin + key;
+                                        mHandler.sendMessage(msg);
+                                    }
+
+                                }
+                            }, null);
+
+                        } else {
+                            Long wjdxId = UserHelper.getWjdxID(mContext);
+                            if (wjdxId != null) {
+                                // TODO: 2017/11/2 七牛上城引入测试
+                                UploadPhotoUtils.getInstance(mContext).upLoadForH5File(file, ApiConstants.CLOUDM_ASK_HOST + "excamaster/yjxapi/uploadpicture?pictype=1&?myid=" + wjdxId, mHandler);
+                            }
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -556,7 +601,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             imagePath = imageUri.getPath();
         }
 
-        cropPhoto();
+//        cropPhoto();
+        handleImgUri();
     }
 
     private String getImagePath(Uri uri, String selection) {
@@ -574,24 +620,24 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     /**
      * 裁剪
      */
-    private void cropPhoto() {
-        File file = new FileStorage().createCropFile();
-        Uri outputUri = Uri.fromFile(file);//缩略图保存地址
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        }
-        intent.setDataAndType(imageUri, "image/*");
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("scale", true);
-        intent.putExtra("return-data", false);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
-        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-        intent.putExtra("noFaceDetection", true);
-        startActivityForResult(intent, REQUEST_PICTURE_CUT);
-    }
+//    private void cropPhoto() {
+//        File file = new FileStorage().createCropFile();
+//        Uri outputUri = Uri.fromFile(file);//缩略图保存地址
+//        Intent intent = new Intent("com.android.camera.action.CROP");
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        }
+//        intent.setDataAndType(imageUri, "image/*");
+//        intent.putExtra("crop", "true");
+//        intent.putExtra("aspectX", 1);
+//        intent.putExtra("aspectY", 1);
+//        intent.putExtra("scale", true);
+//        intent.putExtra("return-data", false);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
+//        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+//        intent.putExtra("noFaceDetection", true);
+//        startActivityForResult(intent, REQUEST_PICTURE_CUT);
+//    }
 
     /**
      * 19之前版本
@@ -601,7 +647,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private void handleImageBeforeKitKat(Intent intent) {
         imageUri = intent.getData();
         imagePath = getImagePath(imageUri, null);
-        cropPhoto();
+//        cropPhoto();
+        handleImgUri();
     }
 
     String jsAlerEvent;
@@ -618,6 +665,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                         Toast.makeText(QuestionCommunityActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
                         sendEmptyMessage(Constants.HANDLER_JUMP_MY_ORDER);
                     } else {
+                        Constants.callJsMethod(mWebView, "callbackDSFPayResultCancelOrError()");
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                         Toast.makeText(QuestionCommunityActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
                     }
@@ -634,8 +682,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
                 case Constants.HANDLER_JS_ALERT:
                     JSONObject job = (JSONObject) msg.obj;
-                    String type = job.optString(JsInteface.ALERT_TYPE);
-                    if (JsInteface.UPLOAD_IMG.equals(type)) {
+                    mAlertType = job.optString(JsInteface.ALERT_TYPE);
+                    if (JsInteface.UPLOAD_IMG.equals(mAlertType) || JsInteface.UPLOAD_QINIU_IMG.equals(mAlertType)) {
                         showUpLoadImgDialog();
                     } else {
                         String tips = job.optString(JsInteface.ALERT_TIPS);
@@ -779,5 +827,38 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private String h5Title;
     private String sharePic;
     private String rightEvent;
+
+    public void clearWebCahe() {
+        // 清除cookie即可彻底清除缓存
+        CookieSyncManager.createInstance(mContext);
+        CookieManager.getInstance().removeAllCookie();
+        // WebView 缓存文件
+        File appCacheDir = new File(mContext.getCacheDir().getAbsolutePath() + "/webviewCache");
+
+        if (appCacheDir.exists()) {
+            deleteFile(appCacheDir);
+        }
+
+    }
+
+    /**
+     * 递归删除 文件/文件夹
+     *
+     * @param file
+     */
+    public void deleteFile(File file) {
+        if (file.exists()) {
+            if (file.isFile()) {
+                file.delete();
+            } else if (file.isDirectory()) {
+                File files[] = file.listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    deleteFile(files[i]);
+                }
+            }
+            file.delete();
+        }
+    }
+
 
 }

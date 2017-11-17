@@ -14,6 +14,6 @@ import rx.Observable;
 public class ViewRepairModel implements ViewRepairContract.Model {
     @Override
     public Observable<OrderCouponBean> getOrderCoupon(long memberId, String orderNum) {
-        return Api.getDefault(HostType.CLOUDM_HOST).getOrderCouponList(memberId,orderNum).compose(RxHelper.<OrderCouponBean>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getOrderCouponList(memberId,orderNum).compose(RxHelper.<OrderCouponBean>handleResult());
     }
 }

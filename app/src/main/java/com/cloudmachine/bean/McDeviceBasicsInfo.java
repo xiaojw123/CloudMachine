@@ -4,11 +4,20 @@ import java.io.Serializable;
 import java.util.List;
 
 public class McDeviceBasicsInfo implements Serializable{
-	
+	private String snId;
 	private long id;
 	private String[] devicePhoto;
 	private String[] nameplatePhoto;
 	private String category;
+
+	public String getSnId() {
+		return snId;
+	}
+
+	public void setSnId(String snId) {
+		this.snId = snId;
+	}
+
 	private String brand;
 	private String model;
 	private String buyPlace;

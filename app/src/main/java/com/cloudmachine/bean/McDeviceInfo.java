@@ -4,11 +4,21 @@ import java.io.Serializable;
 
 public class McDeviceInfo implements Serializable {
 
+    public String getSnId() {
+        return snId;
+    }
+
+    public void setSnId(String snId) {
+        this.snId = snId;
+    }
+
     /**
      *
      */
+
     private int oilLave;
     private float workTime;
+    private String snId;
 
     public int getOilLave() {
         return oilLave;
@@ -26,8 +36,28 @@ public class McDeviceInfo implements Serializable {
         this.workTime = workTime;
     }
 
-    private long id;
+    private long id=-1;
+    private long deviceId;
+
+    public long getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(long deviceId) {
+        this.deviceId = deviceId;
+    }
+
     private String name;
+    private String deviceName;
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
     private String category;
     private String model;
     private String brand;
@@ -76,7 +106,7 @@ public class McDeviceInfo implements Serializable {
     private McDeviceLocation location;
 
     public long getId() {
-        return id;
+        return id==-1?deviceId:id;
     }
 
     public void setId(long id) {
@@ -84,7 +114,7 @@ public class McDeviceInfo implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return name==null?deviceName:name;
     }
 
     public void setName(String name) {

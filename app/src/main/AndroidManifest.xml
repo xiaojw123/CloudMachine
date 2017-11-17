@@ -6,9 +6,9 @@
     <permission
         android:name="com.cloudmachine.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
-    <!--TODO:需验证对版本更新影响-->
-    <!--<permission android:name="android.permission.ACCESS_ALL_DOWNLOADS"-->
-        <!--android:protectionLevel="signature"/>-->
+    <!-- TODO:需验证对版本更新影响 -->
+    <!-- <permission android:name="android.permission.ACCESS_ALL_DOWNLOADS" -->
+    <!-- android:protectionLevel="signature"/> -->
     <uses-permission android:name="android.permission.ACCESS_ALL_DOWNLOADS" />
     <!-- 测试permissionDispatcher -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -437,6 +437,20 @@
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".broadcast.InstallReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
 
         <!-- Required SDK核心功能 -->
         <activity
@@ -516,12 +530,14 @@
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="f2d4c2e7ac5f3f997b8278ab" />
-    <!--UMENG_APPKEY
-        线上环境:59e5ba57677baa51d3000b93
-        测试环境:57bd696d67e58e71d3000d02-->
+        <!--
+            UMENG_APPKEY
+            线上环境:59e5ba57677baa51d3000b93
+            测试环境:57bd696d67e58e71d3000d02
+        -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="59e5ba57677baa51d3000b93" />
+            android:value="${UMENG_KEY_VALUE}" />
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="cloudm" />
@@ -531,7 +547,9 @@
             android:screenOrientation="portrait" />
         <activity android:name=".ui.home.activity.HomeActivity" />
         <activity android:name=".ui.home.activity.ActivitesActivity" />
-        <activity android:name=".ui.home.activity.DeviceDetailActivity" />
+        <activity
+            android:name=".ui.home.activity.DeviceDetailActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.home.activity.BaseMapActivity" />
         <activity android:name=".ui.home.activity.RemarkInfoActivity" />
         <activity android:name=".ui.home.activity.TrackHistoryActivity" />
@@ -542,7 +560,10 @@
         <activity android:name=".ui.home.activity.ConsumptionActivity" />
         <activity android:name=".ui.home.activity.RoleSelActiviy" />
         <activity android:name=".activities.ViewCouponActivityNew" />
-        <activity android:name=".activities.ConponSecListActivity"/>
+        <activity android:name=".activities.ConponSecListActivity" />
+        <activity android:name=".zxing.activity.CaptureActivity" />
+        <activity android:name=".ui.home.activity.WorkPicListActivity" />
+        <activity android:name=".ui.home.activity.WorkPickItemActivity"></activity>
     </application>
 
 </manifest>

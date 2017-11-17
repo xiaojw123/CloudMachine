@@ -10,6 +10,7 @@ import android.support.multidex.MultiDex;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
@@ -50,7 +51,6 @@ import cn.jpush.android.api.JPushInterface;
 * 日志管理 IS_RELEASE true关闭*/
 public class MyApplication extends Application {
 
-    public static final boolean IS_RELEASE=true;
     private static MyApplication baseApplication;
     public static Context mContext;
 
@@ -170,6 +170,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("xiaojw","MyApplication crated at 2017-11-13, no y");
         initSocialConfig();
         this.mContext = this;
 //        initSopfix();
@@ -180,7 +181,7 @@ public class MyApplication extends Application {
         //初始化Glide
         Glide.get(this).register(GlideUrl.class,
                 InputStream.class,
-                new OkHttpUrlLoader.Factory(new Api(HostType.CLOUDM_HOST).okHttpClient));
+                new OkHttpUrlLoader.Factory(new Api(HostType.HOST_CLOUDM_YJX).okHttpClient));
         //初始化logger
         LogUtils.logInit(/*BuildConfig.LOG_DEBUG*/true);
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志

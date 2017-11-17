@@ -20,61 +20,55 @@ import java.util.List;
 
 public class MachineTypesListAsync extends ATask {
 
-	private Context context;
-	private Handler handler;
-	
-	public MachineTypesListAsync(Context context,Handler handler){
-		this.context = context;
-		this.handler = handler;
-		getCacheName(Constants.URL_GETMACHINETYPES);
-	}
-	
+    private Context context;
+    private Handler handler;
 
-	@Override
-	protected String doInBackground(String... params) {
-		IHttp httpRequest = new HttpURLConnectionImp();
-		List<NameValuePair> list = new ArrayList<NameValuePair>();
-		String result = null;
-		try {
-				result = httpRequest.post(Constants.URL_GETMACHINETYPES, list);
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	@Override
-	protected void onPostExecute(String result) {
-		super.onPostExecute(result);
-		decodeJson(result);
-	}
+    public MachineTypesListAsync(Context context, Handler handler) {
+        this.context = context;
+        this.handler = handler;
+        getCacheName(Constants.URL_GETMACHINETYPES);
+    }
 
 
-	@Override
-	protected void decodeJson(String result) {
-		// TODO Auto-generated method stub
-		super.decodeJson(result);
-		Message msg = Message.obtain();
+    @Override
+    protected String doInBackground(String... params) {
+        IHttp httpRequest = new HttpURLConnectionImp();
+        List<NameValuePair> list = new ArrayList<NameValuePair>();
+        String result = null;
+        try {
+            result = httpRequest.post(Constants.URL_GETMACHINETYPES, list);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-		if (isSuccess) {
-			try {
-				Gson gson = new Gson();
-				 BaseBO<List<MachineTypeInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<MachineTypeInfo>>>(){}.getType());				
-					msg.what = Constants.HANDLER_GETMACHINETYPES_SUCCESS;
-					msg.obj = baseBO.getResult();
-					handler.sendMessage(msg);
-					return;
+    @Override
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+        decodeJson(result);
+    }
 
-			} catch (Exception e) {
-			}
-		} else {
-		}
-		if(!isHaveCache){
-			msg.what = Constants.HANDLER_GETMACHINETYPES_FAIL;
-			msg.obj = message;
-			handler.sendMessage(msg);
-		}
-	}
+
+    @Override
+    protected void decodeJson(String result) {
+        // TODO Auto-generated method stub
+        super.decodeJson(result);
+        Message msg = Message.obtain();
+
+        if (isSuccess) {
+            Gson gson = new Gson();
+            BaseBO<List<MachineTypeInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<MachineTypeInfo>>>() {
+            }.getType());
+            msg.what = Constants.HANDLER_GETMACHINETYPES_SUCCESS;
+            msg.obj = baseBO.getResult();
+
+        } else {
+            msg.what = Constants.HANDLER_GETMACHINETYPES_FAIL;
+            msg.obj = message;
+        }
+        handler.sendMessage(msg);
+    }
 
 }

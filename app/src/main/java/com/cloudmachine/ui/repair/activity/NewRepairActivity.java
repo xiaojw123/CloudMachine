@@ -67,7 +67,9 @@ import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPreview;
@@ -79,6 +81,9 @@ import me.iwf.photopicker.PhotoPreview;
 public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter, NewRepairModel> implements
         Callback, OnClickListener, NewRepairContract.View {
     public static final String DEFAULT_LOCAITOIN = "defualt_location";
+    public static final String DEFAULT_PROVINCE = "defualt_province";
+    public static final String KEY_LOC_LNG="loc_lng";
+    public static final String KEY_LOC_LAT="loc_lat";
     private static final int REQUEST_PERMISSION_PICK = 0x008;  //权限请求
     private Handler mHandler;
     private TextView tvType;
@@ -105,6 +110,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private String vworkaddress;
     private String province;
     private String deviceId;
+    double locLng, locLat;
 
     private ClearEditTextView cetContactName;
     private ClearEditTextView cetContactMobile;
@@ -118,6 +124,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private ArrayList<String> selectedPhotos = new ArrayList<>();
     List<String> photos = null;
     private ArrayList<String> selectPhotos;
+    Map<String, String> selectPhotosMap = new HashMap<>();
 
 
     @Override
@@ -166,7 +173,9 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         if (bundle != null) {
             mcDeviceInfo = (McDeviceInfo) bundle.getSerializable(Constants.P_DEVICEINFO_MY);
             vworkaddress = bundle.getString(DEFAULT_LOCAITOIN);
-
+            province = bundle.getString(DEFAULT_PROVINCE);
+            locLng=bundle.getDouble(KEY_LOC_LNG);
+            locLat=bundle.getDouble(KEY_LOC_LAT);
         }
     }
 
@@ -265,7 +274,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private OnClickListener btnSubmitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            MobclickAgent.onEvent(NewRepairActivity.this,MobEvent.TIME_REPAIR_CREATE);
+            MobclickAgent.onEvent(NewRepairActivity.this, MobEvent.TIME_REPAIR_CREATE);
             submitRepairInfo();
         }
     };
@@ -305,15 +314,24 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         newRepairInfo.setVworkaddress(vworkaddress);
         newRepairInfo.setProvince(province);
         newRepairInfo.setDeviceId(deviceId);
+        newRepairInfo.setLat(locLat);
+        newRepairInfo.setLng(locLng);
 
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < selectPhotos.size(); i++) {
-            if (i < selectPhotos.size() - 1) {
-                sb.append(selectPhotos.get(i)).append(",");
-            }
-            if (i == selectPhotos.size() - 1) {
-                sb.append(selectPhotos.get(i));
-            }
+//        for (int i = 0; i < selectPhotos.size(); i++) {
+//            if (i < selectPhotos.size() - 1) {
+//                sb.append(selectPhotos.get(i)).append(",");
+//            }
+//            if (i == selectPhotos.size() - 1) {
+//                sb.append(selectPhotos.get(i));
+//            }
+//        }
+        for (String value : selectPhotosMap.values()) {
+            AppLog.print("submit  value___" + value);
+            sb.append(value).append(",");
+        }
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
         }
         newRepairInfo.setLogo_address(sb.toString());
         String locAddress = text_address.getText().toString();
@@ -446,6 +464,8 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 // 解析定位结果
                 province = loc.getProvince();
                 vworkaddress = loc.getAddress();
+                locLng = loc.getLongitude();
+                locLat = loc.getLatitude();
                 setTextToView(text_address, loc.getPoiName());
                 stopLocation();
                 // String result = Utils.getLocationStr(loc);
@@ -473,7 +493,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 finish();
                 break;
             case Constants.HANDLER_NEWREPAIR_FAILD:
-                ToastUtils.showToast(this, "报修失败!!");
+                ToastUtils.showToast(this, (String) msg.obj);
                 break;
             case Constants.HANDLER_GETMACHINETYPES_SUCCESS:
                 List<MachineTypeInfo> mTypeInfo = (List<MachineTypeInfo>) msg.obj;
@@ -488,9 +508,16 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 }
                 break;
             case Constants.HANDLER_UPLOAD_SUCCESS:
-                String url = (String) msg.obj;
+//                String url = (String) msg.obj;
                 //向集合添加选中的url
-                selectPhotos.add(url);
+//                selectPhotos.add(url);
+                Map<String, String> paramsMap = (Map<String, String>) msg.obj;
+                selectPhotosMap.putAll(paramsMap);
+                for (Map.Entry<String, String> entry : selectPhotosMap.entrySet()) {
+                    AppLog.print("uploadsucess____entry key__" + entry.getKey() + "__value__" + entry.getValue());
+
+                }
+
                 break;
             default:
                 break;
@@ -533,6 +560,8 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                     address += addressInfo.getPosition();
 //                    vworkaddress = addressInfo.getPosition();
                     vworkaddress = address;
+                    locLng=addressInfo.getLng();
+                    locLat=addressInfo.getLat();
                     setTextToView(text_address, addressInfo.getTitle());
                 }
             }
@@ -545,17 +574,28 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
             }
             selectedPhotos.clear();
-
+            Map<String, String> tempMap = new HashMap<>();
             if (photos != null && photos.size() > 0) {
-
                 for (int i = 0; i < photos.size(); i++) {
-                    String fileName = String.valueOf(System.currentTimeMillis());
-                    Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(i));
-                    String filename = FileUtils.saveBitmap(smallBitmap, fileName);
-                    UploadPhotoUtils.getInstance(this).upLoadFile(filename, URLs.UPLOAD_IMG_PATH, mHandler);
+                    if (requestCode == PhotoPicker.REQUEST_CODE) {
+                        String fileName = String.valueOf(System.currentTimeMillis());
+                        Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(i));
+                        String filename = FileUtils.saveBitmap(smallBitmap, fileName);
+                        UploadPhotoUtils.getInstance(this).upLoadFile(photos.get(i), filename, URLs.UPLOAD_AVATOR, mHandler);
+                    } else {
+                        if (selectPhotosMap.size() > 0) {
+                            String key = photos.get(i);
+                            AppLog.print("preive photos  key__" + key);
+                            if (selectPhotosMap.containsKey(key)) {
+                                tempMap.put(key, selectPhotosMap.get(key));
+                            }
+                        }
+                    }
                 }
-
                 selectedPhotos.addAll(photos);
+            }
+            if (requestCode == PhotoPreview.REQUEST_CODE) {
+                selectPhotosMap = tempMap;
             }
             photoAdapter.notifyDataSetChanged();
         }
@@ -652,6 +692,8 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
             et_rackIdname.setText(vmachinenum);
             vworkaddress = mcDeviceInfo.getLocation().getPosition();
             province = mcDeviceInfo.getLocation().getProvince();
+            locLat=mcDeviceInfo.getLocation().getLat();
+            locLng=mcDeviceInfo.getLocation().getLng();
             deviceId = String.valueOf(mcDeviceInfo.getLocation()
                     .getDeviceId());
             setTextToView(tvType, mcDeviceInfo.getCategory());
@@ -667,7 +709,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         switch (v.getId()) {
 
             case R.id.iv_type:
-                MobclickAgent.onEvent(this,MobEvent.TIME_REPAIR_CREATE_ATTRIBUTE);
+                MobclickAgent.onEvent(this, MobEvent.TIME_REPAIR_CREATE_ATTRIBUTE);
                 // Intent typeIntent = new
                 // Intent(NewRepairActivity.this,MachineTypeActivity.class);
                 if (!isOwnerDevice) {
@@ -679,7 +721,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
                 break;
             case R.id.iv_brand:
-                MobclickAgent.onEvent(this,MobEvent.TIME_REPAIR_CREATE_ATTRIBUTE);
+                MobclickAgent.onEvent(this, MobEvent.TIME_REPAIR_CREATE_ATTRIBUTE);
                 // Intent brandIntent = new
                 // Intent(NewRepairActivity.this,MachineBrandActivity.class);
                 if (!isOwnerDevice) {
@@ -691,7 +733,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
 
                 break;
             case R.id.iv_model:
-                MobclickAgent.onEvent(this,MobEvent.TIME_REPAIR_CREATE_ATTRIBUTE);
+                MobclickAgent.onEvent(this, MobEvent.TIME_REPAIR_CREATE_ATTRIBUTE);
                 // Intent modelIntent = new
                 // Intent(NewRepairActivity.this,MachineModelActivity.class);
                 if (!isOwnerDevice) {
@@ -740,7 +782,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     @Override
     public void returnGetWarnMessage(NewRepairInfo info, String message) {
         if (TextUtils.isEmpty(message)) {
-            message="请确认"+vmacoptel+"的手机号码保持通畅，我们会在服务响应时间(08:00-20:00)10分钟内联系你，请耐心等候";
+            message = "请确认" + vmacoptel + "的手机号码保持通畅，我们会在服务响应时间(08:00-20:00)10分钟内联系你，请耐心等候";
         }
         showDialog(message, info);
     }

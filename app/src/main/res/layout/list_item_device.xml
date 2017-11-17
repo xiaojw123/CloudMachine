@@ -13,6 +13,20 @@
         android:textColor="@color/cor8"
         android:layout_marginLeft="@dimen/dimen_size_16"
         />
+    <TextView
+        android:id="@+id/item_device_hc"
+        android:layout_width="@dimen/dimen_size_40"
+        android:layout_height="@dimen/dimen_size_16"
+        android:background="@drawable/tag_checked"
+        android:textColor="@color/cor2"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_11_sp"
+        android:text="@string/h_config_version"
+        android:layout_toRightOf="@+id/item_device_name"
+        android:layout_marginLeft="@dimen/dimen_size_7"
+        android:layout_marginTop="@dimen/dimen_size_3"
+        android:visibility="gone"
+        />
 
 
 

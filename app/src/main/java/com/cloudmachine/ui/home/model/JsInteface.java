@@ -1,16 +1,24 @@
 package com.cloudmachine.ui.home.model;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
 import com.alipay.sdk.app.PayTask;
+import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.SearchPoiActivity;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
+import com.cloudmachine.ui.home.activity.HomeActivity;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.VersionU;
 import com.google.gson.Gson;
@@ -36,6 +44,7 @@ public class JsInteface {
     public static final String ALERT_TIPS = "alert_tips";
     public static final String ALERT_EVENT = "alert_event";
     public static final String UPLOAD_IMG = "upload_img";
+    public static final String UPLOAD_QINIU_IMG = "upload_qiniu_img_qrcode";
     Context mContext;
 
     public JsInteface(Context context, Handler handler) {
@@ -43,11 +52,41 @@ public class JsInteface {
         mHandler = handler;
 
     }
-    public String getVersionName(){
+
+    public String getVersionName() {
         return VersionU.getVersionName();
     }
-    public String getVersionCode(){
+
+    public String getVersionCode() {
         return VersionU.getVersionCode();
+    }
+
+    public void clearWebViewCache() {
+        PermissionsChecker checker = new PermissionsChecker(mContext);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                PermissionsActivity.startActivityForResult((Activity) mContext, HomeActivity.PEM_REQCODE_WRITESD,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+            } else {
+                if (mContext instanceof QuestionCommunityActivity) {
+                    ((QuestionCommunityActivity) mContext).clearWebCahe();
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @JavascriptInterface
+    public void gotoDeviceDetail(String deviceId) {
+        AppLog.print("gotoDeviceDetail_____deviceId__" + deviceId);
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.DEVICE_ID, deviceId);
+        bundle.putBoolean(Constants.DEVICE_DETAIL_NOW, true);
+        Constants.toActivity((Activity) mContext, DeviceDetailActivity.class, bundle);
+        ((Activity) mContext).finish();
     }
 
     @JavascriptInterface
@@ -61,9 +100,9 @@ public class JsInteface {
                 PayInfo info = gson.fromJson(infoJson, PayInfo.class);
                 if (info != null) {
                     int payType = info.getPayType();
-                    if (payType == 10||payType==101) {
+                    if (payType == 10 || payType == 101) {
                         payByWeiXin(info);
-                    } else if (payType == 11||payType==102) {
+                    } else if (payType == 11 || payType == 102) {
                         payByAliPay(info.getSign());
                     }
                 } else {
@@ -146,7 +185,7 @@ public class JsInteface {
             mHandler.sendMessage(msg);
 
         } else if (jobj.has(CLOSE_EVENT)) {
-            ((Activity)mContext).finish();
+            ((Activity) mContext).finish();
 
         } else {
             Gson gson = new Gson();

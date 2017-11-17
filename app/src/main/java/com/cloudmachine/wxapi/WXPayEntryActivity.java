@@ -65,6 +65,7 @@ public class WXPayEntryActivity extends BaseAutoLayoutActivity implements IWXAPI
 			} else {
 				Constants.ToastAction("支付失败");
 				mRxManager.post(RepairPayDetailsActivity.FINISH_PAY_DETAIL,null);
+				mRxManager.post(QuestionCommunityActivity.FAILED_WX_PAY,null);
                 finish();
 //				Bundle b = new Bundle();
 //				b.putString("paymentResult","支付失败");

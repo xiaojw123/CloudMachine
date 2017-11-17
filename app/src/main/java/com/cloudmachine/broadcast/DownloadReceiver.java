@@ -11,7 +11,7 @@ import android.os.Environment;
 import android.support.v4.content.FileProvider;
 
 import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.utils.Constants;
 
 import java.io.File;
@@ -20,14 +20,10 @@ public class DownloadReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AppLog.print("onReceive___1");
-        // TODO Auto-generated method stub
         String action = intent.getAction();
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-            AppLog.print("onReceive___3");
             long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             if (completeDownloadId == MySharedPreferences.getSharedPLong(Constants.KEY_DownloadId)) {
-                AppLog.print("onReceive___4");
                 try {
                     DownloadManager downloadManager = (DownloadManager) context.getSystemService(context.DOWNLOAD_SERVICE);
 //						downloadManager.openDownloadedFile(completeDownloadId);
@@ -36,7 +32,8 @@ public class DownloadReceiver extends BroadcastReceiver {
                     String str = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
 
                     context.startActivity(getApkFileIntent(context, str));
-
+                    UserHelper.insertGuideTag(context,false);
+                    UserHelper.insertHConfigGuideTag(context,false);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -48,7 +45,6 @@ public class DownloadReceiver extends BroadcastReceiver {
     }
 
     public static Intent getApkFileIntent(Context context, String param) {
-        AppLog.print("onReceive___5");
         File apkFile =
                 new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), Constants.APK_NAME);
         Intent intent = new Intent();

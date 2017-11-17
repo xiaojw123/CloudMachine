@@ -415,7 +415,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 .subscribe(new Action1<File>() {
                     @Override
                     public void call(File file) {
-                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, ApiConstants.CLOUDM_HOST + "member/kindEditorUpload", mHandler);
+                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, ApiConstants.CLOUDM_YJX_HOST + "member/kindEditorUpload", mHandler);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -636,7 +636,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         if (memberInfo == null) {
             return;
         }
-        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(memberInfo.getId())
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_ASK).excamMaster(memberInfo.getId())
                 .compose(RxHelper.<UserInfo>handleResult())
                 .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
                     @Override

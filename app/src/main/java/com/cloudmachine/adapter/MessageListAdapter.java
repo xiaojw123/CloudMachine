@@ -11,9 +11,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.holder.BaseHolder;
+import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.OnItemClickListener;
-import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.ui.home.presenter.ViewMessagePresenter;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuAdapter;
 
@@ -128,6 +128,8 @@ public class MessageListAdapter extends SwipeMenuAdapter<MessageListAdapter.Mess
         TextView refuseTv;
         @BindView(R.id.item_message_unread_alert)
         View unReadAlertView;
+        @BindView(R.id.item_message_phone)
+        TextView phoneTv;
 
 
         private MessageListHolder(View itemView) {
@@ -150,6 +152,7 @@ public class MessageListAdapter extends SwipeMenuAdapter<MessageListAdapter.Mess
                 unReadAlertView.setVisibility(View.INVISIBLE);
             }
             itemDateTv.setText(item.getInviteTime());
+            phoneTv.setVisibility(View.GONE);
             int messageType = item.getMessageType();
             switch (messageType) {
                 case 3:
@@ -171,6 +174,31 @@ public class MessageListAdapter extends SwipeMenuAdapter<MessageListAdapter.Mess
                     itemContentTv.setText(Html.fromHtml(content));
                     itemMessageImg.setImageResource(R.drawable.ic_ask_question);
                     itemChooseCotainer.setVisibility(View.GONE);
+                    break;
+                case 7:
+                    Glide.with(mContext).load(item.getImgpath())
+                            .error(R.drawable.ic_default_head)
+                            .into(itemMessageImg);
+                    itemTitleTv.setText(item.getInviterNickname() + "");
+                    phoneTv.setVisibility(View.VISIBLE);
+                    phoneTv.setText(item.getInviterMobile());
+                    String dMessage = "";
+                    switch (status) {
+                        case 1:
+                        case 4:
+                            dMessage = "申请成为<font color=\"#333333\">\"" + item.getDeviceName() + "\"</font>的操作者, 请接受";
+                            itemChooseCotainer.setVisibility(View.VISIBLE);
+                            break;
+                        case 2:
+                            dMessage = "申请成为<font color=\"#333333\">\"" + item.getDeviceName() + "\"</font>的成员，已拒绝";
+                            itemChooseCotainer.setVisibility(View.GONE);
+                            break;
+                        case 3:
+                            dMessage = "申请成为<font color=\"#333333\">\"" + item.getDeviceName() + "\"</font>的成员，已接受";
+                            itemChooseCotainer.setVisibility(View.GONE);
+                            break;
+                    }
+                    itemContentTv.setText(Html.fromHtml(dMessage));
                     break;
 
                 default:

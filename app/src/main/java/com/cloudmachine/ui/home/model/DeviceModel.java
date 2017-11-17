@@ -20,15 +20,15 @@ import rx.Observable;
 public class DeviceModel implements DeviceContract.Model {
     @Override
     public Observable<List<McDeviceInfo>> getDevices(long memberId, int type) {
-        return Api.getDefault(HostType.CLOUDM_HOST).getDevices(Constants.OS_PLATFORM, VersionU.getVersionName(), memberId,type).compose(RxHelper.<List<McDeviceInfo>>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getDevices(Constants.OS_PLATFORM, VersionU.getVersionName(), memberId,type).compose(RxHelper.<List<McDeviceInfo>>handleResult());
     }
 
     @Override
     public Observable<List<McDeviceInfo>> getDevices(int type) {
-        return Api.getDefault(HostType.CLOUDM_HOST).getDevices(Constants.OS_PLATFORM, VersionU.getVersionName(),type).compose(RxHelper.<List<McDeviceInfo>>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getDevices(Constants.OS_PLATFORM, VersionU.getVersionName(),type).compose(RxHelper.<List<McDeviceInfo>>handleResult());
     }
     @Override
     public Observable<List<ArticleInfo>> getArticles() {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).getArticleList(0).compose(RxHelper.<List<ArticleInfo>>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM).getArticleList(0).compose(RxHelper.<List<ArticleInfo>>handleResult());
     }
 }

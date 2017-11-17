@@ -18,7 +18,7 @@ public class InsuranceModel implements InsuranceContract.Model{
 
     @Override
     public Observable<ArrayList<HomeBannerBean>> getSharedInfo() {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).GetHomeInsurance(4)
+        return Api.getDefault(HostType.HOST_CLOUDM).GetHomeInsurance(4)
                 .compose(RxHelper.<ArrayList<HomeBannerBean>>handleResult());
     }
 }

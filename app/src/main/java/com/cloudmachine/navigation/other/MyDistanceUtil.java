@@ -2,6 +2,7 @@ package com.cloudmachine.navigation.other;
 
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
+import com.cloudmachine.utils.GPSUtil;
 
 import java.util.HashMap;
 
@@ -19,7 +20,8 @@ public class MyDistanceUtil {
     }
     
     public static LatLng entity2Baidu(Location location){
-    	return new LatLng(location.getLat(), location.getLng());
+		double[] bdTemp=GPSUtil.gcj02_To_Bd09(location.getLat(),location.getLng());
+    	return new LatLng(bdTemp[0],bdTemp[1]);
     }
     
     private static double getDistanceFromXtoY(double lat_a,double lng_a,double lat_b,double lng_b){

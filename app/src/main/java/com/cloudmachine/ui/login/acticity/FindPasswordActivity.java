@@ -191,7 +191,12 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                     if (phoneString != null && phoneString.length() == 11) {
                         if (validate_num == 0) {
                             show();
-                            new GetMobileCodeAsync(phoneString, "1", mContext, mHandler).execute();
+                            String codeType = "1";
+                            if (type == 1 || type == 2) {
+                                codeType = "2";
+                            }
+                            //  1表示忘记密码 2 表示修改密码  3表示注册
+                            new GetMobileCodeAsync(phoneString, codeType, mContext, mHandler).execute();
                         }
                     } else {
                         Toast.makeText(FindPasswordActivity.this, "请输入手机号", Toast.LENGTH_SHORT).show();
@@ -231,7 +236,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 } else {
                     inviteCode = "-1";
                 }
-                MobclickAgent.onEvent(this,MobEvent.COUNT_LOGIN);
+                MobclickAgent.onEvent(this, MobEvent.COUNT_LOGIN);
                 new RegisterNewAsync(phone, Utils.getPwdStr(pwdStr), code, mContext, mHandler, inviteCode).execute();
             }
         } else {
@@ -376,7 +381,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 
     private void excamMaster(Long id) {
 
-        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(id)
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_ASK).excamMaster(id)
                 .compose(RxHelper.<UserInfo>handleResult())
                 .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
                     @Override
@@ -402,9 +407,9 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 
     public void loginBack() {
         disMiss();
-        Intent intent=new Intent();
-        intent.putExtra(Constants.MC_MEMBER,mMember);
-        setResult(FP_LOGIN,intent);
+        Intent intent = new Intent();
+        intent.putExtra(Constants.MC_MEMBER, mMember);
+        setResult(FP_LOGIN, intent);
         finish();
     }
 

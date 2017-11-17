@@ -22,86 +22,79 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetWorkDetailAsync extends ATask{
-	
-	private Context mContext;
-	private Handler handler;
-	private String orderNum;
-	private String flag;
-	
-	public GetWorkDetailAsync(Handler mHandler, Context mContext,
-			String orderNum,String flag) {
-		this.mContext = mContext;
-		this.handler = mHandler;
-		this.orderNum = orderNum;
-		this.flag = flag;
-		try{
-			memberId = String.valueOf(MemeberKeeper.getOauth(mContext).getId());
-		}catch(Exception ee){
-			
-		}
-	}
-	
-	@Override
-	protected String doInBackground(String... params) {
-		IHttp httpRequest = new HttpURLConnectionImp();
-		List<NameValuePair> list = new ArrayList<NameValuePair>();
-		list.add(new BasicNameValuePair("orderNum", String.valueOf(orderNum)));
-		list.add(new BasicNameValuePair("memberId", String.valueOf(memberId)));
-		list.add(new BasicNameValuePair("flag", String.valueOf(flag)));
-		String result = null;
-		try {
-			result = httpRequest
-					.post(URLs.GET_WORK_DETAIL, list);
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+public class GetWorkDetailAsync extends ATask {
 
-	@Override
-	protected void onPostExecute(String result) {
-		// 缓存数据第2步
-		super.onPostExecute(result);
-		decodeJson(result);
-	}
+    private Context mContext;
+    private Handler handler;
+    private String orderNum;
+    private String flag;
 
-	@Override
-	protected void decodeJson(String result) {
-		// TODO Auto-generated method stub
-		// 缓存数据第3步
-		super.decodeJson(result);
-		Message msg = Message.obtain();
-		if (isSuccess) {
-			try {
-				Gson gson = new Gson();
-				if (flag.equals("0")) {
-					BaseBO<BOInfo> bo = gson.fromJson(result,
-							new TypeToken<BaseBO<BOInfo>>() {
-							}.getType());
-					msg.what = Constants.HANDLER_GET_BODETAIL_SUCCESS;
-					msg.obj = bo.getResult();
-				}else if (flag.equals("1")) {
-					BaseBO<CWInfo> bo = gson.fromJson(result,
-							new TypeToken<BaseBO<CWInfo>>() {
-							}.getType());
-					msg.what = Constants.HANDLER_GET_CWDETAIL_SUCCESS;
-					msg.obj = bo.getResult();
-				}
-				
-				handler.sendMessage(msg);
-				return;
-			} catch (Exception e) {
-			}
-		} else {
-		}
-		// 缓存数据第4步
-		if (!isHaveCache) {
-			msg.what = Constants.HANDLER_GET_WORKDETAIL_FAILD;
-			msg.obj = message;
-			handler.sendMessage(msg);
-		}
-	}
-	
+    public GetWorkDetailAsync(Handler mHandler, Context mContext,
+                              String orderNum, String flag) {
+        this.mContext = mContext;
+        this.handler = mHandler;
+        this.orderNum = orderNum;
+        this.flag = flag;
+        try {
+            memberId = String.valueOf(MemeberKeeper.getOauth(mContext).getId());
+        } catch (Exception ee) {
+
+        }
+    }
+
+    @Override
+    protected String doInBackground(String... params) {
+        IHttp httpRequest = new HttpURLConnectionImp();
+        List<NameValuePair> list = new ArrayList<NameValuePair>();
+        list.add(new BasicNameValuePair("orderNum", String.valueOf(orderNum)));
+        list.add(new BasicNameValuePair("memberId", String.valueOf(memberId)));
+        list.add(new BasicNameValuePair("flag", String.valueOf(flag)));
+        String result = null;
+        try {
+            result = httpRequest
+                    .post(URLs.GET_WORK_DETAIL, list);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        // 缓存数据第2步
+        super.onPostExecute(result);
+        decodeJson(result);
+    }
+
+    @Override
+    protected void decodeJson(String result) {
+        // TODO Auto-generated method stub
+        // 缓存数据第3步
+        super.decodeJson(result);
+        Message msg = Message.obtain();
+        if (isSuccess) {
+            Gson gson = new Gson();
+            if (flag.equals("0")) {
+                BaseBO<BOInfo> bo = gson.fromJson(result,
+                        new TypeToken<BaseBO<BOInfo>>() {
+                        }.getType());
+                msg.what = Constants.HANDLER_GET_BODETAIL_SUCCESS;
+                msg.obj = bo.getResult();
+            } else if (flag.equals("1")) {
+                BaseBO<CWInfo> bo = gson.fromJson(result,
+                        new TypeToken<BaseBO<CWInfo>>() {
+                        }.getType());
+                msg.what = Constants.HANDLER_GET_CWDETAIL_SUCCESS;
+                msg.obj = bo.getResult();
+            }
+
+            handler.sendMessage(msg);
+        } else {
+            msg.what = Constants.HANDLER_GET_WORKDETAIL_FAILD;
+            msg.obj = message;
+            handler.sendMessage(msg);
+        }
+    }
+
 }

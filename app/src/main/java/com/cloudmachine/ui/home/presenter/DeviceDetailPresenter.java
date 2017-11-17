@@ -2,6 +2,8 @@ package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
+import com.cloudmachine.bean.McDeviceInfo;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.contract.DeviceDetailContract;
 
 /**
@@ -58,5 +60,39 @@ public class DeviceDetailPresenter extends DeviceDetailContract.Presenter{
 
             }
         }));
+    }
+
+    @Override
+    public void getDeviceNowData(String deviceId) {
+        if (UserHelper.isLogin(mContext)){
+            mRxManage.add(mModel.reqDeviceNowData(deviceId,UserHelper.getMemberId(mContext)).subscribe(new RxSubscriber<McDeviceInfo>(mContext) {
+                @Override
+                protected void _onNext(McDeviceInfo info) {
+                    mView.updateDeviceDetail(info);
+                }
+
+                @Override
+                protected void _onError(String message) {
+
+                    mView.updateDeviceDetailError(message);
+                }
+            }));
+        }else{
+
+
+        mRxManage.add(mModel.reqDeviceNowData(deviceId).subscribe(new RxSubscriber<McDeviceInfo>(mContext) {
+            @Override
+            protected void _onNext(McDeviceInfo info) {
+                mView.updateDeviceDetail(info);
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+              mView.updateDeviceDetailError(message);
+            }
+        }));
+        }
+
     }
 }

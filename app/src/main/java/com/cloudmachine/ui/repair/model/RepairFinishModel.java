@@ -22,13 +22,13 @@ import rx.Observable;
 public class RepairFinishModel implements RepairFinishContract.Model {
     @Override
     public Observable<BOInfo> getBoInfo(Context context, String orderNum,String flag) {
-        return Api.getDefault(HostType.CLOUDM_HOST).getBOInfo(getParamsMap(context, orderNum,flag)).compose(RxHelper.<BOInfo>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getBOInfo(getParamsMap(context, orderNum,flag)).compose(RxHelper.<BOInfo>handleResult());
 
     }
 
     @Override
     public Observable<CWInfo> getCWInfo(Context context, String orderNum,String flag) {
-        return Api.getDefault(HostType.CLOUDM_HOST).getCWInfo(getParamsMap(context, orderNum,flag)).compose(RxHelper.<CWInfo>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getCWInfo(getParamsMap(context, orderNum,flag)).compose(RxHelper.<CWInfo>handleResult());
     }
 
     private Map<String, String> getParamsMap(Context context, String orderNum,String flag) {

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.cloudmachine.ui.home.activity.WorkPickItemActivity">
+
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/pic_item_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="work_date"
+        app:common_right_text="保存"
+        />
+
+    <!--<ImageView-->
+        <!--android:id="@+id/pic_item_img"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/dimen_size_280"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:scaleType="fitXY"-->
+        <!--/>-->
+
+    <com.cloudmachine.widget.PreviewViewPager
+        android:id="@+id/pic_items_vp"
+        android:overScrollMode="never"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+
+</LinearLayout>

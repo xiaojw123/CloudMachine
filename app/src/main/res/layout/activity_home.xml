@@ -97,24 +97,15 @@
                 android:paddingLeft="@dimen/dimen_size_2"
                 android:src="@drawable/icon_activites" />
 
-            <Button
-                android:id="@+id/box"
+            <ImageView
+                android:id="@+id/home_san_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimen_size_21"
                 android:layout_toLeftOf="@id/home_actvite_img"
-                android:onClick="cloudBoxTest"
-                android:text="b"
-                android:visibility="gone" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@+id/home_me_img"
-                android:onClick="activitiesTest"
-                android:text="a"
-                android:visibility="gone" />
+                android:background="@drawable/icon_scan_code"
+                android:onClick="scanQRCode" />
 
 
         </RelativeLayout>
@@ -126,6 +117,72 @@
 
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/home_guide_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pop_bg_color"
+        android:clickable="true"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:id="@+id/icon_guide_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="45dp"
+            android:src="@drawable/icon_home_guide3" />
+
+        <ImageView
+            android:id="@+id/icon_guide_scan_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/icon_guide_scan"
+            android:layout_marginRight="50dp"
+            android:src="@drawable/icon_home_guide2" />
+
+
+
+        <View
+            android:id="@+id/home_center_view"
+            android:layout_width="1px"
+            android:layout_height="1px"
+            android:layout_centerInParent="true"
+            />
+        <ImageView
+            android:id="@+id/home_guide_exp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/home_center_view"
+            android:src="@drawable/icon_home_guide1" />
+
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_250"-->
+
+        <ImageView
+            android:id="@+id/home_guide_exp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/home_guide_exp"
+            android:layout_marginLeft="-28dp"
+            android:layout_toRightOf="@+id/home_guide_exp"
+            android:src="@drawable/icon_home_guide5" />
+
+        <Button
+            android:id="@+id/home_guide_sure_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/icon_home_guide4" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/home_me_layout"
@@ -278,31 +335,29 @@
 
 
         <!--<FrameLayout-->
-            <!--android:id="@+id/item_about"-->
-            <!--style="@style/HomeMenuContainerStyle"-->
-            <!--android:layout_marginTop="@dimen/dimen_size_29"-->
-            <!--&gt;-->
+        <!--android:id="@+id/item_about"-->
+        <!--style="@style/HomeMenuContainerStyle"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_29"-->
+        <!--&gt;-->
 
-            <!--<TextView-->
-                <!--style="@style/HomeMenuTvStyle"-->
-                <!--android:drawableLeft="@drawable/icon_about"-->
-                <!--android:text="@string/about_and_help" />-->
+        <!--<TextView-->
+        <!--style="@style/HomeMenuTvStyle"-->
+        <!--android:drawableLeft="@drawable/icon_about"-->
+        <!--android:text="@string/about_and_help" />-->
         <!--</FrameLayout>-->
 
 
         <LinearLayout
             android:id="@+id/item_about"
             style="@style/HomeMenuContainerStyle"
-            android:layout_marginTop="@dimen/dimen_size_29"
-            >
+            android:layout_marginTop="@dimen/dimen_size_20">
 
             <com.cloudmachine.widget.NotfyImgView
                 android:id="@+id/item_about_niv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/icon_about"
-                />
+                android:src="@drawable/icon_about" />
 
             <TextView
                 style="@style/HomeMenuTvStyle"

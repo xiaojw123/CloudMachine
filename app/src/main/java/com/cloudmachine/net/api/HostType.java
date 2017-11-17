@@ -26,25 +26,24 @@ public class HostType {
     /**
      * 云机械的Host
      */
-    public static final int CLOUDM_HOST = 1;
+    public static final int HOST_CLOUDM_YJX = 1;
+
 
 
     /**
      * 郭帅电脑Host地址
      */
-    public static final int GUOSHUAI_HOST = 2;
+    public static final int HOST_CLOUDM = 2;
 
-    /**
-     * 蔡婷婷电脑Host地址
-     */
-    public static final int CAITINGTING_HOST = 3;
 
     /**
      * 谢鑫电脑Host地址
      */
-    public static final int XIEXIN_HOSR = 4;
+    public static final int HOST_CLOUDM_ASK = 4;
 
 
 
-    public static final int H5_CONFIG_HOST=5;
+    public static final int HOST_H5 =5;
+
+    public static final int HOST_BH_COFIG=6;//云黑子-高配
 }

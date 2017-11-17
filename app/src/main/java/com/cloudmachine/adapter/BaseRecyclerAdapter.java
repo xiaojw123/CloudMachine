@@ -38,6 +38,10 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter{
         notifyItemChanged(0);
     };
 
+    public List<T> getmItems(){
+        return  mItems;
+    }
+
 
 
     @Override

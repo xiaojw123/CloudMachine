@@ -17,11 +17,11 @@ public class RemarkInfoModel implements RemarkInfoContract.Model {
     @Override
     public Observable<List<RoleBean>> getRoleList() {
 
-        return Api.getDefault(HostType.CLOUDM_HOST).getRoleList().compose(RxHelper.<List<RoleBean>>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getRoleList().compose(RxHelper.<List<RoleBean>>handleResult());
     }
 
     @Override
     public Observable<String> updateRemarkInfo(long fid, long memberId, long deviceId, String remark, long roleId) {
-        return Api.getDefault(HostType.CLOUDM_HOST).updateMemberRemark(fid,memberId,deviceId,remark,roleId).compose(RxHelper.<String>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).updateMemberRemark(fid,memberId,deviceId,remark,roleId).compose(RxHelper.<String>handleResult());
     }
 }

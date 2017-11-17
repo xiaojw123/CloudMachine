@@ -42,7 +42,6 @@ public class HttpURLConnectionImp implements IHttp {
     private static final int TIMEOUT = 20000;
 
     /**
-     *
      * @param params post params <key.params>
      * @return String
      * @throws IOException
@@ -86,6 +85,66 @@ public class HttpURLConnectionImp implements IHttp {
                             + URLEncoder.encode("", "UTF-8"));
                 } else {
                     stringBuffer.append("&" + key + "="
+                            + URLEncoder.encode(params.get(a).getValue(), "UTF-8"));
+                }
+
+//                        }
+            }
+
+        }
+
+        out.writeBytes(stringBuffer.toString());
+        out.flush();
+        out.close();
+        AppLog.printURl(urlString + "?" + stringBuffer.toString());
+        String resultString = "";
+        InputStream in = httpURLConnection.getInputStream();
+        if (null != in) {
+            resultString = IOUtil.inputStreamToString(in);
+            in.close();
+        }
+        httpURLConnection.disconnect();
+        return resultString;
+    }
+
+    public String postV(String urlString, List<NameValuePair> params)
+            throws Exception {
+        if (urlString == null & urlString.length() <= 0) {
+            throw new NullPointerException("url is null or .........");
+        }
+        URL url = new URL(urlString);
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url
+                .openConnection();
+        httpURLConnection.setDoInput(true);
+        httpURLConnection.setDoOutput(true);
+        //  setRequestMethod和 urlConnection.setDoOutput(true)只需要设置一个，暂时先全设置
+        httpURLConnection.setRequestMethod("POST");
+        httpURLConnection.setUseCaches(false);
+        httpURLConnection.setConnectTimeout(TIMEOUT);
+        httpURLConnection.setReadTimeout(TIMEOUT);
+        httpURLConnection.setInstanceFollowRedirects(true);
+        httpURLConnection.setRequestProperty("Content-Type",
+                "application/x-www-form-urlencoded");
+        int size = params.size();
+//            if ( size > 0) {
+        DataOutputStream out = new DataOutputStream(
+                httpURLConnection.getOutputStream());
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int a = 0; a < size; a++) {
+            if (params.get(a) != null) {
+                String key = params.get(a).getName();
+//                    	  if (a == 0) {
+//                              stringBuffer.append(key + "="
+//                                      + URLEncoder.encode(params.get(a).getValue(), "UTF-8"));
+//                        } else {
+                if (a > 0) {
+                    stringBuffer.append("&");
+                }
+                if (params.get(a).getValue() == null) {
+                    stringBuffer.append(key + "="
+                            + URLEncoder.encode("", "UTF-8"));
+                } else {
+                    stringBuffer.append(key + "="
                             + URLEncoder.encode(params.get(a).getValue(), "UTF-8"));
                 }
 
@@ -225,7 +284,7 @@ public class HttpURLConnectionImp implements IHttp {
 
         }
         String resultString = "";
-        urlString+="?"+stringBuffer.toString();
+        urlString += "?" + stringBuffer.toString();
         AppLog.printURl(urlString);
         URL url = new URL(urlString);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url
@@ -270,7 +329,7 @@ public class HttpURLConnectionImp implements IHttp {
                 return IOUtil.inputStreamToString(inputStream);
             }
         } catch (Exception e) {
-            Log.e("OkHttp",e.getLocalizedMessage());
+            Log.e("OkHttp", e.getLocalizedMessage());
         }
         return null;
     }

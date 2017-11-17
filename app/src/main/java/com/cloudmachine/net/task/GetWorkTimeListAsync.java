@@ -71,20 +71,13 @@ public class GetWorkTimeListAsync extends ATask {
         super.decodeJson(result);
         Message msg = Message.obtain();
         if (isSuccess) {
-            try {
-                Gson gson = new Gson();
-                BaseBO<List<ScanningWTInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<ScanningWTInfo>>>() {
-                }.getType());
-                msg.what = Constants.HANDLE_GETWORKTIMELIST_SUCCESS;
-                msg.obj = baseBO.getResult();
-                handler.sendMessage(msg);
-                return;
-            } catch (Exception e) {
-            }
+            Gson gson = new Gson();
+            BaseBO<List<ScanningWTInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<ScanningWTInfo>>>() {
+            }.getType());
+            msg.what = Constants.HANDLE_GETWORKTIMELIST_SUCCESS;
+            msg.obj = baseBO.getResult();
+            handler.sendMessage(msg);
         } else {
-        }
-        //缓存数据第4步
-        if (!isHaveCache) {
             msg.what = Constants.HANDLE_GETWORKTIMELIST_FAILD;
             msg.obj = message;
             handler.sendMessage(msg);

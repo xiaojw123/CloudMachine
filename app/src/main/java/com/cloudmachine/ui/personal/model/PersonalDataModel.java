@@ -20,13 +20,13 @@ import rx.Observable;
 public class PersonalDataModel implements PersonalDataContract.Model{
     @Override
     public Observable<String> modifyNickName(long memberId, String key, String value) {
-        return Api.getDefault(HostType.CLOUDM_HOST).modifySignature(memberId,key,value)
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).modifySignature(memberId,key,value)
                 .compose(RxHelper.handleBooleanResult());
     }
 
     @Override
     public Observable<String> modifyLogo(long memberId, String key, String value) {
-        return Api.getDefault(HostType.CLOUDM_HOST).modifySignature(memberId, key, value)
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).modifySignature(memberId, key, value)
                 .compose(RxHelper.handleBooleanResult());
     }
 }

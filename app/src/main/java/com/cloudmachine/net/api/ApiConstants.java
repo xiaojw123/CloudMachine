@@ -1,36 +1,35 @@
 package com.cloudmachine.net.api;
 
 
-
 public class ApiConstants {
 
     /* 测试环境*/
-//    public static String CLOUDM_HOST = "http://api.test.cloudm.com/cloudm3/yjx/";
-//    public static String GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3/";
-//    public static String CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3/";
-//    public static String XIEXIN_HOST = "http://ask.test.cloudm.com/";
+//    public static String CLOUDM_HOST = "http://api.test.cloudm.com/cloudm3/";
+//    public static String CLOUDM_YJX_HOST = "http://api.test.cloudm.com/cloudm3/yjx/";
+//    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
 //    public static String H5_HOST = "http://h5.test.cloudm.com/";
-
-
-    //http://192.168.1.109:18088/
+//    public static String BOX_HIGH_COFIG_HOST="http://192.168.1.176:18089/";//云黑子-高配-拍照
 
 /*线上环境*/
-    public static  String CLOUDM_HOST = "http://api.cloudm.com/cloudm3/yjx/";
-    public static  String GUOSHUAI_HOST = "http://api.cloudm.com/cloudm3/";
-    public static String CAITINGTING_HOST = "http://api.cloudm.com/cloudm3/";
-    public static String XIEXIN_HOST = "http://ask.cloudm.com/";
-    public static String H5_HOST = "http://h5.cloudm.com/";
-
-    /*109*/
-//    public static  String CLOUDM_HOST = "http://192.168.1.109:18088/cloudm3/yjx/";
-//    public static  String GUOSHUAI_HOST = "http://192.168.1.109:18088/cloudm3/";
-//    public static String CAITINGTING_HOST = "http://192.168.1.109:18088/cloudm3/";
-//    public static String XIEXIN_HOST = "http://ask.cloudm.com/";
+//    public static  String CLOUDM_YJX_HOST = "http://api.cloudm.com/cloudm3/yjx/";
+//    public static  String CLOUDM_HOST = "http://api.cloudm.com/cloudm3/";
+//    public static String CLOUDM_ASK_HOST = "http://ask.cloudm.com/";
 //    public static String H5_HOST = "http://h5.cloudm.com/";
+//public static String BOX_HIGH_COFIG_HOST="http://183.129.196.42:18089/";
+
+    /*测试环境-109*/
+    public static String CLOUDM_HOST = "http://192.168.1.109:18088/cloudm3/";
+    public static String CLOUDM_YJX_HOST = "http://192.168.1.109:18088/cloudm3/yjx/";
+    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
+    public static String H5_HOST = "http://h5.test.cloudm.com/";
+    public static String BOX_HIGH_COFIG_HOST="http://192.168.1.176:18089/";//云黑子-高配-拍照
 
 
-
-
+    /*43*/
+//public static String CLOUDM_HOST = "http://192.168.1.43:8090/cloudm3/";
+//    public static String CLOUDM_YJX_HOST = "http://192.168.1.43:8090/cloudm3/yjx/";
+//    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
+//    public static String H5_HOST = "http://h5.test.cloudm.com/";
 
 
     /*H5配置URL*/
@@ -52,20 +51,20 @@ public class ApiConstants {
     public static String getHost(int hostType) {
         String host;
         switch (hostType) {
-            case HostType.CLOUDM_HOST:
+            case HostType.HOST_CLOUDM_YJX:
+                host = CLOUDM_YJX_HOST;
+                break;
+            case HostType.HOST_CLOUDM:
                 host = CLOUDM_HOST;
                 break;
-            case HostType.GUOSHUAI_HOST:
-                host = GUOSHUAI_HOST;
+            case HostType.HOST_CLOUDM_ASK:
+                host = CLOUDM_ASK_HOST;
                 break;
-            case HostType.CAITINGTING_HOST:
-                host = CAITINGTING_HOST;
+            case HostType.HOST_H5:
+                host = H5_HOST;
                 break;
-            case HostType.XIEXIN_HOSR:
-                host = XIEXIN_HOST;
-                break;
-            case HostType.H5_CONFIG_HOST:
-                host=H5_HOST;
+            case HostType.HOST_BH_COFIG:
+                host=BOX_HIGH_COFIG_HOST;
                 break;
             default:
                 host = "";

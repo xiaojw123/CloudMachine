@@ -20,11 +20,11 @@ import rx.Observable;
 public class MSupervisorModel implements MSupervisorContract.Model {
     @Override
     public Observable<SiteBean> getSiteStation(double lng, double lat) {
-        return Api.getDefault(HostType.CLOUDM_HOST).getSitesInfo(lng,lat).compose(RxHelper.<SiteBean>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getSitesInfo(lng,lat).compose(RxHelper.<SiteBean>handleResult());
     }
 
     @Override
     public Observable<RepairListInfo> getRepairList(long memberId) {
-        return Api.getDefault(HostType.CLOUDM_HOST).getRepairList(Constants.OS_PLATFORM, URLEncoder.encode(VersionU.getVersionName()),memberId).compose(RxHelper.<RepairListInfo>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getRepairList(Constants.OS_PLATFORM, URLEncoder.encode(VersionU.getVersionName()),memberId).compose(RxHelper.<RepairListInfo>handleResult());
     }
 }

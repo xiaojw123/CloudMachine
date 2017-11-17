@@ -13,7 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import java.util.List;
+
 import me.iwf.photopicker.fragment.ImagePagerFragment;
 
 import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
@@ -45,8 +47,8 @@ public class PhotoPagerActivity extends AppCompatActivity {
           (ImagePagerFragment) getSupportFragmentManager().findFragmentById(R.id.photoPagerFragment);
     }
     pagerFragment.setPhotos(paths, currentItem);
-
     Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
     setSupportActionBar(mToolbar);
 
     actionBar = getSupportActionBar();

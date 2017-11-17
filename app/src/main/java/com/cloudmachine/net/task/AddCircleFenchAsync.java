@@ -35,20 +35,18 @@ public class AddCircleFenchAsync extends ATask {
     private String lng;
     private long deviceId;
     private String range;
-    private Context mContext;
 
     public AddCircleFenchAsync(Context context, Handler handler, String lat, String lng, long id, String i) {
         this.handler = handler;
-        this.mContext = context;
         this.lat = lat;
         this.lng = lng;
         this.deviceId = id;
         this.range = i;
-            try{
-                memberId = String.valueOf(MemeberKeeper.getOauth(context).getId());
-            }catch(Exception ee){
+        try {
+            memberId = String.valueOf(MemeberKeeper.getOauth(context).getId());
+        } catch (Exception ee) {
 
-            }
+        }
     }
 
     @Override
@@ -74,22 +72,15 @@ public class AddCircleFenchAsync extends ATask {
     protected void decodeJson(String result) {
         // TODO Auto-generated method stub
         super.decodeJson(result);
-
         Message msg = Message.obtain();
         if (isSuccess) {
-            try{
-                Gson gson = new Gson();
-                BaseBO baseBo = gson.fromJson(result,
-                        BaseBO.class);
-                msg.what = Constants.HANDLER_ADDCIRCLEFENCH_SUCCESS;
-                msg.obj = baseBo.getMessage();
-                handler.sendMessage(msg);
-                return;
-            }catch(Exception e){
-            }
-        }
-        //缓存数据第4步
-        if(!isHaveCache){
+            Gson gson = new Gson();
+            BaseBO baseBo = gson.fromJson(result,
+                    BaseBO.class);
+            msg.what = Constants.HANDLER_ADDCIRCLEFENCH_SUCCESS;
+            msg.obj = baseBo.getMessage();
+            handler.sendMessage(msg);
+        } else {
             msg.what = Constants.HANDLER_ADDCIRCLEFENCH_FAILD;
             msg.obj = message;
             handler.sendMessage(msg);
@@ -97,13 +88,13 @@ public class AddCircleFenchAsync extends ATask {
     }
 
 
-    private List<NameValuePair> initListData(){
+    private List<NameValuePair> initListData() {
         List<NameValuePair> list = new ArrayList<NameValuePair>();
         list.add(Utils.addBasicValue("memberId", memberId));
-        list.add(Utils.addBasicValue("lat",lat));
-        list.add(Utils.addBasicValue("lng",lng));
-        list.add(Utils.addBasicValue("deviceId",String.valueOf(deviceId)));
-        list.add(Utils.addBasicValue("radiu",range));
+        list.add(Utils.addBasicValue("lat", lat));
+        list.add(Utils.addBasicValue("lng", lng));
+        list.add(Utils.addBasicValue("deviceId", String.valueOf(deviceId)));
+        list.add(Utils.addBasicValue("radiu", range));
         return list;
     }
 }

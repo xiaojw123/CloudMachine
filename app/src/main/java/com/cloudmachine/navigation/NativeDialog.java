@@ -21,6 +21,7 @@ import com.baidu.mapapi.navi.NaviParaOption;
 import com.cloudmachine.R;
 import com.cloudmachine.navigation.other.Location;
 import com.cloudmachine.navigation.other.MyDistanceUtil;
+import com.cloudmachine.utils.GPSUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -196,10 +197,16 @@ public class NativeDialog extends Dialog {
         	String pak = (String)v.getTag();
         	switch (pak) {
 			case "com.baidu.BaiduMap":
-				APPUtil.startNative_Baidu(context,loc_now, loc_end);
+                double[] bNow=GPSUtil.gcj02_To_Bd09(loc_now.getLat(),loc_now.getLng());
+			    Location bLocNow=new Location(bNow[0],bNow[1]);
+                double[] bEnd=GPSUtil.gcj02_To_Bd09(loc_end.getLat(),loc_end.getLng());
+                Location bLocEnd=new Location(bEnd[0],bEnd[1]);
+				APPUtil.startNative_Baidu(context,bLocNow, bLocEnd);
 				break;
 			case "com.autonavi.minimap":
-				APPUtil.startNative_Gaode(context,loc_end);
+                double[]   aEnd=GPSUtil.gcj02_To_Gps84(loc_end.getLat(),loc_end.getLng());
+                Location aLocEnd=new Location(aEnd[0],aEnd[1]);
+				APPUtil.startNative_Gaode(context,aLocEnd);
 				break;
 			}
         	NativeDialog.this.dismiss();

@@ -24,12 +24,12 @@ public class VerifyPhoneNumModel implements VerifyPhoneNumContract.Model {
 
     @Override
     public Observable<BaseRespose> wxBindMobile(long mobile, long type) {
-        return Api.getDefault(HostType.CAITINGTING_HOST).wxBindMobile(mobile, type);
+        return Api.getDefault(HostType.HOST_CLOUDM).wxBindMobile(mobile, type);
     }
 
     @Override
     public Observable<CheckNumBean> checkNum(long mobile) {
-        return Api.getDefault(HostType.CAITINGTING_HOST).checkNum(mobile)
+        return Api.getDefault(HostType.HOST_CLOUDM).checkNum(mobile)
                 .compose(RxHelper.<CheckNumBean>handleResult())
                 ;
     }
@@ -44,7 +44,7 @@ public class VerifyPhoneNumModel implements VerifyPhoneNumContract.Model {
                                      String nickname,
                                      String headLogo,
                                      Integer type) {
-        return Api.getDefault(HostType.CAITINGTING_HOST).wxBind(unionId,
+        return Api.getDefault(HostType.HOST_CLOUDM).wxBind(unionId,
                 openId,
                 account,
                 code,

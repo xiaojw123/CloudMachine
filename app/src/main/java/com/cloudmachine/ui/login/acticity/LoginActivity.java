@@ -332,7 +332,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
             final String nickname = map.get("name");
             final String headimgurl = map.get("iconurl");
             final int sex="男".equals(map.get("gender"))?1:0;
-            mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
+            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM)
                     .wxLogin(unionid, openId, nickname, headimgurl)
                     .compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext, false) {
                         @Override
@@ -478,7 +478,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
     private void excamMaster(Long id) {
 
-        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(id)
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_ASK).excamMaster(id)
                 .compose(RxHelper.<UserInfo>handleResult())
                 .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
                     @Override

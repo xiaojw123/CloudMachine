@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -96,7 +98,8 @@ public class UploadPhotoUtils {
         return temp;
     }
 
-    public void upLoadFile(String filename, String uploadurl, final Handler mHandler) {
+    public void upLoadFile(final String photoName, String filename, String uploadurl, final Handler mHandler) {
+        AppLog.print("upLoadFile___fileName__"+filename);
         final Message msg = Message.obtain();
         File file = new File(filename);
         MultipartBody.Builder mbody = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -125,7 +128,10 @@ public class UploadPhotoUtils {
 
                     url = uploadResult.getUrl();
                     msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
-                    msg.obj = url;
+//                    msg.obj = url;
+                    Map<String,String> map=new HashMap<>();
+                    map.put(photoName,url);
+                    msg.obj = map;
                 } else {
                     msg.what = Constants.HANDLER_UPLOAD_FAILD;
                     msg.obj = "图片上传失败";
@@ -135,6 +141,50 @@ public class UploadPhotoUtils {
         });
 
     }
+
+//    public void upLoadFile(final String filename, String uploadurl, final Handler mHandler) {
+//        AppLog.print("upLoadFile___fileName__"+filename);
+//        final Message msg = Message.obtain();
+//        File file = new File(filename);
+//        MultipartBody.Builder mbody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+//        mbody.addFormDataPart("imgFile", file.getName(), RequestBody.create(MEDIA_TYPE_PNG, file));
+//        RequestBody requestBody = mbody.build();
+//        final Request request = new Request.Builder()
+//                .url(uploadurl)
+//                .post(requestBody)
+//                .build();
+//
+//        okHttpClient.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                String result = response.body().string();
+//                Gson gson = new Gson();
+//                UploadResult uploadResult = gson.fromJson(result,
+//                        UploadResult.class);
+//
+//                if (uploadResult.getError() == 0) {
+//                    // 返回url
+//
+//                    url = uploadResult.getUrl();
+//                    msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
+////                    msg.obj = url;
+//                    Map<String,String> map=new HashMap<>();
+//                    map.put(filename,url);
+//                    msg.obj = map;
+//                } else {
+//                    msg.what = Constants.HANDLER_UPLOAD_FAILD;
+//                    msg.obj = "图片上传失败";
+//                }
+//                mHandler.sendMessage(msg);
+//            }
+//        });
+//
+//    }
 
 
     public void upLoadFile(File file, String uploadurl, final Handler mHandler) {

@@ -61,24 +61,18 @@ public class GetEvaluateInfoTask extends ATask {
         super.decodeJson(result);
         Message msg = Message.obtain();
         if (isSuccess) {
-            try {
-                Gson gson = new Gson();
-                BaseBO<EvaluateInfoBean> bo = gson.fromJson(result,
-                        new TypeToken<BaseBO<EvaluateInfoBean>>() {
-                        }.getType());
-                msg.what = Constants.HANDLER_GET_EVALUATE_INFO_SUCCESS;
-                msg.obj = bo.getResult();
-                handler.sendMessage(msg);
-                return;
-            } catch (Exception e) {
-            }
+            Gson gson = new Gson();
+            BaseBO<EvaluateInfoBean> bo = gson.fromJson(result,
+                    new TypeToken<BaseBO<EvaluateInfoBean>>() {
+                    }.getType());
+            msg.what = Constants.HANDLER_GET_EVALUATE_INFO_SUCCESS;
+            msg.obj = bo.getResult();
+            handler.sendMessage(msg);
         } else {
-        }
-        // 缓存数据第4步
-        if (!isHaveCache) {
             msg.what = Constants.HANDLER_GET_EVALUATE_INFO_FAILED;
             msg.obj = message;
             handler.sendMessage(msg);
         }
+
     }
 }

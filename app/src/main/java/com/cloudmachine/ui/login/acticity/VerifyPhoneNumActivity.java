@@ -365,7 +365,7 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
     private void excamMaster(Long id) {
 
-        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(id)
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_ASK).excamMaster(id)
                 .compose(RxHelper.<UserInfo>handleResult())
                 .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
                     @Override

@@ -16,8 +16,13 @@ public class BaseRespose<T> implements Serializable {
 
     public PageBean page;
 
+    public PageBean getPage() {
+        return page;
+    }
 
-
+    public void setPage(PageBean page) {
+        this.page = page;
+    }
 
     public boolean success() {
         return 800 == code;

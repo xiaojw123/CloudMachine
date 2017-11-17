@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,6 +41,7 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.ViewCouponActivityNew;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.VersionInfo;
 import com.cloudmachine.cache.MySharedPreferences;
@@ -66,8 +69,11 @@ import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.VersionU;
 import com.cloudmachine.widget.NotfyImgView;
+import com.cloudmachine.zxing.activity.CaptureActivity;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import butterknife.BindView;
@@ -90,6 +96,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     private static final String ACT_SP_NAME = "activities_sp";
     private static final String KEY_ACT_SIZE = "key_act_size";
     public static final int PEM_REQCODE_WRITESD = 0x113;
+    public static final int PEM_REQCODE_CAMERA = 0x114;
+    public static final int REQ_CODE_SCAN_QRCODE = 0x222;
     private String downLoadLink;
     @BindView(R.id.home_me_img)
     ImageView homeMeImg;
@@ -137,6 +145,20 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     FrameLayout itemMyOrder;
     @BindView(R.id.item_about_niv)
     NotfyImgView aboutNimg;
+    @BindView(R.id.home_san_img)
+    ImageView scanImg;
+    @BindView(R.id.home_guide_container)
+    RelativeLayout guideContainer;
+    @BindView(R.id.icon_guide_scan)
+    ImageView guideScanImg;
+    @BindView(R.id.icon_guide_scan_text)
+    ImageView guideScanText;
+    @BindView(R.id.home_guide_exp)
+    ImageView guideExpImg;
+    @BindView(R.id.home_guide_exp_text)
+    ImageView guideEXpText;
+    @BindView(R.id.home_guide_sure_btn)
+    Button guideSureBtn;
 
 
     ImageView promotionImg;
@@ -147,6 +169,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     private MessageReceiver mMessageReceiver;
 
     Fragment deviceFragment, maintenaceFragment;
+    int mustUpdate;
 
 
     @Override
@@ -156,13 +179,17 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         ButterKnife.bind(this);
         MobclickAgent.enableEncrypt(true); // 友盟统计
         MobclickAgent.onEvent(this, MobEvent.TIME_HOME);
+        MobclickAgent.openActivityDurationTrack(false);
+        setUPageStatistics(false);
         mHandler = new Handler(this);
         registerMessageReceiver();
         showFragment(deviceTv);
-        mPresenter.getH5ConfigInfo();
         initUpdateConfig();
         new GetVersionAsync(mContext, mHandler).execute();
+        mPresenter.getH5ConfigInfo();
+        mPresenter.initQinuParams();
     }
+
 
     private String getAuthory() {
         return getIntent().getStringExtra(KEY_H5_AUTORITY);
@@ -321,42 +348,27 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             itmeMessageNimg.setNotifyPointVisible(false);
         }
         mPresenter.getHomeBannerInfo();
-//        long time = VerisonCheckSP.getTime(this);
-//        if (time != 0
-//                && System.currentTimeMillis() - time < 1000 * 60 * 60 * 24) {
-//
-//        } else {
-
-//        }
-
     }
 
-//    private void testPromption() {
-//        List<PopItem> items = new ArrayList<>();
-//        PopItem item1 = new PopItem();
-//        item1.setActPictureLink("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502961692435&di=75956a99c9e00870c3039659eba01471&imgtype=0&src=http%3A%2F%2Fi2.qhimg.com%2Ft018d01274dd54968d4.jpg");
-//        item1.setJumpLink("http://www.geekpark.net/");
-//        item1.setPopupType(2);
-//        items.add(item1);
-//        PopItem item2 = new PopItem();
-//        item2.setActPictureLink("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502961769796&di=0331a6a42253271286e42d70bb7e61e6&imgtype=0&src=http%3A%2F%2Fimg.qqzhi.com%2Fupload%2Fimg_4_2347346394D2346761690_23.jpg");
-//        item2.setJumpLink("http://www.jianshu.com/");
-//        item2.setPopupType(2);
-//        items.add(item2);
-//        PopItem item3 = new PopItem();
-//        item3.setActPictureLink("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502961823875&di=f326ebb245e1e119726ca75da4042eff&imgtype=0&src=http%3A%2F%2Fimg.mp.sohu.com%2Fupload%2F20170720%2F184865028df4431da335cd01c9173db0_th.png");
-//        item3.setJumpLink("https://www.huxiu.com/");
-//        item3.setPopupType(2);
-//        items.add(item3);
-//        updatePromotionInfo(items);
-//    }
 
-
-    @OnClick({R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_card_coupon, R.id.item_qr_code, R.id.item_about, R.id.home_me_img, R.id.home_box_img, R.id.home_actvite_img})
+    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_card_coupon, R.id.item_qr_code, R.id.item_about, R.id.home_me_img, R.id.home_box_img, R.id.home_actvite_img})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.home_guide_sure_btn:
+                guideContainer.setClickable(false);
+                guideContainer.setVisibility(View.GONE);
+                break;
+            case R.id.home_san_img://扫描车牌二维码
+                PermissionsChecker checker = new PermissionsChecker(this);
+                if (checker.lacksPermissions(Manifest.permission.CAMERA)) {
+                    PermissionsActivity.startActivityForResult(this, PEM_REQCODE_CAMERA,
+                            Manifest.permission.CAMERA);
+                } else {
+                    scanQRCode();
+                }
+                break;
             case R.id.item_my_order:
-                MobclickAgent.onEvent(this,MobEvent.TIME_H5_MY_ORDER_PAGE);
+                MobclickAgent.onEvent(this, MobEvent.TIME_H5_MY_ORDER_PAGE);
                 Bundle bundle = new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppOrderList);
                 Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
@@ -402,7 +414,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 break;
             case R.id.item_ask://我的提问
                 if (UserHelper.isLogin(this)) {
-                    MobclickAgent.onEvent(this,MobEvent.TIME_H5_MY_ASK_PAGE);
+                    MobclickAgent.onEvent(this, MobEvent.TIME_H5_MY_ASK_PAGE);
                     Bundle askBundle = new Bundle();
                     askBundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppMyQuestion);
                     Constants.toActivity(this, QuestionCommunityActivity.class, askBundle, false);
@@ -556,7 +568,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                             Constants.toActivity(HomeActivity.this, ViewCouponActivityNew.class, null, false);
                         } else {
                             if (!TextUtils.isEmpty(jumpLink)) {
-                                MobclickAgent.onEvent(HomeActivity.this,MobEvent.COUNT_HOME_ALERT_AD_CLICK);
+                                MobclickAgent.onEvent(HomeActivity.this, MobEvent.COUNT_HOME_ALERT_AD_CLICK);
                                 dismissPop();
                                 Bundle bundle = new Bundle();
                                 bundle.putString(QuestionCommunityActivity.H5_URL, jumpLink);
@@ -582,8 +594,9 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 if (null != vInfo) {
                     boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), vInfo.getVersion());
                     if (isUpdate) {
+                        mustUpdate = vInfo.getMustUpdate();
                         Constants.updateVersion(this, mHandler,
-                                vInfo.getMustUpdate(), vInfo.getMessage(), vInfo.getLink());
+                                mustUpdate, vInfo.getMessage(), vInfo.getLink());
                     }
 
                 }
@@ -591,9 +604,9 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             case Constants.HANDLER_VERSIONDOWNLOAD:
                 downLoadLink = (String) msg.obj;
                 PermissionsChecker checker = new PermissionsChecker(this);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     PermissionsActivity.startActivityForResult(this, PEM_REQCODE_WRITESD,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
                 } else {
                     Constants.versionDownload(HomeActivity.this, downLoadLink);
                 }
@@ -644,12 +657,106 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-            ToastUtils.showToast(this, "更新失败！！");
-            CommonUtils.showPermissionDialog(this);
-        } else {
-            Constants.versionDownload(HomeActivity.this, downLoadLink);
+        switch (requestCode) {
+            case PEM_REQCODE_CAMERA:
+
+                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                    ToastUtils.showToast(this, "摄像头打开失败！！");
+                    CommonUtils.showPermissionDialog(this);
+                } else {
+                    scanQRCode();
+                }
+                break;
+            case PEM_REQCODE_WRITESD:
+                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                    ToastUtils.showToast(this, "更新失败！！");
+                    if (mustUpdate == 1) {
+                        CommonUtils.showFinishPermissionDialog(this);
+                    } else {
+                        CommonUtils.showPermissionDialog(this);
+                    }
+                } else {
+                    Constants.versionDownload(HomeActivity.this, downLoadLink);
+                }
+                break;
+            case REQ_CODE_SCAN_QRCODE:
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    String resultStr = bundle.getString("qr_scan_result");
+                    if (resultStr != null && !resultStr.contains("qrfrom")) {
+                        if (resultStr.contains("?")) {
+                            resultStr += "&";
+                        } else {
+                            resultStr += "?";
+                        }
+                        resultStr += "qrfrom=cloudmApp";
+                    }
+                    if (UserHelper.isLogin(this)) {
+                        resultStr +=("&"+QuestionCommunityActivity.PARAMS_KEY_MEMBERID+"="+UserHelper.getMemberId(this));
+                    }
+                    String resultEncodeStr = null;
+                    try {
+                        resultEncodeStr = URLEncoder.encode(resultStr, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    String qrUrl = "http://www.cloudm.com/static/qr.html?content=" + resultEncodeStr;
+                    Bundle qBundle = new Bundle();
+                    qBundle.putBoolean(QuestionCommunityActivity.QR_CODE, true);
+                    qBundle.putString(QuestionCommunityActivity.H5_URL, qrUrl);
+                    Constants.toActivity(this, QuestionCommunityActivity.class, qBundle);
+                }
+                break;
+
         }
 
+
     }
+
+    public void scanQRCode() {
+        if (isCameraCanUse()) {
+            Constants.toActivityForR(this, CaptureActivity.class, null, REQ_CODE_SCAN_QRCODE);
+        } else {
+            Toast.makeText(this, "请打开此应用的摄像头权限！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean isCameraCanUse() {
+        boolean canUse = true;
+        Camera mCamera = null;
+        try {
+
+            mCamera = Camera.open();
+        } catch (Exception e) {
+            canUse = false;
+        }
+        if (canUse) {
+            if (mCamera != null)
+                mCamera.release();
+            mCamera = null;
+        }
+        return canUse;
+    }
+
+    public void updateGuide(List<McDeviceInfo> deviceList) {
+        if (UserHelper.isLogin(this)) {
+            if (deviceList != null) {
+                int len = deviceList.size();
+                if (len > 0) {
+                    if (len == 1) {
+                        McDeviceInfo info = deviceList.get(0);
+                        if (info != null) {
+                            if (info.getId() != 0) {
+                                guideExpImg.setVisibility(View.GONE);
+                                guideEXpText.setVisibility(View.GONE);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        guideContainer.setVisibility(View.VISIBLE);
+    }
+
 }

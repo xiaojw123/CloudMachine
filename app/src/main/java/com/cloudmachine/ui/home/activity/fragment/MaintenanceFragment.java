@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -73,6 +74,8 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     TextView timeTv;
     @BindView(R.id.maintence_cardview)
     FrameLayout curLocCv;
+    @BindView(R.id.logo_flag_img)
+    ImageView logoImg;
 
 
     Marker centerMarker;
@@ -81,6 +84,8 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     UnfinishedBean unfinishedBean;
     List<Marker> markerList = new ArrayList<>();
     UnfinishedBean mUnfinishBean;
+    String mProvince;
+    double locLng,locLat;
 
 
     @Override
@@ -180,7 +185,8 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
                 mPresenter.updateStationView(lat.longitude, lat.latitude);
             }
         }
-
+        locLat=lat.latitude;
+        locLng=lat.longitude;
         LatLonPoint point = new LatLonPoint(lat.latitude, lat.longitude);
         RegeocodeQuery query = new RegeocodeQuery(point, 200,
                 GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
@@ -206,6 +212,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
                     describeAddress = city;
                 }
             }
+            mProvince =address.getProvince();
             curLocTv.setText(describeAddress);
         }
     }
@@ -235,10 +242,22 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     @Override
     public void returnRepairItemView(UnfinishedBean bean, String status) {
         mUnfinishBean = bean;
-        orderCotainer.setVisibility(View.VISIBLE);
         unfinishedBean = bean;
+        orderCotainer.setVisibility(View.VISIBLE);
+        String logo_flag=bean.getLogo_flag();
+        if ("0".equals(logo_flag)) {
+            if (logoImg.getVisibility() == View.VISIBLE) {
+                logoImg.setVisibility(View.INVISIBLE);
+            }
+        }
+        if ("1".equals(logo_flag)) {
+            if (logoImg.getVisibility() != View.VISIBLE) {
+                logoImg.setVisibility(View.VISIBLE);
+            }
+        }
         statusTv.setText(status);
-        modelTv.setText(bean.getVmaterialname());
+        modelTv.setText(bean.getVbrandname()+ " "
+                + bean.getVmaterialname());
         descTv.setText(bean.getVdiscription());
         timeTv.setText(bean.getDopportunity());
 
@@ -293,6 +312,9 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
         if (UserHelper.isLogin(getActivity())) {
             Bundle bundle = new Bundle();
             bundle.putString(NewRepairActivity.DEFAULT_LOCAITOIN, curLocTv.getText().toString());
+            bundle.putString(NewRepairActivity.DEFAULT_PROVINCE,mProvince);
+            bundle.putDouble(NewRepairActivity.KEY_LOC_LAT,locLat);
+            bundle.putDouble(NewRepairActivity.KEY_LOC_LNG,locLng);
             Constants.toActivity(getActivity(), NewRepairActivity.class, bundle);
         } else {
             Constants.toActivity(getActivity(), LoginActivity.class, null);
@@ -307,8 +329,8 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
             if (data != null) {
                 ResidentAddressInfo info = (ResidentAddressInfo) data.getSerializableExtra(Constants.P_SEARCHINFO);
                 if (info != null) {
-                    curLocTv.setText(info.getTitle());
-                    gotoNewRepair();
+                    LatLng latLng=new LatLng(info.getLat(),info.getLng());
+                    aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
                 }
             }
 

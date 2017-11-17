@@ -35,12 +35,12 @@ public class NewRepairModel implements NewRepairContract.Model {
         builder.addFormDataPart("file", file.getName(), requestBody);
         MultipartBody body=builder.build();*/
 
-        return Api.getDefault(HostType.CLOUDM_HOST).upLoadPhoto(requestBody)
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).upLoadPhoto(requestBody)
                 .compose(RxHelper.<String>handleResult());
     }
 
     @Override
     public Observable<JsonObject> getWarnMessage(long memeberId, String tel) {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).getWarnMessage(memeberId,tel).compose(RxHelper.<JsonObject>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM).getWarnMessage(memeberId,tel).compose(RxHelper.<JsonObject>handleResult());
     }
 }

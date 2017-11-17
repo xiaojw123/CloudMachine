@@ -45,7 +45,6 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -259,124 +258,62 @@ public class Constants {
     //修改全局ip地址
 //    public static final String URL_MAIN = "http://api.test.cloudm.com";//"http://api.test.cloudm.com";//http://192.168.1.8:8083//http://192.168.1.13:8090/cloudm3
 
-    public static final String URL_IMAGE_HOST = ApiConstants.CLOUDM_HOST;// 文件上传地址
-    public static final String URL_MyDevices = ApiConstants.CLOUDM_HOST
+    public static final String URL_IMAGE_HOST = ApiConstants.CLOUDM_YJX_HOST;// 文件上传地址
+    public static final String URL_MyDevices = ApiConstants.CLOUDM_YJX_HOST
             + "device/getDeviceByKey"; // 获取设备列表
-    public static final String URL_DevicesInfo = ApiConstants.CLOUDM_HOST
-            + "device/getDeviceInfo";// 一键检测设备历史
-    public static final String URL_DevicesCheck = ApiConstants.CLOUDM_HOST + "device/getCheck";// 一键检测设备实时信息
-    // Device
-    public static final String URL_CHECKREPORT = ApiConstants.CLOUDM_HOST
-            + "device/getCheckReport";// 新版本获取一键设备事实信息
-    public static final String URL_Devices = ApiConstants.CLOUDM_HOST + "device/getDevice";// 获取设备基本信息
-    public static final String URL_MEMBERLIST = ApiConstants.CLOUDM_HOST + "device/member";// 获取设备成员列表
-    public static final String URL_OILLEVELIST = ApiConstants.CLOUDM_HOST + "device/oilLevelList";// 获取油位列表
-    public static final String URL_WORKTIMELIST = ApiConstants.CLOUDM_HOST + "device/whdList";// 获取工作时长列表
-    public static final String URL_DELETEMEMBER = ApiConstants.CLOUDM_HOST
+    public static final String URL_Devices = ApiConstants.CLOUDM_YJX_HOST + "device/getDevice";// 获取设备基本信息
+    public static final String URL_MEMBERLIST = ApiConstants.CLOUDM_YJX_HOST + "device/member";// 获取设备成员列表
+    public static final String URL_OILLEVELIST = ApiConstants.CLOUDM_YJX_HOST + "device/oilLevelList";// 获取油位列表
+    public static final String URL_WORKTIMELIST = ApiConstants.CLOUDM_YJX_HOST + "device/whdList";// 获取工作时长列表
+    public static final String URL_DELETEMEMBER = ApiConstants.CLOUDM_YJX_HOST
             + "device/deleteMember";// 删除设备成员
-    public static final String URL_ADDFENCE = ApiConstants.CLOUDM_HOST + "device/addFence";// 上传围栏
-    public static final String URL_DELETEFENCE = ApiConstants.CLOUDM_HOST
+    public static final String URL_DELETEFENCE = ApiConstants.CLOUDM_YJX_HOST
             + "device/deleteFence";// 删除围栏
-    public static final String URL_SEARCHMEMBER = ApiConstants.CLOUDM_HOST + "device/search";// 搜索设备成员
-    // mobi
-    public static final String URL_GIVEPERMISSION = ApiConstants.CLOUDM_HOST
-            + "device/givePermission";// 添加成员
-    public static final String URL_GETROOTNODES = ApiConstants.CLOUDM_HOST
+    public static final String URL_SEARCHMEMBER = ApiConstants.CLOUDM_YJX_HOST + "device/search";// 搜索设备成员
+    public static final String URL_GETROOTNODES = ApiConstants.CLOUDM_YJX_HOST
             + "member/getRootNodes";// 获取角色岗位名称
-    public static final String URL_UPDATEDEVICEINFOBYKEY = ApiConstants.CLOUDM_HOST
+    public static final String URL_UPDATEDEVICEINFOBYKEY = ApiConstants.CLOUDM_YJX_HOST
             + "device/updateDeviceInfoByKey";// 获取角色岗位名称
-    public static final String URL_DEVICESSAVE = ApiConstants.CLOUDM_HOST + "device/save";// 新增机器
-    public static final String URL_DELETEDEVICE = ApiConstants.CLOUDM_HOST + "device/delete";// 删除机器
-    public static final String URL_GETPERMISSIONS = ApiConstants.CLOUDM_HOST
+    public static final String URL_GETPERMISSIONS = ApiConstants.CLOUDM_YJX_HOST
             + "member/getPermissions";// 获取权限列表
-    public static final String URL_GETMACHINETYPES = ApiConstants.CLOUDM_HOST
+    public static final String URL_GETMACHINETYPES = ApiConstants.CLOUDM_YJX_HOST
             + "device/getMachineTypesNC";// 获取机器种类列表
-    public static final String URL_GETMACHINEBRAND = ApiConstants.CLOUDM_HOST
+    public static final String URL_GETMACHINEBRAND = ApiConstants.CLOUDM_YJX_HOST
             + "device/getMachineBrandNC";// 获取机器品牌列表
-    public static final String URL_GETMACHINEMODEL = ApiConstants.CLOUDM_HOST
+    public static final String URL_GETMACHINEMODEL = ApiConstants.CLOUDM_YJX_HOST
             + "device/getMachineModelNC";// 获取机器型号列表
-    public static final String URL_UPDATEDEVICEINFO = ApiConstants.CLOUDM_HOST
+    public static final String URL_UPDATEDEVICEINFO = ApiConstants.CLOUDM_YJX_HOST
             + "device/updateDeviceInfo";// 获取机器型号列表
-    public static final String URL_UPDATEPERMISSION = ApiConstants.CLOUDM_HOST
-            + "device/updatePermission";// 更新机器某成员权限
-    public static final String URL_GETVERSION = ApiConstants.CLOUDM_HOST
+    public static final String URL_GETVERSION = ApiConstants.CLOUDM_YJX_HOST
             + "version/getVersion";// 软件更新
-    public static final String URL_GETSENSORPOSITION = ApiConstants.CLOUDM_HOST
-            + "device/getSensor";// 获取传感器安装位置
-    public static final String URL_GETSENSORLIST = ApiConstants.CLOUDM_HOST
-            + "device/getDeviceSensor";// 获取设备传感器列表
-    public static final String URL_SAVESENSOR = ApiConstants.CLOUDM_HOST
-            + "device/saveDeviceSensor";// 添加传感器或车牌
-    public static final String URL_DELETESENSOR = ApiConstants.CLOUDM_HOST
-            + "device/deleteDeviceSensor";// 添加传感器或车牌
-    public static final String URL_DAILYWORKDITAILS = ApiConstants.CLOUDM_HOST
+    public static final String URL_DAILYWORKDITAILS = ApiConstants.CLOUDM_YJX_HOST
             + "device/dailyWorkDitails";// 当日工作区间分布
-    public static final String URL_MACHINE_DETAIL = ApiConstants.CLOUDM_HOST
-            + "device/getDeviceNowData";
-    public static final String URL_GETMACHINETYPE = ApiConstants.CLOUDM_HOST  //获取机器类型
-            + "device/getMachineTypesNC";
-    public static final String URL_SAVEVBUSINESS = ApiConstants.CLOUDM_HOST +    //上传新增维修
+    public static final String URL_SAVEVBUSINESS = ApiConstants.CLOUDM_YJX_HOST +    //上传新增维修
             "device/saveVbusiness";
-    public static final String URL_SAVEEVALUATE = ApiConstants.CLOUDM_HOST
+    public static final String URL_SAVEEVALUATE = ApiConstants.CLOUDM_YJX_HOST
             + "device/saveEvaluate";
-    public static final String URL_ADDCIRCLEFENCH = ApiConstants.CLOUDM_HOST
+    public static final String URL_ADDCIRCLEFENCH = ApiConstants.CLOUDM_YJX_HOST
             + "device/addCricleFence";
-    public static final String URL_GETCOUPON = ApiConstants.CLOUDM_HOST + "pay/myCoupon";
-    public static final String URL_GETDELIVERYMETHOD = ApiConstants.CLOUDM_HOST + "pay/deliveryMethod";
-    public static final String URL_GETSETUPTIME = ApiConstants.CLOUDM_HOST + "pay/setupTime";
-    public static final String URL_GETINFOS = ApiConstants.CLOUDM_HOST + "pay/getInfos";
-    public static final String URL_YUNBOXPAY = ApiConstants.CLOUDM_HOST + "pay/yunBoxPay";
-    public static final String URL_GETPAYPRICE = ApiConstants.CLOUDM_HOST + "pay/payPrice";
-//    public static final String URL_CWPAY = ApiConstants.CLOUDM_HOST + "pay/cwPay";
-    public static final String URL_CWPAY = ApiConstants.CLOUDM_HOST + "pay/getPaySign";
-    public static final String URL_CHECK_PAY = ApiConstants.CLOUDM_HOST + "pay/checkPay";
-    public static final String URL_YUNBOXSTOREVOLUME = ApiConstants.CLOUDM_HOST + "pay/yunBoxStoreVolume";
-    public static final String URL_SAVEARRIVALNOTICE = ApiConstants.CLOUDM_HOST + "pay/saveArrivalNotice";
-
-    public static final String P_ID = "Id";
-    public static final String P_MAC_DEVICE = "MacDevice";
-    public static final String P_WORKSTATES = "WorkState";
+    public static final String URL_CWPAY = ApiConstants.CLOUDM_YJX_HOST + "pay/getPaySign";
     public static final String P_DEVICEID = "DeviceId";
     public static final String P_DEVICETYPE = "DeviceType";
     public static final String P_DEVICENAME = "DeviceName";
-    public static final String P_DEVICEMAC = "DeviceMacAddress";
-    public static final String P_MERMBERINFO = "MemberInfo";
-    public static final String P_MERMBERID = "MermberId";
-    public static final String P_MERMBERTYPE = "MermberType";
-    public static final String P_MERMBERNAME = "MermberName";
-    public static final String P_MERMBERROLE = "MermberRole";
-    public static final String P_MERMBERROLEREMARK = "MermberRoleRemark";
-    public static final String P_MERMBERPERMISSION = "MermberPermission";
-    public static final String P_OCDSERIALIZABLE = "OcdSerializable";
     public static final String P_OILLAVE = "oillave";
-    public static final String P_OILLEVE = "oilLeve";
-    public static final String P_LASTLEVEL = "lastLevel";
-    public static final String P_WTSERIALIZABLE = "WtSerializable";
-    public static final String P_EDSERIALIZABLE = "EdSerializable";
-    public static final String P_HSDSERIALIZABLE = "HsdSerializable";
     public static final String P_MCDEVICEBASICSINFO = "mcDeviceBasicsInfo";
-    public static final String P_MACHINEDETAILINFO = "MachineDetailInfo";
     public static final String P_ADDMCDEVICETYPE = "addDeviceType";
-    public static final String P_ISDELETEMERMBER = "isDeletemermber";
     public static final String P_SEARCHLISTTYPE = "searchListType";
-    public static final String P_PERMISSIONTYPE = "permissionType";
     public static final String P_TITLETEXT = "titleText";
     public static final String P_TITLENAME = "titleName";
     public static final String P_EDITTYPE = "editType";
     public static final String P_ITEMTYPE = "itemType";
     public static final String P_EDITRESULTSTRING = "editResultString";
-    public static final String P_EDITRESULTINT = "editResultInt";
     public static final String P_EDITRESULTITEM = "editResultItem";
-    public static final String P_IMAGEBROWERURLS = "imageBrowerUrls";
     public static final String P_IMAGEBROWERDELETE = "imageBrowerDelete";
-    public static final String P_PERMISSIONSKEY = "permissionsKey";
     public static final String P_EDIT_LIST_VALUE1 = "editListValue1";
     public static final String P_EDIT_LIST_VALUE2 = "editListValue2";
     public static final String P_EDIT_LIST_VALUE3 = "editListValue3";
     public static final String P_EDIT_LIST_ITEM_NAME = "editlistItemName";
 
-    public static final String P_DEVICEINFO_devicePhoto = "devicePhoto";
-    public static final String P_DEVICEINFO_nameplatePhoto = "nameplatePhoto";
     public static final String P_DEVICEINFO_deviceName = "deviceName";
     public static final String P_DEVICEINFO_category = "category";
     public static final String P_DEVICEINFO_brand = "brand";
@@ -384,24 +321,6 @@ public class Constants {
     public static final String P_DEVICEINFO_typeId = "typeId";
     public static final String P_DEVICEINFO_brandId = "brandId";
     public static final String P_DEVICEINFO_modelId = "modelId";
-    public static final String P_DEVICEINFO_factoryTime = "factoryTime";
-    public static final String P_DEVICEINFO_deviceType = "deviceType";
-    public static final String P_DEVICEINFO_buyTime = "buyTime";
-    public static final String P_DEVICEINFO_buyPlace = "buyPlace";
-    public static final String P_DEVICEINFO_buyPrice = "buyPrice";
-    public static final String P_DEVICEINFO_sellerName = "sellerName";
-    public static final String P_DEVICEINFO_sellerPlace = "sellerPlace";
-    public static final String P_DEVICEINFO_sellerContacts = "sellerContacts";
-    public static final String P_DEVICEINFO_sellerMobi = "sellerMobi";
-    public static final String P_DEVICEINFO_sellerEmail = "sellerEmail";
-    public static final String P_DEVICEINFO_insurer = "insurer";
-    public static final String P_DEVICEINFO_insurerNo = "insurerNo";
-    public static final String P_DEVICEINFO_company = "company";
-    public static final String P_DEVICEINFO_contractNo = "contractNo";
-    public static final String P_DEVICEINFO_serviceName = "serviceName";
-    public static final String P_DEVICEINFO_serviceMobi = "serviceMobi";
-    public static final String P_DEVICEINFO_servicePlace = "servicePlace";
-    public static final String P_DEVICEINFO_filtNumber = "filtNumber";
     public static final String P_CITYNAME = "city_name";
     public static final String P_SEARCHINFO = "searchInfo";
     public static final String P_DEVICEINFO_MY = "deviceInfo_my";
@@ -464,15 +383,12 @@ public class Constants {
     public static final int MC_Simulation_DeviceId = 0;
     public static final int MC_DevicesList_AllType = 15;
 
-    public static final String KEY_isGuide = "isGuide"; // 是否引导过
     public static final String KEY_isHomeGuide = "isHomeGuide"; // 是否首页引导过
-    public static final String KEY_isMcMainGuide = "isMcMainGuide"; // 机器页是否引导过
     public static final String KEY_DownloadId = "DownloadID"; // 下载的ID
     public static final String KEY_NewVersion = "NewVersion"; // 最新版本
     public static final String KEY_NewMessageSize = "NewMessageSize"; // 新邀请消息条数
 
     public static final int KEY_ImageUpload_Kinds_m1 = 2; // 机博上传照片
-    public static final int Thread_Priority = 10; // 默认线程优先级
     // 获取维修历史记录
     public static final int HANDLER_GET_REPAIRHISTORY_SUCCESS = REQUEST_BLOGCOMMENT + 1;
     public static final int HANDLER_GET_REPAIRHISTORY_FAILD = HANDLER_GET_REPAIRHISTORY_SUCCESS + 1;
@@ -1148,15 +1064,27 @@ public class Constants {
                                          final Handler handler, int mustUpdate, String message, final String link) {
 
         CustomDialog.Builder builder = new CustomDialog.Builder(context);
-        if (mustUpdate == 1) {
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setAlertIcon(R.drawable.icon_update);
+        builder.setMessage(message);
+        if (mustUpdate == 1 && context instanceof HomeActivity) {
+//            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.dismiss();
+//                    ((Activity) context).finish();
+//                    MobclickAgent.onKillProcess(context);
+//                    System.exit(0);
+//                }
+//            });
+            builder.setNeutralButton("好的", new DialogInterface.OnClickListener() {
+
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    ((Activity) context).finish();
-                    MobclickAgent.onKillProcess(context);
-                    System.exit(0);
-
+                    Message msg = Message.obtain();
+                    msg.what = Constants.HANDLER_VERSIONDOWNLOAD;
+                    msg.obj = link;
+                    handler.sendMessage(msg);
                 }
             });
         } else {
@@ -1172,19 +1100,18 @@ public class Constants {
 
                 }
             });
-        }
-        builder.setMessage(message);
-        builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Message msg = Message.obtain();
-                msg.what = Constants.HANDLER_VERSIONDOWNLOAD;
-                msg.obj = link;
-                handler.sendMessage(msg);
-            }
-        });
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    Message msg = Message.obtain();
+                    msg.what = Constants.HANDLER_VERSIONDOWNLOAD;
+                    msg.obj = link;
+                    handler.sendMessage(msg);
+                }
+            });
+        }
         alertDialog = builder.create();
         if (mustUpdate == 1) {
             alertDialog.setCancelable(false);
@@ -1250,6 +1177,7 @@ public class Constants {
                         "com.android.browser.BrowserActivity");
                 context.startActivity(intent);
             } else {
+                clearApk();
                 DownloadManager downloadManager = (DownloadManager) context
                         .getSystemService(context.DOWNLOAD_SERVICE);
                 Uri uri = Uri.parse(link);
@@ -1289,6 +1217,17 @@ public class Constants {
             context.startActivity(intent);
         }
 
+    }
+
+    private static void clearApk() {
+        File downloadDic = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        if (downloadDic.exists()) {
+            for (File f : downloadDic.listFiles()) {
+                if (f.getName().contains("cloudm")) {
+                    f.delete();
+                }
+            }
+        }
     }
 
     public final static int getSensorType(String sensorNum) {
@@ -1501,6 +1440,9 @@ public class Constants {
     public static final int INVALID_DEVICE_ID = -1;
     public static final String UPDATE_DEVICE_LIST = "updateDeviceList";
     public static final String UPDATE_DEVICE_NAME = "updateDeviceName";
+    public static final String DEVICE_ID="device_id";
+    public static final String DEVICE_DETAIL_NOW="DEVICE_DETAIL_NOW";
+    public static final String PAGET_TYPE="page_type";
 
     public static Map<String, String> getBasePraramsMap() {
         Map<String, String> map = new HashMap<>();
@@ -1515,5 +1457,11 @@ public class Constants {
 
     public static final String CURRENT_LOC = "当前位置";
     public static final String APK_NAME = "cloudm.apk";
+
+    public static interface  IPageType{
+        public static final String PAGE_DEVICE_INFO="p_device_info";//设备基本信息
+
+    }
+
 
 }

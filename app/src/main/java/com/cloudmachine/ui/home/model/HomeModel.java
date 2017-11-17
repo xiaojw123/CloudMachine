@@ -1,8 +1,9 @@
 package com.cloudmachine.ui.home.model;
 
 import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.bean.ForceVBean;
 import com.cloudmachine.bean.HomeBannerBean;
-import com.cloudmachine.bean.UnReadMessage;
+import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.HomeContract;
@@ -20,26 +21,36 @@ import rx.Observable;
 public class HomeModel implements HomeContract.Model {
     @Override
     public Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo() {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).GetHomeBannerInfo(1,0)
+        return Api.getDefault(HostType.HOST_CLOUDM).GetHomeBannerInfo(1,0)
                 .compose(RxHelper.<ArrayList<HomeBannerBean>>handleResult());
     }
 
     @Override
-    public Observable<UnReadMessage> getMessageUntreatedCount(long memberId) {
+    public Observable<ForceVBean> forceUpdate() {
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).forceUpdate().compose(RxHelper.<ForceVBean>handleResult());
+    }
 
-        return Api.getDefault(HostType.CLOUDM_HOST).getMessageUntreatedCount(memberId).compose(RxHelper.<UnReadMessage>handleResult());
+    @Override
+    public Observable<QiToken> initQinuParams() {
+        return Api.getDefault(HostType.HOST_H5).getQinuParams().compose(RxHelper.<QiToken>handleResult());
+    }
+
+    @Override
+    public Observable<String> getMessageUntreatedCount(long memberId) {
+
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getMessageUntreatedCount(memberId).compose(RxHelper.<String>handleResult());
     }
 
 
     @Override
     public Observable<List<PopItem>> getPromotionModel(long memberId) {
 
-        return Api.getDefault(HostType.GUOSHUAI_HOST).getPopList(memberId).compose(RxHelper.<List<PopItem>>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM).getPopList(memberId).compose(RxHelper.<List<PopItem>>handleResult());
     }
 
     @Override
     public Observable<JsonObject> getH5ConfigInfo() {
-        return Api.getDefault(HostType.H5_CONFIG_HOST).getH5ConfigInfo().compose(RxHelper.<JsonObject>handleResult());
+        return Api.getDefault(HostType.HOST_H5).getH5ConfigInfo().compose(RxHelper.<JsonObject>handleResult());
     }
 
 }

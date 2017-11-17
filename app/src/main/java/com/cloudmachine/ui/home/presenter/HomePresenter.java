@@ -1,8 +1,13 @@
 package com.cloudmachine.ui.home.presenter;
 
+import android.text.TextUtils;
+
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.ForceVBean;
 import com.cloudmachine.bean.HomeBannerBean;
-import com.cloudmachine.bean.UnReadMessage;
+import com.cloudmachine.bean.QiToken;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.QiniuManager;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.contract.HomeContract;
 import com.cloudmachine.ui.home.model.PopItem;
@@ -21,13 +26,14 @@ public class HomePresenter extends HomeContract.Presenter {
 
     @Override
     public void updateUnReadMessage(long memberId) {
-        mRxManage.add(mModel.getMessageUntreatedCount(memberId).subscribe(new RxSubscriber<UnReadMessage>(mContext, false) {
+        mRxManage.add(mModel.getMessageUntreatedCount(memberId).subscribe(new RxSubscriber<String>(mContext, false) {
             @Override
-            protected void _onNext(UnReadMessage unReadMessage) {
-                if (unReadMessage == null) {
+            protected void _onNext(String unReadMessage) {
+                AppLog.print("updateUnReadMessage____onNext___"+unReadMessage);
+                if (TextUtils.isEmpty(unReadMessage)){
                     return;
                 }
-                mView.updateMessageCount(unReadMessage.getCount());
+                mView.updateMessageCount(Integer.parseInt(unReadMessage));
             }
 
             @Override
@@ -105,6 +111,49 @@ public class HomePresenter extends HomeContract.Presenter {
             protected void _onError(String message) {
             }
         }));
+    }
+
+    @Override
+    public void initQinuParams() {
+        mRxManage.add(mModel.initQinuParams().subscribe(new RxSubscriber<QiToken>(mContext) {
+            @Override
+            protected void _onNext(QiToken token) {
+                if (token!=null){
+                    AppLog.print("token__"+token.getUptoken()+", origin__"+token.getOrigin());
+                    QiniuManager.origin=token.getOrigin();
+                    QiniuManager.uptoken=token.getUptoken();
+
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+                AppLog.print("initQinuParams onError__"+message);
+
+            }
+        }));
+    }
+
+    @Override
+    public void forceUpdate() {
+        mRxManage.add(mModel.forceUpdate().subscribe(new RxSubscriber<ForceVBean>(mContext) {
+            @Override
+            protected void _onNext(ForceVBean forceVBean) {
+                   if (forceVBean!=null){
+                       if ((!TextUtils.isEmpty(forceVBean.getVersion()))){
+
+                       }
+                   }else{
+
+                   }
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+
     }
 
 }

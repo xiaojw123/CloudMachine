@@ -67,7 +67,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     private Handler mHandler;
     //	private DeviceInfo deviceInfo;
     private CanBeEditItemView device_name, device_type, device_brand1, device_model, device_year,
-            device_owner, device_phone_number, device_rackId, device_workTime;
+            device_owner, device_phone_number, device_rackId, device_snId, device_workTime;
     //	private int addDeviceType ; //0:查看基本信息  1:新增
     private int status;
     private String deviceType, deviceBrand1, deviceModel;
@@ -91,6 +91,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     private TextView imgTv1, imgTv2, imgTv3;
     private LinearLayout deveimgCotainer;
     CanBeEditItemView licenseNoEiv;
+    ArrayList<String> imgList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,6 +196,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         device_owner = (CanBeEditItemView) findViewById(R.id.device_owner);
         device_phone_number = (CanBeEditItemView) findViewById(R.id.device_phone_number);
         device_rackId = (CanBeEditItemView) findViewById(R.id.device_rackId);
+        device_snId = (CanBeEditItemView) findViewById(R.id.device_snId);
         device_workTime = (CanBeEditItemView) findViewById(R.id.device_workTime);
         if (null != mcDeviceBasicsInfo) {
             licenseNoEiv.setContent(mcDeviceBasicsInfo.getLicense());
@@ -204,13 +206,17 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
             device_model.setContent(mcDeviceBasicsInfo.getModel());
             device_year.setContent(mcDeviceBasicsInfo.getFactoryTime());
             device_rackId.setContent(mcDeviceBasicsInfo.getRackId());
+            if (!TextUtils.isEmpty(mcDeviceBasicsInfo.getSnId())) {
+                device_snId.setVisibility(View.VISIBLE);
+                device_snId.setContent(mcDeviceBasicsInfo.getSnId());
+            }
             device_workTime.setContent(String.valueOf(mcDeviceBasicsInfo.getWorkTime()) + "时");
+            if (!Constants.isNoEditInMcMember(deviceId, mcDeviceBasicsInfo.getType())) {
+                device_name.isArrow(true);
+                device_name.setOnClickListener(this);
+            }
         }
         memberLayout.setOnClickListener(this);
-        if (!Constants.isNoEditInMcMember(deviceId, mcDeviceBasicsInfo.getType())) {
-            device_name.isArrow(true);
-            device_name.setOnClickListener(this);
-        }
             /*device_type.setOnClickListener(this);
             device_brand1.setOnClickListener(this);
 			device_model.setOnClickListener(this);
@@ -284,9 +290,13 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         name_image.setOnClickListener(this);
         engine_image = (ImageView) findViewById(R.id.engine_image);
         engine_image.setOnClickListener(this);
+        if (imgList.size() > 0) {
+            imgList.clear();
+        }
         if (null != mcDeviceBasicsInfo && null != mcDeviceBasicsInfo.getDevicePhoto() && mcDeviceBasicsInfo.getDevicePhoto().length > 0) {
             decive_image_url = mcDeviceBasicsInfo.getDevicePhoto()[0];
             if (!TextUtils.isEmpty(decive_image_url)) {
+                imgList.add(decive_image_url);
                 deveimgCotainer.setVisibility(View.VISIBLE);
                 ImageLoader.getInstance().displayImage(decive_image_url, decive_image,
                         Constants.displayDeviceImageOptions, null);
@@ -296,6 +306,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         if (null != mcDeviceBasicsInfo && null != mcDeviceBasicsInfo.getNameplatePhoto() && mcDeviceBasicsInfo.getNameplatePhoto().length > 0) {
             name_image_url = mcDeviceBasicsInfo.getNameplatePhoto()[0];
             if (!TextUtils.isEmpty(name_image_url)) {
+                imgList.add(name_image_url);
                 deveimgCotainer.setVisibility(View.VISIBLE);
                 ImageLoader.getInstance().displayImage(name_image_url, name_image,
                         Constants.displayDeviceImageOptions, null);
@@ -305,6 +316,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         if (null != mcDeviceBasicsInfo && null != mcDeviceBasicsInfo.getEnginePhoto()) {
             engine_image_url = mcDeviceBasicsInfo.getEnginePhoto();
             if (!TextUtils.isEmpty(engine_image_url)) {
+                imgList.add(engine_image_url);
                 deveimgCotainer.setVisibility(View.VISIBLE);
                 ImageLoader.getInstance().displayImage(engine_image_url, engine_image,
                         Constants.displayDeviceImageOptions, null);
@@ -414,32 +426,35 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 break;
             case R.id.name_image:
 //                Constants.gotoImageBrowerType(this, 1, new String[]{name_image_url}, false, 0);
-                Bundle bundle1 = new Bundle();
-                ArrayList<String> img1List = new ArrayList<>();
-                img1List.add(name_image_url);
-                bundle1.putStringArrayList(BigPicActivity.BIG_PIC_URLS, img1List);
-                Constants.toActivity(this, BigPicActivity.class, bundle1);
-                MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
+                if (imgList != null) {
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putStringArrayList(BigPicActivity.BIG_PIC_URLS, imgList);
+                    bundle1.putInt(BigPicActivity.POSITION, imgList.indexOf(name_image_url));
+                    Constants.toActivity(this, BigPicActivity.class, bundle1);
+                    MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
+                }
 //			addImageType = 1;
 //			photo();
                 break;
             case R.id.decive_image:
 //                Constants.gotoImageBrowerType(this, 1, new String[]{decive_image_url}, false, 0);
-                Bundle bundle2 = new Bundle();
-                ArrayList<String> img2List = new ArrayList<>();
-                img2List.add(name_image_url);
-                bundle2.putStringArrayList(BigPicActivity.BIG_PIC_URLS, img2List);
-                Constants.toActivity(this, BigPicActivity.class, bundle2);
-                MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
+                if (imgList != null) {
+                    Bundle bundle2 = new Bundle();
+                    bundle2.putStringArrayList(BigPicActivity.BIG_PIC_URLS, imgList);
+                    bundle2.putInt(BigPicActivity.POSITION, imgList.indexOf(decive_image_url));
+                    Constants.toActivity(this, BigPicActivity.class, bundle2);
+                    MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
+                }
                 break;
             case R.id.engine_image:
 //                Constants.gotoImageBrowerType(this, 1, new String[]{engine_image_url}, false, 0);
-                Bundle bundle3 = new Bundle();
-                ArrayList<String> img3List = new ArrayList<>();
-                img3List.add(name_image_url);
-                bundle3.putStringArrayList(BigPicActivity.BIG_PIC_URLS, img3List);
-                Constants.toActivity(this, BigPicActivity.class, bundle3);
-                MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
+                if (imgList != null) {
+                    Bundle bundle3 = new Bundle();
+                    bundle3.putStringArrayList(BigPicActivity.BIG_PIC_URLS, imgList);
+                    bundle3.putInt(BigPicActivity.POSITION, imgList.indexOf(engine_image_url));
+                    Constants.toActivity(this, BigPicActivity.class, bundle3);
+                    MobclickAgent.onEvent(mContext, UMengKey.count_machine_watch_lardgeimage);
+                }
 //			addImageType = 2;
 //			photo();
                 break;
@@ -598,7 +613,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                     case RESULT_OK:
                         Bundle bundle = data.getExtras();
                         int editType = bundle.getInt(Constants.P_EDITTYPE);
-                        int itemType = bundle.getInt(Constants.P_ITEMTYPE,-1);
+                        int itemType = bundle.getInt(Constants.P_ITEMTYPE, -1);
                         switch (itemType) {
                             case Constants.E_ITEMS_deviceName:
                                 String name = bundle.getString(Constants.P_EDITRESULTSTRING);
@@ -885,6 +900,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
             bundle.putInt(Constants.P_ITEMTYPE, itemType);
             bundle.putString(Constants.P_DEVICEID, String.valueOf(mcDeviceBasicsInfo.getId()));
             bundle.putString(Constants.P_DEVICENAME, mcDeviceBasicsInfo.getDeviceName());
+            bundle.putString(Constants.PAGET_TYPE, Constants.IPageType.PAGE_DEVICE_INFO);
             Constants.toActivityForR(this, EditLayoutActivity.class, bundle, 0);
         } else {
             view.isEdit(true);
@@ -909,6 +925,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         bundle.putInt(Constants.P_ITEMTYPE, itemType);
         bundle.putInt(Constants.P_EDIT_LIST_VALUE1, v1);
         bundle.putInt(Constants.P_EDIT_LIST_VALUE2, v2);
+        bundle.putString(Constants.PAGET_TYPE, Constants.IPageType.PAGE_DEVICE_INFO);
         Constants.toActivityForR(this, EditLayoutActivity.class, bundle, 0);
     }
 

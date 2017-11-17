@@ -3,8 +3,9 @@ package com.cloudmachine.ui.home.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
+import com.cloudmachine.bean.ForceVBean;
 import com.cloudmachine.bean.HomeBannerBean;
-import com.cloudmachine.bean.UnReadMessage;
+import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.ui.home.model.PopItem;
 import com.google.gson.JsonObject;
 
@@ -30,25 +31,37 @@ public interface HomeContract {
         void updateH5View();
 
 
-
     }
 
     interface Model extends BaseModel {
-        Observable<UnReadMessage> getMessageUntreatedCount(long memberId);
+        Observable<ForceVBean> forceUpdate();
+
+        Observable<QiToken> initQinuParams();
+
+        Observable<String> getMessageUntreatedCount(long memberId);
 
         Observable<List<PopItem>> getPromotionModel(long memberId);
-        Observable<JsonObject>   getH5ConfigInfo();
+
+        Observable<JsonObject> getH5ConfigInfo();
+
         Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo();
 
     }
 
-     abstract class Presenter extends BasePresenter<HomeContract.View, HomeContract.Model> {
+    abstract class Presenter extends BasePresenter<HomeContract.View, HomeContract.Model> {
         public abstract void updateUnReadMessage(long memberId);
 
 
         public abstract void getPromotionInfo(long memberId);
-        public abstract  void getH5ConfigInfo();
+
+        public abstract void getH5ConfigInfo();
+
         public abstract void getHomeBannerInfo();
+
+        public abstract void initQinuParams();
+
+        public abstract void forceUpdate();
+
 
     }
 

@@ -15,6 +15,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.AutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.utils.AppManager;
+import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.LoadingDialog;
 import com.cloudmachine.utils.StatusBarCompat;
 import com.cloudmachine.utils.TUtil;
@@ -28,6 +29,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     public T mPresenter;
     public E mModel;
     public Context mContext;
+    private boolean isOpen=true;
 
 
     @Override
@@ -49,6 +51,9 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
+    protected String getPageType(){
+        return getIntent().getStringExtra(Constants.PAGET_TYPE);
+    }
 
     /*********************子类实现*****************************/
     //简单页面无需mvp就不用管此方法即可,完美兼容各种实际场景的变通
@@ -78,7 +83,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 //            params.topMargin = 50;
 //        }
 
-		StatusBarCompat.setStatusBarColor(this, ContextCompat.getColor(this, R.color.cor10));
+        StatusBarCompat.setStatusBarColor(this, ContextCompat.getColor(this, R.color.cor10));
     }
 
     public void setStatusbarColor(String rgb) {
@@ -97,17 +102,25 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 
     }
 
+    public void setUPageStatistics(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onPageStart(getClass().getName());
+        if (isOpen) {
+            MobclickAgent.onPageStart(getClass().getName());
+        }
         MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPageEnd(getClass().getName());
+        if (isOpen) {
+            MobclickAgent.onPageEnd(getClass().getName());
+        }
         MobclickAgent.onPause(this);
     }
 

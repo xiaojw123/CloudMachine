@@ -46,5 +46,9 @@ public class VersionInfo implements Serializable{
 	public void setLink(String link) {
 		this.link = link;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "VersionInfo【mustUpdate="+mustUpdate+", system="+system+", version="+version+", message="+message+", link="+link+"】";
+	}
 }

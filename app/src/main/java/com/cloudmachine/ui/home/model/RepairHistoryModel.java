@@ -31,7 +31,7 @@ public class RepairHistoryModel implements RepairHistoryContract.Model {
         } else {
             paramsMap.put("deviceId", String.valueOf(deviceId));
         }
-        return Api.getDefault(HostType.CLOUDM_HOST).getRepairList(paramsMap).compose(RxHelper.<RepairListInfo>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getRepairList(paramsMap).compose(RxHelper.<RepairListInfo>handleResult());
 
     }
 }

@@ -78,6 +78,15 @@
                         cloudm:name="机号" />
 
                     <com.cloudmachine.autolayout.widgets.CanBeEditItemView
+                        android:id="@+id/device_snId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        cloudm:hint=""
+                        cloudm:name="SN号"
+                        android:visibility="gone"
+                        />
+
+                    <com.cloudmachine.autolayout.widgets.CanBeEditItemView
                         android:id="@+id/device_year"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

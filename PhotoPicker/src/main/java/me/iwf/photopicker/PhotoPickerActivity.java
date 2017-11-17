@@ -55,7 +55,6 @@ public class PhotoPickerActivity extends AppCompatActivity {
     setShowGif(showGif);
 
     setContentView(R.layout.__picker_activity_photo_picker);
-
     Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(mToolbar);
     setTitle(R.string.__picker_title);

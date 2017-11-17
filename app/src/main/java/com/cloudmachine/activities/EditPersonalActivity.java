@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,8 +19,8 @@ import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.URLs;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
@@ -71,9 +72,16 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
         switch (v.getId()) {
             case R.id.info_save:
                 String edtText = info_ed.getText().toString().trim();
-                if (!info.equals(Constants.toViewString(edtText))) {
+                if (!TextUtils.isEmpty(edtText)) {
                     key = "nickName";
-                    new saveInfoAsync().execute();
+                    int len = edtText.length();
+                    if (len >= 2 && len <= 24) {
+                        new saveInfoAsync(edtText).execute();
+                    } else {
+                        ToastUtils.showToast(this, "请输入2-24位汉字、字母、数字组合");
+                    }
+                } else {
+                    ToastUtils.showToast(this, "请输入2-24位汉字、字母、数字组合");
                 }
                 break;
         }
@@ -110,11 +118,13 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
     public class saveInfoAsync extends AsyncTask<String, String, String> {
         String nickName;
 
+        public saveInfoAsync(String nickName) {
+            this.nickName = nickName;
+        }
+
         @Override
         protected void onPreExecute() {
             show();
-            nickName = info_ed.getText()
-                    .toString();
         }
 
         @Override

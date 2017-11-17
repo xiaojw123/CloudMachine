@@ -64,6 +64,44 @@ public class UserHelper {
 
 
     private static SharedPreferences loginLogSp;
-    private static String loginLOGO = "logo_sp";
+    private static SharedPreferences GuideTagSp;
+    private static final String loginLOGO = "logo_sp";
+    private static final String GuideTag = "guide_tag";
+    private static final String HConfigGuideTag = "guide_tag_h_config";
+
+    public static void insertGuideTag(Context context, boolean flag) {
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
+        }
+        SharedPreferences.Editor editor = GuideTagSp.edit();
+        editor.putBoolean(GuideTag, flag);
+        editor.commit();
+    }
+    public static void insertHConfigGuideTag(Context context, boolean flag) {
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
+        }
+        SharedPreferences.Editor editor = GuideTagSp.edit();
+        editor.putBoolean(HConfigGuideTag, flag);
+        editor.commit();
+    }
+
+
+
+
+    public static boolean getGuideTag(Context context) {
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
+        }
+        return GuideTagSp.getBoolean(GuideTag, false);
+    }
+
+    public static boolean getHConfigGuideTag(Context context) {
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
+        }
+        return GuideTagSp.getBoolean(HConfigGuideTag, false);
+    }
+
 
 }

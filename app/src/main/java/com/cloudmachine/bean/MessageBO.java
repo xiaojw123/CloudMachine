@@ -22,7 +22,17 @@ public class MessageBO {
 	private String content;
 	private String message;
 	private String url;
+
+	public String getInviterMobile() {
+		return inviterMobile;
+	}
+
+	public void setInviterMobile(String inviterMobile) {
+		this.inviterMobile = inviterMobile;
+	}
+
 	private int count;
+	private String inviterMobile;
 
 	public String getUrl() {
 		return url;

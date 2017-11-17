@@ -36,14 +36,12 @@ import java.util.List;
 public class CWPayAsync extends ATask {
 
     private Handler handler;
-    private Context context;
     private String payType;
     private String orderNum;
     private String userCouponId;
 
     public CWPayAsync(Handler handler, Context context, String payType, String orderNum, String userCouponId) {
         this.handler = handler;
-        this.context = context;
         this.payType = payType;
         this.orderNum = orderNum;
         this.userCouponId = userCouponId;
@@ -80,40 +78,26 @@ public class CWPayAsync extends ATask {
 
         Message msg = Message.obtain();
         if (isSuccess) {
-            try {
-                if (payType.equals(RepairPayDetailsActivity.PAY_TYPE_ALIPAY)) {
-                    Gson gson = new Gson();
-                    BaseBO<AliPayBean> bo = gson.fromJson(result, new TypeToken<BaseBO<AliPayBean>>() {
-                    }.getType());
-                    msg.what = Constants.HANDLER_GETCWPAY_SUCCESS;
-                    msg.obj = bo.getResult();
-                    handler.sendMessage(msg);
-                } else if (payType.equals(RepairPayDetailsActivity.PAY_TYPE_WECHAT)) {
-                    Gson gson = new Gson();
-                    BaseBO<WeiXinEntityBean> bo = gson.fromJson(result, new TypeToken<BaseBO<WeiXinEntityBean>>() {
-                    }.getType());
-                    msg.what = Constants.HANDLER_GETCWPAY_SUCCESS;
-                    msg.obj = bo.getResult();
-                    handler.sendMessage(msg);
-                }
-
-                return;
-            } catch (Exception e) {
-            }
-
-            //缓存数据第4步
-            if (!isHaveCache) {
-                msg.what = Constants.HANDLER_GETCWPAY_FAILD;
-                msg.obj = message;
+            if (payType.equals(RepairPayDetailsActivity.PAY_TYPE_ALIPAY)) {
+                Gson gson = new Gson();
+                BaseBO<AliPayBean> bo = gson.fromJson(result, new TypeToken<BaseBO<AliPayBean>>() {
+                }.getType());
+                msg.what = Constants.HANDLER_GETCWPAY_SUCCESS;
+                msg.obj = bo.getResult();
+                handler.sendMessage(msg);
+            } else if (payType.equals(RepairPayDetailsActivity.PAY_TYPE_WECHAT)) {
+                Gson gson = new Gson();
+                BaseBO<WeiXinEntityBean> bo = gson.fromJson(result, new TypeToken<BaseBO<WeiXinEntityBean>>() {
+                }.getType());
+                msg.what = Constants.HANDLER_GETCWPAY_SUCCESS;
+                msg.obj = bo.getResult();
                 handler.sendMessage(msg);
             }
-        }
-        /*//缓存数据第4步
-        if(!isHaveCache){
-            msg.what = Constants.HANDLER_GETYUNBOXPAY_FAILD;
+        } else {
+            msg.what = Constants.HANDLER_GETCWPAY_FAILD;
             msg.obj = message;
             handler.sendMessage(msg);
-        }*/
+        }
     }
 
 

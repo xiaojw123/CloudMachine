@@ -270,6 +270,7 @@
     <dimen name="dimen_size_46">46dp</dimen>
     <dimen name="dimen_size_69">69dp</dimen>
     <dimen name="dimen_size_361">361dp</dimen>
+    <dimen name="dimen_size_160">160dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
 
@@ -697,6 +698,10 @@
     <dimen name="read_point_width">1dp</dimen>
     <dimen name="dimen_size_26">26dp</dimen>
     <dimen name="dimen_size_35">35dp</dimen>
+    <dimen name="dimen_size_33">33dp</dimen>
+    <dimen name="dimen_size_153">153dp</dimen>
+    <dimen name="dimen_size_280">280dp</dimen>
+    <dimen name="dimen_size_250">250dp</dimen>
 
 
     <!--xhdpi 1280*720-->

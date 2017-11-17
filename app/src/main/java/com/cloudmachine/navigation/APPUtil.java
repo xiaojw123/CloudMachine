@@ -39,7 +39,10 @@ public class APPUtil {
 			loc2.setAddress("Ŀ�ĵ�");
 		}
 		try {
-			Intent intent = Intent.getIntent("intent://map/direction?origin=latlng:"+loc1.getStringLatLng()+"|name:"+loc1.getAddress()+"&destination=latlng:"+loc2.getStringLatLng()+"|name:"+loc2.getAddress()+"&mode=driving&src=������׿Ƽ�|CC����-����#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end");
+//			Intent intent = Intent.getIntent("intent://map/direction?origin=latlng:"+loc1.getStringLatLng()+"|name:"+loc1.getAddress()+"&destination=latlng:"+loc2.getStringLatLng()+"|name:"+loc2.getAddress()+"&mode=driving&src=������׿Ƽ�|CC����-����#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end");
+//			Intent intent = Intent.getIntent("intent://map/navi?origin=latlng:"+loc1.getStringLatLng()+"|name:"+loc1.getAddress()+"&destination=latlng:"+loc2.getStringLatLng()+"|name:"+loc2.getAddress()+"&mode=driving&src=������׿Ƽ�|CC����-����#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end");
+			Intent intent=new Intent();
+			intent.setData(Uri.parse("baidumap://map/navi?location="+loc2.getLat()+","+loc2.getLng()));
 			context.startActivity(intent);
 		} catch (Exception e) {
 			e.printStackTrace();

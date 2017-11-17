@@ -705,14 +705,22 @@ public class FileUtils {
         return null;
     }
 
-    public static void clearComprressFile(){
-        File f = new File(SDPATH);
-        if (f.exists()){
-            for (File file:f.listFiles()){
-                file.delete();
+    public static void clearComprressFile() {
+        try {
+            File f = new File(SDPATH);
+            if (f.exists()) {
+                File[] files = f.listFiles();
+                if (files != null && files.length > 0) {
+                    for (File file : files) {
+                        if (file != null) {
+                            file.delete();
+                        }
+                    }
+                }
             }
-        }
+        } catch (Exception e) {
 
+        }
     }
 
     public static File saveBitmap2File(Context context, Bitmap bm, String picName) {

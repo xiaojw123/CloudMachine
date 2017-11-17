@@ -17,7 +17,7 @@ import rx.Observable;
 public class ActvitiesModel  implements ActivitesContract.Model{
     @Override
     public Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo() {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).GetHomeBannerInfo(1,0)
+        return Api.getDefault(HostType.HOST_CLOUDM).GetHomeBannerInfo(1,0)
                 .compose(RxHelper.<ArrayList<HomeBannerBean>>handleResult());
     }
 }

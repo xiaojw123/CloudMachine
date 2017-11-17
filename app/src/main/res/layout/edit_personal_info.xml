@@ -37,7 +37,7 @@
         android:hint=""
         android:padding="10dp"
         android:textColor="@color/public_black"
-        android:textSize="@dimen/public_textsize1" 
+        android:textSize="@dimen/public_textsize1"
         android:background="@color/public_white"
         
         />

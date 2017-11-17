@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:paddingLeft="@dimen/pad2"
-        android:paddingRight="@dimen/pad2"
+        android:paddingRight="@dimen/dimen_size_10"
         >
 
 
@@ -36,16 +36,36 @@
             />
 
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/item_message_img"
+            >
+
+
+
         <TextView
             android:id="@+id/item_message_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_size_10"
-            android:layout_toRightOf="@+id/item_message_img"
             android:singleLine="true"
             android:textSize="@dimen/siz3"
-            android:layout_alignTop="@+id/item_message_img"
+            android:layout_marginTop="@dimen/dimen_size_1"
             android:textColor="@color/cor8" />
+        <TextView
+            android:id="@+id/item_message_phone"
+            android:singleLine="true"
+            android:textSize="@dimen/siz3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/c_67"
+            android:layout_marginLeft="3dp"
+            android:layout_alignTop="@+id/item_message_title"
+            android:layout_toRightOf="@+id/item_message_title"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/item_message_content"
@@ -53,9 +73,10 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/item_message_title"
             android:layout_below="@+id/item_message_title"
-            android:layout_marginTop="@dimen/dimen_size_12"
-            android:singleLine="true"
+            android:layout_marginTop="@dimen/dimen_size_3"
             android:textSize="@dimen/siz4"
+            android:ellipsize="end"
+            android:maxLines="3"
             android:textColor="@color/cor10" />
 
 
@@ -66,8 +87,9 @@
             android:layout_alignParentRight="true"
             android:textColor="@color/cor11"
             android:textSize="@dimen/siz7"
-            android:layout_marginTop="@dimen/pad2"
             />
+
+</RelativeLayout>
 
 
     </RelativeLayout>

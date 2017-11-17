@@ -21,6 +21,8 @@ public class DeviceHoler extends BaseHolder<McDeviceInfo> {
     TextView itmeDeivesStatus;
     @BindView(R.id.item_device_loc)
     TextView itemDeviceLoc;
+    @BindView(R.id.item_device_hc)
+    TextView itemDeviceHc;
 
     public DeviceHoler(View itemView) {
         super(itemView);
@@ -32,6 +34,11 @@ public class DeviceHoler extends BaseHolder<McDeviceInfo> {
             return;
         }
         itemDeviceName.setText(item.getName());
+        if (CommonUtils.isHConfig(item.getSnId())){
+            itemDeviceHc.setVisibility(View.VISIBLE);
+        }else{
+            itemDeviceHc.setVisibility(View.GONE);
+        }
         McDeviceLocation location = item.getLocation();
         if (location != null) {
             itemDeviceLoc.setText(location.getPosition());

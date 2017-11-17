@@ -74,6 +74,7 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
     String itemName;
     String titleName;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -182,19 +183,25 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
         if (!TextUtils.isEmpty(titleName)) {
             title_layout.setTitleName(titleName);
         }
-        title_layout.setRightClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                name = text_edit.getText().toString();
-                if (TextUtils.isEmpty(name)) {
-                    ToastUtils.showToast(EditLayoutActivity.this, "名称不能为空");
-                    return;
+        if (Constants.IPageType.PAGE_DEVICE_INFO.equals(getPageType())) {
+            title_layout.setRightText("保存", new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    name = text_edit.getText().toString();
+                    if (TextUtils.isEmpty(name)) {
+                        ToastUtils.showToast(EditLayoutActivity.this, "名称不能为空");
+                        return;
+                    }
+                    int len = name.length();
+                    if (len >= 2 && len <= 12) {
+                        UpdateDeviceInfoTask task = new UpdateDeviceInfoTask(mHandler, UserHelper.getMemberId(EditLayoutActivity.this), deviceID, name);
+                        task.execute();
+                    } else {
+                        ToastUtils.showToast(EditLayoutActivity.this, "请输入2~12位汉字、字母、数字组合");
+                    }
                 }
-                UpdateDeviceInfoTask task = new UpdateDeviceInfoTask(mHandler, UserHelper.getMemberId(EditLayoutActivity.this), deviceID, name);
-                task.execute();
-            }
-        });
+            });
+        }
     }
 
 

@@ -6,14 +6,15 @@ import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.CheckNumBean;
+import com.cloudmachine.bean.ForceVBean;
 import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.MessageBO;
+import com.cloudmachine.bean.PickItemBean;
+import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.bean.RepairListInfo;
-import com.cloudmachine.bean.ScoreInfo;
-import com.cloudmachine.bean.UnReadMessage;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.ui.home.model.CouponBean;
 import com.cloudmachine.ui.home.model.OrderCouponBean;
@@ -27,12 +28,14 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -48,10 +51,29 @@ import rx.Observable;
  */
 
 public interface ApiService {
+    @GET("{key}")
+    Observable<ResponseBody>  downloadImg(@Path("key") String key);
+
+    @GET("device/getImei")
+    Observable<BaseRespose<JsonObject>> getImei(@Query("memberId") long memberId,@Query("sn") String sn);
+
+
+    @GET("token/token/pageList")
+    Observable<BaseRespose<List<PickItemBean>>> getQnDtuCameraImages(@Query("prefix") String prefix, @Query("page") int page, @Query("size") int pagesize, @Query("w") int width);
+
+
+    @GET("version/forceUpdate?system=Android")
+    Observable<BaseRespose<ForceVBean>> forceUpdate();
+
+    @GET("n/api_qn/uptoken")
+    Observable<BaseRespose<QiToken>> getQinuParams();
+
     @POST("member/registerNew")
     Observable<BaseRespose<JsonObject>> register(@FieldMap Map<String, String> parmasMap);
+
     @POST("member/forgetPwd")
     Observable<BaseRespose<JsonObject>> forgetPassword(@Field("mobile") String mobile, @Field("pwd") String pwd, @Field("code") String code);
+
     @POST("member/getCode")
     Observable<BaseRespose<JsonObject>> getCode(@Field("mobile") String mobile, @Field("type") String type);
 
@@ -142,6 +164,13 @@ public interface ApiService {
     @GET("device/getDevice")
     Observable<BaseRespose<McDeviceBasicsInfo>> getDeviceInfo(@Query("deviceId") String deviceId);
 
+    @GET("device/getDeviceNowData")
+    Observable<BaseRespose<McDeviceInfo>> getDeviceNowData(@Query("deviceId") String deviceId, @Query("memberId") long memberId);
+
+    @GET("device/getDeviceNowData")
+    Observable<BaseRespose<McDeviceInfo>> getDeviceNowData(@Query("deviceId") String deviceId);
+
+
     @GET("device/getDeviceByKey")
     Observable<BaseRespose<List<McDeviceInfo>>> getDevices(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId, @Query("type") int type);
 
@@ -197,8 +226,8 @@ public interface ApiService {
      * @return
      */
 
-    @GET("/device/getMessageUntreatedCount")
-    Observable<BaseRespose<UnReadMessage>> getMessageUntreatedCount(@Query("memberId") long memberId);
+    @GET("device/getMessageUntreatedCount")
+    Observable<BaseRespose<String>> getMessageUntreatedCount(@Query("memberId") long memberId);
 
 
     /**
@@ -262,8 +291,8 @@ public interface ApiService {
      * @param memberId
      * @return
      */
-    @GET("member/getMemberInfoById")
-    Observable<BaseRespose<Member>> getMemberInfoById(@Query("memberId") Long memberId);
+//    @GET("member/getMemberInfoById")
+//    Observable<BaseRespose<Member>> getMemberInfoById(@Query("memberId") Long memberId);
 
     /**
      * 获取用户积分
@@ -271,8 +300,8 @@ public interface ApiService {
      * @param memberId
      * @return
      */
-    @GET("member/userScoreInfo")
-    Observable<BaseRespose<ScoreInfo>> getUserScoreInfo(@Query("memberId") Long memberId);
+//    @GET("member/userScoreInfo")
+//    Observable<BaseRespose<ScoreInfo>> getUserScoreInfo(@Query("memberId") Long memberId);
 
     /**
      * 修改用户信息
@@ -324,9 +353,9 @@ public interface ApiService {
      *
      * @return
      */
-    @GET("device/getSystemMessages")
-    Observable<BaseRespose<List<MessageBO>>> getSystemMessage(@Query("memberId") Long memberId
-            , @Query("pageNo") int pageNo, @Query("pageSize") int pageSize);
+//    @GET("device/getSystemMessages")
+//    Observable<BaseRespose<List<MessageBO>>> getSystemMessage(@Query("memberId") Long memberId
+//            , @Query("pageNo") int pageNo, @Query("pageSize") int pageSize);
 
 }
 

@@ -73,18 +73,13 @@ public class DevicesMemberListAsync extends ATask {
 
         Message msg = Message.obtain();
         if (isSuccess) {
-            try {
-                Gson gson = new Gson();
-                BaseBO<List<MemberInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<MemberInfo>>>() {
-                }.getType());
-                msg.what = Constants.HANDLER_GETDEVICEMEMBER_SUCCESS;
-                msg.obj = baseBO.getResult();
-                handler.sendMessage(msg);
-                return;
-            } catch (Exception e) {
-            }
-        }
-        if (!isHaveCache) {
+            Gson gson = new Gson();
+            BaseBO<List<MemberInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<MemberInfo>>>() {
+            }.getType());
+            msg.what = Constants.HANDLER_GETDEVICEMEMBER_SUCCESS;
+            msg.obj = baseBO.getResult();
+            handler.sendMessage(msg);
+        } else {
             msg.what = Constants.HANDLER_GETDEVICEMEMBER_FAIL;
             msg.obj = message;
             handler.sendMessage(msg);

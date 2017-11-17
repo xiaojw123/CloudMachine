@@ -1,5 +1,6 @@
 package com.cloudmachine.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,12 +22,35 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by xiaojw on 2017/5/20.
  */
 
 public class CommonUtils {
+    public static boolean isHConfig(String sn){
+        if (!TextUtils.isEmpty(sn)){
+            if (sn.length()>=9){
+                if (!sn.substring(2,5).equals("2016")&&sn.charAt(8)=='A'){
+                    return  true;
+                }
+            }
+
+        }
+        return false;
+
+    }
+
+    public static String getPastDate(int offset){
+        Calendar c=Calendar.getInstance();
+        c.set(Calendar.DAY_OF_YEAR,c.get(Calendar.DAY_OF_YEAR)-offset);
+        Date today=c.getTime();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        return  sdf.format(today);
+    }
 
     public static double subtractDouble(double a,double b){
         BigDecimal aDecimal=new BigDecimal(Double.toString(a));
@@ -42,6 +66,19 @@ public class CommonUtils {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    public static  void showFinishPermissionDialog(final  Context context){
+        CustomDialog.Builder builder=new CustomDialog.Builder(context);
+        builder.setMessage("需要开启定位服务，请到设置->找到位置权限，打开定位服务");
+        builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ((Activity)context).finish();
             }
         });
         builder.create().show();
@@ -170,7 +207,7 @@ public class CommonUtils {
         // 2.2.1
         int len1 = onlineVersion.length();
         int len2 = curVerision.length();
-        if (len1 < len2 && curVerision.contains(onlineVersion)) {
+        if (len1 < len2 &&curVerision.indexOf(onlineVersion)==0) {
             return false;
         }
         if (len1 > len2

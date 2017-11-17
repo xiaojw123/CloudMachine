@@ -518,10 +518,11 @@
 
     <!--底部弹窗进入退出时动画-->
     <style name="counponDialog" parent="android:Animation">
-        <item name="@android:windowEnterAnimation">@anim/dialog_enter</item>
-        //进入时的动画
-        <item name="@android:windowExitAnimation">@anim/dialog_exit</item>
-        //退出时的动画
+        <!--TODO:AS适配-->
+        <!--<item name="@android:windowEnterAnimation">@anim/dialog_enter</item>-->
+        <!--//进入时的动画-->
+        <!--<item name="@android:windowExitAnimation">@anim/dialog_exit</item>-->
+        <!--//退出时的动画-->
     </style>
 
 

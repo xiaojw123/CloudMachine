@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,6 +38,8 @@ public class CustomDialog extends Dialog {
         private TextView mNegativeBtn;
         private TextView mMessageTv;
         private LinearLayout mChooseBtnLayout;
+        private ImageView mAlertImg;
+        private int resId;
 
         public Builder(Context context) {
             this.context = context;
@@ -62,15 +65,20 @@ public class CustomDialog extends Dialog {
         }
 
         private void initContentView(final CustomDialog dialog, View layout) {
+            mAlertImg = (ImageView) layout.findViewById(R.id.alert_img);
             mNetrualBtn = (TextView) layout.findViewById(R.id.netrualButton);
             mPositvieBtn = (TextView) layout.findViewById(R.id.positiveButton);
             mNegativeBtn = (TextView) layout.findViewById(R.id.negativeButton);
             mMessageTv = (TextView) layout.findViewById(R.id.dialog_message);
             mChooseBtnLayout = (LinearLayout) layout.findViewById(R.id.chooseBtnCotainer);
             // set the content message
+            if (resId != 0) {
+                mAlertImg.setBackgroundResource(resId);
+            }
             if (message != null) {
                 mMessageTv.setText(message);
             }
+
             if (netrualButtonText != null) {
                 mNetrualBtn.setVisibility(View.VISIBLE);
                 mChooseBtnLayout.setVisibility(View.GONE);
@@ -149,6 +157,11 @@ public class CustomDialog extends Dialog {
             this.netrualButtonText = (String) context
                     .getText(nectrualButtonText);
             this.netrualButtonClickListener = listener;
+            return this;
+        }
+
+        public Builder setAlertIcon(int resId) {
+            this.resId = resId;
             return this;
         }
 

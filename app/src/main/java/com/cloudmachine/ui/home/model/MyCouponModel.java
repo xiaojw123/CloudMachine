@@ -14,16 +14,16 @@ import rx.Observable;
 public class MyCouponModel implements MyCouponContract.Model {
     @Override
     public Observable<CouponBean> getAvaildCouponList(long memberid) {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).getAvalidCouponList(memberid).compose(RxHelper.<CouponBean>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM).getAvalidCouponList(memberid).compose(RxHelper.<CouponBean>handleResult());
     }
 
     @Override
     public Observable<CouponBean> getInavaildCouponList(long memberid) {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).getInvaildCouponList(memberid).compose(RxHelper.<CouponBean>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM).getInvaildCouponList(memberid).compose(RxHelper.<CouponBean>handleResult());
     }
 
     @Override
     public Observable<CouponBean> getMyCouponDetailList(long memberid, int couponBaseId) {
-        return Api.getDefault(HostType.GUOSHUAI_HOST).getMyCouponDetailList(memberid,couponBaseId).compose(RxHelper.<CouponBean>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM).getMyCouponDetailList(memberid,couponBaseId).compose(RxHelper.<CouponBean>handleResult());
     }
 }

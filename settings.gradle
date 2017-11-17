@@ -1,1 +1,1 @@
-include ':app', ':toasty', ':PhotoPicker'
+include ':app', ':toasty', ':PhotoPicker', ':xrecyclerview'
