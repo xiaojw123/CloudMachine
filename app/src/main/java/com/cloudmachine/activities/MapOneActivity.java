@@ -122,7 +122,6 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_one);
         initView(savedInstanceState);
-        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_FENCE);
     }
 
     @Override
@@ -136,6 +135,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         // TODO Auto-generated method stub
         //MobclickAgent.onPageStart(UMengKey.time_machine_fence);
         super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_FENCE);
         mapView.onResume();
     }
 

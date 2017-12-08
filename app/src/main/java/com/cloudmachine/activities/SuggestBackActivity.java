@@ -43,7 +43,6 @@ OnClickListener, Callback{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.suggestionback);
-		MobclickAgent.onEvent(SuggestBackActivity.this, MobEvent.SETTING_FEEDBACK);
 		mContext = this;
 		mHandler = new Handler(this);
 		imageLoader.init(ImageLoaderConfiguration.createDefault(this));
@@ -74,6 +73,7 @@ OnClickListener, Callback{
 	protected void onResume() {
 		//MobclickAgent.onPageStart(UMengKey.time_setting_feedback);
 		super.onResume();
+		MobclickAgent.onEvent(SuggestBackActivity.this, MobEvent.SETTING_FEEDBACK);
 	}
 
 	@Override

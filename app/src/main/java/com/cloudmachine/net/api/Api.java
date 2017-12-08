@@ -164,85 +164,8 @@ public class Api {
                 .baseUrl(ApiConstants.getHost(hostType))
                 .build();
         movieService = retrofit.create(ApiService.class);
-
     }
 
-
-    public Api(String url) {
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
-        //设置拦截日志，拦截请求体
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
-        //缓存
-        File cacheFile = new File(MyApplication.getAppContext().getCacheDir(), "cache");
-        Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
-        Interceptor headerInterceptor = new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request build = chain.request().newBuilder()
-                        .addHeader("Content-Type", "application/json")
-                        .addHeader("osPlatform", "Android")
-                        .addHeader("osVersion", VersionU.getVersionName())
-                        .build();
-                return chain.proceed(build);
-            }
-        };
-
-        // Create a trust manager that does not validate certificate chains
-        final TrustManager[] trustAllCerts = new TrustManager[]{
-                new X509TrustManager() {
-                    @Override
-                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                    }
-
-                    @Override
-                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                    }
-
-                    @Override
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return new java.security.cert.X509Certificate[]{};
-                    }
-                }
-        };
-
-        try {
-            // Install the all-trusting trust manager
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-            socketFactory = sslContext.getSocketFactory();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.readTimeout(READ_TIME_OUT, TimeUnit.MILLISECONDS)
-                .connectTimeout(CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
-                .addInterceptor(mRewriteCacheControlInterceptor)
-                .addNetworkInterceptor(mRewriteCacheControlInterceptor)
-                .cache(cache)
-                .sslSocketFactory(socketFactory)
-                .hostnameVerifier(new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String hostname, SSLSession session) {
-                        return true;
-                    }
-                });
-        if (BuildConfig.DEBUG) {
-            builder.addInterceptor(headerInterceptor);
-            builder.addInterceptor(logInterceptor);
-        }
-        okHttpClient = builder.build();
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").serializeNulls().create();
-        retrofit = new Retrofit.Builder()
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(url)
-                .build();
-        movieService = retrofit.create(ApiService.class);
-
-    }
 
     /**
      * @param hostType NETEASE_NEWS_VIDEO：1 （新闻，视频），GANK_GIRL_PHOTO：2（图片新闻）;

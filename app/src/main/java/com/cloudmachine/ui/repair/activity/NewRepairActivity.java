@@ -154,6 +154,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     protected void onResume() {
         //MobclickAgent.onPageStart(UMengKey.time_repair_create);
         super.onResume();
+        MobclickAgent.onEvent(NewRepairActivity.this, MobEvent.TIME_REPAIR_CREATE);
     }
 
     @Override
@@ -274,7 +275,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     private OnClickListener btnSubmitListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            MobclickAgent.onEvent(NewRepairActivity.this, MobEvent.TIME_REPAIR_CREATE);
             submitRepairInfo();
         }
     };

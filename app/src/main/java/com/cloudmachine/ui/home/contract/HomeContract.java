@@ -20,7 +20,7 @@ import rx.Observable;
 
 public interface HomeContract {
     interface View extends BaseView {
-
+        void updateWalletAmountView(double walletAmount,double depositAmount);
         void updateMessageCount(int count);
 
 
@@ -29,11 +29,12 @@ public interface HomeContract {
         void updateActivitySize(int count);
 
         void updateH5View();
-
-
+        void updateOrderView(boolean hasOrder);
     }
 
     interface Model extends BaseModel {
+        Observable<JsonObject> getWalletAmount(long memberId);
+
         Observable<ForceVBean> forceUpdate();
 
         Observable<QiToken> initQinuParams();
@@ -45,10 +46,13 @@ public interface HomeContract {
         Observable<JsonObject> getH5ConfigInfo();
 
         Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo();
+        Observable<Integer> getCountByStatus(long memberId,int status);
 
     }
 
     abstract class Presenter extends BasePresenter<HomeContract.View, HomeContract.Model> {
+        public abstract void getWalletAmount(long memberId);
+
         public abstract void updateUnReadMessage(long memberId);
 
 
@@ -61,6 +65,7 @@ public interface HomeContract {
         public abstract void initQinuParams();
 
         public abstract void forceUpdate();
+        public abstract void getCountByStatus(long memberId,int status);
 
 
     }

@@ -6,6 +6,7 @@ import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.CheckNumBean;
+import com.cloudmachine.bean.DepositItem;
 import com.cloudmachine.bean.ForceVBean;
 import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
@@ -15,6 +16,7 @@ import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.bean.PickItemBean;
 import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.bean.RepairListInfo;
+import com.cloudmachine.bean.ResonItem;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.ui.home.model.CouponBean;
 import com.cloudmachine.ui.home.model.OrderCouponBean;
@@ -38,6 +40,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -49,13 +52,57 @@ import rx.Observable;
  * 修改时间：2017/3/12 下午6:19
  * 修改备注：
  */
-
 public interface ApiService {
+/**
+ * status 订单状态 0：待支付 1：已支付 2：退款审核 3：已退款
+ */
+    @GET("app/pay/getCountByStatus")
+    Observable<BaseRespose<Integer>> getCountByStatus(@Query("memberId") long memberId,@Query("status") int status);
+
+    @GET("app/pay/cashOut")
+    Observable<BaseRespose> cashOut(@Query("memberId") long memberId,@Query("type") int type);
+
+    @GET("app/pay/walletAmount")
+    Observable<BaseRespose<JsonObject>> getWalletAmount(@Query("memberId") long memberId);
+
+    @GET("app/pay/getIdentifyCode")
+    Observable<BaseRespose> getIdentifyCode(@Query("mobile") String mobile,@Query("code") String code);
+    /**
+     * @param memberId 用户id
+     * @param type 类型  10:微信 11：支付宝
+     */
+    @GET("app/pay/Unbundled")
+    Observable<BaseRespose>  unbundled(@Query("memberId") long memberId,@Query("type") int type);
+
+    @GET("app/pay/weiXinUserInfo")
+    Observable<BaseRespose> weiXinUserInfo(@QueryMap Map<String,String> parmasMap);
+
+    @GET("app/pay/aliPayOpenAuth")
+    Observable<BaseRespose<String>> aliPayOpenAuth(@Query("memberId") long memberId);
+    @GET("app/pay/aliPayUserInfo")
+    Observable<BaseRespose<JsonObject>> aliPayUserInfo(@Query("memberId") long memberId,@Query("authCode")   String authCode);
+
+
+
+    //申请押金退款
+    @GET("app/pay/updateStatusByOrder")
+    Observable<BaseRespose>  rebundDesosit(@QueryMap Map<String,String> parmasMap);
+
+
+    @GET("app/reason/getRefundReason")
+    Observable<BaseRespose<List<ResonItem>>>  getRefundReasonItems(@Query("memberId") long memberId);
+
+    @GET("app/pay/selectMyOrder")
+    Observable<BaseRespose<List<DepositItem>>> getDepositList(@Query("memberId") long memberId);
+
     @GET("{key}")
-    Observable<ResponseBody>  downloadImg(@Path("key") String key);
+    Observable<ResponseBody> downloadImg(@Path("key") String key);
+
+    @GET
+    Observable<ResponseBody> downloadFile(@Url String key);
 
     @GET("device/getImei")
-    Observable<BaseRespose<JsonObject>> getImei(@Query("memberId") long memberId,@Query("sn") String sn);
+    Observable<JsonObject> getImei(@Query("memberId") long memberId, @Query("sn") String sn);
 
 
     @GET("token/token/pageList")
@@ -65,7 +112,7 @@ public interface ApiService {
     @GET("version/forceUpdate?system=Android")
     Observable<BaseRespose<ForceVBean>> forceUpdate();
 
-    @GET("n/api_qn/uptoken")
+    @GET("api_qn/uptoken")
     Observable<BaseRespose<QiToken>> getQinuParams();
 
     @POST("member/registerNew")
@@ -101,7 +148,7 @@ public interface ApiService {
     @GET("message/warningMessageReturn")
     Observable<BaseRespose<JsonObject>> getWarnMessage(@Query("memberId") long memberId, @Query("mobile") String mobile);
 
-    @GET("n/config/")
+    @GET("config/")
     Observable<BaseRespose<JsonObject>> getH5ConfigInfo();
 
     @GET("spread/getPopList")
@@ -291,8 +338,8 @@ public interface ApiService {
      * @param memberId
      * @return
      */
-//    @GET("member/getMemberInfoById")
-//    Observable<BaseRespose<Member>> getMemberInfoById(@Query("memberId") Long memberId);
+    @GET("member/getMemberInfoById")
+    Observable<BaseRespose<Member>> getMemberInfoById(@Query("memberId") long memberId);
 
     /**
      * 获取用户积分

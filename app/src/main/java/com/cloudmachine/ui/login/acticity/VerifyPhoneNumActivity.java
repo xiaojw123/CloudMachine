@@ -106,11 +106,15 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_phonenum);
         ButterKnife.bind(this);
-        MobclickAgent.onEvent(VerifyPhoneNumActivity.this, MobEvent.WXBIND);
         getIntentData();
         initView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(VerifyPhoneNumActivity.this, MobEvent.WXBIND);
+    }
 
     private void getIntentData() {
 

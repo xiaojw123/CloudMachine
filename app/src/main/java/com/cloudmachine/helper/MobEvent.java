@@ -5,6 +5,11 @@ package com.cloudmachine.helper;
  */
 
 public class MobEvent {
+    public static final String TIME_MACHINE_WORK_IMAGE_LARGE="time_machine_work_image_large";//高配版工作图片查看大图
+    public static final String TIME_MACHINE_WORK_IMAGES="time_machine_work_images";//高配版工作图片列表
+    public static final String COUNT_CLICK_MACHINE_DETAIL_FROM_LIST="count_click_machine_detail_from_list";//点击机器列表进入详情
+    public static final String COUNT_CLICK_MACHINE_DETAIL_FROM_UNDER_INFOVIEW="count_click_machine_detail_from_under_infoView";//点击地图地图机器信息View进入详情
+    public static final String COUNT_CLICK_MACHINE_DETAIL_FROM_ANNOTATION="count_click_machine_detail_from_annotation";//点击地图上机器图标进入详情
     public static final String WXBIND = "time_wxbind";
     public static final String RQCODE = " time_setting_rqcode";
     public static final String SETTING_FEEDBACK = "time_setting_feedback";

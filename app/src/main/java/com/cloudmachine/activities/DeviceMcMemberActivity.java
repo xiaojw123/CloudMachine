@@ -63,7 +63,6 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
         mHandler = new Handler(this);
         getIntentData();
         initView();
-        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_MEMBER);
     }
 
 
@@ -88,6 +87,7 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_MEMBER);
         getMemberList();
     }
 

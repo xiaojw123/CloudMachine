@@ -35,7 +35,7 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 		mContext = this;
 		mHandler = new Handler(this);
 		initView();
-		MobclickAgent.onEvent(this, MobEvent.TIME_CHANGEPASSWORD);
+
 	}
 
 	@Override
@@ -47,6 +47,7 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 	protected void onResume() {
 		//MobclickAgent.onPageStart(UMengKey.time_changepassword);
 		super.onResume();
+		MobclickAgent.onEvent(this, MobEvent.TIME_CHANGEPASSWORD);
 	}
 
 	@Override

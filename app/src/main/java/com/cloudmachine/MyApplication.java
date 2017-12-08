@@ -1,22 +1,25 @@
 package com.cloudmachine;
 
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.ScreenInfo;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.CustomActivityManager;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
@@ -170,7 +173,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("xiaojw","MyApplication crated at 2017-11-13, no y");
+        AppLog.print("MyApplication crated at 2017-11-13, no y");
         initSocialConfig();
         this.mContext = this;
 //        initSopfix();
@@ -214,6 +217,7 @@ public class MyApplication extends Application {
         //		CrashHandler.getInstance().init(this);
         ResV.init(this);
         initDB();
+        registerActivityLifecycleCallbacks(lifecycleCallback);
 
     }
 
@@ -458,5 +462,45 @@ public class MyApplication extends Application {
     public static Context getAppContext() {
         return baseApplication;
     }
+
+  private  ActivityLifecycleCallbacks lifecycleCallback=new ActivityLifecycleCallbacks() {
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            AppLog.print("activitycrated___"+activity);
+
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+            AppLog.print("activityStarted___"+activity);
+        }
+
+        @Override
+        public void onActivityResumed(Activity activity) {
+            AppLog.print("activityResume___"+activity);
+            CustomActivityManager.getInstance().setTopActivity(activity);
+        }
+
+        @Override
+        public void onActivityPaused(Activity activity) {
+            AppLog.print("activityRaseu___"+activity);
+
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+            AppLog.print("activityStoped___"+activity);
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+
+        }
+    };
 
 }

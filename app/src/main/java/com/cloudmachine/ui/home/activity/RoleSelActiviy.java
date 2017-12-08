@@ -55,6 +55,11 @@ public class RoleSelActiviy extends BaseAutoLayoutActivity {
                 finish();
             }
         }));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_MEMBER_ROLE);
     }
 

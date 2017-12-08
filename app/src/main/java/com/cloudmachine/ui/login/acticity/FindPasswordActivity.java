@@ -78,7 +78,6 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forget_change_pssword);
-        MobclickAgent.onEvent(this, MobEvent.TIME_REGISTER);
         this.mContext = this;
         mHandler = new Handler(this);
         type = getIntent().getIntExtra("type", 1);
@@ -87,6 +86,12 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 
         initView();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_REGISTER);
     }
 
     @Override

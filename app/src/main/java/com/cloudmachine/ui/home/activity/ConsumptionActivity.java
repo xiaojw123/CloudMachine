@@ -28,7 +28,6 @@ public class ConsumptionActivity extends BaseAutoLayoutActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consumption);
-        MobclickAgent.onEvent(this, MobEvent.REPAIR_MATERIAL);
         CWInfo info = (CWInfo) getIntent().getSerializableExtra(Constants.CWINFO);
         LinearLayout consumptionLLt = (LinearLayout) findViewById(R.id.consumption_container_llt);
         if (info == null) {
@@ -37,15 +36,25 @@ public class ConsumptionActivity extends BaseAutoLayoutActivity {
             WorkSettleBean bean = info.getWorkSettle();
             if (bean != null) {
                 totalPrice = bean.getNpartstotalamount();
+            } else {
+                totalPrice = "--";
             }
             List<WorkcollarListBean> collarList = info.getWorkcollarList();
-            for (WorkcollarListBean item : collarList) {
-                consumptionLLt.addView(getItemView(item));
-                consumptionLLt.addView(getLineView());
+            if (collarList != null && collarList.size() > 0) {
+                for (WorkcollarListBean item : collarList) {
+                    consumptionLLt.addView(getItemView(item));
+                    consumptionLLt.addView(getLineView());
+                }
             }
             consumptionLLt.addView(getTotalItemView());
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_MATERIAL);
     }
 
     @Override

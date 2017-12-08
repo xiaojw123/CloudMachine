@@ -17,16 +17,8 @@ import android.widget.TextView;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.DynamicWave;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.task.GetOilLevelListAsync;
 import com.cloudmachine.bean.ScanningOilLevelInfo;
 import com.cloudmachine.bean.ScanningOilLevelInfoArray;
-import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.DensityUtil;
-import com.cloudmachine.utils.ResV;
-import com.cloudmachine.utils.mpchart.DrawTimerTask;
-import com.cloudmachine.utils.mpchart.MyMarkerView;
-import com.cloudmachine.utils.widgets.RadiusButtonView;
 import com.cloudmachine.chart.charts.LineChart;
 import com.cloudmachine.chart.components.Legend;
 import com.cloudmachine.chart.components.Legend.LegendForm;
@@ -39,6 +31,14 @@ import com.cloudmachine.chart.data.LineData;
 import com.cloudmachine.chart.data.LineDataSet;
 import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.listener.OnChartValueSelectedListener;
+import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.net.task.GetOilLevelListAsync;
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.DensityUtil;
+import com.cloudmachine.utils.ResV;
+import com.cloudmachine.utils.mpchart.DrawTimerTask;
+import com.cloudmachine.utils.mpchart.MyMarkerView;
+import com.cloudmachine.utils.widgets.RadiusButtonView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -76,8 +76,6 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         mHandler = new Handler(this);
         getIntentData();
         initView();
-        new GetOilLevelListAsync(deviceId, mContext, mHandler).execute();
-        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WATERLEVEL);
     }
 
     @Override
@@ -436,6 +434,8 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
     protected void onResume() {
         //MobclickAgent.onPageStart(UMengKey.time_machine_waterlevel);
         super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WATERLEVEL);
+        new GetOilLevelListAsync(deviceId, mContext, mHandler).execute();
     }
 
     @Override

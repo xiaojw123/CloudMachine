@@ -253,10 +253,28 @@
                 android:id="@+id/item_my_order"
                 style="@style/HomeMenuContainerStyle">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+
+                <com.cloudmachine.widget.NotfyImgView
+                    android:id="@+id/item_order_nimg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/icon_my_order" />
+
                 <TextView
+                    android:id="@+id/item_order_tv"
                     style="@style/HomeMenuTvStyle"
-                    android:drawableLeft="@drawable/icon_my_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="8dp"
                     android:text="@string/my_order" />
+                </LinearLayout>
             </FrameLayout>
 
             <FrameLayout
@@ -310,12 +328,13 @@
 
 
             <FrameLayout
-                android:id="@+id/item_card_coupon"
+                android:id="@+id/item_purse"
                 style="@style/HomeMenuContainerStyle">
 
                 <TextView
+                    android:id="@+id/item_purse_tv"
                     style="@style/HomeMenuTvStyle"
-                    android:drawableLeft="@drawable/icon_card_coupon"
+                    android:drawableLeft="@drawable/icon_card_coupon_1"
                     android:text="@string/card_coupon" />
             </FrameLayout>
 

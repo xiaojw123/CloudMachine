@@ -48,7 +48,6 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
         setContentView(R.layout.edit_personal_info);
         info = getIntent().getStringExtra("info");
         initView();
-        MobclickAgent.onEvent(this, MobEvent.TIME_PROFILE_EDIT);
     }
 
     @Override
@@ -59,6 +58,7 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_PROFILE_EDIT);
     }
 
     @Override

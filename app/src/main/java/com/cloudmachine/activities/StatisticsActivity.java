@@ -78,9 +78,14 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
         setContentView(R.layout.fragment_statistics);
         mHandler = new Handler(this);
         initView();
-        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WORKTIME_STATISTICS);
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WORKTIME_STATISTICS);
+    }
 
     public void getPreMonth(Calendar calendar, ArrayList<String> list) {
         for (int i = 1; i <= 5; i++) {

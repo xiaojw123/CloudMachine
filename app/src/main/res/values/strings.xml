@@ -350,9 +350,29 @@
     <string name="flush">刷新</string>
     <string name="select_date">日期选择</string>
     <string name="click_select_date_to_view_pic">点击选择具体日期查看设备工作照片</string>
-    <string name="device_no_work_no_pic_on_this_day">改日设备为工作，暂无照片</string>
+    <string name="device_no_work_no_pic_on_this_day">该日设备未工作，暂无照片</string>
     <string name="pic">照片</string>
     <string name="h_config_version">高配版</string>
+    <string name="purse">钱包</string>
+    <string name="detail_mx">明细</string>
+    <string name="aplipay_acount">支付宝账户</string>
+    <string name="wx_acount">微信账号</string>
+    <string name="extraction_cash">提现</string>
+    <string name="extraction_cash_to">请选择提现到</string>
+    <string name="sure_extraction_cash">确认提现</string>
+    <string name="deposit_detail">押金明细</string>
+    <string name="apply_rebund_deposit">申请退款押金</string>
+    <string name="select_rebund_reason">请选择退款原因</string>
+    <string name="reason1">云盒子灯不亮了</string>
+    <string name="reason2">云机械APP不会用</string>
+    <string name="reason3">试下押金能否成功退款</string>
+    <string name="reason4">其他原因</string>
+    <string name="input_other_reason">你还可以输入其他退款原因</string>
+    <string name="rebund_warn_text">押金退还后，你无法获取挖机数据了押金退还时间为3-7个工作日</string>
+    <string name="submit">提交</string>
+    <string name="input_message_verifycode">请输入短信验证码</string>
+    <string name="do_bind">去绑定</string>
+    <string name="rmb_symbol">¥</string>
 
 
 </resources>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical"
+    tools:context="com.cloudmachine.ui.home.activity.ExtractionCashActivity">
+
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="@string/extraction_cash"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_16"
+        android:paddingBottom="@dimen/dimen_size_7"
+        android:layout_marginTop="@dimen/dimen_size_7"
+        android:textColor="@color/public_black_9"
+        android:textSize="@dimen/public_textsize2"
+        android:text="@string/extraction_cash_to" />
+
+    <FrameLayout
+        android:id="@+id/extr_cash_alipay_fl"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_60"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/public_left_margin_42"
+        android:paddingRight="@dimen/public_left_margin_42">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_aliapy"
+            android:drawablePadding="@dimen/dimen_size_22"
+            android:gravity="center_vertical"
+            android:text="支付宝支付"
+            android:textColor="@color/cor8"
+            android:textSize="@dimen/siz3" />
+
+        <CheckBox
+            android:id="@+id/extr_cash_alipay_cb"
+            style="@style/PayCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:checked="true"
+            android:clickable="false" />
+
+    </FrameLayout>
+
+
+    <View style="@style/CommonLandscapeLine" />
+
+    <FrameLayout
+        android:id="@+id/extr_cash_wxpay_fl"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_60"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/public_left_margin_42"
+        android:paddingRight="@dimen/public_left_margin_42">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_weixinpay"
+            android:drawablePadding="@dimen/dimen_size_22"
+            android:gravity="center_vertical"
+            android:text="微信支付"
+            android:textColor="@color/cor8"
+            android:textSize="@dimen/siz3" />
+
+        <CheckBox
+            android:id="@+id/extr_cash_wxpay_cb"
+            style="@style/PayCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:clickable="false" />
+    </FrameLayout>
+
+
+    <com.cloudmachine.autolayout.widgets.RadiusButtonView
+        android:id="@+id/extr_cash_sure_btn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spa3"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/pad1"
+        android:layout_marginRight="@dimen/pad1"
+        android:layout_marginTop="@dimen/dimen_size_19"
+        app:rbtn_fillColor_dw="@color/cor5"
+        app:rbtn_fillColor_nm="@color/cor5"
+        app:rbtn_strokeColor="@color/cor5"
+        app:rbtn_text="@string/sure_extraction_cash"
+        app:rbtn_textColor="@color/cor15"
+        app:rbtn_textSize="@dimen/siz3" />
+
+
+</LinearLayout>

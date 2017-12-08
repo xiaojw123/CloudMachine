@@ -1065,6 +1065,7 @@ public class Constants {
 
         CustomDialog.Builder builder = new CustomDialog.Builder(context);
         builder.setAlertIcon(R.drawable.icon_update);
+        builder.setGravityLeft(true);
         builder.setMessage(message);
         if (mustUpdate == 1 && context instanceof HomeActivity) {
 //            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -1088,14 +1089,13 @@ public class Constants {
                 }
             });
         } else {
-            builder.setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(context.getResources().getColor(R.color.cor10),"稍后再说", new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (context instanceof BaseAutoLayoutActivity) {
                         ((BaseAutoLayoutActivity) context).mRxManager.post(HomeActivity.RXEVENT_UPDATE_REMIND, null);
                     }
-
                     dialog.dismiss();
 
                 }

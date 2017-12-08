@@ -166,7 +166,8 @@
                         android:paddingLeft="@dimen/pad2"
                         android:text="@string/device_image_title"
                         android:textColor="@color/public_black_9"
-                        android:textSize="@dimen/public_textsize2" />
+                        android:textSize="@dimen/public_textsize2"
+                        />
 
 
                     <LinearLayout

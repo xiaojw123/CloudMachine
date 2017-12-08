@@ -17,6 +17,7 @@ import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.PickItemBean;
 import com.cloudmachine.bean.ScreenInfo;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
@@ -32,6 +33,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,14 +84,22 @@ public class WorkPicListActivity extends BaseAutoLayoutActivity implements View.
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WORK_IMAGES);
+
+    }
+
     private void obtainImei() {
         String sn = getIntent().getStringExtra(SN_ID);
         width = ScreenInfo.screen_width - 2 * DensityUtil.dip2px(this, 10);
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(this), sn).compose(RxSchedulers.<BaseRespose<JsonObject>>io_main()).subscribe(new RxSubscriber<BaseRespose<JsonObject>>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(this), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
-            protected void _onNext(BaseRespose<JsonObject> jobjBaseRespose) {
-                if (jobjBaseRespose.getCode() == 800) {
-                    JsonObject resultJobj = jobjBaseRespose.getResult();
+            protected void _onNext(JsonObject respJobj) {
+                int code = respJobj.get("code").getAsInt();
+                if (code == 800) {
+                    JsonObject resultJobj = respJobj.getAsJsonObject("result");
                     if (resultJobj != null) {
                         JsonElement imeJel = resultJobj.get("imei");
                         if (imeJel != null) {
@@ -98,10 +108,15 @@ public class WorkPicListActivity extends BaseAutoLayoutActivity implements View.
                             updatePicItems();
                         }
                     }
-                }else{
-                    ToastUtils.showToast(WorkPicListActivity.this, jobjBaseRespose.getMessage());
+                } else {
+                    JsonElement messageJEL = respJobj.get("message");
+                    if (messageJEL != null) {
+                        String message = messageJEL.getAsString();
+                        ToastUtils.showToast(WorkPicListActivity.this, message);
+                    }
                 }
             }
+
 
             @Override
             protected void _onError(String message) {
@@ -109,7 +124,12 @@ public class WorkPicListActivity extends BaseAutoLayoutActivity implements View.
             }
         }));
     }
-
+    // TODO: 2017/11/21 test ime
+//    private void testImei() {
+//        imei = "01000000000867923045021004";
+//        prefix = imei;
+//        updatePicItems();
+//    }
     private void initView() {
         picCtv.setRightClickListener(rightClickListener);
         for (int i = 0; i < 90; i++) {

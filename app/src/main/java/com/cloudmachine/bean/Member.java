@@ -45,7 +45,35 @@ public class Member implements Serializable{
 	private String invitecode;
 	private String inviteUserid;
 	private String wecharNickname;
+
+	public String getAlipayNickname() {
+		return alipayNickname;
+	}
+
+	public void setAlipayNickname(String alipayNickname) {
+		this.alipayNickname = alipayNickname;
+	}
+
+	public String getAlipayUserId() {
+		return alipayUserId;
+	}
+
+	public void setAlipayUserId(String alipayUserId) {
+		this.alipayUserId = alipayUserId;
+	}
+
+	public String getAlipayLogo() {
+		return alipayLogo;
+	}
+
+	public void setAlipayLogo(String alipayLogo) {
+		this.alipayLogo = alipayLogo;
+	}
+
 	private String wecharLogo;
+	private String alipayNickname;
+	private String alipayUserId;
+	private String alipayLogo;
 
 	public Long getNum() {
 		return num;

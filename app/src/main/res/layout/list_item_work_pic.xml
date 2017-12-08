@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dimen_size_160"
     android:layout_marginBottom="@dimen/dimen_size_10"
-    android:background="@color/white"
     >
 
     <ImageView
         android:id="@+id/item_work_pic_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_item_defalut"
         />
 
     <TextView

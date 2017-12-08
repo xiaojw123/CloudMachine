@@ -93,27 +93,40 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
         super.initView(savedInstanceState);
         setinfoWIndowHiden(false);
         initGeocoder();
-        startlocaction(this);
-        MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_REPAIR);
 //        if (UserHelper.isLogin(getActivity())) {
 //            mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
 //        }
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden){
+            MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_REPAIR);
+            loadData();
+        }
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        orderCotainer.setVisibility(View.GONE);
+        if (isVisible()){
+            MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_REPAIR);
+        }
+        loadData();
+
+    }
+
+    private void loadData() {
+        startlocaction(this);
         if (UserHelper.isLogin(getActivity())) {
             mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
         }
-
     }
 
     @Override
     protected void initView() {
-
+        MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_REPAIR);
     }
 
     @Override

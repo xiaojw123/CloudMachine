@@ -1,128 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/public_bg"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical">
 
     <com.cloudmachine.widget.CommonTitleView
         android:id="@+id/finish_titleview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:common_title_name="已完工"
         app:common_right_text="评价"
-        />
-
-
-    <FrameLayout
-        android:id="@+id/finish_deviceinfo_fl"
-        style="@style/CommonTabContainerStyle"
-        android:layout_below="@+id/finish_titleview"
+        app:common_title_name="已完工" />
+    <ScrollView
         android:layout_marginTop="@dimen/dimen_size_6"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/siz3"
-            android:textColor="@color/cor9"
-            android:text="设备信息"
-            android:layout_gravity="center_vertical"
-            />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/arrow_right"
-            android:layout_gravity="right|center_vertical"
-            />
-
-    </FrameLayout>
-
-
-
-    <LinearLayout
-        android:layout_below="@+id/finish_deviceinfo_fl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spa7"
-        android:orientation="vertical"
-        android:showDividers="middle"
-        android:divider="@drawable/divider_line_horztial"
+        android:layout_below="@+id/finish_titleview"
+        android:layout_above="@+id/finish_deviceinfo_amount"
         >
-        <FrameLayout
-            android:id="@+id/finish_consumption_fl"
-            style="@style/CommonTabContainerStyle"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/siz3"
-                android:textColor="@color/cor9"
-                android:text="耗件明细"
-                android:layout_gravity="center_vertical"
-                />
-
-            <TextView
-                android:id="@+id/finish_consumption_tv"
-                android:text="¥0"
-                android:drawableRight="@drawable/arrow_right"
-                style="@style/CommonTabContentStyle"
-                android:drawablePadding="@dimen/dimen_size_10"
-                />
-
-        </FrameLayout>
-
-        <FrameLayout
-            style="@style/CommonTabContainerStyle"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/siz3"
-                android:textColor="@color/cor9"
-                android:text="优惠券"
-                android:layout_gravity="center_vertical"
-                />
-
-            <TextView
-                android:id="@+id/finish_coupon_tv"
-                android:text="¥0"
-                style="@style/CommonTabContentStyle"
-                />
-
-        </FrameLayout>
-
-        <FrameLayout
-            style="@style/CommonTabContainerStyle"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/siz3"
-                android:textColor="@color/cor9"
-                android:text="工时费"
-                android:layout_gravity="center_vertical"
-                />
-
-            <TextView
-                android:id="@+id/finish_workhours_tv"
-                android:text="¥0"
-                style="@style/CommonTabContentStyle"
-                />
-
-        </FrameLayout>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider_line_horztial"
+            android:orientation="vertical"
+            android:showDividers="middle">
 
 
             <RelativeLayout
-                android:visibility="gone"
-                android:id="@+id/part_discount_layout"
+                android:id="@+id/rl_device_brand"
                 style="@style/CommonTabContainerStyle">
+
+                <TextView
+                    android:id="@+id/t1"
+                    style="@style/personal_left_text"
+                    android:text="品牌" />
+
+                <TextView
+                    android:id="@+id/tv_device_brand"
+                    style="@style/personal_edit_text"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_device_model"
+                style="@style/CommonTabContainerStyle">
+
+                <TextView
+                    android:id="@+id/t2"
+                    style="@style/personal_left_text"
+                    android:text="机型" />
+
+                <TextView
+                    android:id="@+id/tv_device_model"
+                    style="@style/personal_edit_text"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null" />
+            </RelativeLayout>
+
+
+            <FrameLayout
+                style="@style/CommonTabContainerStyle"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_size_50">
+
+                <TextView
+                    style="@style/CommonTabTitleStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="位置" />
+
+
+                <TextView
+                    android:id="@+id/pay_di_loc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginLeft="100dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textColor="@color/cor20"
+                    android:textSize="@dimen/siz3" />
+
+            </FrameLayout>
+
+
+            <FrameLayout style="@style/CommonTabContainerStyle">
+
+                <TextView
+                    style="@style/CommonTabTitleStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="机号" />
+
+
+                <TextView
+                    android:id="@+id/pay_di_dno"
+                    style="@style/CommonTabContentStyle" />
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:id="@+id/finish_consumption_fl"
+                style="@style/CommonTabContainerStyle"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="耗件明细"
+                    android:textColor="@color/cor9"
+                    android:textSize="@dimen/siz3" />
+
+                <TextView
+                    android:id="@+id/finish_consumption_tv"
+                    style="@style/CommonTabContentStyle"
+                    android:drawablePadding="@dimen/dimen_size_10"
+                    android:drawableRight="@drawable/arrow_right"
+                    android:text="¥0" />
+
+            </FrameLayout>
+
+            <FrameLayout style="@style/CommonTabContainerStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="优惠券"
+                    android:textColor="@color/cor9"
+                    android:textSize="@dimen/siz3" />
+
+                <TextView
+                    android:id="@+id/finish_coupon_tv"
+                    style="@style/CommonTabContentStyle"
+                    android:text="¥0" />
+
+            </FrameLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/part_discount_layout"
+                style="@style/CommonTabContainerStyle"
+                android:visibility="gone">
 
                 <TextView
                     style="@style/personal_left_text"
@@ -138,14 +165,10 @@
             </RelativeLayout>
 
 
-
-
-
-
             <RelativeLayout
-                android:visibility="gone"
                 android:id="@+id/worktime_discount_layout"
-                style="@style/CommonTabContainerStyle">
+                style="@style/CommonTabContainerStyle"
+                android:visibility="gone">
 
                 <TextView
                     style="@style/personal_left_text"
@@ -161,12 +184,10 @@
             </RelativeLayout>
 
 
-
             <RelativeLayout
-                android:visibility="gone"
                 android:id="@+id/ticket_discount_layout"
                 style="@style/CommonTabContainerStyle"
-                >
+                android:visibility="gone">
 
                 <TextView
                     style="@style/personal_left_text"
@@ -181,30 +202,68 @@
                     android:text="0" />
             </RelativeLayout>
 
-    </LinearLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:minHeight="@dimen/dimen_size_60"
+                android:paddingLeft="@dimen/pad2"
+                android:paddingRight="@dimen/pad2">
+
+                <TextView
+                    style="@style/CommonTabTitleStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pad1"
+                    android:text="故障描述" />
+
+                <TextView
+                    android:id="@+id/pay_di_des"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginBottom="@dimen/pad1"
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginTop="@dimen/pad1"
+                    android:textColor="@color/cor20"
+                    android:textSize="@dimen/siz3" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/device_info_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_size_10"
+                android:layout_marginLeft="@dimen/dimen_size_5"
+                android:layout_marginTop="@dimen/dimen_size_5"
+                android:text="报修图片"
+                android:textColor="@color/cor10"
+                android:textSize="@dimen/text_size_16_sp"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/device_info_rlv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_5"
+                android:overScrollMode="never"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/finish_deviceinfo_amount"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_60"
-        android:background="@color/white"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
         android:gravity="center_vertical|right"
-        android:text="实付:¥ 0"
-        android:textSize="@dimen/text_size_15_sp"
-        android:textColor="@color/cor1"
         android:paddingRight="@dimen/pad2"
-        />
-
-
-
-
-
-
-
-
-
-
+        android:text="实付:¥ 0"
+        android:textColor="@color/cor1"
+        android:textSize="@dimen/text_size_15_sp" />
 
 
 </RelativeLayout>

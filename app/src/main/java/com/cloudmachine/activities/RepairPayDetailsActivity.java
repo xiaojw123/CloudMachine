@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -16,18 +18,19 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.cloudmachine.R;
+import com.cloudmachine.adapter.PhotoListAdapter;
+import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
 import com.cloudmachine.alipay.PayResult;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.AliPayBean;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.WeiXinEntityBean;
+import com.cloudmachine.bean.WorkDetailBean;
 import com.cloudmachine.bean.WorkSettleBean;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.task.CWPayAsync;
 import com.cloudmachine.net.task.GetWorkDetailAsync;
-import com.cloudmachine.ui.home.activity.ConsumptionActivity;
-import com.cloudmachine.ui.home.activity.PayDeviceInfoActivity;
 import com.cloudmachine.ui.home.contract.ViewRepairContract;
 import com.cloudmachine.ui.home.model.CouponItem;
 import com.cloudmachine.ui.home.model.OrderCouponBean;
@@ -42,6 +45,7 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -65,8 +69,8 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
     private static final String FORMAT_REAL_PAY = "实付： ¥%s";
     public static final String PAY_TYPE_WECHAT = "10";
     public static final String PAY_TYPE_ALIPAY = "11";
-    @BindView(R.id.pay_deviceinfo_fl)
-    FrameLayout infoFl;
+//    @BindView(R.id.pay_deviceinfo_fl)
+//    FrameLayout infoFl;
     @BindView(R.id.tv_should_pay_price)
     TextView tvShouldPrice;
     @BindView(R.id.rl_weixin_pay)
@@ -75,8 +79,6 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
     RelativeLayout mRlAliPay;
     @BindView(R.id.rl_coupon)
     RelativeLayout mRlCoupon;
-    @BindView(R.id.tv_man_hour)
-    TextView tvManHour;
     @BindView(R.id.cb_weixin_pay)
     CheckBox mCbWeiXinPay;
     @BindView(R.id.cb_alipay)
@@ -103,10 +105,20 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
     TextView ticketAmoutTv;
     @BindView(R.id.cost_discount_amout)
     TextView costAmouTv;
-    @BindView(R.id.rl_consumption_totalmount)
-    RelativeLayout cons_totalmount_rl;
-    @BindView(R.id.tv_consumption_totalmount)
-    TextView tvConsumptionTotalAmount;
+    @BindView(R.id.tv_device_brand)
+    TextView tvBrand;
+    @BindView(R.id.tv_device_model)
+    TextView tvModel;
+    @BindView(R.id.pay_di_des)
+    TextView desTv;
+    @BindView(R.id.pay_di_dno)
+    TextView noTv;
+    @BindView(R.id.pay_di_loc)
+    TextView locTv;
+    @BindView(R.id.device_info_rlv)
+    RecyclerView infoImgRlv;
+    @BindView(R.id.device_info_title)
+    TextView imgTitleTv;
     private OrderCouponBean mOrderCouponBean;
     private CWInfo cwInfo;
     private Handler mHandler;
@@ -127,13 +139,17 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repair_detail);
         ButterKnife.bind(this);
-        MobclickAgent.onEvent(this,MobEvent.REPAIR_PAY_ORDER);
         initParams();
         initView();
         initRxManager();
         new GetWorkDetailAsync(mHandler, this, orderNum, flag).execute();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this,MobEvent.REPAIR_PAY_ORDER);
+    }
 
     private void initView() {
         mRlCoupon.setEnabled(false);
@@ -190,10 +206,8 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
                     WorkSettleBean workSettle = cwInfo.getWorkSettle();
                     if (null != workSettle) {
                         String nrepairworkhourcost = workSettle.getNrepairworkhourcost();
-                        tvManHour.setText(nrepairworkhourcost);
                         String npartstotalamount = workSettle.getNpartstotalamount();
                         String ndiscounttotalamount = workSettle.getNdiscounttotalamount();
-                        tvConsumptionTotalAmount.setText("¥" + npartstotalamount);
 //                        tvDiscountAmount.setText("-¥" + ndiscounttotalamount);
                         tvShouldPrice.setText("¥" + workSettle.getNtotalamount());
                         formartPayAmount =workSettle.getNloanamount();
@@ -231,6 +245,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
                         }
 
                     }
+                    updateDeviceInfo(cwInfo.getWorkDetail(),cwInfo.getLogoList(),null);
                 }
                 mPresenter.getOrderCoupon(mRlCoupon, UserHelper.getMemberId(this), orderNum);
                 break;
@@ -264,31 +279,65 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
         }
         return false;
     }
+    public void updateDeviceInfo(WorkDetailBean bean, ArrayList<String> logoList, String flag) {
+        //刷新耗件详情列表
+        if (bean == null) {
+            return;
+        }
+        if (logoList != null && logoList.size() > 0) {
+            imgTitleTv.setVisibility(View.VISIBLE);
+            infoImgRlv.setVisibility(View.VISIBLE);
+            infoImgRlv.setNestedScrollingEnabled(false);
+            infoImgRlv.setLayoutManager(new GridLayoutManager(this, 3));
+            infoImgRlv.addItemDecoration(new SpaceItemDecoration(this, 5));
+            PhotoListAdapter adapter = new PhotoListAdapter();
+            adapter.updateItems(logoList);
+            infoImgRlv.setAdapter(adapter);
+        }
+        //设置机器品牌
+        tvBrand.setText(bean.getVbrandname());
+        //设置机器型号
+        tvModel.setText(bean.getVmaterialname());
+//        rdDevicenameTv.setText(detailBean.getVbrandname());
+//        rdDevicenoTv.setText(detailBean.getVmaterialname());
+//        rdDescriptionTv.setText(detailBean.getVdiscription());
 
-    @OnClick({R.id.rl_consumption_totalmount, R.id.pay_deviceinfo_fl, R.id.rl_alipay, R.id.rl_weixin_pay, R.id.rl_coupon, R.id.btn_topay})
+        noTv.setText(bean.getVmachinenum());
+        locTv.setText(bean.getVworkaddress());
+        String description;
+        if ("0".equals(flag)) {
+            description = bean.getVdiscription();
+        } else {
+            description = bean.getCusdemanddesc();
+        }
+        desTv.setText(description);
+    }
+
+
+    @OnClick({R.id.rl_alipay, R.id.rl_weixin_pay, R.id.rl_coupon, R.id.btn_topay})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rl_consumption_totalmount:
-                if (cwInfo == null) {
-                    ToastUtils.showToast(this, "设备信息为空");
-                    return;
-                }
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(Constants.CWINFO, cwInfo);
-                Constants.toActivity(this, ConsumptionActivity.class, bundle);
-                break;
-
-            case R.id.pay_deviceinfo_fl:
-                if (cwInfo == null) {
-                    ToastUtils.showToast(this, "设备信息为空");
-                    return;
-                }
-                Bundle dfbundle = new Bundle();
-                dfbundle.putSerializable(Constants.WORK_DETAIL, cwInfo.getWorkDetail());
-                dfbundle.putStringArrayList(Constants.LOGO_LIST, cwInfo.getLogoList());
-                Constants.toActivity(this, PayDeviceInfoActivity.class, dfbundle);
-                break;
+//            case R.id.rl_consumption_totalmount:
+//                if (cwInfo == null) {
+//                    ToastUtils.showToast(this, "设备信息为空");
+//                    return;
+//                }
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(Constants.CWINFO, cwInfo);
+//                Constants.toActivity(this, ConsumptionActivity.class, bundle);
+//                break;
+// TODO: 2017/12/4  设备信息改
+//            case R.id.pay_deviceinfo_fl:
+//                if (cwInfo == null) {
+//                    ToastUtils.showToast(this, "设备信息为空");
+//                    return;
+//                }
+//                Bundle dfbundle = new Bundle();
+//                dfbundle.putSerializable(Constants.WORK_DETAIL, cwInfo.getWorkDetail());
+//                dfbundle.putStringArrayList(Constants.LOGO_LIST, cwInfo.getLogoList());
+//                Constants.toActivity(this, PayDeviceInfoActivity.class, dfbundle);
+//                break;
             case R.id.rl_alipay:
                 mCbAliPay.setChecked(!mCbAliPay.isChecked());
                 mCbWeiXinPay.setChecked(!mCbAliPay.isChecked());

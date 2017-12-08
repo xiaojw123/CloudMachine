@@ -35,7 +35,6 @@ public class PayDeviceInfoActivity extends BaseAutoLayoutActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_device_info);
-        MobclickAgent.onEvent(this, MobEvent.REPAIR_DEVICE_INFO);
         WorkDetailBean workDetail = (WorkDetailBean) getIntent().getSerializableExtra(Constants.WORK_DETAIL);
         String flag=getIntent().getStringExtra(Constants.FLAG);
         logoList = getIntent().getStringArrayListExtra(Constants.LOGO_LIST);
@@ -81,6 +80,12 @@ public class PayDeviceInfoActivity extends BaseAutoLayoutActivity {
         }
         desTv.setText(description);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_DEVICE_INFO);
     }
 
     @Override

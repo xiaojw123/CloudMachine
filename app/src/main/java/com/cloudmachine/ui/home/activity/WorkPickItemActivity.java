@@ -19,7 +19,9 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.PickItemBean;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
@@ -27,6 +29,7 @@ import com.cloudmachine.widget.CommonTitleView;
 import com.cloudmachine.widget.ImageViewTouch;
 import com.cloudmachine.widget.ImageViewTouchBase;
 import com.cloudmachine.widget.PreviewViewPager;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,6 +59,12 @@ public class WorkPickItemActivity extends BaseAutoLayoutActivity implements View
         initViewPager(position);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WORK_IMAGE_LARGE);
+    }
+
     private void initViewPager(int position) {
         PreviewViewPager itemsVp = (PreviewViewPager) findViewById(R.id.pic_items_vp);
         List<View> viewItems = new ArrayList<>();
@@ -64,7 +73,7 @@ public class WorkPickItemActivity extends BaseAutoLayoutActivity implements View
             img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             img.setScaleType(ImageView.ScaleType.FIT_XY);
             img.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-            Glide.with(this).load(item.getImgUrl()).into(img);
+            Glide.with(this).load(item.getImgUrl()).placeholder(R.drawable.icon_defalut_img).error(R.drawable.icon_defalut_img).into(img);
             viewItems.add(img);
         }
         itemsVp.setAdapter(new PicItemPageAdapter(viewItems));
@@ -167,8 +176,7 @@ public class WorkPickItemActivity extends BaseAutoLayoutActivity implements View
                 }
             }
         }
-        Api api = new Api(picItem.getOrigin() + "/");
-        api.movieService.downloadImg(picItem.getKey()).compose(RxSchedulers.<ResponseBody>io_main()).subscribe(new RxSubscriber<ResponseBody>(this) {
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).downloadFile(picItem.getImgUrl()).compose(RxSchedulers.<ResponseBody>io_main()).subscribe(new RxSubscriber<ResponseBody>(this) {
             @Override
             protected void _onNext(ResponseBody responseBody) {
                 FileOutputStream fos = null;
@@ -193,7 +201,7 @@ public class WorkPickItemActivity extends BaseAutoLayoutActivity implements View
             protected void _onError(String message) {
                 ToastUtils.showToast(WorkPickItemActivity.this, message);
             }
-        });
+        }));
     }
 
     private void sendFileUpdateRevice(File file) {

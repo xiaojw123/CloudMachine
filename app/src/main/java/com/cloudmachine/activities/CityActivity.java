@@ -94,7 +94,6 @@ public class CityActivity extends Activity implements OnScrollListener, TextWatc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city);
-        MobclickAgent.onEvent(this, MobEvent.TIME_REPAIR_CREATE_LOCATION_CITY);
         inflater = LayoutInflater.from(this);
         allCity_lists = new ArrayList<>();
         city_hot = new ArrayList<>();
@@ -139,6 +138,11 @@ public class CityActivity extends Activity implements OnScrollListener, TextWatc
         initLocation();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_REPAIR_CREATE_LOCATION_CITY);
+    }
 
     public void InsertCity(String name) {
         SQLiteDatabase db = helper.getReadableDatabase();

@@ -106,7 +106,7 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
         setContentView(R.layout.fragment_work_time);
         mHandler = new Handler(this);
         initView();
-        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WORKTIME);
+
 
     }
 
@@ -203,9 +203,10 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
 //        yr.setInverted(true);
         // setting data
         // mChart.setDrawLegend(false);
-        new GetWorkTimeListAsync(deviceId, mContext, mHandler).execute();
 
     }
+
+
 
 
     private void initPage(/*ScanningWTInfoArray wtInfoArray*/ArrayList<ScanningWTInfo> wtInfo) {
@@ -264,12 +265,14 @@ public class WorkTimeActivity extends BaseAutoLayoutActivity implements View.OnC
     public void initPresenter() {
 
     }
-
+    //页面可见刷新数据
     @Override
     public void onResume() {
         // TODO Auto-generated method stub
         //MobclickAgent.onPageStart(UMengKey.time_machine_worktime);
         super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WORKTIME);
+        new GetWorkTimeListAsync(deviceId, mContext, mHandler).execute();
     }
 
     @Override

@@ -55,7 +55,6 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_device_repair);
-        MobclickAgent.onEvent(this, MobEvent.REPAIR_HISTORY);
         initView();
     }
 
@@ -180,6 +179,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_HISTORY);
         // Constants.MyLog("获取焦点");
 //        new AllRepairHistoryAsync(RepairRecordNewActivity.this, mHandler).execute();
         //MobclickAgent.onPageStart(this.getClass().getName());

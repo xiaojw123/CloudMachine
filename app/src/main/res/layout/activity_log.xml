@@ -166,8 +166,7 @@
         cloudm:rbtn_strokeColor="@color/cor5"
         cloudm:rbtn_text="@string/login_title"
         cloudm:rbtn_textColor="@color/cor2015"
-        cloudm:rbtn_textSize="@dimen/siz3"
-        />
+        cloudm:rbtn_textSize="@dimen/siz3" />
 
     <TextView
         android:id="@+id/forget_pw_tv"

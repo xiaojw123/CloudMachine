@@ -150,12 +150,16 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
 
 
     protected void startlocaction(AMapLocationListener listener) {
-        mLocOption = new AMapLocationClientOption();
-        mLocOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        mLocOption.setInterval(2000);
-        mlocClient = new AMapLocationClient(getActivity());
-        mlocClient.setLocationOption(mLocOption);
-        mlocClient.setLocationListener(listener);
+        if (mLocOption == null) {
+            mLocOption = new AMapLocationClientOption();
+            mLocOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            mLocOption.setInterval(2000);
+        }
+        if (mlocClient == null) {
+            mlocClient = new AMapLocationClient(getActivity());
+            mlocClient.setLocationOption(mLocOption);
+            mlocClient.setLocationListener(listener);
+        }
 //        RxPermissions mRxPermissions=new RxPermissions(getActivity(),this);
 //        mRxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe(new Action1<Boolean>() {
 //            @Override
@@ -181,8 +185,8 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         AppLog.print("reqeustPermissionResut____");
         if (requestCode == REQ_FINE_LOCATION) {
-        AppLog.print("reqeustPermissionResut____REQ_FINE_LOCATION");
-            if (grantResults[0] ==PackageManager.PERMISSION_GRANTED) {
+            AppLog.print("reqeustPermissionResut____REQ_FINE_LOCATION");
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 AppLog.print("permisssion Grant");
                 mlocClient.startLocation();
             } else {

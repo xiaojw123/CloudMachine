@@ -245,8 +245,11 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private String homeUrl;
     private String backUrl;
 
-    public void shoWAlertDialog(String message, final String alertEvent) {
+    public void shoWAlertDialog(boolean isConfirm, String message, final String alertEvent) {
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
+        if (isConfirm) {
+            builder.setAlertIcon(R.drawable.icon_sucess);
+        }
         builder.setMessage(message);
         builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
             @Override
@@ -688,7 +691,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     } else {
                         String tips = job.optString(JsInteface.ALERT_TIPS);
                         String alert_event = job.optString(JsInteface.ALERT_EVENT);
-                        shoWAlertDialog(tips, alert_event);
+                        boolean isConfirm = false;
+                        String alertImg = job.optString(JsInteface.ALERT_IMAGE);
+                        if (JsInteface.ALERT_IMAGE_CONFIRM.equals(alertImg)) {
+                            isConfirm = true;
+                        }
+                        shoWAlertDialog(isConfirm, tips, alert_event);
                     }
                     break;
                 case Constants.HANDLER_UPLOAD_SUCCESS:

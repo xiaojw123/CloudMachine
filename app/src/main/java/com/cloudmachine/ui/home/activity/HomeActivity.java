@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -89,6 +90,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     public static final String KEY_H5_AUTORITY = "key_h5_autority";
     private static final String AUTORITY_YUNBOX = "yunbox";
     private static final String AUTORITY_MYORDER = "myOrder";
+    private static final String AUTORITY_HTTP = "http";
     public static boolean isForeground = false;
     public static final String MESSAGE_RECEIVED_ACTION = "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
     public static final String KEY_MESSAGE = "message";
@@ -117,8 +119,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     FrameLayout itemAsk;
     @BindView(R.id.item_repair_history)
     FrameLayout itemRepairHistory;
-    @BindView(R.id.item_card_coupon)
-    FrameLayout itemCardCoupon;
+    @BindView(R.id.item_purse)
+    FrameLayout itemPurse;
     @BindView(R.id.item_qr_code)
     FrameLayout itemQrCode;
     @BindView(R.id.item_about)
@@ -159,10 +161,15 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     ImageView guideEXpText;
     @BindView(R.id.home_guide_sure_btn)
     Button guideSureBtn;
+    @BindView(R.id.item_order_nimg)
+    NotfyImgView itemOrderNimg;
+    @BindView(R.id.item_purse_tv)
+    TextView purseTv;
 
 
     ImageView promotionImg;
     PopupWindow promotionPop;
+    PopupWindow h5PayPop;
     List<PopItem> mItems;
     Marker curMarker;
     private Handler mHandler;
@@ -170,6 +177,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 
     Fragment deviceFragment, maintenaceFragment;
     int mustUpdate;
+    double walletAmount, depositAmount;
 
 
     @Override
@@ -178,7 +186,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         MobclickAgent.enableEncrypt(true); // 友盟统计
-        MobclickAgent.onEvent(this, MobEvent.TIME_HOME);
         MobclickAgent.openActivityDurationTrack(false);
         setUPageStatistics(false);
         mHandler = new Handler(this);
@@ -293,9 +300,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     protected void onResume() {
         isForeground = true;
         super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_HOME);
         loadData();
-
-
     }
 
 
@@ -336,7 +342,9 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     .error(R.drawable.ic_default_head)
                     .into(homeHeadImg);
             homeNicknameTv.setText(member.getNickName());
+            mPresenter.getCountByStatus(memberId,0);
             mPresenter.updateUnReadMessage(memberId);
+            mPresenter.getWalletAmount(memberId);
         } else {
             homeHeadImg.setImageResource(R.drawable.ic_default_head);
             homeNicknameTv.setText("登录");
@@ -346,12 +354,20 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 meAlert.setVisibility(View.GONE);
             }
             itmeMessageNimg.setNotifyPointVisible(false);
+            itemOrderNimg.setNotifyPointVisible(false);
         }
         mPresenter.getHomeBannerInfo();
     }
 
+    public void updateDeviceMessage() {
+        if (UserHelper.isLogin(this)) {
+            mPresenter.updateUnReadMessage(UserHelper.getMemberId(this));
+            mRxManager.post(Constants.UPDATE_DEVICE_LIST, null);
+        }
+    }
 
-    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_card_coupon, R.id.item_qr_code, R.id.item_about, R.id.home_me_img, R.id.home_box_img, R.id.home_actvite_img})
+
+    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_purse, R.id.item_qr_code, R.id.item_about, R.id.home_me_img, R.id.home_box_img, R.id.home_actvite_img})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.home_guide_sure_btn:
@@ -429,11 +445,19 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
                 break;
-            case R.id.item_card_coupon://卡券
+            case R.id.item_purse://钱包
                 if (UserHelper.isLogin(this)) {
 //                    Constants.toActivity(this, ViewCouponActivity.class, null, false);
-                    //TODO: 2017/9/29 优惠券改版-code138
-                    Constants.toActivity(this, ViewCouponActivityNew.class, null, false);
+                    String purseValue = purseTv.getText().toString();
+                    if (getResources().getString(R.string.purse).equals(purseValue)) {
+                        Bundle pb = new Bundle();
+                        pb.putDouble(PurseActivity.KEY_WALLETAMOUNT, walletAmount);
+                        pb.putDouble(PurseActivity.KEY_DEPOSITAMOUNT, depositAmount);
+                        Constants.toActivity(this, PurseActivity.class, pb, false);
+                    } else {
+                        Constants.toActivity(this, ViewCouponActivityNew.class, null, false);
+                    }
+
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
@@ -477,6 +501,25 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
 
+    @Override
+    public void updateWalletAmountView(double walletAmount, double depositAmount) {
+        if (walletAmount > 0 || depositAmount > 0) {
+            this.walletAmount = walletAmount;
+            this.depositAmount = depositAmount;
+            setPurseTv(R.string.purse, R.drawable.icon_purse);
+        } else {
+            setPurseTv(R.string.card_coupon, R.drawable.icon_card_coupon_1);
+        }
+
+    }
+
+    private void setPurseTv(int resTextId, int resDrawableId) {
+        purseTv.setText(getResources().getString(resTextId));
+        Drawable leftDrawable = getResources().getDrawable(resDrawableId);
+        leftDrawable.setBounds(0, 0, leftDrawable.getIntrinsicWidth(), leftDrawable.getIntrinsicHeight());
+        purseTv.setCompoundDrawables(leftDrawable, null, null, null);
+    }
+
     //消息小红点
     @Override
     public void updateMessageCount(int count) {
@@ -485,9 +528,31 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             meAlert.setVisibility(View.VISIBLE);
         } else {
             itmeMessageNimg.setNotifyPointVisible(false);
-            if (!aboutNimg.isNotifyVisbile()) {
-                meAlert.setVisibility(View.GONE);
+            if (itemOrderNimg.isNotifyVisbile()) {
+                return;
             }
+            if (aboutNimg.isNotifyVisbile()) {
+                return;
+            }
+            meAlert.setVisibility(View.GONE);
+        }
+    }
+
+    public void updateOrderView(boolean hasOrder) {
+        if (hasOrder) {
+            itemOrderNimg.setNotifyPointVisible(true);
+            if (meAlert.getVisibility() != View.VISIBLE) {
+                meAlert.setVisibility(View.VISIBLE);
+            }
+        } else {
+            itemOrderNimg.setNotifyPointVisible(false);
+            if (itmeMessageNimg.isNotifyVisbile()) {
+                return;
+            }
+            if (aboutNimg.isNotifyVisbile()) {
+                return;
+            }
+            meAlert.setVisibility(View.GONE);
         }
     }
 
@@ -509,6 +574,20 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             promotionPop = CommonUtils.getAnimPop(contentView);
         }
         showItemPop(0);
+    }
+
+    //通知拉起H5页云盒子支付
+    public void showH5PayPop() {
+        if (h5PayPop == null) {
+            View contentView = LayoutInflater.from(this).inflate(R.layout.pop_home_ad, null);
+            View bgView = contentView.findViewById(R.id.home_pop_bg);
+            ImageView img = (ImageView) contentView.findViewById(R.id.pop_ad_img);
+            ImageView closeImg = (ImageView) contentView.findViewById(R.id.pop_ad_close_img);
+            closeImg.setOnClickListener(this);
+            bgView.setOnClickListener(this);
+            h5PayPop = CommonUtils.getAnimPop(contentView);
+        }
+
     }
 
     @Override
@@ -537,6 +616,13 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         } else if (AUTORITY_MYORDER.equals(authory)) {
             if (UserHelper.isLogin(this)) {
                 jumpH5Page(ApiConstants.AppOrderList);
+            }
+        } else {
+            if (!TextUtils.isEmpty(authory)) {
+                if (AUTORITY_HTTP.equals(authory.substring(0, 4))) {
+                    jumpH5Page(authory);
+                }
+                ;
             }
         }
     }
@@ -692,7 +778,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                         resultStr += "qrfrom=cloudmApp";
                     }
                     if (UserHelper.isLogin(this)) {
-                        resultStr +=("&"+QuestionCommunityActivity.PARAMS_KEY_MEMBERID+"="+UserHelper.getMemberId(this));
+                        resultStr += ("&" + QuestionCommunityActivity.PARAMS_KEY_MEMBERID + "=" + UserHelper.getMemberId(this));
                     }
                     String resultEncodeStr = null;
                     try {

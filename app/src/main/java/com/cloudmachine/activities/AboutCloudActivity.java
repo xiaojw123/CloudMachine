@@ -56,7 +56,6 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_cloud);
-        MobclickAgent.onEvent(this, MobEvent.SETTING_ABOAT);
         getIntentData();
         mContext = this;
         mHandler = new Handler(this);
@@ -65,29 +64,7 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
         initView();
         new GetVersionAsync(mContext, mHandler).execute();
     }
-//    public void changeEnvir(View view){
-//     String text= envirBtn.getText().toString();
-//        if ("测试环境".equals(text)){
-//            Api.clearHostType();
-//            ApiConstants.CLOUDM_HOST="http://api.cloudm.com/cloudm3/yjx/";
-//            ApiConstants.GUOSHUAI_HOST = "http://api.cloudm.com/cloudm3/";
-//            ApiConstants.CAITINGTING_HOST = "http://api.cloudm.com/cloudm3/";
-//            ApiConstants.XIEXIN_HOST = "http://ask.cloudm.com/";
-//            ApiConstants.H5_HOST = "http://h5.cloudm.com/";
-//            text="线上环境";
-//        }else if ("线上环境".equals(text)){
-//            Api.clearHostType();
-//            ApiConstants.CLOUDM_HOST = "http://api.test.cloudm.com/cloudm3/yjx/";
-//            ApiConstants.GUOSHUAI_HOST = "http://api.test.cloudm.com/cloudm3/";
-//            ApiConstants.CAITINGTING_HOST = "http://api.test.cloudm.com/cloudm3/";
-//            ApiConstants.XIEXIN_HOST = "http://ask.test.cloudm.com/";
-//            ApiConstants.H5_HOST = "http://h5.test.cloudm.com/";
-//            text="测试环境";
-//        }
-//        envirBtn.setText(text);
-//
-//        ToastUtils.showCenterToast(this,text+"启用，current app process keep valid");
-//    }
+
 
     @Override
     public void initPresenter() {
@@ -159,6 +136,7 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
     protected void onResume() {
         //MobclickAgent.onPageStart(UMengKey.time_setting_aboat);
         super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.SETTING_ABOAT);
     }
 
     @Override

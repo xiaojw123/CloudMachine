@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingLeft="@dimen/dimen_size_20"
+    android:paddingRight="@dimen/dimen_size_16"
+    android:paddingBottom="@dimen/dimen_size_12"
+    android:paddingTop="@dimen/dimen_size_14"
+    >
+
+    <TextView
+        android:id="@+id/item_deposit_devicename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="设备名称：斗山一号"
+        android:textColor="@color/cor9"
+        android:textSize="@dimen/text_size_14_sp" />
+
+    <TextView
+        android:id="@+id/item_deposit_sn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_deposit_devicename"
+        android:layout_marginTop="@dimen/dimen_size_7"
+        android:text="sn:1010101"
+        android:textColor="@color/cor9"
+        android:textSize="@dimen/text_size_12_sp" />
+
+    <TextView
+        android:id="@+id/item_deposit_fix_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_deposit_sn"
+        android:layout_marginTop="@dimen/dimen_size_7"
+        android:text="安装日期"
+        android:textColor="@color/cor9"
+        android:textSize="@dimen/text_size_12_sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_deposit_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¥40000000"
+            android:textColor="@color/cor8"
+            android:textSize="@dimen/text_size_14_sp" />
+
+        <TextView
+            android:id="@+id/item_deposit_refund"
+            android:layout_width="@dimen/dimen_size_63"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_7"
+            android:background="@drawable/item_deposit_refund_bg"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_size_6"
+            android:paddingTop="@dimen/dimen_size_6"
+            android:text="退款"
+            android:textColor="@color/cor5"
+            android:visibility="gone"
+            android:textSize="@dimen/text_size_14_sp" />
+
+        <TextView
+            android:id="@+id/item_deposit_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_7"
+            android:text="退款成功"
+            android:textSize="@dimen/text_size_14_sp"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

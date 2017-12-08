@@ -1,21 +1,23 @@
 package com.cloudmachine.ui.repair.activity;
 
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.activities.EvaluationActivity;
+import com.cloudmachine.adapter.PhotoListAdapter;
+import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
+import com.cloudmachine.bean.WorkDetailBean;
 import com.cloudmachine.bean.WorkSettleBean;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.ui.home.activity.ConsumptionActivity;
-import com.cloudmachine.ui.home.activity.PayDeviceInfoActivity;
 import com.cloudmachine.ui.repair.contract.RepairFinishContract;
 import com.cloudmachine.ui.repair.model.RepairFinishModel;
 import com.cloudmachine.ui.repair.presenter.RepairFinishPresenter;
@@ -23,23 +25,18 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFinishPresenter, RepairFinishModel> implements RepairFinishContract.View, View.OnClickListener {
 
-    @BindView(R.id.finish_deviceinfo_fl)
-    FrameLayout finishDeviceinfoFl;
     @BindView(R.id.finish_consumption_tv)
     TextView finishConsumptionTv;
     @BindView(R.id.finish_coupon_tv)
     TextView finishCouponTv;
-    @BindView(R.id.finish_workhours_tv)
-    TextView finishWorkhoursTv;
     CWInfo mBoInfo;
-    @BindView(R.id.finish_consumption_fl)
-    FrameLayout finishConsumptionFl;
     @BindView(R.id.finish_titleview)
     CommonTitleView finishCtv;
     @BindView(R.id.finish_deviceinfo_amount)
@@ -56,8 +53,20 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
     RelativeLayout tickeLayout;
     @BindView(R.id.ticket_discount_amout)
     TextView ticketAmoutTv;
-
-
+    @BindView(R.id.tv_device_brand)
+    TextView tvBrand;
+    @BindView(R.id.tv_device_model)
+    TextView tvModel;
+    @BindView(R.id.pay_di_des)
+    TextView desTv;
+    @BindView(R.id.pay_di_dno)
+    TextView noTv;
+    @BindView(R.id.pay_di_loc)
+    TextView locTv;
+    @BindView(R.id.device_info_rlv)
+    RecyclerView infoImgRlv;
+    @BindView(R.id.device_info_title)
+    TextView imgTitleTv;
     String orderNum;
 
     @Override
@@ -65,11 +74,16 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reparir_finsih_detail);
         ButterKnife.bind(this);
-        MobclickAgent.onEvent(this, MobEvent.REPAIR_PAY_FINISHED);
         orderNum = getIntent().getStringExtra("orderNum");
         String flag = getIntent().getStringExtra("flag");
         finishCtv.setRightClickListener(this);
         mPresenter.updateRepairFinishDetail(orderNum, flag);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_PAY_FINISHED);
     }
 
     @Override
@@ -88,7 +102,6 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
         WorkSettleBean settleBean = boInfo.getWorkSettle();
         finishConsumptionTv.setText(settleBean.getNpartstotalamount());
         finishCouponTv.setText("-¥" + settleBean.getDsicountamount());
-        finishWorkhoursTv.setText("¥" + settleBean.getNrepairworkhourcost());
         amountTv.setText("实付:¥ " + settleBean.getNpaidinamount());
         String ndiscounttotalamount = settleBean.getNdiscounttotalamount();
         if (!TextUtils.isEmpty(ndiscounttotalamount)) {
@@ -114,12 +127,10 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
                 ticketAmoutTv.setText("¥" + nmaxamount);
             }
         }
-
-
+        updateDeviceInfo(mBoInfo.getWorkDetail(), mBoInfo.getLogoList(), null);
     }
 
 
-    @OnClick({R.id.finish_deviceinfo_fl, R.id.finish_consumption_fl})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.common_titleview_right_tv:
@@ -128,21 +139,59 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
                 bundle0.putString("orderNum", orderNum);
                 Constants.toActivity(this, EvaluationActivity.class, bundle0);
                 break;
-            case R.id.finish_deviceinfo_fl:
-                if (mBoInfo != null) {
-                    Bundle bundle1 = new Bundle();
-                    bundle1.putSerializable(Constants.WORK_DETAIL, mBoInfo.getWorkDetail());
-                    bundle1.putStringArrayList(Constants.LOGO_LIST, mBoInfo.getLogoList());
-                    Constants.toActivity(this, PayDeviceInfoActivity.class, bundle1);
-                }
-                break;
-            case R.id.finish_consumption_fl:
-                Bundle bundle2 = new Bundle();
-                bundle2.putSerializable(Constants.CWINFO, mBoInfo);
-                Constants.toActivity(this, ConsumptionActivity.class, bundle2);
-                break;
+//            case R.id.finish_deviceinfo_fl:
+//                if (mBoInfo != null) {
+//                    Bundle bundle1 = new Bundle();
+//                    bundle1.putSerializable(Constants.WORK_DETAIL, mBoInfo.getWorkDetail());
+//                    bundle1.putStringArrayList(Constants.LOGO_LIST, mBoInfo.getLogoList());
+//                    Constants.toActivity(this, PayDeviceInfoActivity.class, bundle1);
+//                }
+//                break;
+//            case R.id.finish_consumption_fl:
+//                Bundle bundle2 = new Bundle();
+//                bundle2.putSerializable(Constants.CWINFO, mBoInfo);
+//                Constants.toActivity(this, ConsumptionActivity.class, bundle2);
+//                break;
 
         }
 
     }
+
+    public void updateDeviceInfo(WorkDetailBean bean, ArrayList<String> logoList, String flag) {
+        //刷新耗件详情列表
+        if (bean == null) {
+            return;
+        }
+        if (logoList != null && logoList.size() > 0) {
+            imgTitleTv.setVisibility(View.VISIBLE);
+            infoImgRlv.setVisibility(View.VISIBLE);
+            infoImgRlv.setNestedScrollingEnabled(false);
+            infoImgRlv.setLayoutManager(new GridLayoutManager(this, 3));
+            infoImgRlv.addItemDecoration(new SpaceItemDecoration(this, 5));
+            PhotoListAdapter adapter = new PhotoListAdapter();
+            adapter.updateItems(logoList);
+            infoImgRlv.setAdapter(adapter);
+        }
+        //设置机器品牌
+        tvBrand.setText(bean.getVbrandname());
+        //设置机器型号
+        tvModel.setText(bean.getVmaterialname());
+//        rdDevicenameTv.setText(detailBean.getVbrandname());
+//        rdDevicenoTv.setText(detailBean.getVmaterialname());
+//        rdDescriptionTv.setText(detailBean.getVdiscription());
+
+        noTv.setText(bean.getVmachinenum());
+        locTv.setText(bean.getVworkaddress());
+        String description;
+        if ("0".equals(flag)) {
+            description = bean.getVdiscription();
+        } else {
+            description = bean.getCusdemanddesc();
+        }
+        desTv.setText(description);
+
+
+    }
+
+
 }

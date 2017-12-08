@@ -3,6 +3,7 @@ package com.cloudmachine.autolayout.widgets;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ public class CustomDialog extends Dialog {
         private String positiveButtonText;
         private String netrualButtonText;
         private String negativeButtonText;
+        private int resNegativeColor;
         private View contentView;
         private OnClickListener netrualButtonClickListener;
         private OnClickListener positiveButtonClickListener;
@@ -40,6 +42,7 @@ public class CustomDialog extends Dialog {
         private LinearLayout mChooseBtnLayout;
         private ImageView mAlertImg;
         private int resId;
+        private boolean isLeft;
 
         public Builder(Context context) {
             this.context = context;
@@ -49,7 +52,9 @@ public class CustomDialog extends Dialog {
             this.message = message;
             return this;
         }
-
+        public void setGravityLeft(boolean isLeft){
+            this.isLeft=isLeft;
+        }
 
         public CustomDialog create() {
 
@@ -76,6 +81,9 @@ public class CustomDialog extends Dialog {
                 mAlertImg.setBackgroundResource(resId);
             }
             if (message != null) {
+                if (isLeft){
+                    mMessageTv.setGravity(Gravity.LEFT);
+                }
                 mMessageTv.setText(message);
             }
 
@@ -118,6 +126,9 @@ public class CustomDialog extends Dialog {
             if (negativeButtonText != null) {
                 mNetrualBtn.setVisibility(View.GONE);
                 mChooseBtnLayout.setVisibility(View.VISIBLE);
+                if (resNegativeColor != 0) {
+                    mNegativeBtn.setTextColor(resNegativeColor);
+                }
                 mNegativeBtn.setText(negativeButtonText);
                 if (negativeButtonClickListener != null) {
                     mNegativeBtn.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +184,7 @@ public class CustomDialog extends Dialog {
         }
 
 
+
         /**
          * Set the positive button resource and it's listener
          *
@@ -209,6 +221,13 @@ public class CustomDialog extends Dialog {
             return this;
         }
 
+        public Builder setNegativeButton(int resNegativeColor, String negativeButtonText,
+                                         OnClickListener listener) {
+            this.resNegativeColor = resNegativeColor;
+            this.negativeButtonText = negativeButtonText;
+            this.negativeButtonClickListener = listener;
+            return this;
+        }
 
     }
 

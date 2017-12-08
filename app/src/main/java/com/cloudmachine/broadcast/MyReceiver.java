@@ -1,5 +1,6 @@
 package com.cloudmachine.broadcast;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cloudmachine.activities.AboutCloudActivity;
+import com.cloudmachine.helper.CustomActivityManager;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
@@ -44,24 +46,56 @@ public class MyReceiver extends BroadcastReceiver {
             processCustomMessage(context, bundle);
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
-            Log.d(TAG, "[MyReceiver] 接收到推送下来的通知");
+            Log.d(TAG, "[MyReceiver] 接收到推送下来的通知, content:" + context + "___Activity__" + CustomActivityManager.getInstance().getTopActivity());
+//            updateDevices(bundle);
             int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
 
-        } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
+        } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction()))
+
+        {
             Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
             notifactionToActivity(context, bundle);
 
 
-        } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
+        } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction()))
+
+        {
             Log.d(TAG, "[MyReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
             //在这里根据 JPushInterface.EXTRA_EXTRA 的内容处理代码，比如打开新的Activity， 打开一个网页等..
 
-        } else if (JPushInterface.ACTION_CONNECTION_CHANGE.equals(intent.getAction())) {
+        } else if (JPushInterface.ACTION_CONNECTION_CHANGE.equals(intent.getAction()))
+
+        {
             boolean connected = intent.getBooleanExtra(JPushInterface.EXTRA_CONNECTION_CHANGE, false);
             Log.w(TAG, "[MyReceiver]" + intent.getAction() + " connected state change to " + connected);
-        } else {
+        } else
+
+        {
             Log.d(TAG, "[MyReceiver] Unhandled intent - " + intent.getAction());
+        }
+
+    }
+    // TODO: 2017/11/30 通知类型 type
+    private void updateDevices(Bundle bundle) {
+        String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+        if (!TextUtils.isEmpty(extras)) {
+            try {
+                JSONObject extraJson = new JSONObject(extras);
+                if (extraJson.has("type")) {
+                    String type = extraJson.getString("type");
+                    if ("1".equals(type)) {
+                        Activity topAct = CustomActivityManager.getInstance().getTopActivity();
+                        if (topAct != null && topAct instanceof HomeActivity) {
+                            ((HomeActivity) topAct).updateDeviceMessage();
+                        }
+                    }
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -138,7 +172,7 @@ public class MyReceiver extends BroadcastReceiver {
                             context.startActivity(i3);
                             return;
                         case 8:
-                            Intent i4 = new Intent(context,QuestionCommunityActivity.class);
+                            Intent i4 = new Intent(context, QuestionCommunityActivity.class);
                             bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppBoxDetail);
                             i4.putExtras(bundle);
                             i4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

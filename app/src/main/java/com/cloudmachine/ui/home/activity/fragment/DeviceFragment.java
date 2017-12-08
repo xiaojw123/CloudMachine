@@ -93,10 +93,21 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     Handler mHandler;
     int actIndex, actLen;
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden){
+            MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_MAP);
+            loadData();
+        }
+    }
 
     @Override
     public void onResume() {
         super.onResume();
+        if (isVisible()){
+            MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_MAP);
+        }
         loadData();
     }
 
@@ -139,6 +150,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     @Override
     protected void initView() {
+        MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_MAP);
         registerRxEvent();
     }
 
@@ -209,6 +221,10 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         if (len >= 20) {
             popSearchEdt.setVisibility(View.VISIBLE);
             popLineView.setVisibility(View.GONE);
+            Editable editable=popSearchEdt.getText();
+            if (editable!=null&&editable.length()>0){
+                updateSearchList(editable);
+            }
         } else {
             popSearchEdt.setVisibility(View.GONE);
             popLineView.setVisibility(View.VISIBLE);
@@ -229,24 +245,29 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (s.length() > 0) {
-                String searchKey = s.toString();
-                List<McDeviceInfo> searchList = new ArrayList<>();
-                for (McDeviceInfo info : mDeviceList) {
-                    String deviceName = info.getName();
-                    if (deviceName != null) {
-                        String deviceNamePy = PingYinUtil.getPingYin(deviceName);
-                        if (deviceName.contains(searchKey) || deviceNamePy.contains(searchKey)) {
-                            searchList.add(info);
-                        }
-                    }
-                }
-                deviceListAdpater.updateItems(searchList);
-            } else {
-                deviceListAdpater.updateItems(mDeviceList);
-            }
+            updateSearchList(s);
         }
     };
+
+    private void updateSearchList(Editable s) {
+        if (s.length() > 0) {
+            String searchKey = s.toString();
+            List<McDeviceInfo> searchList = new ArrayList<>();
+            for (McDeviceInfo info : mDeviceList) {
+                String deviceName = info.getName();
+                if (deviceName != null) {
+                    String deviceNamePy = PingYinUtil.getPingYin(deviceName);
+                    if (deviceName.contains(searchKey) || deviceNamePy.contains(searchKey)) {
+                        searchList.add(info);
+                    }
+                }
+            }
+            deviceListAdpater.updateItems(searchList);
+        } else {
+            deviceListAdpater.updateItems(mDeviceList);
+        }
+    }
+
     TextView.OnEditorActionListener serachActionListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -337,6 +358,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             ((HomeActivity) getActivity()).updateGuide(mDeviceList);
         }
     }
+
 
     @Override
     public void updateArticles(List<ArticleInfo> articleInfoList) {
@@ -449,6 +471,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 break;
 
             case R.id.device_info_cotainer:
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_CLICK_MACHINE_DETAIL_FROM_UNDER_INFOVIEW);
                 Marker marker = (Marker) view.getTag();
                 gotoDeviceDetail((McDeviceInfo) marker.getObject());
                 break;
@@ -465,8 +488,8 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 break;
 
             case R.id.device_menu_tv:
-                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_MENU_OPEN);
                 MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_ALL_LIST_CLICK);
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_MENU_OPEN);
                 showMenuPop();
                 break;
         }
@@ -476,6 +499,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     @Override
     public void onItemClick(View view, int position) {
+        MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_CLICK_MACHINE_DETAIL_FROM_LIST);
         gotoDeviceDetail((McDeviceInfo) view.getTag());
     }
 
@@ -499,6 +523,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         title_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_CLICK_MACHINE_DETAIL_FROM_ANNOTATION);
                 gotoDeviceDetail(bean);
             }
         });

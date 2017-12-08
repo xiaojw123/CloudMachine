@@ -11,7 +11,6 @@ import android.os.Environment;
 import android.support.v4.content.FileProvider;
 
 import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.utils.Constants;
 
 import java.io.File;
@@ -32,8 +31,8 @@ public class DownloadReceiver extends BroadcastReceiver {
                     String str = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
 
                     context.startActivity(getApkFileIntent(context, str));
-                    UserHelper.insertGuideTag(context,false);
-                    UserHelper.insertHConfigGuideTag(context,false);
+//                    UserHelper.insertGuideTag(context,false);
+//                    UserHelper.insertHConfigGuideTag(context,false);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

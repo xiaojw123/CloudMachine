@@ -52,7 +52,7 @@ public class WorkPicListAdapter extends BaseRecyclerAdapter<PickItemBean> {
         @Override
         public void initViewHolder(PickItemBean item) {
             if (item != null) {
-                Glide.with(mContext).load(item.getImgUrl()).into(picImg);
+                Glide.with(mContext).load(item.getImgUrl()).placeholder(R.drawable.icon_item_defalut).error(R.drawable.icon_item_defalut).crossFade().into(picImg);
                 dateTv.setText(item.getPutTime());
             }
 

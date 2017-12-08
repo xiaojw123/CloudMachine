@@ -146,7 +146,6 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
                         ToastUtils.showToast(EvaluationActivity.this,"评分区间【1-5】");
                         return;
                     }
-                    MobclickAgent.onEvent(EvaluationActivity.this,MobEvent.TIME_REPAIR_COMMENT);
                     new SubmitCommentAsync(mContext, mHandler, css_work_no, String
                             .valueOf(rating), cust_telString, sbAdvantage
                             .toString(), sbjEdt.getText().toString()).execute();
@@ -169,6 +168,7 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
     protected void onResume() {
         //MobclickAgent.onPageStart(UMengKey.time_repair_comment);
         super.onResume();
+        MobclickAgent.onEvent(EvaluationActivity.this,MobEvent.TIME_REPAIR_COMMENT);
     }
 
     @Override

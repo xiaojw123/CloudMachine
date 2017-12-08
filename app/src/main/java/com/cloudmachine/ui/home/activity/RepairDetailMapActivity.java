@@ -66,6 +66,7 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
     String mobile;
     int left, top;
     String flag;
+    String nstatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +77,7 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
         initGeocoder();
         String orderNum = getIntent().getStringExtra("orderNum");
         flag = getIntent().getStringExtra("flag");
-        String nstatus = getIntent().getStringExtra("nstatus");
-        if (OrderStatus.WAIT.equals(nstatus)){
-            MobclickAgent.onEvent(this, MobEvent.REPAIR_WAIT_ACCEPT);
-        }else if (OrderStatus.ING.equals(nstatus)){
-            MobclickAgent.onEvent(this,MobEvent.REPAIR_REPARING);
-        }
+        nstatus = getIntent().getStringExtra("nstatus");
         repairDetailCtv.setTitleName(nstatus);
         if (OrderStatus.CANCEL.equals(nstatus) || OrderStatus.WAIT.equals(nstatus)) {
             isRepairing = false;
@@ -94,9 +90,19 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (OrderStatus.WAIT.equals(nstatus)) {
+            MobclickAgent.onEvent(this, MobEvent.REPAIR_WAIT_ACCEPT);
+        } else if (OrderStatus.ING.equals(nstatus)) {
+            MobclickAgent.onEvent(this, MobEvent.REPAIR_REPARING);
+        }
+    }
+
+    @Override
     protected void initAMap() {
-         isForbidenClick=true;
-         aMap.setOnMarkerClickListener(this);
+        isForbidenClick = true;
+        aMap.setOnMarkerClickListener(this);
 
     }
 

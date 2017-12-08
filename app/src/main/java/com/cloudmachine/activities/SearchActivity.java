@@ -78,13 +78,18 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        MobclickAgent.onEvent(this, MobEvent.SEARCH);
         mContext = this;
         mHandler = new Handler(this);
         getIntentData();
 //		searchListType = getIntent().getExtras().getInt(Constants.P_SEARCHLISTTYPE);
         initView();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.SEARCH);
     }
 
     @Override

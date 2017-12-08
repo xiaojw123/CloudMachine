@@ -44,6 +44,9 @@ public class JsInteface {
     public static final String ALERT_TIPS = "alert_tips";
     public static final String ALERT_EVENT = "alert_event";
     public static final String UPLOAD_IMG = "upload_img";
+    public static final String ALERT_IMAGE="alert_image";
+    public static final String ALERT_IMAGE_WARN="CM_icon_warning";
+    public static final String ALERT_IMAGE_CONFIRM="CM_icon_confirm";
     public static final String UPLOAD_QINIU_IMG = "upload_qiniu_img_qrcode";
     Context mContext;
 

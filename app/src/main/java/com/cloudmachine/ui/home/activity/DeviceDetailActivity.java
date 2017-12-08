@@ -97,7 +97,6 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         initMyLocation();
         initView();
         updateDeviceName();
-        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_DETECTION);
 
 
     }
@@ -128,6 +127,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_DETECTION);
         if (UserHelper.isLogin(this)) {
             mPresenter.getDeviceInfo(String.valueOf(deviceId), UserHelper.getMemberId(this));
         } else {
@@ -158,10 +158,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
             deviceId = mcDeviceInfo.getId();
             updateDeviceDetail(mcDeviceInfo);
         }
-        if (!UserHelper.getHConfigGuideTag(this)) {
-            UserHelper.insertHConfigGuideTag(this, true);
-            guideLayout.setVisibility(View.VISIBLE);
-        }
+
     }
 
     private void initBottomAnim() {
@@ -242,7 +239,6 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 if (mBundle == null) {
                     mBundle = new Bundle();
                 }
-                MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_INFO);
                 mBundle.putBoolean(AddDeviceActivity.IMG_TITLE_SHOW, true);
                 mBundle.putBoolean(AddDeviceActivity.DEVICE_SHOW, true);
                 mBundle.putInt(Constants.P_ADDMCDEVICETYPE, 0);
@@ -307,6 +303,13 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
             return;
         }
         snId = info.getSnId();
+        if (CommonUtils.isHConfig(snId)) {
+            workPicTv.setVisibility(View.VISIBLE);
+            if (!UserHelper.getHConfigGuideTag(this)) {
+                UserHelper.insertHConfigGuideTag(this, true);
+                guideLayout.setVisibility(View.VISIBLE);
+            }
+        }
         oilValue = info.getOilLave();
         oilWaveTv.setText(CommonUtils.formatOilValue(oilValue));
         float time = info.getWorkTime();

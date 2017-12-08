@@ -576,4 +576,6 @@
     <color name="corner_color">#00FF00</color>
     <color name="c_90_f">#90ffffff</color>
     <!-- QRCode scanner color end -->
+    <color name="c_8">#888888</color>
+    <color name="c_c">#cccccc</color>
 </resources>

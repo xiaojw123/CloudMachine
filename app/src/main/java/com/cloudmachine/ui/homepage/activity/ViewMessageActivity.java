@@ -60,8 +60,14 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
         mContext = this;
         memberId = UserHelper.getMemberId(this);
         mPresenter.questionNeed(memberId);
-        MobclickAgent.onEvent(this, MobEvent.TIME_MESSAGE_LIST);
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MESSAGE_LIST);
     }
 
     private void initRecyclerView() {

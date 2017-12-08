@@ -6,8 +6,8 @@ ext {
             compileVersion   : 25,
             minSdk           : 16,
             targetSdk        : 25,
-            version_code     : 150,
-            version_name     : "3.5.0"
+            version_code     : 200,
+            version_name     : "4.0.0"
     ]
     libraries = [
             support: "25.2.0",
@@ -18,7 +18,6 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral() // add repository
-        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
@@ -31,7 +30,6 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        google()
     }
 }
 

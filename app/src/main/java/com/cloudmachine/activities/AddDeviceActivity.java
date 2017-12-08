@@ -975,7 +975,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         // TODO Auto-generated method stub
         //MobclickAgent.onPageStart(UMengKey.time_machine_info);
         super.onResume();
-
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_INFO);
     }
 
 }

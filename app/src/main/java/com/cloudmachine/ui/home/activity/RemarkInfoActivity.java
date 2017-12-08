@@ -62,9 +62,13 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
         ButterKnife.bind(this);
         initView();
         mPresenter.updateRoleListView();
-        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_MEMBER_INFO);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_MEMBER_INFO);
+    }
 
     private void initView() {
         deviceId = getIntent().getLongExtra(Constants.P_DEVICEID, 0);

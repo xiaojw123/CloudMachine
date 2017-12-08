@@ -68,9 +68,14 @@ public class ViewRepairActivity extends BaseAutoLayoutActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewrepair);
         ButterKnife.bind(this);
-        MobclickAgent.onEvent(this, MobEvent.REPAIR_PAY_COUPON);
         mContext = this;
         initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_PAY_COUPON);
     }
 
     @Override

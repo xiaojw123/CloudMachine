@@ -702,6 +702,11 @@
     <dimen name="dimen_size_153">153dp</dimen>
     <dimen name="dimen_size_280">280dp</dimen>
     <dimen name="dimen_size_250">250dp</dimen>
+    <dimen name="dimen_size_200">200dp</dimen>
+    <dimen name="dimen_size_51">51dp</dimen>
+    <dimen name="dimen_size_63">63dp</dimen>
+    <dimen name="dimen_size_169">169dp</dimen>
+    <dimen name="dimen_size_237">237dp</dimen>
 
 
     <!--xhdpi 1280*720-->
