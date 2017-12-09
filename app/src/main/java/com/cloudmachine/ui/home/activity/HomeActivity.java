@@ -169,7 +169,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 
     ImageView promotionImg;
     PopupWindow promotionPop;
-    PopupWindow h5PayPop;
     List<PopItem> mItems;
     Marker curMarker;
     private Handler mHandler;
@@ -576,19 +575,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         showItemPop(0);
     }
 
-    //通知拉起H5页云盒子支付
-    public void showH5PayPop() {
-        if (h5PayPop == null) {
-            View contentView = LayoutInflater.from(this).inflate(R.layout.pop_home_ad, null);
-            View bgView = contentView.findViewById(R.id.home_pop_bg);
-            ImageView img = (ImageView) contentView.findViewById(R.id.pop_ad_img);
-            ImageView closeImg = (ImageView) contentView.findViewById(R.id.pop_ad_close_img);
-            closeImg.setOnClickListener(this);
-            bgView.setOnClickListener(this);
-            h5PayPop = CommonUtils.getAnimPop(contentView);
-        }
 
-    }
 
     @Override
     public void updateActivitySize(int count) {

@@ -8,13 +8,20 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.AutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxManager;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.AppManager;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.LoadingDialog;
 import com.cloudmachine.utils.StatusBarCompat;
@@ -24,7 +31,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
 
 public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends BaseModel> extends AutoLayoutActivity {
-
+    PopupWindow depositPayPop;
     public RxManager mRxManager;
     public T mPresenter;
     public E mModel;
@@ -175,6 +182,46 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+    }
+
+    //通知拉起H5页云盒子支付
+    public void showDepsitPayPop(final String url) {
+        if (depositPayPop == null) {
+            View contentView = LayoutInflater.from(this).inflate(R.layout.pop_home_ad, null);
+            View bgView = contentView.findViewById(R.id.home_pop_bg);
+            ImageView img = (ImageView) contentView.findViewById(R.id.pop_ad_img);
+            img.setImageResource(R.drawable.icon_deposit_pay);
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    closeDepoistPop();
+                    Bundle db=new Bundle();
+                    db.putString(QuestionCommunityActivity.H5_URL,url);
+                    Constants.toActivity(BaseAutoLayoutActivity.this,QuestionCommunityActivity.class,db);
+                }
+            });
+            ImageView closeImg = (ImageView) contentView.findViewById(R.id.pop_ad_close_img);
+            closeImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    closeDepoistPop();
+                }
+            });
+            bgView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    closeDepoistPop();
+                }
+            });
+            depositPayPop = CommonUtils.getAnimPop(contentView);
+        }
+        depositPayPop.showAtLocation(getWindow().getDecorView(), Gravity.FILL, 0, 0);
+
+    }
+    public void closeDepoistPop(){
+        if (depositPayPop!=null&&depositPayPop.isShowing()){
+            depositPayPop.dismiss();
+        }
     }
 }
 

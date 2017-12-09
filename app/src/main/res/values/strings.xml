@@ -368,11 +368,13 @@
     <string name="reason3">试下押金能否成功退款</string>
     <string name="reason4">其他原因</string>
     <string name="input_other_reason">你还可以输入其他退款原因</string>
-    <string name="rebund_warn_text">押金退还后，你无法获取挖机数据了押金退还时间为3-7个工作日</string>
+    <string name="rebund_warn_text">押金退还后，你无法获取挖机数据了\n押金退还时间为3-7个工作日</string>
     <string name="submit">提交</string>
     <string name="input_message_verifycode">请输入短信验证码</string>
     <string name="do_bind">去绑定</string>
     <string name="rmb_symbol">¥</string>
+    <string name="intput_rebund_reason">请输入退款原因</string>
+    <string name="no_desposit_detail">暂无押金明细</string>
 
 
 </resources>

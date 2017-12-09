@@ -81,6 +81,7 @@ public class CustomSucessDialog extends Dialog {
             View layout = inflater.inflate(R.layout.custom_success_dialog, null);
             initContentView(dialog, layout);
             dialog.setContentView(layout);
+            dialog.setCancelable(false);
             return dialog;
         }
 

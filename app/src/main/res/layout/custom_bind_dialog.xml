@@ -54,7 +54,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="53"
-                android:text="重新获取"
+                android:text="60S"
                 android:textSize="@dimen/text_size_12_sp"
                 android:gravity="center"
                 android:textColor="@color/white"

@@ -135,8 +135,7 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
                 break;
             case R.id.purse_aplay_fl://支付宝绑定
                 if (doBind.equals(purseAliplayBindTv.getText().toString())) {
-//                    mPresenter.getVerfyCode(TYPE_ALIPAY, mMember.getMobile());
-                    bindAliPay();
+                    mPresenter.getVerfyCode(TYPE_ALIPAY, mMember.getMobile());
                 } else {
                     unBindAcount(TYPE_ALIPAY);
                 }
@@ -342,7 +341,7 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
                         AuthTask task = new AuthTask(PurseActivity.this);
                         AppLog.print("authTask___start");
                         Map<String, String> map = task.authV2(authResult, true);
-                        AppLog.print("authTask___authV2__map__"+map);
+                        AppLog.print("authTask___authV2__map__" + map);
                         Message message = new Message();
                         message.what = AUTH_SUCESS;
                         message.obj = map;
@@ -370,8 +369,8 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
             if (msg.what == AUTH_SUCESS) {
                 String authCode = null;
                 Object obj = msg.obj;
-                if (obj!=null&&obj instanceof Map) {
-                    Map<String, String> map = (Map<String, String>)obj;
+                if (obj != null && obj instanceof Map) {
+                    Map<String, String> map = (Map<String, String>) obj;
                     if (map.containsKey("result")) {
                         for (Map.Entry<String, String> entry : map.entrySet()) {
                             AppLog.print("\nkey：" + entry.getKey() + ", value=" + entry.getValue());
@@ -390,7 +389,7 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
                         }
                     }
                 }
-                AppLog.print("authCode__"+authCode);
+                AppLog.print("authCode__" + authCode);
                 Api.getDefault(HostType.HOST_CLOUDM).aliPayUserInfo(UserHelper.getMemberId(PurseActivity.this), authCode).compose(RxSchedulers.<BaseRespose<JsonObject>>io_main()).subscribe(new RxSubscriber<BaseRespose<JsonObject>>(mContext) {
                     @Override
                     protected void _onNext(BaseRespose<JsonObject> userResultRes) {
@@ -496,14 +495,19 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
             }
         });
         builder.setPhoneNum(mMember.getMobile());
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        identyfDialog = builder.create();
+        identyfDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 cancelTimer();
             }
         });
-        identyfDialog = builder.create();
         identyfDialog.show();
+        TextView codeTv = builder.getCodeTv();
+        if (codeTv != null) {
+            codeTv.setEnabled(false);
+            startTimer(codeTv);
+        }
     }
 
     @Override

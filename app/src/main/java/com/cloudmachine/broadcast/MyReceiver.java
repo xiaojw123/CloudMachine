@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cloudmachine.activities.AboutCloudActivity;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.helper.CustomActivityManager;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
@@ -47,7 +48,7 @@ public class MyReceiver extends BroadcastReceiver {
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知, content:" + context + "___Activity__" + CustomActivityManager.getInstance().getTopActivity());
-//            updateDevices(bundle);
+            updateView(bundle);
             int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
 
@@ -76,23 +77,33 @@ public class MyReceiver extends BroadcastReceiver {
         }
 
     }
+
     // TODO: 2017/11/30 通知类型 type
-    private void updateDevices(Bundle bundle) {
+    private void updateView(Bundle bundle) {
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
         if (!TextUtils.isEmpty(extras)) {
             try {
                 JSONObject extraJson = new JSONObject(extras);
                 if (extraJson.has("type")) {
+                    Activity topAct = CustomActivityManager.getInstance().getTopActivity();
                     String type = extraJson.getString("type");
-                    if ("1".equals(type)) {
-                        Activity topAct = CustomActivityManager.getInstance().getTopActivity();
-                        if (topAct != null && topAct instanceof HomeActivity) {
-                            ((HomeActivity) topAct).updateDeviceMessage();
-                        }
-                    }
+                    switch (type) {
+                        case "11":
+                            if (topAct != null && topAct instanceof HomeActivity) {
+                                ((HomeActivity) topAct).updateDeviceMessage();
+                            }
+                            break;
+                        case "12":
+                            Class topClass = topAct.getClass();
+                            if (BaseAutoLayoutActivity.class.isAssignableFrom(topClass)) {
+                                String url = extraJson.optString("url");
+                                ((BaseAutoLayoutActivity) topAct).showDepsitPayPop(url);
+                            }
+                            break;
 
+                    }
                 }
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -147,6 +158,7 @@ public class MyReceiver extends BroadcastReceiver {
                     switch (iType) {//1,邀请消息  2,报警消息 3,版本消息  4,电子围栏 5,问卷调查
                         case 1:
                         case 5:
+                        case 11:
                             //打开自定义的Activity    //MessageActivity
                             Intent i1 = new Intent(context, ViewMessageActivity.class);
                             i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -185,6 +197,12 @@ public class MyReceiver extends BroadcastReceiver {
                             notifyIntent.putExtra(QuestionCommunityActivity.H5_URL, notifyUrl);
                             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(notifyIntent);
+                            break;
+                        case 12:
+                            Bundle tb = new Bundle();
+                            tb.putString(QuestionCommunityActivity.H5_URL, extraJson.optString("url"));
+                            Activity topAct = CustomActivityManager.getInstance().getTopActivity();
+                            Constants.toActivity(topAct, QuestionCommunityActivity.class, tb);
                             break;
                         default:
                             Intent i2 = new Intent(context, HomeActivity.class);

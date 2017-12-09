@@ -42,6 +42,8 @@ public class RebundDepositActivity extends BaseAutoLayoutActivity {
     LinearLayout rebundSysReasonLayout;
     @BindView(R.id.rebund_other_reason)
     EditText otherReasonEdt;
+    @BindView(R.id.rebund_reason_tv)
+    TextView chooseReasonTv;
     int reasonId = -1;//-1其他原因
     String idStr;
     String needAmount;
@@ -64,6 +66,8 @@ public class RebundDepositActivity extends BaseAutoLayoutActivity {
 
     private void updateResonListView(List<ResonItem> itemList) {
         if (itemList != null && itemList.size() > 0) {
+            chooseReasonTv.setVisibility(View.VISIBLE);
+            otherReasonEdt.setHint(getResources().getString(R.string.input_other_reason));
             for (ResonItem item : itemList) {
                 if (item != null) {
                     FrameLayout itemContainer = new FrameLayout(this);
@@ -155,7 +159,7 @@ public class RebundDepositActivity extends BaseAutoLayoutActivity {
             protected void _onNext(BaseRespose baseRespose) {
                 AppLog.print("baseRespose__" + baseRespose);
                 if (baseRespose.success()) {
-                    CommonUtils.showSuccessDialog(mContext, "退款申请提交成功", needAmount, "我们在1-3个工作日处理云盒子押金退款申请审核通过后,押金退还时间为3-7个工作日");
+                    CommonUtils.showSuccessDialog(mContext, "退押金申请提交成功", needAmount, "亲，我们已经收到您的退还押金申请，24小时内我们的客服将与您取得联系，请耐心等待");
                 } else {
                     ToastUtils.showToast(RebundDepositActivity.this, baseRespose.getMessage());
                 }

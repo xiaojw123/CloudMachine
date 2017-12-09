@@ -27,7 +27,6 @@ public class CustomBindDialog extends Dialog {
         private Context context;
         private OnClickListener positiveButtonClickListener;
         private OnClickListener negativeButtonClickListener;
-        private OnDismissListener dismissListener;
         private View.OnClickListener codeGetBtnClickListener;
         private TextView mPositvieBtn;
         private TextView mNegativeBtn;
@@ -51,6 +50,7 @@ public class CustomBindDialog extends Dialog {
             View layout = inflater.inflate(R.layout.custom_bind_dialog, null);
             initContentView(dialog, layout);
             dialog.setContentView(layout);
+            dialog.setCancelable(false);
             return dialog;
         }
 
@@ -84,7 +84,10 @@ public class CustomBindDialog extends Dialog {
                     }
                 });
             }
-            dialog.setOnDismissListener(dismissListener);
+        }
+
+        public TextView getCodeTv(){
+            return mGetcodeTv;
         }
 
 
@@ -110,11 +113,6 @@ public class CustomBindDialog extends Dialog {
                 OnClickListener listener) {
             this.positiveButtonClickListener = listener;
             return this;
-        }
-        public Builder setOnDismissListener(OnDismissListener dismissListener){
-            this.dismissListener=dismissListener;
-            return this;
-
         }
 
 

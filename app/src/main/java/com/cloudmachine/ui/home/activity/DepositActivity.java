@@ -3,6 +3,8 @@ package com.cloudmachine.ui.home.activity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
+import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.DepositAdapter;
@@ -11,7 +13,6 @@ import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.DepositItem;
-import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
@@ -19,12 +20,12 @@ import com.cloudmachine.utils.ToastUtils;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DepositActivity extends BaseAutoLayoutActivity implements XRecyclerView.LoadingListener {
 
     XRecyclerView depositListXrl;
+    TextView emptTv;
     DepositAdapter mPurseDetailAdapter;
     boolean isRefresh;
 
@@ -33,15 +34,10 @@ public class DepositActivity extends BaseAutoLayoutActivity implements XRecycler
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deposit);
         initRecyclerView();
-        List<DepositItem> itemList = new ArrayList<>();
-        itemList.add(new DepositItem());
-        itemList.add(new DepositItem());
-        itemList.add(new DepositItem());
-        itemList.add(new DepositItem());
-        updateRecyclerView(itemList);
     }
 
     private void initRecyclerView() {
+        emptTv = (TextView) findViewById(R.id.deposit_empt_tv);
         depositListXrl = (XRecyclerView) findViewById(R.id.deposit_list_xrl);
         depositListXrl.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration decoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
@@ -72,8 +68,9 @@ public class DepositActivity extends BaseAutoLayoutActivity implements XRecycler
 
             @Override
             protected void _onError(String message) {
-                AppLog.print("error message__" + message);
                 ToastUtils.showToast(DepositActivity.this, message);
+                depositListXrl.setVisibility(View.GONE);
+                emptTv.setVisibility(View.VISIBLE);
             }
         }));
     }
@@ -84,11 +81,18 @@ public class DepositActivity extends BaseAutoLayoutActivity implements XRecycler
     }
 
     public void updateRecyclerView(List<DepositItem> itemList) {
-        if (mPurseDetailAdapter == null) {
-            mPurseDetailAdapter = new DepositAdapter(this, itemList);
-            depositListXrl.setAdapter(mPurseDetailAdapter);
+        if (itemList != null && itemList.size() > 0) {
+            depositListXrl.setVisibility(View.VISIBLE);
+            emptTv.setVisibility(View.GONE);
+            if (mPurseDetailAdapter == null) {
+                mPurseDetailAdapter = new DepositAdapter(this, itemList);
+                depositListXrl.setAdapter(mPurseDetailAdapter);
+            } else {
+                mPurseDetailAdapter.updateItems(itemList);
+            }
         } else {
-            mPurseDetailAdapter.updateItems(itemList);
+            depositListXrl.setVisibility(View.GONE);
+            emptTv.setVisibility(View.VISIBLE);
         }
     }
 

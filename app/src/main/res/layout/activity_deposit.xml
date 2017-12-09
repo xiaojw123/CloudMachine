@@ -13,12 +13,23 @@
         android:layout_height="wrap_content"
         app:common_title_name="@string/deposit_detail"
         />
+
+   <TextView
+       android:id="@+id/deposit_empt_tv"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="@string/no_desposit_detail"
+       android:layout_gravity="center_horizontal"
+       android:layout_marginTop="@dimen/spa7"
+       android:visibility="gone"
+       />
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/deposit_list_xrl"
         android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_size_6"
+        android:visibility="gone"
         />
 
 

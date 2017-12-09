@@ -254,11 +254,17 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Constants.callJsMethod(mWebView, alertEvent);
                 dialog.dismiss();
             }
         });
-        builder.create().show();
+        CustomDialog dialog=builder.create();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Constants.callJsMethod(mWebView, alertEvent);
+            }
+        });
+        dialog.show();
     }
 
     private final class MyWebChromeClient extends WebChromeClient {

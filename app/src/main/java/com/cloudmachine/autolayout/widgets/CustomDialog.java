@@ -52,8 +52,9 @@ public class CustomDialog extends Dialog {
             this.message = message;
             return this;
         }
-        public void setGravityLeft(boolean isLeft){
-            this.isLeft=isLeft;
+
+        public void setGravityLeft(boolean isLeft) {
+            this.isLeft = isLeft;
         }
 
         public CustomDialog create() {
@@ -81,7 +82,7 @@ public class CustomDialog extends Dialog {
                 mAlertImg.setBackgroundResource(resId);
             }
             if (message != null) {
-                if (isLeft){
+                if (isLeft) {
                     mMessageTv.setGravity(Gravity.LEFT);
                 }
                 mMessageTv.setText(message);
@@ -146,6 +147,7 @@ public class CustomDialog extends Dialog {
         }
 
 
+
         /**
          * Set the Dialog message from resource
          *
@@ -182,7 +184,6 @@ public class CustomDialog extends Dialog {
             this.netrualButtonClickListener = listener;
             return this;
         }
-
 
 
         /**

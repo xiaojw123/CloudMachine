@@ -569,6 +569,7 @@
         <activity android:name=".ui.home.activity.ExtractionCashActivity" />
         <activity android:name=".ui.home.activity.DepositActivity" />
         <activity android:name=".ui.home.activity.RebundDepositActivity"></activity>
+        <activity android:name="com.alipay.sdk.app.H5AuthActivity"/>
     </application>
 
 </manifest>
