@@ -177,7 +177,7 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
                     AppLog.print("setPlatform__");
                     shareAction.setPlatform(mMedia).withMedia(web).setCallback(ShareDialog.this).share();
                 } else {
-                    CommonUtils.showPermissionDialog(mContext);
+                    CommonUtils.showPermissionDialog(mContext, Constants.PermissionType.STORAGE);
                 }
             }
         });

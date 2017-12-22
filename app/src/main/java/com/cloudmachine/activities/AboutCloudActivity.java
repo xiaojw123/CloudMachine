@@ -171,7 +171,7 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode==PermissionsActivity.PERMISSIONS_DENIED){
             ToastUtils.showToast(this,"更新失败！！");
-            CommonUtils.showPermissionDialog(this);
+            CommonUtils.showPermissionDialog(this,Constants.PermissionType.STORAGE);
         }else{
             Constants.versionDownload(this, downLoadLink);
         }

@@ -441,8 +441,10 @@
         android:id="@+id/to_pay"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_60"
+        android:background="@drawable/btn_style_item"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/btn_style_item">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:id="@+id/tv_pay_price"

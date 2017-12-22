@@ -15,4 +15,7 @@ public abstract class BaseHolder<T> extends RecyclerView.ViewHolder {
         ButterKnife.bind(this,itemView);
     }
     public  abstract void initViewHolder(T item);
+    public   void initViewHolder(T item, int position){
+
+    };
 }

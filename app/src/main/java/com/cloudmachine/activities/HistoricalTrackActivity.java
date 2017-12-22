@@ -19,6 +19,7 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
+import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
@@ -76,8 +77,9 @@ Callback{
 	private McDeviceLocation location;
 	private long startTime,endTime;
 	private boolean isMove;
-//	private Thread moveThread;
-	
+	private Thread moveThread;
+	Marker mMoveMarker;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -95,7 +97,7 @@ Callback{
 		initView();
 		initRoadData();
 		MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_HISTORYLOCUS);
-//		moveLooper();
+		moveLooper();
 	}
 
 	@Override
@@ -150,14 +152,14 @@ Callback{
 		polylineOptions.width(10);
 		polylineOptions.color(Color.parseColor("#7bb4f5"));
 		mVirtureRoad = mAmap.addPolyline(polylineOptions);
-//		MarkerOptions markerOptions = new MarkerOptions();
+		MarkerOptions markerOptions = new MarkerOptions();
 //		markerOptions.setFlat(true);
-//		markerOptions.anchor(0.5f, 0.5f);
-//		markerOptions.icon(BitmapDescriptorFactory
-//				.fromResource(R.drawable.location_marker));
-//		markerOptions.position(polylineOptions.getPoints().get(0));
-//		mMoveMarker = mAmap.addMarker(markerOptions);
-//		mMoveMarker.setRotateAngle((float) getAngle(0));
+		markerOptions.anchor(0.5f, 0.5f);
+		markerOptions.icon(BitmapDescriptorFactory
+				.fromResource(R.drawable.location_marker));
+		markerOptions.position(polylineOptions.getPoints().get(0));
+		mMoveMarker = mAmap.addMarker(markerOptions);
+		mMoveMarker.setRotateAngle((float) getAngle(0));
 //		mAmap.moveCamera(CameraUpdateFactory.changeLatLng(mMoveMarker.getPosition()));
 		if(polylineOptions.getPoints().size()>2){
 			mAmap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
@@ -281,7 +283,7 @@ Callback{
 	 */
 	public void moveLooper() {
 //		pausableThreadPoolExecutor.execute(
-		
+
 //				pRunnable
 		/*pRunnable =  new PriorityRunnable(Constants.Thread_Priority) {
 
@@ -289,7 +291,7 @@ Callback{
 			@Override
 			public void doSth() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
@@ -297,73 +299,73 @@ Callback{
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 		};
-		
+
 		pausableThreadPoolExecutor.execute(pRunnable);*/
-//		moveThread = new Thread() {
-//
-//			public void run() {
-//				for (int i = 0; i < mVirtureRoad.getPoints().size() - 1; i++) {
-//					if(!isMove){
-//						return;
-//					}
-//					LatLng startPoint = mVirtureRoad.getPoints().get(i);
-//					LatLng endPoint = mVirtureRoad.getPoints().get(i + 1);
-//					mMoveMarker.setPosition(startPoint);
-//
-//					mMoveMarker.setRotateAngle((float) getAngle(startPoint,
-//							endPoint));
-//
-//					double slope = getSlope(startPoint, endPoint);
-//					if(slope == 0)
-//						continue;
-//					//是不是正向的标示（向上设为正向）
-//					boolean isReverse = (startPoint.latitude > endPoint.latitude);
-//
-//					double intercept = getInterception(slope, startPoint);
-//
-//					double xMoveDistance = isReverse ? getXMoveDistance(slope)
-//							: -1 * getXMoveDistance(slope);
-//
-//
-//					for (double j = startPoint.latitude;
-//							!((j > endPoint.latitude)^ isReverse);
-//
-//							j = j
-//							- xMoveDistance) {
-//						if(!isMove){
-//							return;
-//						}
-//						LatLng latLng = null;
-//						if (slope != Double.MAX_VALUE) {
-//							latLng = new LatLng(j, (j - intercept) / slope);
-//						} else {
-//							latLng = new LatLng(j, startPoint.longitude);
-//						}
-//						if(null != latLng &&
-//								latLng.latitude != Double.NaN &&
-//								latLng.longitude != Double.NaN){
-//							mMoveMarker.setPosition(latLng);
-//						}else{
-//							latLng = new LatLng(j, startPoint.longitude);
-//							mMoveMarker.setPosition(latLng);
-//							break;
-//						}
-//
-//						mAmap.reloadMap();// 刷新地图
-//						try {
-//							Thread.sleep(TIME_INTERVAL);
-//						} catch (InterruptedException e) {
-//							e.printStackTrace();
-//						}
-//					}
-//
-//				}
-//			}
-//
-//		};
-//		moveThread.start();
+		moveThread = new Thread() {
+
+			public void run() {
+				for (int i = 0; i < mVirtureRoad.getPoints().size() - 1; i++) {
+					if(!isMove){
+						return;
+					}
+					LatLng startPoint = mVirtureRoad.getPoints().get(i);
+					LatLng endPoint = mVirtureRoad.getPoints().get(i + 1);
+					mMoveMarker.setPosition(startPoint);
+
+					mMoveMarker.setRotateAngle((float) getAngle(startPoint,
+							endPoint));
+
+					double slope = getSlope(startPoint, endPoint);
+					if(slope == 0)
+						continue;
+					//是不是正向的标示（向上设为正向）
+					boolean isReverse = (startPoint.latitude > endPoint.latitude);
+
+					double intercept = getInterception(slope, startPoint);
+
+					double xMoveDistance = isReverse ? getXMoveDistance(slope)
+							: -1 * getXMoveDistance(slope);
+
+
+					for (double j = startPoint.latitude;
+							!((j > endPoint.latitude)^ isReverse);
+
+							j = j
+							- xMoveDistance) {
+						if(!isMove){
+							return;
+						}
+						LatLng latLng = null;
+						if (slope != Double.MAX_VALUE) {
+							latLng = new LatLng(j, (j - intercept) / slope);
+						} else {
+							latLng = new LatLng(j, startPoint.longitude);
+						}
+						if(null != latLng &&
+								latLng.latitude != Double.NaN &&
+								latLng.longitude != Double.NaN){
+							mMoveMarker.setPosition(latLng);
+						}else{
+							latLng = new LatLng(j, startPoint.longitude);
+							mMoveMarker.setPosition(latLng);
+							break;
+						}
+
+						mAmap.reloadMap();// 刷新地图
+						try {
+							Thread.sleep(TIME_INTERVAL);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+
+				}
+			}
+
+		};
+		moveThread.start();
 	}
 	
 	@Override
@@ -593,10 +595,10 @@ Callback{
 	
 	private void stopMoveThread(){
 		isMove = false;
-//		if(null != moveThread){
-//			moveThread.interrupt();
-//			moveThread = null;
-//		}
+		if(null != moveThread){
+			moveThread.interrupt();
+			moveThread = null;
+		}
 	}
 	
 }

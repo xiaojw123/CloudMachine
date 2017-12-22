@@ -1,6 +1,7 @@
 package com.cloudmachine.base;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -15,10 +16,19 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.AutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxManager;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.AdBean;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.CustomActivityManager;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.AppManager;
 import com.cloudmachine.utils.CommonUtils;
@@ -30,19 +40,33 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
 
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends BaseModel> extends AutoLayoutActivity {
-    PopupWindow depositPayPop;
+    PopupWindow depositPayPop, mAdPop;
     public RxManager mRxManager;
     public T mPresenter;
     public E mModel;
     public Context mContext;
-    private boolean isOpen=true;
+    private boolean isOpen = true;
+    private Timer mTimer;
+    private TextView mTimerTv;
+    private int timeCount = 5;
+    public boolean isForbidenAd;
+
+
+    private Activity topAct;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        AppLog.print("BaseAcon onCreate");
         //初始化状态栏系列事件
         doBeforeSetcontentView();
         //初始化Rx管理器
@@ -58,7 +82,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    protected String getPageType(){
+    protected String getPageType() {
         return getIntent().getStringExtra(Constants.PAGET_TYPE);
     }
 
@@ -114,17 +138,167 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        AppLog.print("BaseAc onStart");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        AppLog.print("BaseAc onRestart");
+    }
+
+//    int time;
+//    int curTime;
+//    int count;
+//    AdBean curAdBean;
+//
+//    //
+//    public void showAd() {
+//        final List<AdBean> adBeenList = DataSupport.findAll(AdBean.class);
+//        for (AdBean bean : adBeenList) {
+//            time += bean.getAdTime();
+//        }
+//        //displayType 4 b
+//        curAdBean = adBeenList.get(0);
+//        curTime = curAdBean.getAdTime();
+//        if (curAdBean.getDisplayType()==1){
+//
+//        }
+//
+//        Timer t = new Timer();
+//        t.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        time--;
+//                        curTime--;
+//                        if (time > 0) {
+//                            if (curTime == 0) {
+//                                count++;
+//                                curAdBean = adBeenList.get(count);
+//                                curTime = curAdBean.getAdTime();
+////                            Glide.with(mContext).load(curAdBean.getAdTime()).into(i)
+//                            }
+//
+//                        } else {
+//                            //取消定时器
+//                        }
+//
+//                    }
+//                });
+//
+//            }
+//        }, 1000);
+//
+//
+//        List<AdBean> adBeens = new ArrayList<>();
+//        List<AdBean> showAdBeans = new ArrayList<>();
+//        for (AdBean bean : adBeens) {
+//            if (bean.getYn() == 0) {
+//                showAdBeans.add(bean);
+//            }
+//        }
+//        DataSupport.saveAll(showAdBeans);
+//
+//    }
+
+    @Override
     protected void onResume() {
+        AppLog.print("BaseAc onResume");
         super.onResume();
         if (isOpen) {
             MobclickAgent.onPageStart(getClass().getName());
         }
         MobclickAgent.onResume(this);
+        Activity curAct = CustomActivityManager.getInstance().getTopActivity();
+        AppLog.print("curAct__" + curAct + ", topAct__" + topAct);
+        if (topAct == curAct) {
+            AppLog.print("CurActivity被唤醒");
+            AdBean curAdBean = DataSupport.findFirst(AdBean.class);
+            if (curAdBean != null) {
+                timeCount = curAdBean.getAdTime();
+                int type = curAdBean.getDisplayType();
+                switch (type) {
+                    case 1://只展示一次
+                        curAdBean.setDisplayType(0);
+                        curAdBean.save();
+                        showAdPop(curAdBean.getAdLink(), curAdBean.getOpenLink());
+                        break;
+                    case 2:
+                        AppLog.print("day of year___" + CommonUtils.getDateStamp());
+                        if (curAdBean.getTimeStamp() != null) {
+                            if (!curAdBean.getTimeStamp().equals(CommonUtils.getDateStamp())) {
+                                curAdBean.setTimeStamp(CommonUtils.getDateStamp());
+                                curAdBean.save();
+                                showAdPop(curAdBean.getAdLink(), curAdBean.getOpenLink());
+                            }
+                        } else {
+                            curAdBean.setTimeStamp(CommonUtils.getDateStamp());
+                            curAdBean.save();
+                            showAdPop(curAdBean.getAdLink(), curAdBean.getOpenLink());
+                        }
+                        break;
+                    case 4:
+                        showAdPop(curAdBean.getAdLink(), curAdBean.getOpenLink());
+                        break;
+
+                }
+            }
+            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getStartAd().compose(RxHelper.<List<AdBean>>handleResult()).subscribe(new RxSubscriber<List<AdBean>>(mContext) {
+                @Override
+                protected void _onNext(List<AdBean> remoteAdBeenList) {
+                    AdBean locAdBean = DataSupport.findFirst(AdBean.class);
+                    if (remoteAdBeenList != null && remoteAdBeenList.size() > 0) {
+                        AdBean remoteAdBean = remoteAdBeenList.get(0);
+                        if (remoteAdBean != null) {
+                            int remoteType = remoteAdBean.getDisplayType();
+                            if (remoteType != 0) {
+                                if (locAdBean != null) {
+                                    int locType = locAdBean.getDisplayType();
+                                    if ((locType == 0 && remoteType == 1) || (locType == 2 && remoteType == 2)) {
+                                        String locLink = locAdBean.getAdLink();
+                                        if (locLink != null && !locLink.equals(remoteAdBean.getAdLink())) {
+                                            DataSupport.deleteAll(AdBean.class);
+                                            remoteAdBean.save();
+                                            Glide.with(mContext).load(remoteAdBean.getAdLink());
+                                        }
+                                        return;
+                                    }
+                                    DataSupport.deleteAll(AdBean.class);
+                                }
+                                remoteAdBean.save();
+                                Glide.with(mContext).load(remoteAdBean.getAdLink());
+                                return;
+                            }
+                        }
+                    }
+                    if (locAdBean != null) {
+                        DataSupport.deleteAll(AdBean.class);
+                    }
+                }
+
+                @Override
+                protected void _onError(String message) {
+
+                }
+            }));
+
+        }
+
+
+        AppLog.print("这是真的吗");
+
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        AppLog.print("BaseAc onPause");
         if (isOpen) {
             MobclickAgent.onPageEnd(getClass().getName());
         }
@@ -132,13 +306,29 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        AppLog.print("BaseAct onStop__"+isForbidenAd);
+        if (!isForbidenAd) {
+            topAct = CustomActivityManager.getInstance().getTopActivity();
+        }else{
+            isForbidenAd=false;
+            topAct=null;
+        }
+
+    }
+
+    @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
+        closeAdPop();
         super.onDestroy();
+        AppLog.print("BaseAct onDestroy__");
         if (mPresenter != null)
             mPresenter.onDestroy();
         mRxManager.clear();
         AppManager.getAppManager().removeActivity(this);//页面销毁,集合移除
+
     }
 
     @TargetApi(19)
@@ -157,6 +347,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     /**
      * 开启浮动加载进度条
      */
+
     public void startProgressDialog() {
         LoadingDialog.showDialogForLoading(this);
     }
@@ -184,6 +375,58 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 
+    // TODO: 2017/12/18 全屏广告页
+    public void showAdPop(String adLink, final String openLink) {
+        if (mAdPop == null) {
+            View contentView = LayoutInflater.from(this).inflate(R.layout.pop_screen_add, null);
+            ImageView img = (ImageView) contentView.findViewById(R.id.screen_adimg);
+            mTimerTv = (TextView) contentView.findViewById(R.id.screen_adtimer_tv);
+            Glide.with(mContext).load(adLink).into(img);
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    closeAdPop();
+                    Bundle db = new Bundle();
+                    db.putString(QuestionCommunityActivity.H5_URL, openLink);
+                    Constants.toActivity(BaseAutoLayoutActivity.this, QuestionCommunityActivity.class, db);
+                }
+            });
+            mTimerTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    closeAdPop();
+                }
+            });
+            mAdPop = CommonUtils.getAnimPop(contentView);
+            mAdPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    if (mTimer != null) {
+                        mTimer.cancel();
+                        mTimer = null;
+                    }
+                }
+            });
+        }
+        mAdPop.showAtLocation(getWindow().getDecorView(), Gravity.FILL, 0, 0);
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTimerTv.setText("跳过" + timeCount + "S");
+                        if (timeCount <= 0) {
+                            closeAdPop();
+                        }
+                        timeCount--;
+                    }
+                });
+            }
+        }, 0, 1000);
+    }
+
     //通知拉起H5页云盒子支付
     public void showDepsitPayPop(final String url) {
         if (depositPayPop == null) {
@@ -195,9 +438,9 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
                 @Override
                 public void onClick(View v) {
                     closeDepoistPop();
-                    Bundle db=new Bundle();
-                    db.putString(QuestionCommunityActivity.H5_URL,url);
-                    Constants.toActivity(BaseAutoLayoutActivity.this,QuestionCommunityActivity.class,db);
+                    Bundle db = new Bundle();
+                    db.putString(QuestionCommunityActivity.H5_URL, url);
+                    Constants.toActivity(BaseAutoLayoutActivity.this, QuestionCommunityActivity.class, db);
                 }
             });
             ImageView closeImg = (ImageView) contentView.findViewById(R.id.pop_ad_close_img);
@@ -218,11 +461,20 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         depositPayPop.showAtLocation(getWindow().getDecorView(), Gravity.FILL, 0, 0);
 
     }
-    public void closeDepoistPop(){
-        if (depositPayPop!=null&&depositPayPop.isShowing()){
+
+    public void closeDepoistPop() {
+        if (depositPayPop != null && depositPayPop.isShowing()) {
             depositPayPop.dismiss();
         }
     }
+
+    public void closeAdPop() {
+        if (mAdPop != null && mAdPop.isShowing()) {
+            mAdPop.dismiss();
+        }
+    }
+
+
 }
 
 

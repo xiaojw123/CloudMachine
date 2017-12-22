@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:paddingLeft="10dp"
             android:paddingRight="20dp"
-            android:src="@drawable/back_dw"/>
+            android:src="@drawable/ic_back_normal_white"/>
 
         <TextView
             android:id="@+id/scanner_toolbar_title"

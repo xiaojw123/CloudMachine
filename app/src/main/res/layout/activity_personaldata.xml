@@ -124,6 +124,30 @@
             style="@style/personal_arrow_image"/>
     </RelativeLayout>
 
+
+    <!--dd-->
+    <LinearLayout
+        style="@style/line_layout"
+        android:layout_marginLeft="@dimen/common_left_gap"
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/my_qrcode"
+        style="@style/layout_item"
+        android:visibility="gone"
+        >
+
+        <TextView
+            style="@style/personal_left_text"
+            android:text="@string/my_qrcode"
+            />
+
+        <ImageView
+            style="@style/personal_arrow_image"/>
+    </RelativeLayout>
+
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_50"

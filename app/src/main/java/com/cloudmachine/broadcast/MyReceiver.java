@@ -191,6 +191,7 @@ public class MyReceiver extends BroadcastReceiver {
                             context.startActivity(i4);
                             return;
                         case 9:
+                        case 10:
 //                            notifaction__Result__{"url":"http:\/\/h5.test.cloudm.com\/n\/ask_chatlist?qid=949&auid=4823&myid=4852","type":"9"}
                             Intent notifyIntent = new Intent(context, QuestionCommunityActivity.class);
                             String notifyUrl = extraJson.optString("url");

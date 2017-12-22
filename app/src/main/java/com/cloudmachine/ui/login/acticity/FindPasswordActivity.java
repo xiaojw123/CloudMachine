@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudmachine.R;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
@@ -73,6 +74,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
     boolean hasInvatiteCode;
     private String phone;
     private String pwdStr;
+    String phoneNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,8 +194,8 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 break;
             case R.id.validate_layout:
                 if (null == myTimer) {
-                    String phoneString = phone_string.getText().toString();
-                    if (phoneString != null && phoneString.length() == 11) {
+                    phoneNum = phone_string.getText().toString();
+                    if (phoneNum.length() == 11) {
                         if (validate_num == 0) {
                             show();
                             String codeType = "1";
@@ -201,7 +203,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                                 codeType = "2";
                             }
                             //  1表示忘记密码 2 表示修改密码  3表示注册
-                            new GetMobileCodeAsync(phoneString, codeType, mContext, mHandler).execute();
+                            new GetMobileCodeAsync(phoneNum, codeType, mContext, mHandler).execute();
                         }
                     } else {
                         Toast.makeText(FindPasswordActivity.this, "请输入手机号", Toast.LENGTH_SHORT).show();
@@ -278,16 +280,23 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 
     @Override
     public void afterTextChanged(Editable s) {
+        AppLog.print("findPassword afterTextChanged___");
         String str1 = phone_string.getText().toString();
         String str2 = validate_code.getText().toString();
         String str3 = pwd_string.getText().toString();
         String text = validate_text.getText().toString();
+
         if ("获取验证码".equals(text)) {
             if (str1.length() > 0) {
                 validate_text.setEnabled(true);
             } else {
                 validate_text.setEnabled(false);
             }
+        } else {
+            if (!str1.equals(phoneNum)) {
+                stopTimer();
+            }
+
         }
 
         if (str1.length() > 0 && str2.length() > 0 && str3.length() > 0) {
@@ -315,13 +324,11 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
             case Constants.HANDLER_TIMER:
                 validate_num++;
                 if ((VALIDATENUM - validate_num) < 0) {
-                    validate_text.setEnabled(true);
-                    myTimer.cancel();
-                    myTimer = null;
-                    validate_num = 0;
-                    validate_text.setText("获取验证码");
+                    stopTimer();
                 } else {
                     if (validate_text.isEnabled()) {
+
+
                         validate_text.setEnabled(false);
                     }
                     validate_text.setText("获取验证码(" + (VALIDATENUM - validate_num) + ")");
@@ -380,6 +387,16 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 
         }
         return false;
+    }
+
+    private void stopTimer() {
+        validate_text.setEnabled(true);
+        if (myTimer != null) {
+            myTimer.cancel();
+            myTimer = null;
+        }
+        validate_num = 0;
+        validate_text.setText("获取验证码");
     }
 
     Member mMember;

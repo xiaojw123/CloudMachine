@@ -58,26 +58,24 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_input_height"
         android:layout_marginTop="@dimen/pad2"
-        android:paddingLeft="@dimen/pad2"
-        >
+        android:paddingLeft="@dimen/pad2">
 
         <!--<ImageView-->
-            <!--android:layout_width="@dimen/login_icon_wh"-->
-            <!--android:layout_height="@dimen/login_icon_wh"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_marginLeft="@dimen/public_layout_padding_left"-->
-            <!--android:layout_marginRight="@dimen/public_layout_padding_left"-->
-            <!--android:background="@drawable/login_icon1"-->
-            <!--/>-->
+        <!--android:layout_width="@dimen/login_icon_wh"-->
+        <!--android:layout_height="@dimen/login_icon_wh"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:layout_marginLeft="@dimen/public_layout_padding_left"-->
+        <!--android:layout_marginRight="@dimen/public_layout_padding_left"-->
+        <!--android:background="@drawable/login_icon1"-->
+        <!--/>-->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/phone_number"
-            android:textSize="@dimen/siz3"
-            android:textColor="@color/cor9"
             android:layout_gravity="center_vertical"
-            />
+            android:text="@string/phone_number"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/siz3" />
 
         <com.cloudmachine.utils.widgets.ClearEditTextView
             android:id="@+id/username_ed"
@@ -95,63 +93,91 @@
 
     <LinearLayout
         style="@style/line_layout"
-        android:layout_marginLeft="@dimen/public_layout_padding_left"
-        />
+        android:layout_marginLeft="@dimen/public_layout_padding_left" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_input_height"
         android:layout_marginTop="@dimen/pad2"
-        android:paddingLeft="@dimen/pad2"
-        >
+        android:paddingLeft="@dimen/pad2">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/password"
-            android:textSize="@dimen/siz3"
-            android:textColor="@color/cor9"
             android:layout_gravity="center_vertical"
-            />
+            android:text="@string/password"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/siz3" />
 
 
         <com.cloudmachine.utils.widgets.ClearEditTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dimen_size_97"
+            android:layout_marginRight="@dimen/pad2"
             android:background="@null"
             android:hint="请输入密码"
             android:inputType="textPassword"
             android:textColor="@color/black"
             android:textColorHint="@color/cor11"
             android:textSize="@dimen/siz3"
-            android:layout_marginRight="@dimen/pad2"
-            android:layout_marginLeft="@dimen/dimen_size_97"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
-        <com.cloudmachine.widget.CustomEditText
-            android:id="@+id/password_ed"
+        <!--<com.cloudmachine.widget.CustomEditText-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:background="@null"-->
+        <!--android:hint="请输入密码"-->
+        <!--android:inputType="textPassword"-->
+        <!--android:textColor="@color/black"-->
+        <!--android:textColorHint="@color/cor11"-->
+        <!--android:textSize="@dimen/siz3"-->
+        <!--android:layout_marginRight="@dimen/pad2"-->
+        <!--android:layout_marginLeft="@dimen/dimen_size_97"-->
+        <!--android:drawableRight="@drawable/icon_login_psw_right"-->
+            <!--android:visibility="gone"-->
+        <!--/>-->
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="@null"
-            android:hint="请输入密码"
-            android:inputType="textPassword"
-            android:textColor="@color/black"
-            android:textColorHint="@color/cor11"
-            android:textSize="@dimen/siz3"
-            android:layout_marginRight="@dimen/pad2"
             android:layout_marginLeft="@dimen/dimen_size_97"
-            android:drawableRight="@drawable/icon_login_psw_right"
-            />
+            android:layout_marginRight="@dimen/pad2"
+            android:orientation="horizontal">
 
+            <com.cloudmachine.utils.widgets.ClearEditTextView
+                android:id="@+id/password_ed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:gravity="left"
+                android:hint="请输入密码"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="@color/cor11"
+                android:textSize="@dimen/siz3"
+                android:layout_toLeftOf="@+id/password_switch_img"
+                />
+
+            <ImageView
+                android:id="@+id/password_switch_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pad1"
+                android:src="@drawable/icon_login_psw_right" />
+
+
+        </RelativeLayout>
     </FrameLayout>
 
     <LinearLayout
         style="@style/line_layout"
-        android:layout_marginLeft="@dimen/public_layout_padding_left"
-        />
+        android:layout_marginLeft="@dimen/public_layout_padding_left" />
 
     <com.cloudmachine.autolayout.widgets.RadiusButtonView
         android:id="@+id/login_btn"
@@ -176,61 +202,54 @@
         android:layout_marginTop="@dimen/spa8"
         android:text="忘记密码?"
         android:textColor="@color/cor10"
-        android:textSize="@dimen/siz6">
-    </TextView>
-
+        android:textSize="@dimen/siz6"></TextView>
 
 
     <LinearLayout
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="94dp"
-        android:gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-
-
-     <View
-         android:layout_width="@dimen/dimen_size_104"
-         android:layout_height="@dimen/dimen_size_1"
-         android:background="@color/cor12"
-         />
-
-    <TextView
-        android:id="@+id/weixin_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="其他登录"
-        android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginRight="@dimen/dimen_size_20"
-        android:textColor="@color/cor10"
         android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/siz6"
-        />
+        android:layout_marginTop="94dp"
+        android:gravity="center_vertical">
+
 
         <View
             android:layout_width="@dimen/dimen_size_104"
             android:layout_height="@dimen/dimen_size_1"
-            android:background="@color/cor12"
-            />
+            android:background="@color/cor12" />
+
+        <TextView
+            android:id="@+id/weixin_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:text="其他登录"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/siz6" />
+
+        <View
+            android:layout_width="@dimen/dimen_size_104"
+            android:layout_height="@dimen/dimen_size_1"
+            android:background="@color/cor12" />
 
 
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_marginTop="18dp"
-        android:layout_gravity="center_horizontal"
         android:id="@+id/rl_weixin_login"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="18dp">
 
         <ImageView
             android:id="@+id/iv_wechat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/weichat_login"
             android:layout_centerHorizontal="true"
-            />
+            android:src="@drawable/weichat_login" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -240,8 +259,7 @@
             android:layout_marginTop="@dimen/dimen_size_20"
             android:text="微信"
             android:textColor="@color/cor10"
-            android:textSize="@dimen/siz6"
-            />
+            android:textSize="@dimen/siz6" />
 
 
     </RelativeLayout>

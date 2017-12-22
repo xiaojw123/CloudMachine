@@ -23,6 +23,7 @@ import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.CommonUtils;
+import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.widget.CommonTitleView;
@@ -216,7 +217,7 @@ public class WorkPickItemActivity extends BaseAutoLayoutActivity implements View
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == HomeActivity.PEM_REQCODE_WRITESD) {
             if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                CommonUtils.showPermissionDialog(this);
+                CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
             } else {
                 dowloadFile();
             }

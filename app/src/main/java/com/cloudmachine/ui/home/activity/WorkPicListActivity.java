@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.adapter.BaseRecyclerAdapter;
 import com.cloudmachine.adapter.WorkPicListAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxSchedulers;
@@ -22,7 +21,6 @@ import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.CommonUtils;
-import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
@@ -81,7 +79,6 @@ public class WorkPicListActivity extends BaseAutoLayoutActivity implements View.
         ButterKnife.bind(this);
         initView();
         obtainImei();
-
     }
 
     @Override
@@ -124,12 +121,6 @@ public class WorkPicListActivity extends BaseAutoLayoutActivity implements View.
             }
         }));
     }
-    // TODO: 2017/11/21 test ime
-//    private void testImei() {
-//        imei = "01000000000867923045021004";
-//        prefix = imei;
-//        updatePicItems();
-//    }
     private void initView() {
         picCtv.setRightClickListener(rightClickListener);
         for (int i = 0; i < 90; i++) {
@@ -180,7 +171,6 @@ public class WorkPicListActivity extends BaseAutoLayoutActivity implements View.
                             mTotaltems.addAll(respose.getResult());
                             if (mAdapter == null) {
                                 mAdapter = new WorkPicListAdapter(WorkPicListActivity.this, mTotaltems);
-                                mAdapter.setOnItemClickListener(itemClickListener);
                                 picListXrlv.setAdapter(mAdapter);
                             } else {
                                 mAdapter.updateItems(mTotaltems);
@@ -230,15 +220,6 @@ public class WorkPicListActivity extends BaseAutoLayoutActivity implements View.
         }
     }
 
-    private BaseRecyclerAdapter.OnItemClickListener itemClickListener = new BaseRecyclerAdapter.OnItemClickListener() {
-        @Override
-        public void onItemClick(View view, int position) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(WorkPickItemActivity.KEY_PIC_ITEM_lIST, (ArrayList<PickItemBean>) mAdapter.getmItems());
-            bundle.putInt(WorkPickItemActivity.KEY_PIC_ITEM_POSITOIN, position);
-            Constants.toActivity(WorkPicListActivity.this, WorkPickItemActivity.class, bundle);
-        }
-    };
 
     private View.OnClickListener rightClickListener = new View.OnClickListener() {
         @Override

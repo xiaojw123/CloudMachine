@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,7 +50,6 @@ import com.cloudmachine.utils.widgets.AppMsg;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.utils.widgets.ClearEditTextView.ICoallBack;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
-import com.cloudmachine.widget.CustomEditText;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -66,13 +66,15 @@ import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import rx.functions.Action1;
 
-public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginModel> implements OnClickListener, Callback, LoginContract.View, CustomEditText.DrawableRightClickListener, TextWatcher {
+public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginModel> implements OnClickListener, Callback, LoginContract.View,  TextWatcher {
     public static final String RX_LOGIN = "rx_login";
     private static final int MSG_SET_ALIAS = 1001;
     private Context mContext;
     private Handler mHandler;
-    private CustomEditText password_ed;
+    private ClearEditTextView password_ed;
+    private ImageView password_switch_img;
     private ClearEditTextView username_ed;
+
     private RadiusButtonView login_btn;
     private LoadingDialog progressDialog;
     private TextView forget_pw_tv;
@@ -176,8 +178,9 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         //切换密码相对布局
 
         username_ed = (ClearEditTextView) findViewById(R.id.username_ed);
-        password_ed = (CustomEditText) findViewById(R.id.password_ed);
-        password_ed.setDrawableRightClickListener(this);
+        password_ed = (ClearEditTextView) findViewById(R.id.password_ed);
+        password_switch_img= (ImageView) findViewById(R.id.password_switch_img);
+        password_switch_img.setOnClickListener(this);
         username_ed.setICoallBack(new ICoallBack() {
 
             @Override
@@ -248,6 +251,9 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     public void onClick(View v) {
         Intent it = null;
         switch (v.getId()) {
+            case R.id.password_switch_img:
+                onDrawableRightClickListener(v);
+                break;
 
             case R.id.left_layout:
                 finish();
@@ -535,7 +541,6 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
     };
 
-    @Override
     public void onDrawableRightClickListener(View view) {
 
         if (view.isSelected()) {

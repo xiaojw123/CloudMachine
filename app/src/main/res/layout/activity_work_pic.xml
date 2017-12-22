@@ -49,10 +49,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pic_date_sel_flt"
-        android:paddingLeft="@dimen/dimen_size_10"
-        android:paddingRight="@dimen/dimen_size_10"
         android:layout_marginTop="@dimen/dimen_size_10"
         android:overScrollMode="never"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
         />
 
     <TextView

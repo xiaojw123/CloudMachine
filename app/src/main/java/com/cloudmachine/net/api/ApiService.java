@@ -2,6 +2,7 @@ package com.cloudmachine.net.api;
 
 
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.bean.AdBean;
 import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
@@ -12,6 +13,7 @@ import com.cloudmachine.bean.HomeBannerBean;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.MenuBean;
 import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.bean.PickItemBean;
 import com.cloudmachine.bean.QiToken;
@@ -53,6 +55,12 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
+    //获取首页菜单
+    @GET("system/headMenu")
+    Observable<BaseRespose<List<MenuBean>>> getHeadMenu();
+    //获取APP广告
+    @GET("system/startAd")
+    Observable<BaseRespose<List<AdBean>>> getStartAd();
 /**
  * status 订单状态 0：待支付 1：已支付 2：退款审核 3：已退款
  */

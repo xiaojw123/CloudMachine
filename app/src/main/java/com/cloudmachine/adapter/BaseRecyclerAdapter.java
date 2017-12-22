@@ -60,6 +60,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter{
                     }
                 });
                 ((BaseHolder) holder).initViewHolder(item);
+                ((BaseHolder)holder).initViewHolder(item,position);
             }
         }
 

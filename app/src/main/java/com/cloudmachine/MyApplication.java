@@ -466,30 +466,25 @@ public class MyApplication extends Application {
   private  ActivityLifecycleCallbacks lifecycleCallback=new ActivityLifecycleCallbacks() {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            AppLog.print("activitycrated___"+activity);
 
         }
 
         @Override
         public void onActivityStarted(Activity activity) {
-            AppLog.print("activityStarted___"+activity);
         }
 
         @Override
         public void onActivityResumed(Activity activity) {
-            AppLog.print("activityResume___"+activity);
             CustomActivityManager.getInstance().setTopActivity(activity);
         }
 
         @Override
         public void onActivityPaused(Activity activity) {
-            AppLog.print("activityRaseu___"+activity);
 
         }
 
         @Override
         public void onActivityStopped(Activity activity) {
-            AppLog.print("activityStoped___"+activity);
         }
 
         @Override

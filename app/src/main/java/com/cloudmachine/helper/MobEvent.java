@@ -5,6 +5,8 @@ package com.cloudmachine.helper;
  */
 
 public class MobEvent {
+    public static final String TIME_H5_HOME_NAV_MENU_ITEM="time_h5_home_nav_menu_item";
+    public static final String TIME_H5_START_AD="time_h5_start_ad";
     public static final String TIME_MACHINE_WORK_IMAGE_LARGE="time_machine_work_image_large";//高配版工作图片查看大图
     public static final String TIME_MACHINE_WORK_IMAGES="time_machine_work_images";//高配版工作图片列表
     public static final String COUNT_CLICK_MACHINE_DETAIL_FROM_LIST="count_click_machine_detail_from_list";//点击机器列表进入详情

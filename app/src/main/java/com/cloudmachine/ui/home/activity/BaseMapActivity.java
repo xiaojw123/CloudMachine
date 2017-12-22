@@ -30,6 +30,7 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.utils.CommonUtils;
+import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.PermissionsChecker;
 
@@ -145,7 +146,7 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_FINE_LOCATION) {
             if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                CommonUtils.showPermissionDialog(this);
+                CommonUtils.showPermissionDialog(this, Constants.PermissionType.LOCATION);
             } else {
                 mlocClient.startLocation();
             }

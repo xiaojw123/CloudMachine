@@ -18,12 +18,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -42,16 +45,22 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.ViewCouponActivityNew;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.MenuBean;
 import com.cloudmachine.bean.VersionInfo;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.net.task.GetVersionAsync;
 import com.cloudmachine.ui.home.activity.fragment.DeviceFragment;
+import com.cloudmachine.ui.home.activity.fragment.WebFragment;
 import com.cloudmachine.ui.home.activity.fragment.MaintenanceFragment;
 import com.cloudmachine.ui.home.contract.HomeContract;
 import com.cloudmachine.ui.home.model.HomeModel;
@@ -69,12 +78,15 @@ import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.VersionU;
+import com.cloudmachine.widget.MenuTextView;
 import com.cloudmachine.widget.NotfyImgView;
 import com.cloudmachine.zxing.activity.CaptureActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -103,8 +115,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     private String downLoadLink;
     @BindView(R.id.home_me_img)
     ImageView homeMeImg;
-    @BindView(R.id.home_box_img)
-    ImageView homeBoxImg;
     @BindView(R.id.home_actvite_img)
     NotfyImgView homeActviteImg;
     @BindView(R.id.home_drawer_layout)
@@ -165,6 +175,12 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     NotfyImgView itemOrderNimg;
     @BindView(R.id.item_purse_tv)
     TextView purseTv;
+    @BindView(R.id.home_menu_container)
+    LinearLayout homeMenuCotainer;
+    @BindView(R.id.home_menu_hsv)
+    HorizontalScrollView homeMenuHsv;
+    @BindView(R.id.home_menu_default)
+    LinearLayout homeMenuDefault;
 
 
     ImageView promotionImg;
@@ -174,7 +190,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     private Handler mHandler;
     private MessageReceiver mMessageReceiver;
 
-    Fragment deviceFragment, maintenaceFragment;
+    Fragment deviceFragment, maintenaceFragment, h5Fragment;
     int mustUpdate;
     double walletAmount, depositAmount;
 
@@ -189,11 +205,53 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         setUPageStatistics(false);
         mHandler = new Handler(this);
         registerMessageReceiver();
-        showFragment(deviceTv);
+        initMenuView();
         initUpdateConfig();
         new GetVersionAsync(mContext, mHandler).execute();
         mPresenter.getH5ConfigInfo();
         mPresenter.initQinuParams();
+    }
+
+
+    public void initMenuView() {
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getHeadMenu().compose(RxHelper.<List<MenuBean>>handleResult()).subscribe(new RxSubscriber<List<MenuBean>>(mContext) {
+            @Override
+            protected void _onNext(List<MenuBean> menuBeens) {
+                if (menuBeens != null && menuBeens.size() > 0) {
+                    homeMenuHsv.setVisibility(View.VISIBLE);
+                    homeMenuDefault.setVisibility(View.GONE);
+                    Collections.sort(menuBeens, new Comparator<MenuBean>() {
+                        @Override
+                        public int compare(MenuBean o1, MenuBean o2) {
+                            return o1.getMenuSort() - o2.getMenuSort();
+                        }
+                    });
+
+                    for (MenuBean bean : menuBeens) {
+                        if (bean.getYn() == 0) {
+                            homeMenuCotainer.addView(getMenuView(bean));
+                        }
+
+                    }
+                    showFragmentNew((TextView) homeMenuCotainer.getChildAt(0));
+                } else {
+                    showDefaultMenuView();
+                }
+
+            }
+
+            @Override
+            protected void _onError(String message) {
+                showDefaultMenuView();
+            }
+        }));
+
+    }
+
+    private void showDefaultMenuView() {
+        homeMenuHsv.setVisibility(View.GONE);
+        homeMenuDefault.setVisibility(View.VISIBLE);
+        showFragment(deviceTv);
     }
 
 
@@ -277,6 +335,109 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         registerReceiver(mMessageReceiver, filter);
     }
 
+    public View getMenuView(MenuBean menuBean) {
+//            <TextView
+//        android:id="@+id/home_title_device"
+//        android:layout_width="wrap_content"
+//        android:layout_height="match_parent"
+//        android:gravity="center"
+//        android:text="设备"
+//        android:textColor="@color/cor8"
+//        android:textSize="@dimen/siz3" />
+        MenuTextView menuTv = new MenuTextView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.leftMargin = menuBean.getMenuSort() == 1 ? 0 : (int) getResources().getDimension(R.dimen.dimen_size_23);
+        menuTv.setLayoutParams(params);
+        if (menuBean.getMenuHot() == 1) {
+            menuTv.setMenuHot(true);
+        }
+        menuTv.setTag(menuBean);
+        menuTv.setOnClickListener(onMenuClickListener);
+        menuTv.setGravity(Gravity.CENTER);
+        menuTv.setTextColor(getResources().getColor(R.color.cor8));
+        menuTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.siz3));
+        menuTv.setText(menuBean.getMenuTitle());
+        return menuTv;
+    }
+
+    private View.OnClickListener onMenuClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showFragmentNew((TextView) v);
+        }
+    };
+
+    private void showFragmentNew(TextView titleView) {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        MenuBean menuBean = (MenuBean) titleView.getTag();
+        for (int i = 0; i < homeMenuCotainer.getChildCount(); i++) {
+            TextView view = (TextView) homeMenuCotainer.getChildAt(i);
+            if (titleView == view) {
+                titleView.setTextColor(Color.BLACK);
+            } else {
+                view.setTextColor(Color.GRAY);
+            }
+
+        }
+        switch (menuBean.getMenuMake()) {
+            case 1://设备
+                if (deviceFragment == null) {
+                    deviceFragment = new DeviceFragment();
+                    ft.add(R.id.home_fragment_cotainer, deviceFragment);
+                } else {
+                    if (deviceFragment.isVisible()) {
+                        return;
+                    }
+                    ft.show(deviceFragment);
+                }
+                if (maintenaceFragment != null) {
+                    ft.hide(maintenaceFragment);
+                }
+                if (h5Fragment != null) {
+                    ft.hide(h5Fragment);
+                }
+                break;
+            case 2://维修
+                if (deviceFragment != null && deviceFragment.isVisible()) {
+                    ft.hide(deviceFragment);
+                }
+                if (h5Fragment != null && h5Fragment.isVisible()) {
+                    ft.hide(h5Fragment);
+                }
+                if (maintenaceFragment == null) {
+                    maintenaceFragment = new MaintenanceFragment();
+                    ft.add(R.id.home_fragment_cotainer, maintenaceFragment);
+                } else {
+                    if (maintenaceFragment.isVisible()) {
+                        return;
+                    }
+                    ft.show(maintenaceFragment);
+                }
+                break;
+            case 3://H5
+                if (deviceFragment != null && deviceFragment.isVisible()) {
+                    ft.hide(deviceFragment);
+                }
+                if (maintenaceFragment != null && maintenaceFragment.isVisible()) {
+                    ft.hide(maintenaceFragment);
+                }
+                if (h5Fragment == null) {
+                    h5Fragment = new WebFragment(menuBean.getMenuLink());
+                    ft.add(R.id.home_fragment_cotainer, h5Fragment);
+                } else {
+                    ((WebFragment) h5Fragment).loadUrl(menuBean.getMenuLink());
+                    ft.show(h5Fragment);
+                }
+                break;
+
+
+        }
+        ft.commit();
+
+
+    }
+
     public class MessageReceiver extends BroadcastReceiver {
 
         @Override
@@ -341,7 +502,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     .error(R.drawable.ic_default_head)
                     .into(homeHeadImg);
             homeNicknameTv.setText(member.getNickName());
-            mPresenter.getCountByStatus(memberId,0);
+            mPresenter.getCountByStatus(memberId, 0);
             mPresenter.updateUnReadMessage(memberId);
             mPresenter.getWalletAmount(memberId);
         } else {
@@ -366,7 +527,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
 
-    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_purse, R.id.item_qr_code, R.id.item_about, R.id.home_me_img, R.id.home_box_img, R.id.home_actvite_img})
+    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_purse, R.id.item_qr_code, R.id.item_about, R.id.home_me_img, R.id.home_actvite_img})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.home_guide_sure_btn:
@@ -409,11 +570,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
-                break;
-            case R.id.home_box_img:
-                Bundle boxExtras = new Bundle();
-                boxExtras.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppBoxDetail);
-                Constants.toActivity(this, QuestionCommunityActivity.class, null);
                 break;
             case R.id.home_actvite_img:
                 homeActviteImg.setNotifyPointVisible(false);
@@ -576,7 +732,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
 
-
     @Override
     public void updateActivitySize(int count) {
         AppLog.print("updateActivitySize__size_" + count);
@@ -735,7 +890,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
                     ToastUtils.showToast(this, "摄像头打开失败！！");
-                    CommonUtils.showPermissionDialog(this);
+                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.CAMERA);
                 } else {
                     scanQRCode();
                 }
@@ -746,7 +901,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     if (mustUpdate == 1) {
                         CommonUtils.showFinishPermissionDialog(this);
                     } else {
-                        CommonUtils.showPermissionDialog(this);
+                        CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
                     }
                 } else {
                     Constants.versionDownload(HomeActivity.this, downLoadLink);

@@ -1089,7 +1089,7 @@ public class Constants {
                 }
             });
         } else {
-            builder.setNegativeButton(context.getResources().getColor(R.color.cor10),"稍后再说", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(context.getResources().getColor(R.color.cor10), "稍后再说", new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -1440,9 +1440,9 @@ public class Constants {
     public static final int INVALID_DEVICE_ID = -1;
     public static final String UPDATE_DEVICE_LIST = "updateDeviceList";
     public static final String UPDATE_DEVICE_NAME = "updateDeviceName";
-    public static final String DEVICE_ID="device_id";
-    public static final String DEVICE_DETAIL_NOW="DEVICE_DETAIL_NOW";
-    public static final String PAGET_TYPE="page_type";
+    public static final String DEVICE_ID = "device_id";
+    public static final String DEVICE_DETAIL_NOW = "DEVICE_DETAIL_NOW";
+    public static final String PAGET_TYPE = "page_type";
 
     public static Map<String, String> getBasePraramsMap() {
         Map<String, String> map = new HashMap<>();
@@ -1458,9 +1458,15 @@ public class Constants {
     public static final String CURRENT_LOC = "当前位置";
     public static final String APK_NAME = "cloudm.apk";
 
-    public static interface  IPageType{
-        public static final String PAGE_DEVICE_INFO="p_device_info";//设备基本信息
+    public static interface IPageType {
+        public static final String PAGE_DEVICE_INFO = "p_device_info";//设备基本信息
 
+    }
+
+    public  interface PermissionType {
+        int CAMERA = 1;
+        int STORAGE = 2;
+        int LOCATION=3;
     }
 
 

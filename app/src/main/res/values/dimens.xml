@@ -707,6 +707,7 @@
     <dimen name="dimen_size_63">63dp</dimen>
     <dimen name="dimen_size_169">169dp</dimen>
     <dimen name="dimen_size_237">237dp</dimen>
+    <dimen name="dimen_size_18">18dp</dimen>
 
 
     <!--xhdpi 1280*720-->

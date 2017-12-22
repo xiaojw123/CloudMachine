@@ -17,6 +17,7 @@ import android.widget.PopupWindow;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.ui.home.activity.fragment.BaseMapFragment;
 import com.cloudmachine.widget.CustomSucessDialog;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
@@ -41,8 +42,8 @@ import java.util.Map;
  */
 
 public class CommonUtils {
-    public static void showSuccessDialog(Context context,String title,String cashAmount,String message) {
-        CustomSucessDialog.Builder builder=new CustomSucessDialog.Builder(context);
+    public static void showSuccessDialog(Context context, String title, String cashAmount, String message) {
+        CustomSucessDialog.Builder builder = new CustomSucessDialog.Builder(context);
         builder.setTitle1(title);
         builder.setTitle2(cashAmount);
         builder.setMessage(message);
@@ -72,40 +73,31 @@ public class CommonUtils {
         return hex.toString();
     }
 
-    public static String formatUrlMap(Map<String, String> paraMap, boolean urlEncode, boolean keyToLower)
-    {
+    public static String formatUrlMap(Map<String, String> paraMap, boolean urlEncode, boolean keyToLower) {
         String buff = "";
         Map<String, String> tmpMap = paraMap;
-        try
-        {
+        try {
             List<Map.Entry<String, String>> infoIds = new ArrayList<Map.Entry<String, String>>(tmpMap.entrySet());
             // 对所有传入参数按照字段名的 ASCII 码从小到大排序（字典序）
-            Collections.sort(infoIds, new Comparator<Map.Entry<String, String>>()
-            {
+            Collections.sort(infoIds, new Comparator<Map.Entry<String, String>>() {
 
                 @Override
-                public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2)
-                {
+                public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
                     return (o1.getKey()).toString().compareTo(o2.getKey());
                 }
             });
             // 构造URL 键值对的格式
             StringBuilder buf = new StringBuilder();
-            for (Map.Entry<String, String> item : infoIds)
-            {
-                if (!TextUtils.isEmpty(item.getKey()))
-                {
+            for (Map.Entry<String, String> item : infoIds) {
+                if (!TextUtils.isEmpty(item.getKey())) {
                     String key = item.getKey();
                     String val = item.getValue();
-                    if (urlEncode)
-                    {
+                    if (urlEncode) {
                         val = URLEncoder.encode(val, "utf-8");
                     }
-                    if (keyToLower)
-                    {
+                    if (keyToLower) {
                         buf.append(key.toLowerCase() + "=" + val);
-                    } else
-                    {
+                    } else {
                         buf.append(key + "=" + val);
                     }
                     buf.append("&");
@@ -113,23 +105,21 @@ public class CommonUtils {
 
             }
             buff = buf.toString();
-            if (buff.isEmpty() == false)
-            {
+            if (buff.isEmpty() == false) {
                 buff = buff.substring(0, buff.length() - 1);
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             return null;
         }
         return buff;
     }
 
 
-    public static boolean isHConfig(String sn){
-        if (!TextUtils.isEmpty(sn)){
-            if (sn.length()>=9){
-                if (!sn.substring(2,5).equals("2016")&&sn.charAt(8)=='A'){
-                    return  true;
+    public static boolean isHConfig(String sn) {
+        if (!TextUtils.isEmpty(sn)) {
+            if (sn.length() >= 9) {
+                if (!sn.substring(2, 5).equals("2016") && sn.charAt(8) == 'A') {
+                    return true;
                 }
             }
 
@@ -138,47 +128,70 @@ public class CommonUtils {
 
     }
 
-    public static String getPastDate(int offset){
-        Calendar c=Calendar.getInstance();
-        c.set(Calendar.DAY_OF_YEAR,c.get(Calendar.DAY_OF_YEAR)-offset);
-        Date today=c.getTime();
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        return  sdf.format(today);
+    public static String getPastDate(int offset) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - offset);
+        Date today = c.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(today);
     }
 
-    public static double subtractDouble(double a,double b){
-        BigDecimal aDecimal=new BigDecimal(Double.toString(a));
-        BigDecimal bigDecimal=new BigDecimal(Double.toString(b));
-        return Math.max(aDecimal.subtract(bigDecimal).doubleValue(),0);
+    public static String getDateStamp() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR));
+        Date today = c.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        return sdf.format(today);
+    }
+
+    public static double subtractDouble(double a, double b) {
+        BigDecimal aDecimal = new BigDecimal(Double.toString(a));
+        BigDecimal bigDecimal = new BigDecimal(Double.toString(b));
+        return Math.max(aDecimal.subtract(bigDecimal).doubleValue(), 0);
     }
 
 
-    public static  void showPermissionDialog(Context context){
-        CustomDialog.Builder builder=new CustomDialog.Builder(context);
-        builder.setMessage("需要开启定位服务，请到设置->找到位置权限，打开定位服务");
+    public static void showPermissionDialog(Context context, int reqCode) {
+        CustomDialog.Builder builder = new CustomDialog.Builder(context);
+        String msg = "需要开启形影权限，请到设置->权限管理中开启";
+        switch (reqCode) {
+            case Constants.PermissionType.CAMERA:
+                msg = "需要开启相机服务，请到设置->隐私->相机服务，打开相机服务";
+                break;
+            case Constants.PermissionType.STORAGE:
+                msg="需要开启读写存储权限，请到设置->权限管理，打开读写存储权限";
+                break;
+            case Constants.PermissionType.LOCATION:
+                msg="需要开启定位服务，请到设置->找到位置权限，打开定位服务";
+                break;
+        }
+        builder.setMessage(msg);
         builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (BaseMapFragment.isShowDialog){
+                    BaseMapFragment.isShowDialog=false;
+                }
                 dialog.dismiss();
             }
         });
         builder.create().show();
     }
 
-    public static  void showFinishPermissionDialog(final  Context context){
-        CustomDialog.Builder builder=new CustomDialog.Builder(context);
+    public static void showFinishPermissionDialog(final Context context) {
+        CustomDialog.Builder builder = new CustomDialog.Builder(context);
         builder.setMessage("需要开启定位服务，请到设置->找到位置权限，打开定位服务");
         builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ((Activity)context).finish();
+                ((Activity) context).finish();
             }
         });
         builder.create().show();
     }
 
-    public static Animation getTraslateAnim(){
+    public static Animation getTraslateAnim() {
         TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1, Animation.RELATIVE_TO_SELF, 0);
         animation.setDuration(500);
         return animation;
@@ -189,7 +202,7 @@ public class CommonUtils {
         return new SwipeMenuCreator() {
             @Override
             public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int viewType) {
-                AppLog.print("onCreateMenu____"+viewType);
+                AppLog.print("onCreateMenu____" + viewType);
                 SwipeMenuItem item = new SwipeMenuItem(context);
                 item.setBackgroundColor(context.getResources().getColor(R.color.cor17));
                 item.setText("删除");
@@ -203,7 +216,7 @@ public class CommonUtils {
     }
 
     public static void callPhone(Context context, String phone) {
-        if (TextUtils.isEmpty(phone)){
+        if (TextUtils.isEmpty(phone)) {
             return;
         }
         Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));//跳转到拨号界面，同时传递电话号码
@@ -276,7 +289,7 @@ public class CommonUtils {
                             return price.substring(0, index);
                         } else {
                             if (lastIndex > index2) {
-                                int index3=index + 3;
+                                int index3 = index + 3;
                                 return price.substring(0, index3);
                             } else {
                                 return price;
@@ -294,6 +307,7 @@ public class CommonUtils {
         }
         return "0";
     }
+
     public static boolean checVersion(String curVerision, String onlineVersion) {
         if (TextUtils.isEmpty(onlineVersion) || TextUtils.isEmpty(curVerision)) {
             return false;
@@ -301,7 +315,7 @@ public class CommonUtils {
         // 2.2.1
         int len1 = onlineVersion.length();
         int len2 = curVerision.length();
-        if (len1 < len2 &&curVerision.indexOf(onlineVersion)==0) {
+        if (len1 < len2 && curVerision.indexOf(onlineVersion) == 0) {
             return false;
         }
         if (len1 > len2

@@ -227,6 +227,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             AppLog.print("shoudLoadUrl___" + url + ", homeURL__" + homeUrl);
+            if (url.startsWith("tel:")){
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+                return true;
+            }
             if (backUrl == null) {
                 backUrl = url;
             }
@@ -316,10 +322,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                                         PermissionsActivity.startActivityForResult(QuestionCommunityActivity.this,
                                                 REQUEST_PERMISSION_PICK, PERMISSIONS_PICK);
                                     } else {
+                                        isForbidenAd=true;
                                         startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                                 REQUEST_PICK_IMAGE);
                                     }
                                 } else {
+                                    isForbidenAd=true;
                                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                             REQUEST_PICK_IMAGE);
                                 }
@@ -354,6 +362,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
     //打开系统相机
     private void openCamera() {
+        isForbidenAd=true;
         File file = new FileStorage().createIconFile();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             imageUri = FileProvider.getUriForFile(this, "com.cloudmachine.fileprovider", file);//通过FileProvider创建一个content类型的Uri
@@ -383,7 +392,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         switch (requestCode) {
             case HomeActivity.PEM_REQCODE_WRITESD:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    CommonUtils.showPermissionDialog(this);
+                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
                 } else {
                     clearWebCahe();
                 }
@@ -425,7 +434,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 break;
             case REQUEST_PERMISSION://权限请求
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    CommonUtils.showPermissionDialog(this);
+                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
                 } else {
                     if (isClickCamera) {
                         openCamera();
@@ -436,8 +445,9 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 break;
             case REQUEST_PERMISSION_PICK:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    CommonUtils.showPermissionDialog(this);
+                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
                 } else {
+                    isForbidenAd=true;
                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                             REQUEST_PICK_IMAGE);
                 }
@@ -533,6 +543,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
      * 从相册选择
      */
     private void selectFromAlbum() {
+        isForbidenAd=true;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, REQUEST_PICK_IMAGE);

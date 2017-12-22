@@ -81,7 +81,6 @@ public class ReboundScrollView extends ScrollView {
 
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        AppLog.print("onScrollChanged oldt___" + oldt + ", t__" + t);
         super.onScrollChanged(l, t, oldl, oldt);
     }
 

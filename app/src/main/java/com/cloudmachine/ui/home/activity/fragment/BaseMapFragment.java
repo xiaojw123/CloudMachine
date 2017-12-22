@@ -32,6 +32,7 @@ import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.utils.CommonUtils;
+import com.cloudmachine.utils.Constants;
 
 import butterknife.BindView;
 
@@ -43,6 +44,7 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
     protected static final float ZOOM_DEFAULT = 16;
     protected static final float ZOOM_HOME = 9;
     private final int REQ_FINE_LOCATION = 0x12;
+    public static boolean isShowDialog;
     @BindView(R.id.home_mapview)
     protected TextureMapView mMapView;
     protected AMap aMap;
@@ -173,6 +175,9 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
 //        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             AppLog.print("permission not grant,  then request");
+            if (isShowDialog){
+                return;
+            }
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_FINE_LOCATION);
         } else {
             AppLog.print("startLociation—————");
@@ -184,14 +189,15 @@ public abstract class BaseMapFragment<T extends BasePresenter, E extends BaseMod
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         AppLog.print("reqeustPermissionResut____");
-        if (requestCode == REQ_FINE_LOCATION) {
+        if (requestCode ==REQ_FINE_LOCATION) {
             AppLog.print("reqeustPermissionResut____REQ_FINE_LOCATION");
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 AppLog.print("permisssion Grant");
                 mlocClient.startLocation();
             } else {
                 AppLog.print("permisssion Bedien");
-                CommonUtils.showPermissionDialog(getActivity());
+                isShowDialog=true;
+                CommonUtils.showPermissionDialog(getActivity(),Constants.PermissionType.LOCATION);
 //                AppLog.print("打开权限设置。。。。。");
 //                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

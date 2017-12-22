@@ -8,58 +8,57 @@
         android:id="@+id/home_mapview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        />
+        android:background="@color/white" />
 
 
     <TextView
         android:id="@+id/device_box_act_tv"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_44"
-        android:singleLine="true"
-        android:background="@drawable/bg_card"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="@dimen/dimen_size_8"
         android:layout_marginRight="@dimen/dimen_size_8"
-        android:textSize="@dimen/text_size_14_sp"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dimen_size_2"
+        android:background="@drawable/bg_card"
         android:drawableRight="@drawable/ic_box_arrow_right"
-        android:textColor="@color/cor9"
+        android:gravity="center_vertical"
         android:paddingLeft="@dimen/dimen_size_12"
         android:paddingRight="@dimen/dimen_size_12"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        />
+        android:singleLine="true"
+        android:textColor="@color/cor9"
+        android:textSize="@dimen/text_size_14_sp"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/device_menu_tv"
         android:layout_width="@dimen/dimen_size_44"
         android:layout_height="@dimen/dimen_size_44"
+        android:layout_alignRight="@+id/device_ques_ans_tv"
+        android:layout_below="@+id/device_box_act_tv"
+        android:layout_marginTop="@dimen/dimen_size_6"
         android:background="@drawable/bg_card_col14"
         android:drawableTop="@drawable/ic_menu"
-        android:text="@string/all"
-        android:layout_alignRight="@+id/device_ques_ans_tv"
-        android:layout_marginTop="@dimen/dimen_size_6"
-        android:textSize="@dimen/siz8"
         android:gravity="center_horizontal"
-        android:textColor="@color/cor9"
         android:paddingTop="@dimen/dimen_size_5"
-        android:layout_below="@+id/device_box_act_tv"
-        />
+        android:text="@string/all"
+        android:textColor="@color/cor9"
+        android:textSize="@dimen/siz8" />
 
     <TextView
         android:id="@+id/device_ques_ans_tv"
-        android:layout_width="@dimen/dimen_size_44"
-        android:layout_height="@dimen/dimen_size_44"
-        android:drawableTop="@drawable/ic_ques_ask"
-        android:text="@string/ques_ask"
-        android:background="@drawable/bg_card_col14"
-        android:gravity="center_horizontal"
+        android:layout_width="@dimen/dimen_size_51"
+        android:layout_height="@dimen/dimen_size_51"
         android:layout_alignRight="@+id/device_vp"
-        android:layout_alignBottom="@+id/device_flush_imgBtn"
-        android:textSize="@dimen/siz8"
-        android:textColor="@color/cor9"
-        android:paddingTop="@dimen/dimen_size_5"
-        />
+        android:background="@drawable/bg_question_ask"
+        android:drawableTop="@drawable/icon_ask_add"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/dimen_size_12"
+        android:paddingTop="@dimen/dimen_size_12"
+        android:layout_above="@+id/device_vp"
+        android:layout_marginBottom="@dimen/dimen_size_17"
+        android:text="@string/ask"
+        android:textColor="@color/white"
+        android:textSize="@dimen/siz8" />
 
 
     <ImageButton
@@ -68,11 +67,9 @@
         android:layout_height="@dimen/dimen_size_32"
         android:layout_above="@+id/device_flush_imgBtn"
         android:layout_alignLeft="@+id/device_flush_imgBtn"
-        android:src="@drawable/ic_phone"
         android:layout_marginBottom="@dimen/dimen_size_14"
         android:background="@drawable/bg_btn_flush"
-        />
-
+        android:src="@drawable/ic_phone" />
 
 
     <ImageButton
@@ -80,14 +77,10 @@
         android:layout_width="@dimen/dimen_size_32"
         android:layout_height="@dimen/dimen_size_32"
         android:layout_above="@+id/device_vp"
-        android:layout_marginBottom="@dimen/dimen_size_19"
         android:layout_alignLeft="@+id/device_vp"
-        android:src="@drawable/ic_flush"
+        android:layout_marginBottom="@dimen/dimen_size_19"
         android:background="@drawable/bg_btn_flush"
-        />
-
-
-
+        android:src="@drawable/ic_flush" />
 
 
     <android.support.v4.view.ViewPager
@@ -97,10 +90,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/dimen_size_8"
         android:layout_marginLeft="@dimen/dimen_size_8"
-        android:layout_marginRight="@dimen/dimen_size_8"
-        />
-
-
+        android:layout_marginRight="@dimen/dimen_size_8" />
 
 
 </RelativeLayout>

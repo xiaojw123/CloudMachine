@@ -4,8 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ScrollView;
 
-import com.cloudmachine.chart.utils.AppLog;
-
 /**
  * Created by xiaojw on 2017/9/21.
  */
@@ -36,7 +34,6 @@ public class MyScrollView extends ScrollView {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        AppLog.print("onScrollChanged oldt___"+oldt+", t__"+t);
         if (oldt > t && oldt - t > SCROLLLIMIT) {// 向下
             if (mListener != null)
                 mListener.scrollOritention(SCROLL_DOWN);

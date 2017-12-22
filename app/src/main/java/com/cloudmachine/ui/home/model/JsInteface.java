@@ -14,6 +14,7 @@ import com.alipay.sdk.app.PayTask;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.SearchPoiActivity;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
@@ -25,6 +26,7 @@ import com.google.gson.Gson;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,6 +81,14 @@ public class JsInteface {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @JavascriptInterface
+    public void gotoNextWebPage(String url){
+        MobclickAgent.onEvent(mContext, MobEvent.TIME_H5_HOME_NAV_MENU_ITEM);
+        Bundle bundle=new Bundle();
+        bundle.putString(QuestionCommunityActivity.H5_URL,url);
+        Constants.toActivity((Activity) mContext,QuestionCommunityActivity.class,bundle);
     }
 
 

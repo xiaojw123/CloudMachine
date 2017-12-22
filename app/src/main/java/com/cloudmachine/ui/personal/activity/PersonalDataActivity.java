@@ -112,6 +112,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     TextView mF5;
     @BindView(R.id.arrowTip1)
     ImageView mArrowTip1;
+    @BindView(R.id.my_qrcode)
+    RelativeLayout myQrCodeRl;
+
 
     private int imgsign = -1;
     private int infoSign = -1;
@@ -213,6 +216,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         mLlHeadLogo.setOnClickListener(this);
         mNickLayout.setOnClickListener(this);
         mMyPwd.setOnClickListener(this);
+        myQrCodeRl.setOnClickListener(this);
     }
 
     @Override
@@ -223,6 +227,10 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.my_qrcode:
+                Constants.toActivity(this, MyQRCodeActivity.class, null);
+                break;
+
             case R.id.ll_head_logo:
                 syncWx = false;
                 showImageDialog();
@@ -272,10 +280,12 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                                         PermissionsActivity.startActivityForResult(PersonalDataActivity.this, REQUEST_PERMISSION_PICK,
                                                 PERMISSIONS_PICK);
                                     } else {
+                                        isForbidenAd=true;
                                         startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                                 REQUEST_PICK_IMAGE);
                                     }
                                 } else {
+                                    isForbidenAd=true;
                                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                             REQUEST_PICK_IMAGE);
                                 }
@@ -311,6 +321,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
     //打开系统相机
     private void openCamera() {
+        isForbidenAd=true;
         File file = new FileStorage().createIconFile();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             imageUri = FileProvider.getUriForFile(PersonalDataActivity.this, "com.cloudmachine.fileprovider", file);//通过FileProvider创建一个content类型的Uri
@@ -346,34 +357,36 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 }
                 break;
             case REQUEST_PICTURE_CUT://裁剪完成
-                if (data != null) {
-                    Bitmap bitmap = null;
-                    try {
-                        if (isClickCamera) {
-                            bitmap = BitmapFactory.decodeStream(PersonalDataActivity.this.getContentResolver().openInputStream(imageUri));
-                        } else {
-                            bitmap = BitmapFactory.decodeFile(imagePath);
-                        }
-                        // iv.setImageBitmap(bitmap);
-                        if (imgsign == 2) {
-                            //Bitmap photo = extras.getParcelable("data");
+                if (resultCode == RESULT_OK) {
+                    if (data != null) {
+                        Bitmap bitmap = null;
+                        try {
+                            if (isClickCamera) {
+                                bitmap = BitmapFactory.decodeStream(PersonalDataActivity.this.getContentResolver().openInputStream(imageUri));
+                            } else {
+                                bitmap = BitmapFactory.decodeFile(imagePath);
+                            }
+                            // iv.setImageBitmap(bitmap);
+                            if (imgsign == 2) {
+                                //Bitmap photo = extras.getParcelable("data");
 //                        mHeadIamge.setImageBitmap(bitmap);//展示到当前页面
-                            imString = savePhotoToSDCard(bitmap);
-                            isUpdateImage = true;
-                            compressPicture(imString);
-                            //new ImageUploadAsync(handler, imString, 1111).execute();
-                            //UploadPhotoUtils.getInstance(this).upLoadFile(imString, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
-                        }
+                                imString = savePhotoToSDCard(bitmap);
+                                isUpdateImage = true;
+                                compressPicture(imString);
+                                //new ImageUploadAsync(handler, imString, 1111).execute();
+                                //UploadPhotoUtils.getInstance(this).upLoadFile(imString, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
+                            }
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
                 break;
             case REQUEST_PERMISSION://权限请求
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    CommonUtils.showPermissionDialog(this);
+                    CommonUtils.showPermissionDialog(this,Constants.PermissionType.CAMERA);
                 } else {
                     if (isClickCamera) {
                         openCamera();
@@ -384,8 +397,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 break;
             case REQUEST_PERMISSION_PICK:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    CommonUtils.showPermissionDialog(this);
+                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
                 } else {
+                    isForbidenAd=true;
                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                             REQUEST_PICK_IMAGE);
                 }
@@ -430,6 +444,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
      * 从相册选择
      */
     private void selectFromAlbum() {
+        isForbidenAd=true;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, REQUEST_PICK_IMAGE);
@@ -507,6 +522,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
      * 裁剪
      */
     private void cropPhoto() {
+        isForbidenAd=true;
         File file = new FileStorage().createCropFile();
         Uri outputUri = Uri.fromFile(file);//缩略图保存地址
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -669,7 +685,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     }
 
     public void exitLogin(View view) {
-        MobclickAgent.onEvent(this,MobEvent.COUNT_LOGOUT);
+        MobclickAgent.onEvent(this, MobEvent.COUNT_LOGOUT);
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         builder.setMessage("你确认退出？");
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

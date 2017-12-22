@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/cor13">
+    android:layout_height="match_parent">
+    <include
+        android:visibility="gone"
+        layout="@layout/pop_screen_add" />
+    <RelativeLayout
+        android:id="@+id/loading_splash_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cor13">
 
-    <ImageView
-        android:id="@+id/mnbv"
-        android:layout_width="@dimen/loading_image_width"
-        android:layout_height="@dimen/loading_image_height"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/loading_image_marginTop"
-        android:background="@drawable/loading_icon" />
+        <ImageView
+            android:id="@+id/mnbv"
+            android:layout_width="@dimen/loading_image_width"
+            android:layout_height="@dimen/loading_image_height"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/loading_image_marginTop"
+            android:background="@drawable/loading_icon" />
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dimen_size_47"
-        android:text="@string/loading_text"
-        android:textColor="@color/cor11"
-        android:textSize="@dimen/text_size_12_sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dimen_size_47"
+            android:text="@string/loading_text"
+            android:textColor="@color/cor11"
+            android:textSize="@dimen/text_size_12_sp" />
 
-</RelativeLayout>
+    </RelativeLayout>
+
+
+
+</FrameLayout>

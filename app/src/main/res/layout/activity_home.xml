@@ -45,7 +45,25 @@
                 android:visibility="gone" />
 
 
+            <HorizontalScrollView
+                android:id="@+id/home_menu_hsv"
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:scrollbars="none"
+                android:overScrollMode="never"
+                >
+
+                <LinearLayout
+                    android:id="@+id/home_menu_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    />
+            </HorizontalScrollView>
+
             <LinearLayout
+                android:id="@+id/home_menu_default"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
@@ -73,19 +91,7 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/home_box_img"
-                android:layout_width="@dimen/home_title_icon1_width"
-                android:layout_height="@dimen/home_title_icon_height"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="24dp"
-                android:layout_toLeftOf="@+id/home_actvite_img"
-                android:paddingBottom="10dp"
-                android:paddingLeft="2dp"
-                android:paddingRight="2dp"
-                android:paddingTop="10dp"
-                android:src="@drawable/icon_box"
-                android:visibility="gone" />
+
 
 
             <com.cloudmachine.widget.NotfyImgView
@@ -124,8 +130,7 @@
         android:layout_height="match_parent"
         android:background="@color/pop_bg_color"
         android:clickable="true"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/icon_guide_scan"
@@ -145,20 +150,19 @@
             android:src="@drawable/icon_home_guide2" />
 
 
-
         <View
             android:id="@+id/home_center_view"
             android:layout_width="1px"
             android:layout_height="1px"
-            android:layout_centerInParent="true"
-            />
+            android:layout_centerInParent="true" />
+
         <ImageView
             android:id="@+id/home_guide_exp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_centerHorizontal="true"
             android:layout_above="@+id/home_center_view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="2dp"
             android:src="@drawable/icon_home_guide1" />
 
         <!--android:layout_centerHorizontal="true"-->
@@ -259,21 +263,21 @@
                     android:orientation="horizontal">
 
 
-                <com.cloudmachine.widget.NotfyImgView
-                    android:id="@+id/item_order_nimg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/icon_my_order" />
+                    <com.cloudmachine.widget.NotfyImgView
+                        android:id="@+id/item_order_nimg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/icon_my_order" />
 
-                <TextView
-                    android:id="@+id/item_order_tv"
-                    style="@style/HomeMenuTvStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:paddingLeft="8dp"
-                    android:text="@string/my_order" />
+                    <TextView
+                        android:id="@+id/item_order_tv"
+                        style="@style/HomeMenuTvStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="@string/ybox_order" />
                 </LinearLayout>
             </FrameLayout>
 

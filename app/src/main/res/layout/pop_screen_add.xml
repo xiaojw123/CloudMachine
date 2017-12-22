@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/screen_ad_layout"
+    >
+
+    <ImageView
+        android:id="@+id/screen_adimg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        />
+
+    <TextView
+        android:id="@+id/screen_adtimer_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_14_sp"
+        android:textColor="@color/white"
+        android:layout_gravity="right"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingLeft="@dimen/dimen_size_5"
+        android:paddingRight="@dimen/dimen_size_5"
+        android:background="@drawable/bg_splash_timer"
+        />
+
+
+
+</FrameLayout>

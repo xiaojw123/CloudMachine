@@ -530,7 +530,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PERMISSION_PICK) {
             if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                CommonUtils.showPermissionDialog(this);
+                CommonUtils.showPermissionDialog(this,Constants.PermissionType.STORAGE);
             } else {
                 pickCamera();
             }
@@ -538,7 +538,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         }
         if (requestCode == REQUEST_PERMISSION) {
             if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                CommonUtils.showPermissionDialog(this);
+                CommonUtils.showPermissionDialog(this,Constants.PermissionType.LOCATION);
             } else {
                 locationClient.startLocation();
             }
