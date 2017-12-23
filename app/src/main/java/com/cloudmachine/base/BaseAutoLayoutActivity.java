@@ -27,6 +27,7 @@ import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.AdBean;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.CustomActivityManager;
+import com.cloudmachine.helper.DataSupportManager;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
@@ -55,7 +56,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     private boolean isOpen = true;
     private Timer mTimer;
     private TextView mTimerTv;
-    private int timeCount = 5;
+    private int timeCount;
     public boolean isForbidenAd;
 
 
@@ -218,7 +219,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         AppLog.print("curAct__" + curAct + ", topAct__" + topAct);
         if (topAct == curAct) {
             AppLog.print("CurActivity被唤醒");
-            AdBean curAdBean = DataSupport.findFirst(AdBean.class);
+            AdBean curAdBean = DataSupportManager.findFirst(AdBean.class);
             if (curAdBean != null) {
                 timeCount = curAdBean.getAdTime();
                 int type = curAdBean.getDisplayType();
@@ -251,7 +252,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
             mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getStartAd().compose(RxHelper.<List<AdBean>>handleResult()).subscribe(new RxSubscriber<List<AdBean>>(mContext) {
                 @Override
                 protected void _onNext(List<AdBean> remoteAdBeenList) {
-                    AdBean locAdBean = DataSupport.findFirst(AdBean.class);
+                    AdBean locAdBean = DataSupportManager.findFirst(AdBean.class);
                     if (remoteAdBeenList != null && remoteAdBeenList.size() > 0) {
                         AdBean remoteAdBean = remoteAdBeenList.get(0);
                         if (remoteAdBean != null) {

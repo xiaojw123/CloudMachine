@@ -4,12 +4,14 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,7 +22,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.cloudmachine.R;
-import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.alipay.PayResult;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseFragment;
@@ -29,6 +30,7 @@ import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.model.JsInteface;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileStorage;
 import com.cloudmachine.utils.PermissionsChecker;
@@ -87,6 +89,7 @@ public class WebFragment extends BaseFragment {
         mWebView.addJavascriptInterface(new JsInteface(getActivity(), mHandler), JS_INTERFACE_NAME);
         loadUrl();
     }
+
     public void loadUrl(String loadUrl) {
         mUrl = loadUrl;
         if (UserHelper.isLogin(getActivity())) {
@@ -121,26 +124,23 @@ public class WebFragment extends BaseFragment {
                             case 0:
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     if (mPermissionsCheck.lacksPermissions(PERMISSIONS_PICK)) {
-                                        PermissionsActivity.startActivityForResult(getActivity(),
-                                                REQUEST_PERMISSION_PICK, PERMISSIONS_PICK);
+                                        requestPermissions(PERMISSIONS_PICK, REQUEST_PERMISSION_PICK);
                                     } else {
-                                        ((HomeActivity)getActivity()).isForbidenAd=true;
+                                        ((HomeActivity) getActivity()).isForbidenAd = true;
                                         startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                                 REQUEST_PICK_IMAGE);
                                     }
                                 } else {
-                                    ((HomeActivity)getActivity()).isForbidenAd=true;
+                                    ((HomeActivity) getActivity()).isForbidenAd = true;
                                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                             REQUEST_PICK_IMAGE);
                                 }
-
                                 isClickCamera = false;
                                 break;
                             case 1:
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     if (mPermissionsCheck.lacksPermissions(PERMISSIONS)) {
-                                        PermissionsActivity.startActivityForResult(getActivity(), REQUEST_PERMISSION,
-                                                PERMISSIONS);
+                                        requestPermissions(PERMISSIONS, REQUEST_PERMISSION);
                                     } else {
                                         openCamera();
                                     }
@@ -161,9 +161,45 @@ public class WebFragment extends BaseFragment {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSION_PICK) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                ((HomeActivity) getActivity()).isForbidenAd = true;
+                startActivityForResult(PhotosGallery.gotoPhotosGallery(),
+                        REQUEST_PICK_IMAGE);
+            } else {
+                CommonUtils.showPermissionDialog(getActivity(), Constants.PermissionType.STORAGE);
+            }
+        } else if (requestCode == REQUEST_PERMISSION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (isClickCamera) {
+                    openCamera();
+                } else {
+                    selectFromAlbum();
+                }
+            } else {
+                CommonUtils.showPermissionDialog(getActivity(), Constants.PermissionType.STORAGE);
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    /**
+     * 从相册选择
+     */
+    private void selectFromAlbum() {
+        ((HomeActivity) getActivity()).isForbidenAd = true;
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(intent, REQUEST_PICK_IMAGE);
+    }
+
+
     //打开系统相机
     private void openCamera() {
-        ((HomeActivity)getActivity()).isForbidenAd=true;
+        ((HomeActivity) getActivity()).isForbidenAd = true;
         File file = new FileStorage().createIconFile();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             imageUri = FileProvider.getUriForFile(getActivity(), "com.cloudmachine.fileprovider", file);//通过FileProvider创建一个content类型的Uri
@@ -243,6 +279,7 @@ public class WebFragment extends BaseFragment {
             }
         }
     };
+
     public void shoWAlertDialog(boolean isConfirm, String message, final String alertEvent) {
         CustomDialog.Builder builder = new CustomDialog.Builder(getActivity());
         if (isConfirm) {
@@ -255,7 +292,7 @@ public class WebFragment extends BaseFragment {
                 dialog.dismiss();
             }
         });
-        CustomDialog dialog=builder.create();
+        CustomDialog dialog = builder.create();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {

@@ -107,7 +107,7 @@ public class GuideActivity extends BaseAutoLayoutActivity {
         public void onClick(View v) {
             //设置已经引导
 
-            Constants.toActivity(GuideActivity.this, HomeActivity.class, null, true);
+            Constants.toActivity(GuideActivity.this, HomeActivity.class, getIntent().getExtras(), true);
         }
     };
 

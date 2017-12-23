@@ -31,6 +31,7 @@ import com.cloudmachine.adapter.SearchPoiListAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.DataSupportManager;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UMengKey;
@@ -102,7 +103,7 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
             }
 
         });
-        List<ResidentAddressInfo> items = DataSupport.findAll(ResidentAddressInfo.class);
+        List<ResidentAddressInfo> items = DataSupportManager.findAll(ResidentAddressInfo.class);
         if (items != null && items.size() > 0) {
             dataResult = items;
         }
@@ -182,7 +183,7 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
         ResidentAddressInfo info = dataResult.get(position);
-        List<ResidentAddressInfo> infoList = DataSupport.findAll(ResidentAddressInfo.class);
+        List<ResidentAddressInfo> infoList = DataSupportManager.findAll(ResidentAddressInfo.class);
         if (infoList == null) {
             infoList = new ArrayList<>();
         }
@@ -199,17 +200,8 @@ public class SearchPoiActivity extends BaseAutoLayoutActivity implements OnClick
         if (isFlag) {
             infoList.add(info);
         }
-        AppLog.print("infoList size" + infoList.size());
-        for (ResidentAddressInfo b : infoList) {
-            AppLog.print("千b__position__" + b.getPosition());
-        }
 //        DataSupport.deleteAll(ResidentAddressInfo.class);
         DataSupport.saveAll(infoList);
-        List<ResidentAddressInfo> a = DataSupport.findAll(ResidentAddressInfo.class);
-        AppLog.print("a____size__" + a.size());
-        for (ResidentAddressInfo aa : a) {
-            AppLog.print("后a___positoin__" + aa.getPosition());
-        }
         Intent intent = new Intent();
         intent.putExtra(Constants.P_SEARCHINFO, info);
         setResult(RESULT_OK, intent);

@@ -16,57 +16,58 @@ import java.util.List;
 
 
 public class SearchPoiListAdapter extends BaseAdapter {
-	private List<ResidentAddressInfo> dataResult;
-	private LayoutInflater layoutInflater;
-	public SearchPoiListAdapter(List<ResidentAddressInfo> dataResult,Context context) {
-		this.dataResult = dataResult;
-		this.layoutInflater = LayoutInflater.from(context);
-	}
+    private List<ResidentAddressInfo> dataResult;
+    private LayoutInflater layoutInflater;
 
-	@Override
-	public int getCount() {
-		return dataResult.size();
-	}
+    public SearchPoiListAdapter(List<ResidentAddressInfo> dataResult, Context context) {
+        this.dataResult = dataResult;
+        this.layoutInflater = LayoutInflater.from(context);
+    }
 
-	@Override
-	public ResidentAddressInfo getItem(int position) {
-		return dataResult.get(position);
-	}
+    @Override
+    public int getCount() {
+        return dataResult != null ? dataResult.size() : 0;
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    @Override
+    public ResidentAddressInfo getItem(int position) {
+        return dataResult != null && dataResult.size() > 0 ? dataResult.get(position) : null;
+    }
 
-	/**
-	 * inner_classifyleft_listview classifyleft_img classifyleft_text
-	 * 
-	 */
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder viewHolder;
-		if (convertView == null) {
-			convertView = layoutInflater.inflate(R.layout.list_item_search_poi,
-					null);
-			viewHolder = new ViewHolder();
-			viewHolder.text1_view = (TextView) convertView
-					.findViewById(R.id.text1_view);
-			viewHolder.text2_view = (TextView) convertView
-					.findViewById(R.id.text2_view);
-			convertView.setTag(viewHolder);
-			AutoUtils.autoSize(convertView);
-		} else {
-			viewHolder = (ViewHolder) convertView.getTag();
-		}
-		viewHolder.text1_view.setText(Constants.toViewString(dataResult.get(position).getTitle()));
-		viewHolder.text2_view.setText(Constants.toViewString(dataResult.get(position).getPosition()));
-		
-		return convertView;
-	}
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-	static class ViewHolder {
-		TextView text1_view;
-		TextView text2_view;
-	}
+    /**
+     * inner_classifyleft_listview classifyleft_img classifyleft_text
+     */
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            convertView = layoutInflater.inflate(R.layout.list_item_search_poi,
+                    null);
+            viewHolder = new ViewHolder();
+            viewHolder.text1_view = (TextView) convertView
+                    .findViewById(R.id.text1_view);
+            viewHolder.text2_view = (TextView) convertView
+                    .findViewById(R.id.text2_view);
+            convertView.setTag(viewHolder);
+            AutoUtils.autoSize(convertView);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        if (dataResult != null && dataResult.size() > 0) {
+            viewHolder.text1_view.setText(Constants.toViewString(dataResult.get(position).getTitle()));
+            viewHolder.text2_view.setText(Constants.toViewString(dataResult.get(position).getPosition()));
+        }
+        return convertView;
+    }
+
+    static class ViewHolder {
+        TextView text1_view;
+        TextView text2_view;
+    }
 
 }

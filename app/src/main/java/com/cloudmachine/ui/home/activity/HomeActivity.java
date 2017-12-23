@@ -45,8 +45,6 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.ViewCouponActivityNew;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.MenuBean;
@@ -55,13 +53,11 @@ import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
-import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
-import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.net.task.GetVersionAsync;
 import com.cloudmachine.ui.home.activity.fragment.DeviceFragment;
-import com.cloudmachine.ui.home.activity.fragment.WebFragment;
 import com.cloudmachine.ui.home.activity.fragment.MaintenanceFragment;
+import com.cloudmachine.ui.home.activity.fragment.WebFragment;
 import com.cloudmachine.ui.home.contract.HomeContract;
 import com.cloudmachine.ui.home.model.HomeModel;
 import com.cloudmachine.ui.home.model.PopItem;
@@ -98,6 +94,7 @@ import rx.functions.Action1;
 /*
 * 更新通知提醒需测试*/
 public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeModel> implements Handler.Callback, HomeContract.View, View.OnClickListener {
+    public static final String KEY_HOME_MENU = "key_home_menu";
     public static final String RXEVENT_UPDATE_REMIND = "rxevent_update_remind";
     public static final String KEY_H5_AUTORITY = "key_h5_autority";
     private static final String AUTORITY_YUNBOX = "yunbox";
@@ -193,6 +190,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     Fragment deviceFragment, maintenaceFragment, h5Fragment;
     int mustUpdate;
     double walletAmount, depositAmount;
+    int leftMargin;
 
 
     @Override
@@ -200,12 +198,12 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        mHandler = new Handler(this);
+        initView();
         MobclickAgent.enableEncrypt(true); // 友盟统计
         MobclickAgent.openActivityDurationTrack(false);
         setUPageStatistics(false);
-        mHandler = new Handler(this);
         registerMessageReceiver();
-        initMenuView();
         initUpdateConfig();
         new GetVersionAsync(mContext, mHandler).execute();
         mPresenter.getH5ConfigInfo();
@@ -213,45 +211,38 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
 
-    public void initMenuView() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getHeadMenu().compose(RxHelper.<List<MenuBean>>handleResult()).subscribe(new RxSubscriber<List<MenuBean>>(mContext) {
-            @Override
-            protected void _onNext(List<MenuBean> menuBeens) {
-                if (menuBeens != null && menuBeens.size() > 0) {
-                    homeMenuHsv.setVisibility(View.VISIBLE);
-                    homeMenuDefault.setVisibility(View.GONE);
-                    Collections.sort(menuBeens, new Comparator<MenuBean>() {
-                        @Override
-                        public int compare(MenuBean o1, MenuBean o2) {
-                            return o1.getMenuSort() - o2.getMenuSort();
-                        }
-                    });
-
-                    for (MenuBean bean : menuBeens) {
-                        if (bean.getYn() == 0) {
-                            homeMenuCotainer.addView(getMenuView(bean));
-                        }
-
-                    }
-                    showFragmentNew((TextView) homeMenuCotainer.getChildAt(0));
-                } else {
-                    showDefaultMenuView();
+    public void initView() {
+        List<MenuBean> homeMenuBeans = getIntent().getParcelableArrayListExtra(KEY_HOME_MENU);
+        if (homeMenuBeans != null && homeMenuBeans.size() > 0) {
+            if (homeMenuBeans.size() > 2) {
+                leftMargin = (int) getResources().getDimension(R.dimen.dimen_size_23);
+            } else {
+                ViewGroup.LayoutParams params = homeMenuHsv.getLayoutParams();
+                if (params != null) {
+                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 }
-
+                leftMargin = (int) getResources().getDimension(R.dimen.dimen_size_37);
             }
-
-            @Override
-            protected void _onError(String message) {
-                showDefaultMenuView();
+            homeMenuHsv.setVisibility(View.VISIBLE);
+            homeMenuDefault.setVisibility(View.GONE);
+            Collections.sort(homeMenuBeans, new Comparator<MenuBean>() {
+                @Override
+                public int compare(MenuBean o1, MenuBean o2) {
+                    return o1.getMenuSort() - o2.getMenuSort();
+                }
+            });
+            for (MenuBean bean : homeMenuBeans) {
+                if (bean.getYn() == 0) {
+                    homeMenuCotainer.addView(getMenuView(bean));
+                }
             }
-        }));
+            showFragmentNew((TextView) homeMenuCotainer.getChildAt(0));
+        } else {
+            homeMenuHsv.setVisibility(View.GONE);
+            homeMenuDefault.setVisibility(View.VISIBLE);
+            showFragment(deviceTv);
+        }
 
-    }
-
-    private void showDefaultMenuView() {
-        homeMenuHsv.setVisibility(View.GONE);
-        homeMenuDefault.setVisibility(View.VISIBLE);
-        showFragment(deviceTv);
     }
 
 
@@ -346,7 +337,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 //        android:textSize="@dimen/siz3" />
         MenuTextView menuTv = new MenuTextView(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.leftMargin = menuBean.getMenuSort() == 1 ? 0 : (int) getResources().getDimension(R.dimen.dimen_size_23);
+        params.leftMargin = menuBean.getMenuSort() == 1 ? 0 : leftMargin;
         menuTv.setLayoutParams(params);
         if (menuBean.getMenuHot() == 1) {
             menuTv.setMenuHot(true);

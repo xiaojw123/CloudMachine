@@ -16,10 +16,16 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.AdBean;
+import com.cloudmachine.bean.MenuBean;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.DataSupportManager;
 import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
@@ -27,8 +33,8 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.umeng.analytics.MobclickAgent;
 
-import org.litepal.crud.DataSupport;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -57,13 +63,14 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
     int mCode;
     Object mObject;
 
+    List<MenuBean> mMenuBeenList;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
         ButterKnife.bind(this);
-
         Uri uriData = getIntent().getData();
         String autority = null;
         if (uriData != null) {
@@ -82,7 +89,23 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
         }
         if (MemeberKeeper.getOauth(this) != null) {
             JPushInterface.setAliasAndTags(getApplicationContext(), MemeberKeeper.getOauth(this).getId().toString(), null, null);
-        }                                                                //极光推送
+        }
+        initHomeMenu();
+    }
+
+    private void initHomeMenu() {
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getHeadMenu().compose(RxHelper.<List<MenuBean>>handleResult()).subscribe(new RxSubscriber<List<MenuBean>>(mContext) {
+
+            @Override
+            protected void _onNext(List<MenuBean> menuBeen) {
+                mMenuBeenList = menuBeen;
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
     }
 
     @Override
@@ -109,9 +132,8 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
     public void startAdTimer(final int code, final Object object) {
         mCode = code;
         mObject = object;
-        AdBean item = DataSupport.findFirst(AdBean.class);
+        AdBean item = DataSupportManager.findFirst(AdBean.class);
         if (item != null) {
-            AppLog.print(" timeStamp____" + item.getTimeStamp() + "____currentMill__" + System.currentTimeMillis());
             if (item.getDisplayType() == 1
                     || (item.getDisplayType() == 2 && (item.getTimeStamp() == null || (item.getTimeStamp() != null && !item.getTimeStamp().equals(CommonUtils.getDateStamp()))))
                     || item.getDisplayType() == 3) {
@@ -168,19 +190,24 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
     }
 
     public void gotoNextPage(int code, Object obj) {
+        Bundle bundle = new Bundle();
+        if (mMenuBeenList != null && mMenuBeenList.size() > 0) {
+            bundle.putParcelableArrayList(HomeActivity.KEY_HOME_MENU, ((ArrayList<MenuBean>) mMenuBeenList));
+        }
         switch (code) {
             case Constants.HANDLER_H5_JUMP:
-                Bundle bundle = new Bundle();
-                bundle.putString(HomeActivity.KEY_H5_AUTORITY, (String) obj);
+                if (obj != null) {
+                    bundle.putString(HomeActivity.KEY_H5_AUTORITY, (String) obj);
+                }
                 Constants.toActivity(this, HomeActivity.class, bundle);
                 finish();
                 break;
             case Constants.HANDLER_SWITCH_MAINACTIVITY:
-                Constants.toActivity(this, HomeActivity.class, null);
+                Constants.toActivity(this, HomeActivity.class, bundle);
                 finish();
                 break;
             case Constants.HANDLER_SWITCH_GUIDACTIVITY:
-                Constants.toActivity(this, GuideActivity.class, null);
+                Constants.toActivity(this, GuideActivity.class, bundle);
                 finish();
                 break;
         }
