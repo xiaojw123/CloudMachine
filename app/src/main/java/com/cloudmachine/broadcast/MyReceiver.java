@@ -14,6 +14,7 @@ import com.cloudmachine.helper.CustomActivityManager;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
+import com.cloudmachine.ui.home.activity.MessageDetailActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.homepage.activity.ViewMessageActivity;
 import com.cloudmachine.utils.Constants;
@@ -200,11 +201,18 @@ public class MyReceiver extends BroadcastReceiver {
                             context.startActivity(notifyIntent);
                             break;
                         case 12:
-                            Bundle tb = new Bundle();
-                            tb.putString(QuestionCommunityActivity.H5_URL, extraJson.optString("url"));
-                            Activity topAct = CustomActivityManager.getInstance().getTopActivity();
-                            Constants.toActivity(topAct, QuestionCommunityActivity.class, tb);
+                        case 14:
+                            Intent tbIntent=new Intent(context,QuestionCommunityActivity.class);
+                            tbIntent.putExtra(QuestionCommunityActivity.H5_URL, extraJson.optString("url"));
+                            context.startActivity(tbIntent);
                             break;
+                        case 15://消息内容跳转
+                            String idStr=extraJson.getString("id");
+                            Intent detailIntent=new Intent(context, MessageDetailActivity.class);
+                            detailIntent.putExtra(MessageDetailActivity.MESSAGE_ID,idStr);
+                            context.startActivity(detailIntent);
+                            break;
+
                         default:
                             Intent i2 = new Intent(context, HomeActivity.class);
                             i2.putExtras(bundle);

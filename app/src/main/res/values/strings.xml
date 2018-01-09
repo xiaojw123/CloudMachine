@@ -377,6 +377,8 @@
     <string name="no_desposit_detail">暂无押金明细</string>
     <string name="ybox_order">云盒订单</string>
     <string name="ask">提问</string>
+    <string name="machine_knowledge">挖机宝典</string>
+    <string name="system_message">系统消息</string>
 
 
 </resources>

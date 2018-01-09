@@ -95,15 +95,55 @@ public class HomePresenter extends HomeContract.Presenter {
                     JsonElement pageJelemnt = jsonObject.get("pages");
                     JsonObject reslutJob = pageJelemnt.getAsJsonObject();
                     if (reslutJob != null) {
-                        ApiConstants.AppBoxDetail = reslutJob.get("AppBoxDetail").getAsString();
-                        ApiConstants.AppCouponHelper = reslutJob.get("AppCouponHelper").getAsString();
-                        ApiConstants.AppCommunity = reslutJob.get("AppCommunity").getAsString();
-                        ApiConstants.AppASKQuestion = reslutJob.get("AppASKQuestion").getAsString();
-                        ApiConstants.AppMyQuestion = reslutJob.get("AppMyQuestion").getAsString();
-                        ApiConstants.AppUseHelper = reslutJob.get("AppUseHelper").getAsString();
-                        ApiConstants.AppWorkTimeStatistics = reslutJob.get("AppWorkTimeStatistics").getAsString();
-                        ApiConstants.AppOrderList = reslutJob.get("AppOrderList").getAsString();
-                        ApiConstants.AppWalletHelper = reslutJob.get("AppWalletHelper").getAsString();
+                        JsonElement j1 = reslutJob.get("AppBoxDetail");
+                        if (j1 != null) {
+                            ApiConstants.AppBoxDetail = j1.getAsString();
+                        }
+                        JsonElement j2 = reslutJob.get("AppCouponHelper");
+                        if (j2 != null) {
+                            ApiConstants.AppCouponHelper = j2.getAsString();
+                        }
+                        JsonElement j3 = reslutJob.get("AppCommunity");
+                        if (j3 != null) {
+                            ApiConstants.AppCommunity = j3.getAsString();
+                        }
+                        JsonElement j4 = reslutJob.get("AppASKQuestion");
+                        if (j4 != null) {
+                            ApiConstants.AppASKQuestion = j4.getAsString();
+                        }
+                        JsonElement j5 = reslutJob.get("AppMyQuestion");
+                        if (j5 != null) {
+                            ApiConstants.AppMyQuestion = j5.getAsString();
+                        }
+                        JsonElement j6 = reslutJob.get("AppUseHelper");
+                        if (j6 != null) {
+                            ApiConstants.AppUseHelper = j6.getAsString();
+                        }
+                        JsonElement j7 = reslutJob.get("AppWorkTimeStatistics");
+                        if (j7 == null) {
+                            ApiConstants.AppWorkTimeStatistics = j7.getAsString();
+                        }
+                        JsonElement j8 = reslutJob.get("AppOrderList");
+                        if (j8 != null) {
+                            ApiConstants.AppOrderList = j8.getAsString();
+                        }
+                        JsonElement j9 = reslutJob.get("AppWalletHelper");
+                        if (j9 != null) {
+                            ApiConstants.AppWalletHelper = j9.getAsString();
+                        }
+                        JsonElement j10 = reslutJob.get("AppMachineKnowledge");
+                        if (j10 != null) {
+                            ApiConstants.AppMachineKnowledge = j10.getAsString();
+                        }
+                        JsonElement j11 = reslutJob.get("AppFeedback");
+                        if (j11 != null) {
+                            ApiConstants.AppFeedback = j11.getAsString();
+                        }
+                        JsonElement j12 = reslutJob.get("AppWorkReport");
+                        if (j12 != null) {
+                            ApiConstants.AppWorkReport = j12.getAsString();
+                        }
+
                     }
                 }
                 mView.updateH5View();

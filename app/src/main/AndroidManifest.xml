@@ -281,12 +281,7 @@
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activities.WorkTimeActivity"
-            android:hardwareAccelerated="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".activities.StatisticsActivity"
-            android:hardwareAccelerated="false"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
@@ -568,8 +563,9 @@
         <activity android:name=".ui.home.activity.PurseDetailActivity" />
         <activity android:name=".ui.home.activity.ExtractionCashActivity" />
         <activity android:name=".ui.home.activity.DepositActivity" />
-        <activity android:name=".ui.home.activity.RebundDepositActivity"></activity>
-        <activity android:name="com.alipay.sdk.app.H5AuthActivity"/>
+        <activity android:name=".ui.home.activity.RebundDepositActivity" />
+        <activity android:name="com.alipay.sdk.app.H5AuthActivity" />
+        <activity android:name=".ui.home.activity.MessageDetailActivity"></activity>
     </application>
 
 </manifest>

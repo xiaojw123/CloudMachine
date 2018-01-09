@@ -1,6 +1,5 @@
-package com.cloudmachine.activities;
+package com.cloudmachine.ui.home.activity.fragment;
 
-import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,14 +22,14 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.utils.AutoUtils;
-import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.autolayout.widgets.RadiusButtonView;
+import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.bean.StatisticsInfo;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.StatisticsAsync;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
 
@@ -49,7 +48,7 @@ import java.util.Date;
  * 修改备注：
  */
 
-public class StatisticsActivity extends BaseAutoLayoutActivity implements Handler.Callback, View.OnClickListener {
+public class StatisticsFragment extends BaseFragment implements Handler.Callback, View.OnClickListener {
 
     private Handler mHandler;
     private long mDeviceId;
@@ -71,20 +70,12 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
     private String mReplace;
     private TextView mEmptyTv;
     private LinearLayout daysItemCotainer;
+    private RadiusButtonView mViewReportBtn;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_statistics);
-        mHandler = new Handler(this);
-        initView();
-
-    }
-
-    @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WORKTIME_STATISTICS);
+        MobclickAgent.onEvent(getActivity(), MobEvent.TIME_MACHINE_WORKTIME_STATISTICS);
     }
 
     public void getPreMonth(Calendar calendar, ArrayList<String> list) {
@@ -96,44 +87,8 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
 
     }
 
-    private void initView() {
-        mDeviceId = getIntent().getLongExtra(Constants.P_DEVICEID, -1);
-        calendarList = new ArrayList<>();//初始化集合
-        //当月
-        mDateFormat = new SimpleDateFormat("yyyy年MM月");
-        mDate = new Date();
-        calendarList.add(mDateFormat.format(mDate));
-        mReplace = mDateFormat.format(mDate).replace("年", "").replace("月", "");
-        new StatisticsAsync(mContext, mHandler, mDeviceId, mReplace).execute();
-        //前几月
-        Calendar calendar = Calendar.getInstance();
-        getPreMonth(calendar, calendarList);
-
-        initTitleLayout();
-        mEmptyTv = (TextView) findViewById(R.id.work_days_empty_tv);
-        daysItemCotainer = (LinearLayout) findViewById(R.id.work_days_container);
-        mIvCalendar = (ImageView) findViewById(R.id.iv_calendar);
-        mIvCalendar.setOnClickListener(this);
-        mSelectMonth = (TextView) findViewById(R.id.f11);//对应日历的月份(默认展示最近一个月)
-        mSelectMonth.setText(splitString2(mDateFormat.format(mDate)));
-        mTvWorkDaysValue = (TextView) findViewById(R.id.tv_work_days_value);//工作天数
-        mTvTotalHoursValue = (TextView) findViewById(R.id.tv_total_hours_value);
-        mTvAveHoursValue = (TextView) findViewById(R.id.tv_ave_hours_value);
-        mTvWorkRateValue = (TextView) findViewById(R.id.tv_work_rate_value);
-    }
 
     private void initTitleLayout() {
-
-        title_layout = (CommonTitleView) findViewById(R.id.title_layout);
-        title_layout.setRightImg(R.drawable.coupon_des_normal, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MobclickAgent.onEvent(mContext, UMengKey.count_work_time_statistics_info);
-                Intent statisticsIntent = new Intent(mContext, QuestionCommunityActivity.class);
-                statisticsIntent.putExtra(QuestionCommunityActivity.H5_URL, ApiConstants.AppWorkTimeStatistics);
-                startActivity(statisticsIntent);
-            }
-        });
 
     }
 
@@ -166,8 +121,8 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
                 if (!TextUtils.isEmpty(statisticsInfo.getDeviceName()) && statisticsInfo.getRanking() != 0 && !TextUtils.isEmpty(statisticsInfo.getLeading())) {
                     String strLine2 = statisticsInfo.getDeviceName() + "  累计工时数在云机械设备中排名" + statisticsInfo.getRanking() + ", 请继续保持哦。";
                     SpannableString spanLine2 = new SpannableString(strLine2);
-                    spanLine2.setSpan(new TextAppearanceSpan(mContext, R.style.device_name), 0, statisticsInfo.getDeviceName().length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    spanLine2.setSpan(new TextAppearanceSpan(mContext, R.style.ranking), statisticsInfo.getDeviceName().length() + 16, statisticsInfo.getDeviceName().length() + 16 + String.valueOf(statisticsInfo.getRanking()).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spanLine2.setSpan(new TextAppearanceSpan(getActivity(), R.style.device_name), 0, statisticsInfo.getDeviceName().length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spanLine2.setSpan(new TextAppearanceSpan(getActivity(), R.style.ranking), statisticsInfo.getDeviceName().length() + 16, statisticsInfo.getDeviceName().length() + 16 + String.valueOf(statisticsInfo.getRanking()).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     //Constants.MyLog(spanLine2.length()+"1111111111");
                     if (TextUtils.isEmpty(mCurrentString)) {
                         mCurrentString = mReplace;
@@ -175,13 +130,14 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
                     String strLine3 = mCurrentString.substring(4) + "月份开工率已领先" + statisticsInfo.getLeading() + "%的云机械设备。";
 
                     SpannableString spanLine3 = new SpannableString(strLine3);
-                    spanLine3.setSpan(new TextAppearanceSpan(mContext, R.style.ranking), mCurrentString.substring(4).length() + 8, mCurrentString.substring(4).length() + 8 + statisticsInfo.getLeading().length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spanLine3.setSpan(new TextAppearanceSpan(getActivity(), R.style.ranking), mCurrentString.substring(4).length() + 8, mCurrentString.substring(4).length() + 8 + statisticsInfo.getLeading().length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else {
                     Constants.MyToast("当月没有数据");
                 }
                 break;
             case Constants.HANDLER_GETDATASTATISTICS_FAILD:
-
+                mEmptyTv.setVisibility(View.VISIBLE);
+                daysItemCotainer.setVisibility(View.GONE);
                 break;
         }
         return false;
@@ -190,8 +146,13 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.radius_button_text:
+                Bundle vB = new Bundle();
+                vB.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppWorkReport);
+                Constants.toActivity(getActivity(), QuestionCommunityActivity.class, vB);
+                break;
             case R.id.iv_calendar:
-                mView = getLayoutInflater().inflate(R.layout.check_calendar_view, null);
+                mView = getActivity().getLayoutInflater().inflate(R.layout.check_calendar_view, null);
                 lvCalendar = (ListView) mView.findViewById(R.id.lv_calendar);
                 lvCalendar.setAdapter(new CheckCalendarAdapter());
 
@@ -224,7 +185,7 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
         sb.setLength(0);
         sb.append(part2).append("/").append(part1);
         mSelectMonth.setText(sb.toString());
-        new StatisticsAsync(mContext, mHandler, mDeviceId, mCurrentString).execute();
+        new StatisticsAsync(getActivity(), mHandler, mDeviceId, mCurrentString).execute();
         //new StatisticsAsync(mContext, mHandler, 833, mCurrentString).execute();
     }
 
@@ -243,9 +204,9 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
     private void showPopupWindow(View v) {
 
         //修改系统页面的透明度
-        WindowManager.LayoutParams params = getWindow().getAttributes();
+        WindowManager.LayoutParams params = getActivity().getWindow().getAttributes();
         params.alpha = 0.7f;
-        getWindow().setAttributes(params);
+        getActivity().getWindow().setAttributes(params);
 
         //mView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         //  int popupWidth = mView.getMeasuredWidth();    //  获取测量后的宽度
@@ -257,9 +218,9 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                WindowManager.LayoutParams params = getWindow().getAttributes();
+                WindowManager.LayoutParams params = getActivity().getWindow().getAttributes();
                 params.alpha = 1f;
-                getWindow().setAttributes(params);
+                getActivity().getWindow().setAttributes(params);
             }
         });
 
@@ -292,7 +253,7 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
             if (convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.list_item_calendar, null);
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_calendar, null);
                 holder = new ViewHolder();
                 holder.tvDate = (TextView) convertView.findViewById(R.id.tv_date);
                 convertView.setTag(holder);
@@ -325,9 +286,9 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
         if (mPopupWindow != null && mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
             mPopupWindow = null;
-            WindowManager.LayoutParams params = getWindow().getAttributes();
+            WindowManager.LayoutParams params = getActivity().getWindow().getAttributes();
             params.alpha = 1f;
-            getWindow().setAttributes(params);
+            getActivity().getWindow().setAttributes(params);
         }
     }
 
@@ -336,8 +297,49 @@ public class StatisticsActivity extends BaseAutoLayoutActivity implements Handle
     }
 
     @Override
+    protected void initView() {
+        mHandler = new Handler(this);
+        mDeviceId = getActivity().getIntent().getLongExtra(Constants.P_DEVICEID, -1);
+        calendarList = new ArrayList<>();//初始化集合
+        //当月
+        mDateFormat = new SimpleDateFormat("yyyy年MM月");
+        mDate = new Date();
+        calendarList.add(mDateFormat.format(mDate));
+        mReplace = mDateFormat.format(mDate).replace("年", "").replace("月", "");
+        new StatisticsAsync(getActivity(), mHandler, mDeviceId, mReplace).execute();
+        //前几月
+        Calendar calendar = Calendar.getInstance();
+        getPreMonth(calendar, calendarList);
+
+        initTitleLayout();
+        mEmptyTv = (TextView) viewParent.findViewById(R.id.work_days_empty_tv);
+        daysItemCotainer = (LinearLayout) viewParent.findViewById(R.id.work_days_container);
+        mIvCalendar = (ImageView) viewParent.findViewById(R.id.iv_calendar);
+        mIvCalendar.setOnClickListener(this);
+        mSelectMonth = (TextView) viewParent.findViewById(R.id.f11);//对应日历的月份(默认展示最近一个月)
+        mSelectMonth.setText(splitString2(mDateFormat.format(mDate)));
+        mTvWorkDaysValue = (TextView) viewParent.findViewById(R.id.tv_work_days_value);//工作天数
+        mTvTotalHoursValue = (TextView) viewParent.findViewById(R.id.tv_total_hours_value);
+        mTvAveHoursValue = (TextView) viewParent.findViewById(R.id.tv_ave_hours_value);
+        mTvWorkRateValue = (TextView) viewParent.findViewById(R.id.tv_work_rate_value);
+        mViewReportBtn = (RadiusButtonView) viewParent.findViewById(R.id.view_report_btn);
+        mViewReportBtn.setOnClickListener(this);
+        if (!TextUtils.isEmpty(ApiConstants.AppWorkReport)) {
+            mViewReportBtn.setVisibility(View.VISIBLE);
+            String deviceName = getActivity().getIntent().getStringExtra(Constants.P_DEVICENAME);
+            mViewReportBtn.setText("查看"+deviceName+"月度工作报表");
+        }
+
+    }
+
+    @Override
     public void initPresenter() {
 
+    }
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.fragment_statistics;
     }
 
     @Override

@@ -7,8 +7,10 @@ import android.os.Message;
 import com.cloudmachine.MyApplication;
 import com.cloudmachine.R;
 import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.LocationBean;
 import com.cloudmachine.bean.VersionInfo;
 import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.helper.DataSupportManager;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
@@ -49,12 +51,13 @@ public class GetVersionAsync extends ATask {
     @Override
     protected String doInBackground(String... params) {
         IHttp httpRequest = new HttpURLConnectionImp();
+        LocationBean locBean = DataSupportManager.findFirst(LocationBean.class);
         List<NameValuePair> list = new ArrayList<NameValuePair>();
         list.add(new BasicNameValuePair("system", "Android"));
         list.add(new BasicNameValuePair("version", VersionU.getVersionName()));
         String result = null;
         try {
-            result = httpRequest.postV(Constants.URL_GETVERSION, list);
+            result = httpRequest.get(Constants.URL_GETVERSION, list);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

@@ -158,8 +158,13 @@ public class MessageListAdapter extends SwipeMenuAdapter<MessageListAdapter.Mess
                 case 3:
                 case 4:
                 case 5:
+                case 8:
+                case 9:
+                    Glide.with(mContext).load(item.getImgpath())
+                            .error(R.drawable.ic_message_system)
+                            .into(itemMessageImg);
                     //系统消息
-                    itemMessageImg.setImageResource(R.drawable.ic_message_system);
+//                    itemMessageImg.setImageResource(R.drawable.ic_message_system);
                     itemTitleTv.setText(item.getTitle());
                     itemContentTv.setText(item.getContent());
                     itemChooseCotainer.setVisibility(View.GONE);

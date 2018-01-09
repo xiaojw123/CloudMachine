@@ -245,7 +245,7 @@
                         android:layout_gravity="center_vertical"
                         android:drawableLeft="@drawable/ic_track"
                         android:drawablePadding="@dimen/pad1"
-                        android:text="轨迹统计"
+                        android:text="历史轨迹"
                         android:textColor="@color/cor9"
                         android:textSize="@dimen/siz4" />
 

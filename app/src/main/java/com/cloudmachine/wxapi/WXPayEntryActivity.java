@@ -53,8 +53,7 @@ public class WXPayEntryActivity extends BaseAutoLayoutActivity implements IWXAPI
 		//Log.d(TAG, "onPayFinish, errCode = " + resp.errCode);
 		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
 			if (resp.errCode == 0) {
-				Constants.ToastAction("支付成功");
-				mRxManager.post(RepairPayDetailsActivity.FINISH_PAY_DETAIL,null);
+				mRxManager.post(RepairPayDetailsActivity.FINISH_PAY_DETAIL,"支付成功");
 				mRxManager.post(QuestionCommunityActivity.GO_TO_MY_ORDER,null);
                 finish();
 //				Bundle b = new Bundle();
@@ -63,8 +62,7 @@ public class WXPayEntryActivity extends BaseAutoLayoutActivity implements IWXAPI
 
 //				Constants.toActivity(WXPayEntryActivity.this, PaymentResultsActivity.class,b,true);
 			} else {
-				Constants.ToastAction("支付失败");
-				mRxManager.post(RepairPayDetailsActivity.FINISH_PAY_DETAIL,null);
+				mRxManager.post(RepairPayDetailsActivity.FINISH_PAY_DETAIL,"支付失败");
 				mRxManager.post(QuestionCommunityActivity.FAILED_WX_PAY,null);
                 finish();
 //				Bundle b = new Bundle();

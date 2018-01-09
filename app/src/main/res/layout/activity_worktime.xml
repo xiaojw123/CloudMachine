@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/worktime_title_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         app:common_title_name="工作时长"
+        />
+
+    <LinearLayout
+        android:id="@+id/worktime_title_container"
+        android:layout_below="@+id/worktime_title_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spa5"
+        android:background="@color/public_bg"
+        android:layout_marginTop="-4dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/title_worktime_tv"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:text="工作时长"
+            android:gravity="center"
+            android:textColor="@color/coupon_title_textcolor"
+            android:textSize="@dimen/siz3" />
+
+
+        <TextView
+            android:id="@+id/title_statistics_tv"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:text="统计"
+            android:gravity="center"
+            android:textColor="@color/coupon_title_textcolor"
+            android:textSize="@dimen/siz3" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_below="@+id/worktime_title_container"
+        android:id="@+id/worktime_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    
+    
+    
+    <RelativeLayout
+        android:id="@+id/worktime_guide_layout"
+        android:background="#65000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:id="@+id/worktime_guide1_img1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/worktime_guide1_img1_top"
+            android:background="@drawable/ic_work_time_guide_img1"
+            />
+
+        <ImageView
+            android:id="@+id/worktime_guide1_img2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-10dp"
+            android:layout_marginTop="-20dp"
+            android:layout_toRightOf="@+id/worktime_guide1_img1"
+            android:layout_below="@+id/worktime_guide1_img1"
+            android:background="@drawable/ic_work_time_guide_img2"
+            />
+
+        <ImageView
+            android:id="@+id/worktime_guide2_img1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/worktime_guide1_img2_top"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/worktime_guide2_img1_right"
+            android:background="@drawable/ic_work_time_guide2_img1"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/worktime_guide2_img2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/worktime_guide2_img1"
+            android:layout_marginLeft="-30dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/ic_work_time_guide2_img2"
+            android:layout_below="@+id/worktime_guide2_img1"
+            android:visibility="gone"
+            />
+
+
+
+
+        <ImageView
+            android:id="@+id/worktime_guide2_img3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="22dp"
+            android:visibility="gone"
+            android:background="@drawable/icon_home_guide4"
+            />
+
+
+
+
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>

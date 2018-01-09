@@ -50,6 +50,7 @@
         <com.cloudmachine.utils.widgets.ClearEditTextView
             android:id="@+id/phone_string"
             style="@style/register_clear_edit_text"
+            android:inputType="number"
             android:hint="请输入手机号码" />
 
     </LinearLayout>

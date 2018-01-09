@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/daily_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#65000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_318"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_90"
+        android:background="@drawable/radius_button_white"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dimen_size_23">
+
+        <TextView
+            android:id="@+id/daily_title"
+            style="@style/TextView.oilamount_big_text"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_44"
+            android:gravity="bottom|center_horizontal"
+            android:paddingBottom="@dimen/dimen_size_5"
+            android:text="@string/work_time_text1" />
+
+        <com.cloudmachine.chart.charts.HorizontalBarChart
+            android:id="@+id/dailyChart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/daily_switch_layout"
+        android:layout_width="@dimen/dimen_size_100"
+        android:layout_height="@dimen/dimen_size_64"
+        android:background="@drawable/ic_switch_time_bg"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/pad1"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/daily_switch_starTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开机"
+            android:textColor="@color/c_9"
+            android:textSize="@dimen/text_size_11_sp" />
+
+        <TextView
+            android:id="@+id/daily_switch_endTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_8"
+            android:text="关机"
+            android:textColor="@color/c_9"
+            android:textSize="@dimen/text_size_11_sp" />
+
+        <!--//191-156-->
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

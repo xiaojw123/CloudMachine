@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="worktime_guide1_img1_top">285dp</dimen>
+    <dimen name="worktime_guide1_img2_top">305dp</dimen>
+    <dimen name="worktime_guide2_img1_right">77dp</dimen>
+</resources>

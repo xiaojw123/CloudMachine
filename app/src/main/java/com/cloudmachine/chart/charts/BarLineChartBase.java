@@ -25,13 +25,13 @@ import com.cloudmachine.chart.data.BarLineScatterCandleBubbleDataSet;
 import com.cloudmachine.chart.data.Entry;
 import com.cloudmachine.chart.data.filter.Approximator;
 import com.cloudmachine.chart.highlight.ChartHighlighter;
+import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.interfaces.BarLineScatterCandleBubbleDataProvider;
 import com.cloudmachine.chart.jobs.MoveViewJob;
 import com.cloudmachine.chart.listener.BarLineChartTouchListener;
 import com.cloudmachine.chart.listener.OnDrawListener;
 import com.cloudmachine.chart.renderer.XAxisRenderer;
 import com.cloudmachine.chart.renderer.YAxisRenderer;
-import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.utils.PointD;
 import com.cloudmachine.chart.utils.Transformer;
 import com.cloudmachine.chart.utils.Utils;
@@ -326,7 +326,6 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         if (mRenderer != null)
             mRenderer.initBuffers();
-
         calcMinMax();
 
 //        if (mAxisLeft.needsDefaultFormatter())
@@ -336,7 +335,6 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         mAxisRendererLeft.computeAxis(mAxisLeft.mAxisMinimum, mAxisLeft.mAxisMaximum);
         mAxisRendererRight.computeAxis(mAxisRight.mAxisMinimum, mAxisRight.mAxisMaximum);
-
         mXAxisRenderer.computeAxis(mData.getXValAverageLength(), mData.getXVals());
 
         if (mLegend != null)

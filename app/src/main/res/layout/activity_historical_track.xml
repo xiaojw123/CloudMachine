@@ -23,11 +23,96 @@
             android:layout_height="fill_parent" />
 
         <RelativeLayout
+            android:id="@+id/track_ctrl_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_100"
+            android:background="@drawable/bg_card"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dimen_size_8"
+            android:layout_marginRight="@dimen/dimen_size_8"
+            android:layout_marginBottom="@dimen/dimen_size_8"
+            android:paddingLeft="@dimen/dimen_size_10"
+            android:paddingRight="@dimen/dimen_size_10"
+            android:paddingBottom="@dimen/dimen_size_20"
+            android:paddingTop="@dimen/dimen_size_20"
+            android:visibility="gone"
+            android:clickable="true"
+            >
+
+            <SeekBar
+                android:id="@+id/track_process_skb"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_size_13"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:max="100"
+                android:thumb="@null"
+                android:progress="0"
+                android:progressDrawable="@drawable/bg_track_process_skb"
+                />
+
+
+            <Button
+                android:id="@+id/track_play_btn"
+                android:layout_width="@dimen/dimen_size_27"
+                android:layout_height="@dimen/dimen_size_27"
+                android:background="@drawable/ic_route_play"
+                android:layout_alignParentBottom="true"
+                />
+
+            <Button
+                android:id="@+id/track_reduce_btn"
+                android:layout_width="@dimen/dimen_size_27"
+                android:layout_height="@dimen/dimen_size_27"
+                android:background="@drawable/ic_route_reduce"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="@dimen/dimen_size_13"
+                android:layout_toRightOf="@+id/track_play_btn"
+                />
+
+            <TextView
+                android:id="@+id/track_multiple_tv"
+                android:layout_width="@dimen/dimen_size_30"
+                android:layout_height="@dimen/dimen_size_27"
+                android:text="1X"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/track_reduce_btn"
+                />
+
+            <Button
+                android:id="@+id/track_add_btn"
+                android:layout_width="@dimen/dimen_size_27"
+                android:layout_height="@dimen/dimen_size_27"
+                android:background="@drawable/ic_route_add"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/track_multiple_tv"
+                />
+
+            <TextView
+                android:id="@+id/track_cur_pos_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_size_27"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                />
+
+
+
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@color/transparent">
 
             <android.support.v7.widget.CardView
+
                 android:layout_marginLeft="@dimen/pad1"
                 android:layout_marginRight="@dimen/pad1"
                 android:layout_marginTop="@dimen/pad1"
@@ -129,12 +214,16 @@
             </LinearLayout>
             </android.support.v7.widget.CardView>
 
+
+
+
             <LinearLayout
                 android:id="@+id/wheelview_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@color/white"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -204,7 +293,13 @@
                     android:layout_marginBottom="@dimen/common_view_min_gap"
                     android:background="@color/line_bg" />
             </LinearLayout>
+
+
         </RelativeLayout>
+
+
+
+
     </FrameLayout>
 
 

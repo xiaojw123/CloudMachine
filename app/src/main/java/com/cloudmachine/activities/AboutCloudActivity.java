@@ -149,7 +149,9 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.feedback_fl:
-                Constants.toActivity(AboutCloudActivity.this, SuggestBackActivity.class, null);
+                Bundle fBundle=new Bundle();
+                fBundle.putString(QuestionCommunityActivity.H5_URL,ApiConstants.AppFeedback);
+                Constants.toActivity(AboutCloudActivity.this, QuestionCommunityActivity.class, fBundle);
                 break;
             case R.id.use_help_fl:
 //                Constants.toActivity(AboutCloudActivity.this, UseHelpActivity.class, null);

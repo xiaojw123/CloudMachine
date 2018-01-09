@@ -273,6 +273,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 MobclickAgent.onEvent(mContext, MobEvent.COUNT_WORKTIME_TIME);
                 Bundle b_wt = new Bundle();
                 b_wt.putLong(Constants.P_DEVICEID, deviceId);
+                b_wt.putString(Constants.P_DEVICENAME,deviceName);
                 Constants.toActivity(this, WorkTimeActivity.class, b_wt, false);
                 break;
             case R.id.device_info_oil:

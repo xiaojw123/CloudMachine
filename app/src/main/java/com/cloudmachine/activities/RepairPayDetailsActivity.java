@@ -171,9 +171,10 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
     }
 
     private void initRxManager() {
-        mRxManager.on(FINISH_PAY_DETAIL, new Action1<Object>() {
+        mRxManager.on(FINISH_PAY_DETAIL, new Action1<String>() {
             @Override
-            public void call(Object o) {
+            public void call(String o) {
+                Constants.ToastAction(o);
                 finish();
             }
         });

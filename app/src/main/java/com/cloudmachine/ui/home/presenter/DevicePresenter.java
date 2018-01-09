@@ -3,6 +3,7 @@ package com.cloudmachine.ui.home.presenter;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.McDeviceInfo;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.contract.DeviceContract;
 
@@ -19,6 +20,7 @@ public class DevicePresenter extends DeviceContract.Prensenter {
         mRxManage.add(mModel.getDevices(memberId, type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
             @Override
             protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
+                AppLog.print("getDevices onext__"+mcDeviceInfos);
                 if (mcDeviceInfos != null && mcDeviceInfos.size() > 0) {
                     mView.updateDevices(mcDeviceInfos);
                 }
@@ -27,6 +29,7 @@ public class DevicePresenter extends DeviceContract.Prensenter {
 
             @Override
             protected void _onError(String message) {
+                AppLog.print("getDevices error_message__"+message);
                 ((HomeActivity) mContext).requestPromotion(memberId);
             }
         }));
@@ -38,6 +41,7 @@ public class DevicePresenter extends DeviceContract.Prensenter {
         mRxManage.add(mModel.getDevices(type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
             @Override
             protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
+                AppLog.print("getDevices onext__"+mcDeviceInfos);
                 if (mcDeviceInfos != null && mcDeviceInfos.size() > 0) {
                     mView.updateDevices(mcDeviceInfos);
                 }
@@ -45,6 +49,7 @@ public class DevicePresenter extends DeviceContract.Prensenter {
 
             @Override
             protected void _onError(String message) {
+                AppLog.print("getDevices error_message__"+message);
 
             }
         }));

@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +43,20 @@ import java.util.Map;
  */
 
 public class CommonUtils {
+    public static String formartTime(long timeL) {
+//        if (timeL > 0) {
+//            timeL /= 1000;
+//            long m = timeL / 3600;
+//            long s = timeL - m * 3600;
+//            String mStr = m < 10 ? "0" + m : String.valueOf(m);
+//            String sStr = s < 10 ? "0" + s : String.valueOf(s);
+//            return mStr + ":" + sStr;
+//        }
+        double timeLD= timeL/1000.0;
+        DecimalFormat df   = new DecimalFormat("######0.00");
+        return  df.format(timeLD);
+    }
+
     public static void showSuccessDialog(Context context, String title, String cashAmount, String message) {
         CustomSucessDialog.Builder builder = new CustomSucessDialog.Builder(context);
         builder.setTitle1(title);
@@ -159,18 +174,18 @@ public class CommonUtils {
                 msg = "需要开启相机服务，请到设置->隐私->相机服务，打开相机服务";
                 break;
             case Constants.PermissionType.STORAGE:
-                msg="需要开启读写存储权限，请到设置->权限管理，打开读写存储权限";
+                msg = "需要开启读写存储权限，请到设置->权限管理，打开读写存储权限";
                 break;
             case Constants.PermissionType.LOCATION:
-                msg="需要开启定位服务，请到设置->找到位置权限，打开定位服务";
+                msg = "需要开启定位服务，请到设置->找到位置权限，打开定位服务";
                 break;
         }
         builder.setMessage(msg);
         builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (BaseMapFragment.isShowDialog){
-                    BaseMapFragment.isShowDialog=false;
+                if (BaseMapFragment.isShowDialog) {
+                    BaseMapFragment.isShowDialog = false;
                 }
                 dialog.dismiss();
             }

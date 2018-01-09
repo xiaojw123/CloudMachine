@@ -24,7 +24,7 @@ public class HorizontalBarHighlighter extends BarHighlighter {
 
 			BarDataSet set = mChart.getBarData().getDataSetByIndex(h.getDataSetIndex());
 
-			if (set.isStacked()) {
+			if (set!=null&&set.isStacked()) {
 
 				// create an array of the touch-point
 				float[] pts = new float[2];

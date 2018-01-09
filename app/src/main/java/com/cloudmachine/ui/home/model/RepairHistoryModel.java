@@ -10,6 +10,7 @@ import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.ui.home.contract.RepairHistoryContract;
 import com.cloudmachine.utils.Constants;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import rx.Observable;
@@ -22,7 +23,7 @@ public class RepairHistoryModel implements RepairHistoryContract.Model {
 
     @Override
     public Observable<RepairListInfo> getRepairList(Context context, long deviceId) {
-        Map<String, String> paramsMap = Constants.getBasePraramsMap();
+        Map<String, String> paramsMap =new HashMap<>();
         if (deviceId == Constants.INVALID_DEVICE_ID) {
             if (UserHelper.isLogin(context)) {
                 long memberId = UserHelper.getMemberId(context);

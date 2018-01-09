@@ -3,21 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/public_bg"
+    android:background="@color/white"
     >
 
 
-    <com.cloudmachine.widget.CommonTitleView
-        android:id="@+id/title_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        app:common_title_name="统计" />
-
     <RelativeLayout
         android:id="@+id/calenda_layout"
-        android:layout_below="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@+id/title_layout"
         android:clickable="true"
         android:paddingLeft="@dimen/pad2"
         android:paddingRight="@dimen/pad2">
@@ -46,8 +40,14 @@
             android:layout_centerVertical="true"
             android:src="@drawable/ic_calendar" />
 
+
+
     </RelativeLayout>
 
+
+    <View style="@style/CommonLandscapeLine"
+        android:layout_below="@+id/calenda_layout"
+        />
 
     <!--<RelativeLayout
         android:id="@+id/rl_current_month"
@@ -77,106 +77,126 @@
         style="@style/line_layout"
         android:layout_marginLeft="@dimen/public_layout_padding_left"
         />-->
-<LinearLayout
-    android:id="@+id/work_days_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:visibility="gone"
-    android:layout_below="@+id/calenda_layout"
-    >
-    <RelativeLayout
-        android:id="@+id/rl_work_days"
-        android:clickable="false"
-        style="@style/layout_item">
+    <LinearLayout
+        android:id="@+id/work_days_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/calenda_layout"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/tv_work_days"
-            style="@style/personal_left_text"
-            android:text="工作天数" />
+        <RelativeLayout
+            android:id="@+id/rl_work_days"
+            style="@style/layout_item"
+            android:clickable="false">
 
-        <TextView
-            android:id="@+id/tv_work_days_value"
-            style="@style/personal_edit_text"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:text="" />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_work_days"
+                style="@style/personal_left_text"
+                android:text="工作天数" />
 
-    <View style="@style/CommonLandscapeLine" />
+            <TextView
+                android:id="@+id/tv_work_days_value"
+                style="@style/personal_edit_text"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:text="" />
+        </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_total_hours"
-        android:clickable="false"
-        style="@style/layout_item">
+        <View style="@style/CommonLandscapeLine" />
 
-        <TextView
-            android:id="@+id/tv_total_hours"
-            style="@style/personal_left_text"
-            android:text="累计工时" />
+        <RelativeLayout
+            android:id="@+id/rl_total_hours"
+            style="@style/layout_item"
+            android:clickable="false">
 
-        <TextView
-            android:id="@+id/tv_total_hours_value"
-            style="@style/personal_edit_text"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:text="" />
-    </RelativeLayout>
-    <View style="@style/CommonLandscapeLine" />
+            <TextView
+                android:id="@+id/tv_total_hours"
+                style="@style/personal_left_text"
+                android:text="累计工时" />
 
-    <RelativeLayout
-        android:id="@+id/rl_ave_hours"
-        android:clickable="false"
-        style="@style/layout_item">
+            <TextView
+                android:id="@+id/tv_total_hours_value"
+                style="@style/personal_edit_text"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:text="" />
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tv_ave_hours"
-            style="@style/personal_left_text"
-            android:text="平均工时" />
+        <View style="@style/CommonLandscapeLine" />
 
-        <TextView
-            android:id="@+id/tv_ave_hours_value"
-            style="@style/personal_edit_text"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:text="" />
-    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_ave_hours"
+            style="@style/layout_item"
+            android:clickable="false">
 
-    <View style="@style/CommonLandscapeLine" />
-    <RelativeLayout
-        android:id="@+id/rl_work_rate"
-        android:clickable="false"
-        style="@style/layout_item">
+            <TextView
+                android:id="@+id/tv_ave_hours"
+                style="@style/personal_left_text"
+                android:text="平均工时" />
 
-        <TextView
-            android:id="@+id/tv_work_rate"
-            style="@style/personal_left_text"
-            android:text="开工率" />
+            <TextView
+                android:id="@+id/tv_ave_hours_value"
+                style="@style/personal_edit_text"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:text="" />
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tv_work_rate_value"
-            style="@style/personal_edit_text"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:text="" />
-    </RelativeLayout>
-</LinearLayout>
+        <View style="@style/CommonLandscapeLine" />
+
+        <RelativeLayout
+            android:id="@+id/rl_work_rate"
+            style="@style/layout_item"
+            android:clickable="false">
+
+            <TextView
+                android:id="@+id/tv_work_rate"
+                style="@style/personal_left_text"
+                android:text="开工率" />
+
+            <TextView
+                android:id="@+id/tv_work_rate_value"
+                style="@style/personal_edit_text"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:text="" />
+        </RelativeLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/work_days_empty_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@drawable/ic_calenda_empt"
-        android:text="本月暂无统计数据"
+        android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
         android:drawablePadding="@dimen/pad1"
+        android:drawableTop="@drawable/ic_calenda_empt"
+        android:text="本月暂无统计数据"
         android:textColor="@color/cor10"
-        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+
+    <com.cloudmachine.autolayout.widgets.RadiusButtonView
+        android:id="@+id/view_report_btn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spa3"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/pad1"
+        android:layout_marginRight="@dimen/pad1"
+        android:layout_alignParentBottom="true"
+        app:rbtn_fillColor_dw="@color/cor5"
+        app:rbtn_fillColor_nm="@color/cor5"
+        app:rbtn_strokeColor="@color/cor5"
+        app:rbtn_text="查看月度工作报表"
+        android:layout_marginBottom="@dimen/pad1"
         android:visibility="gone"
-        />
+        app:rbtn_textColor="@color/white"
+        app:rbtn_textSize="@dimen/siz3" />
+
 
 </RelativeLayout>

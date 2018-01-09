@@ -357,6 +357,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                                 Constants.toActivity(LoginActivity.this, VerifyPhoneNumActivity.class, b, true);
                             } else if (code == 800) {
                                 AppLog.print("set 2");
+                                MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
                                 JsonElement resultElement = jsonObject.get("result");
                                 String result = resultElement.toString();
                                 try {
@@ -433,6 +434,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                 AppLog.print("loginScuess___");
                 disMiss();
                 Constants.isGetScore = true;
+                MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 0);
                 mMember = (Member) msg.obj;
                 if (mMember != null) {
                     excamMaster(mMember.getId());
@@ -455,7 +457,6 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     private void jumpNextPage() {
         MyApplication.getInstance().setLogin(true);
         MyApplication.getInstance().setFlag(true);
-        MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 0);
         Constants.isMcLogin = true;
         if (mMember != null) {
             //调用JPush API设置Alias

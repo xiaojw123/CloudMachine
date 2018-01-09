@@ -29,10 +29,18 @@ public class DataSupportManager {
         try {
             itemList = DataSupport.findAll(modelClass);
         } catch (Exception e) {
-            itemList=new ArrayList<>();
+            itemList = new ArrayList<>();
             AppLog.print("findAll__execption__" + e.getMessage());
         }
         return itemList;
+    }
+
+    public static void deleteAll(Class<?> modelClass) {
+        try {
+            DataSupport.deleteAll(modelClass);
+         } catch (Exception e) {
+            AppLog.print("delte ALL exception__");
+        }
     }
 
 

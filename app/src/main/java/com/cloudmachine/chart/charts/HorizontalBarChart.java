@@ -21,6 +21,8 @@ import com.cloudmachine.chart.renderer.YAxisRendererHorizontalBarChart;
 import com.cloudmachine.chart.utils.TransformerHorizontalBarChart;
 import com.cloudmachine.chart.utils.Utils;
 
+import java.util.List;
+
 /**
  * BarChart with horizontal bar orientation. In this implementation, x- and y-axis are switched, meaning the YAxis class
  * represents the horizontal values and the XAxis class represents the vertical values.
@@ -28,6 +30,7 @@ import com.cloudmachine.chart.utils.Utils;
  * @author Philipp Jahoda
  */
 public class HorizontalBarChart extends BarChart {
+	public boolean isUpdate;
 
 	public HorizontalBarChart(Context context) {
 		super(context);
@@ -39,6 +42,9 @@ public class HorizontalBarChart extends BarChart {
 
 	public HorizontalBarChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+	}
+	public void setUpdate(boolean isUpdate){
+		this.isUpdate=isUpdate;
 	}
 
 	@Override
@@ -55,6 +61,13 @@ public class HorizontalBarChart extends BarChart {
 		mAxisRendererRight = new YAxisRendererHorizontalBarChart(mViewPortHandler, mAxisRight, mRightAxisTransformer);
 		mXAxisRenderer = new XAxisRendererHorizontalBarChart(mViewPortHandler, mXAxis, mLeftAxisTransformer, this);
 	}
+
+
+	public List<RectF> getRectList(){
+		return mRenderer.mReactFList;
+	}
+
+
 
 	@Override
 	public void calculateOffsets() {

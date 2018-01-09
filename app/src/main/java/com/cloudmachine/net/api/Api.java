@@ -1,11 +1,14 @@
 package com.cloudmachine.net.api;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.cloudmachine.BuildConfig;
 import com.cloudmachine.MyApplication;
+import com.cloudmachine.bean.LocationBean;
+import com.cloudmachine.helper.DataSupportManager;
 import com.cloudmachine.utils.NetWorkUtils;
 import com.cloudmachine.utils.VersionU;
 import com.google.gson.Gson;
@@ -92,24 +95,10 @@ public class Api {
     public final OkHttpClient okHttpClient;
 
     public Api(int hostType) {
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
-        //设置拦截日志，拦截请求体
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+
         //缓存
         File cacheFile = new File(MyApplication.getAppContext().getCacheDir(), "cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
-        Interceptor headerInterceptor = new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request build = chain.request().newBuilder()
-                        .addHeader("Content-Type", "application/json")
-                        .addHeader("osPlatform", "Android")
-                        .addHeader("osVersion", VersionU.getVersionName())
-                        .build();
-                return chain.proceed(build);
-            }
-        };
-
         // Create a trust manager that does not validate certificate chains
         final TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
@@ -151,10 +140,50 @@ public class Api {
                         return true;
                     }
                 });
+        Interceptor headerInterceptor = new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request.Builder build = chain.request().newBuilder();
+                LocationBean locBean = DataSupportManager.findFirst(LocationBean.class);
+                build.addHeader("Content-Type", "application/json");
+                if (locBean != null) {
+                    String lat = locBean.getLat();
+                    String lng = locBean.getLng();
+                    if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lng)) {
+                        build.addHeader("lat", lat);
+                        build.addHeader("lng", lng);
+                    }
+                    String address = locBean.getAddress();
+                    String provice = locBean.getProvince();
+                    String city = locBean.getCity();
+                    String district = locBean.getDistrict();
+                    if (!TextUtils.isEmpty(address)) {
+                        build.addHeader("address", address);
+                    }
+                    if (!TextUtils.isEmpty(provice)) {
+                        build.addHeader("province", provice);
+                    }
+                    if (!TextUtils.isEmpty(city)) {
+                        build.addHeader("city", city);
+                    }
+                    if (!TextUtils.isEmpty(district)) {
+                        build.addHeader("district", district);
+                    }
+                }
+                build.addHeader("osPlatform", "Android");
+                build.addHeader("osSystem", Build.VERSION.RELEASE);
+                build.addHeader("osVersion", VersionU.getVersionName());
+                Request request = build.build();
+                return chain.proceed(request);
+            }
+        };
+        builder.addInterceptor(headerInterceptor);
+        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         if (BuildConfig.DEBUG) {
-            builder.addInterceptor(headerInterceptor);
-            builder.addInterceptor(logInterceptor);
+            //设置拦截日志，拦截请求体
+            logInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
         }
+        builder.addInterceptor(logInterceptor);
         okHttpClient = builder.build();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").serializeNulls().create();
         retrofit = new Retrofit.Builder()

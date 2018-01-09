@@ -11,6 +11,7 @@ import android.os.Build;
 
 import com.cloudmachine.chart.animation.ChartAnimator;
 import com.cloudmachine.chart.buffer.BarBuffer;
+import com.cloudmachine.chart.charts.HorizontalBarChart;
 import com.cloudmachine.chart.data.BarData;
 import com.cloudmachine.chart.data.BarDataSet;
 import com.cloudmachine.chart.data.BarEntry;
@@ -39,11 +40,12 @@ public class BarChartRenderer extends DataRenderer {
     int offeset;
     int left;
 
+
     public BarChartRenderer(BarDataProvider chart, ChartAnimator animator,
                             ViewPortHandler viewPortHandler) {
         super(animator, viewPortHandler);
         radius = (int) Utils.convertDpToPixel(2f);
-        left= (int) Utils.convertDpToPixel(2f);
+        left = (int) Utils.convertDpToPixel(2f);
         offeset = (int) Utils.convertDpToPixel(24f);
         this.mChart = chart;
 
@@ -75,15 +77,29 @@ public class BarChartRenderer extends DataRenderer {
     public void drawData(Canvas c) {
 
         BarData barData = mChart.getBarData();
-
+        mReactFList.clear();
         for (int i = 0; i < barData.getDataSetCount(); i++) {
 
             BarDataSet set = barData.getDataSetByIndex(i);
-
             if (set.isVisible() && set.getEntryCount() > 0) {
                 drawDataSet(c, set, i);
             }
+            if (i == 1) {
+                BarEntry entry = set.getEntryForXIndex(1);
+                if (mChart instanceof HorizontalBarChart) {
+                    HorizontalBarChart hBarChart = ((HorizontalBarChart) mChart);
+                    if (hBarChart.isUpdate) {
+                        hBarChart.isUpdate = false;
+                        if (hBarChart.mSelectionListener != null) {
+                            AppLog.print("drawData____");
+                            hBarChart.mSelectionListener.onValueSelected(entry, 1, null);
+                        }
+                    }
+                }
+            }
+
         }
+
     }
 
     protected void drawDataSet(Canvas c, BarDataSet dataSet, int index) {
@@ -132,10 +148,13 @@ public class BarChartRenderer extends DataRenderer {
 //                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
 //                        buffer.buffer[j + 3], mRenderPaint);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j+2],
-                            buffer.buffer[j + 3], radius, radius, mRenderPaint);
-                }else{
-                    c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j+2],
+                    RectF rectF = new RectF(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3]);
+                    c.drawRoundRect(rectF, radius, radius, mRenderPaint);
+//                    c.drawRoundRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j+2],
+//                            buffer.buffer[j + 3], radius, radius, mRenderPaint);
+
+                } else {
+                    c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
                             buffer.buffer[j + 3], mRenderPaint);
                 }
             }
@@ -199,7 +218,6 @@ public class BarChartRenderer extends DataRenderer {
             boolean drawValueAboveBar = mChart.isDrawValueAboveBarEnabled();
 
             for (int i = 0; i < mChart.getBarData().getDataSetCount(); i++) {
-                AppLog.print("outer cos index_____"+i);
 
                 BarDataSet dataSet = dataSets.get(i);
 
@@ -243,7 +261,7 @@ public class BarChartRenderer extends DataRenderer {
 
                         BarEntry entry = entries.get(j / 2);
                         float val = entry.getVal();
-                        setValueColor(j/2);
+                        setValueColor(j / 2);
                         drawValue(c, dataSet.getValueFormatter(), val, entry, i, valuePoints[j],
                                 valuePoints[j + 1] + (val >= 0 ? posOffset : negOffset));
                     }

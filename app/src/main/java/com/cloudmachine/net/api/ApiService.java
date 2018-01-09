@@ -55,6 +55,9 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
+    @GET("message/getMessageByid")
+    Observable<BaseRespose<MessageBO>> getMessageByid(@Query("id") String id);
+
     //获取首页菜单
     @GET("system/headMenu")
     Observable<BaseRespose<List<MenuBean>>> getHeadMenu();
@@ -208,7 +211,7 @@ public interface ApiService {
     Observable<BaseRespose<RepairListInfo>> getRepairList(@QueryMap Map<String, String> map);
 
     @GET("device/getRepairList")
-    Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId);
+    Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("memberId") long memberId);
 
     @GET("device/getRepairList")
     Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId, @Query("deviceId") long deviceId);
@@ -227,10 +230,10 @@ public interface ApiService {
 
 
     @GET("device/getDeviceByKey")
-    Observable<BaseRespose<List<McDeviceInfo>>> getDevices(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId, @Query("type") int type);
+    Observable<BaseRespose<List<McDeviceInfo>>> getDevices(@Query("memberId") long memberId, @Query("type") int type);
 
     @GET("device/getDeviceByKey")
-    Observable<BaseRespose<List<McDeviceInfo>>> getDevices(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("type") int type);
+    Observable<BaseRespose<List<McDeviceInfo>>> getDevices(@Query("type") int type);
 
     /**
      * 测试获取设置详细信息

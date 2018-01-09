@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
@@ -16,6 +17,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -34,6 +38,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.model.Marker;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -45,12 +52,15 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.ViewCouponActivityNew;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.LocationBean;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.MenuBean;
 import com.cloudmachine.bean.VersionInfo;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.DataSupportManager;
+import com.cloudmachine.helper.LocationManager;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
@@ -65,7 +75,6 @@ import com.cloudmachine.ui.home.presenter.HomePresenter;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.homepage.activity.ViewMessageActivity;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
-import com.cloudmachine.ui.personal.activity.MyQRCodeActivity;
 import com.cloudmachine.ui.personal.activity.PersonalDataActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
@@ -109,6 +118,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     public static final int PEM_REQCODE_WRITESD = 0x113;
     public static final int PEM_REQCODE_CAMERA = 0x114;
     public static final int REQ_CODE_SCAN_QRCODE = 0x222;
+    private static final int REQ_FINE_LOCATION = 0x12;
     private String downLoadLink;
     @BindView(R.id.home_me_img)
     ImageView homeMeImg;
@@ -128,8 +138,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     FrameLayout itemRepairHistory;
     @BindView(R.id.item_purse)
     FrameLayout itemPurse;
-    @BindView(R.id.item_qr_code)
-    FrameLayout itemQrCode;
+    @BindView(R.id.item_machine_knowledge)
+    FrameLayout itemMachineKownledge;
     @BindView(R.id.item_about)
     LinearLayout itemAbout;
     @BindView(R.id.home_me_layout)
@@ -191,6 +201,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     int mustUpdate;
     double walletAmount, depositAmount;
     int leftMargin;
+    PermissionsChecker mChecker;
 
 
     @Override
@@ -199,6 +210,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         mHandler = new Handler(this);
+        mChecker = new PermissionsChecker(this);
         initView();
         MobclickAgent.enableEncrypt(true); // 友盟统计
         MobclickAgent.openActivityDurationTrack(false);
@@ -208,7 +220,89 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         new GetVersionAsync(mContext, mHandler).execute();
         mPresenter.getH5ConfigInfo();
         mPresenter.initQinuParams();
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_FINE_LOCATION);
+        } else {
+            initLocation();
+        }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQ_FINE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //用户同意授权
+                initLocation();
+            } else {
+                //用户拒绝授权
+                CommonUtils.showPermissionDialog(this, Constants.PermissionType.LOCATION);
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+
+    private void initLocation() {
+        AMapLocationClient locClient = LocationManager.getInstence().getLocationClient(getApplicationContext());
+        locClient.setLocationListener(locationListener);
+        locClient.startLocation();
+    }
+
+    private AMapLocationListener locationListener = new AMapLocationListener() {
+
+
+        @Override
+        public void onLocationChanged(AMapLocation location) {
+            if (location != null) {
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+                if (lat != 0 && lng != 0) {
+                    LocationBean locBean = DataSupportManager.findFirst(LocationBean.class);
+                    if (locBean != null) {
+                        DataSupportManager.deleteAll(LocationBean.class);
+                    }
+                    LocationBean bean = new LocationBean();
+                    bean.setLat(String.valueOf(lat));
+                    bean.setLng(String.valueOf(lng));
+                    String address = location.getAddress();
+                    String provice = location.getProvince();
+                    String city = location.getCity();
+                    String district = location.getDistrict();
+                    if (!TextUtils.isEmpty(address)) {
+                        try {
+                            bean.setAddress(URLEncoder.encode(address, "UTF-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (!TextUtils.isEmpty(provice)) {
+                        try {
+                            bean.setProvince(URLEncoder.encode(provice, "UTF-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (!TextUtils.isEmpty(city)) {
+                        try {
+                            bean.setCity(URLEncoder.encode(city, "UTF-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (!TextUtils.isEmpty(district)) {
+                        try {
+                            bean.setDistrict(URLEncoder.encode(district, "UTF-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    bean.save();
+                }
+            }
+
+        }
+    };
 
 
     public void initView() {
@@ -518,7 +612,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
 
-    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_purse, R.id.item_qr_code, R.id.item_about, R.id.home_me_img, R.id.home_actvite_img})
+    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_purse, R.id.item_machine_knowledge, R.id.item_about, R.id.home_me_img, R.id.home_actvite_img})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.home_guide_sure_btn:
@@ -526,8 +620,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 guideContainer.setVisibility(View.GONE);
                 break;
             case R.id.home_san_img://扫描车牌二维码
-                PermissionsChecker checker = new PermissionsChecker(this);
-                if (checker.lacksPermissions(Manifest.permission.CAMERA)) {
+                if (mChecker.lacksPermissions(Manifest.permission.CAMERA)) {
                     PermissionsActivity.startActivityForResult(this, PEM_REQCODE_CAMERA,
                             Manifest.permission.CAMERA);
                 } else {
@@ -608,11 +701,11 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
                 break;
-            case R.id.item_qr_code://我的二维码
+            case R.id.item_machine_knowledge://我的二维码
                 if (UserHelper.isLogin(this)) {
-                    Bundle codeB = new Bundle();
-//                codeB.putString(MEMBER_ID, String.valueOf(memberId));
-                    Constants.toActivity(this, MyQRCodeActivity.class, codeB);
+                    Bundle mBundle = new Bundle();
+                    mBundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppMachineKnowledge);
+                    Constants.toActivity(this, QuestionCommunityActivity.class, mBundle);
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
@@ -743,6 +836,9 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 
     @Override
     public void updateH5View() {
+        if (!TextUtils.isEmpty(ApiConstants.AppMachineKnowledge)) {
+            itemMachineKownledge.setVisibility(View.VISIBLE);
+        }
         String authory = getAuthory();
         if (AUTORITY_YUNBOX.equals(authory)) {
             jumpH5Page(ApiConstants.AppBoxDetail);
@@ -822,8 +918,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 break;
             case Constants.HANDLER_VERSIONDOWNLOAD:
                 downLoadLink = (String) msg.obj;
-                PermissionsChecker checker = new PermissionsChecker(this);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mChecker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     PermissionsActivity.startActivityForResult(this, PEM_REQCODE_WRITESD,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
                 } else {
@@ -877,6 +972,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+
+
             case PEM_REQCODE_CAMERA:
 
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {

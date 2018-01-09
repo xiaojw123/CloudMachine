@@ -30,7 +30,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.cloudmachine.R;
 import com.cloudmachine.activities.PermissionsActivity;
@@ -208,6 +207,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
     private void initSetting() {
         WebSettings settings = mWebView.getSettings();
+        settings.setSupportZoom(false);
         settings.setLoadsImagesAutomatically(true);
         settings.setBuiltInZoomControls(true);
         settings.setJavaScriptEnabled(true);
@@ -227,7 +227,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             AppLog.print("shoudLoadUrl___" + url + ", homeURL__" + homeUrl);
-            if (url.startsWith("tel:")){
+            if (url.startsWith("tel:")) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse(url));
                 startActivity(intent);
@@ -263,7 +263,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 dialog.dismiss();
             }
         });
-        CustomDialog dialog=builder.create();
+        CustomDialog dialog = builder.create();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -322,12 +322,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                                         PermissionsActivity.startActivityForResult(QuestionCommunityActivity.this,
                                                 REQUEST_PERMISSION_PICK, PERMISSIONS_PICK);
                                     } else {
-                                        isForbidenAd=true;
+                                        isForbidenAd = true;
                                         startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                                 REQUEST_PICK_IMAGE);
                                     }
                                 } else {
-                                    isForbidenAd=true;
+                                    isForbidenAd = true;
                                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                             REQUEST_PICK_IMAGE);
                                 }
@@ -362,7 +362,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
     //打开系统相机
     private void openCamera() {
-        isForbidenAd=true;
+        isForbidenAd = true;
         File file = new FileStorage().createIconFile();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             imageUri = FileProvider.getUriForFile(this, "com.cloudmachine.fileprovider", file);//通过FileProvider创建一个content类型的Uri
@@ -411,7 +411,9 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
                 break;
             case FLUSH_PAGE:
-                loadUrl();
+                if (UserHelper.isLogin(this)) {
+                    loadUrl();
+                }
                 break;
             case REQUEST_PICK_IMAGE://从相册选择
                 if (data == null) {
@@ -447,7 +449,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
                     CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
                 } else {
-                    isForbidenAd=true;
+                    isForbidenAd = true;
                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                             REQUEST_PICK_IMAGE);
                 }
@@ -543,7 +545,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
      * 从相册选择
      */
     private void selectFromAlbum() {
-        isForbidenAd=true;
+        isForbidenAd = true;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, REQUEST_PICK_IMAGE);
@@ -682,12 +684,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
                         // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-                        Toast.makeText(QuestionCommunityActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(QuestionCommunityActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
                         sendEmptyMessage(Constants.HANDLER_JUMP_MY_ORDER);
                     } else {
                         Constants.callJsMethod(mWebView, "callbackDSFPayResultCancelOrError()");
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
-                        Toast.makeText(QuestionCommunityActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(QuestionCommunityActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case Constants.HANDLER_JUMP_MY_ORDER:

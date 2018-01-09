@@ -344,14 +344,17 @@
             </FrameLayout>
 
 
+                <!--android:id="@+id/item_qr_code"-->
             <FrameLayout
-                android:id="@+id/item_qr_code"
-                style="@style/HomeMenuContainerStyle">
+                android:id="@+id/item_machine_knowledge"
+                style="@style/HomeMenuContainerStyle"
+                android:visibility="gone"
+                >
 
                 <TextView
                     style="@style/HomeMenuTvStyle"
-                    android:drawableLeft="@drawable/icon_qrcode"
-                    android:text="@string/qr_code" />
+                    android:drawableLeft="@drawable/ic_machine_knowledge"
+                    android:text="@string/machine_knowledge" />
             </FrameLayout>
 
 

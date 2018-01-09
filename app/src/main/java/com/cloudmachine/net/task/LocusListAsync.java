@@ -42,6 +42,16 @@ public class LocusListAsync extends ATask {
         //缓存数据第1步
     }
 
+    public LocusListAsync(long deviceId, Context context, Handler handler) {
+        this.context = context;
+        this.handler = handler;
+        this.deviceId = deviceId;
+        try {
+            memberId = String.valueOf(MemeberKeeper.getOauth(context).getId());
+        } catch (Exception ee) {
+        }
+        //缓存数据第1步
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -50,8 +60,12 @@ public class LocusListAsync extends ATask {
         List<NameValuePair> list = new ArrayList<NameValuePair>();
         list.add(new BasicNameValuePair("memberId", memberId));
         list.add(new BasicNameValuePair("deviceId", String.valueOf(deviceId)));
-        list.add(new BasicNameValuePair("startTime", String.valueOf(startTime)));
-        list.add(new BasicNameValuePair("endTime", String.valueOf(endTime)));
+        if (startTime != 0) {
+            list.add(new BasicNameValuePair("startTime", String.valueOf(startTime)));
+        }
+        if (endTime != 0) {
+            list.add(new BasicNameValuePair("endTime", String.valueOf(endTime)));
+        }
 
         String result = null;
         try {

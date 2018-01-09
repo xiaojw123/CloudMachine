@@ -60,9 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -251,8 +249,8 @@ public class Constants {
     public static final int HANDLER_H5_JUMP = HANDLER_JUMP_MY_ORDER + 1;
     public static final int HANDLER_CHANGE_BOX_ACT = HANDLER_H5_JUMP + 1;
     public static final int HANDLER_RESULT_APLIPAY = HANDLER_CHANGE_BOX_ACT + 1;
+    public static final int HANDLER_UPDATE_PROGRESS = HANDLER_RESULT_APLIPAY + 1;
 
-    public static final String OS_PLATFORM = "Android";
     public static final String URL_H5_ARGUMENT = "http://www.cloudm.com/agreement";
     public static final String URL_LOGOCLOUDM = "https://f1.cloudm.com/logocloudm.png";
     //修改全局ip地址
@@ -1444,12 +1442,6 @@ public class Constants {
     public static final String DEVICE_DETAIL_NOW = "DEVICE_DETAIL_NOW";
     public static final String PAGET_TYPE = "page_type";
 
-    public static Map<String, String> getBasePraramsMap() {
-        Map<String, String> map = new HashMap<>();
-        map.put("osPlatform", Constants.OS_PLATFORM);
-        map.put("osVersion", VersionU.getVersionName());
-        return map;
-    }
 
     public static void callJsMethod(WebView webView, String jsParams) {
         webView.loadUrl("javascript:" + jsParams);

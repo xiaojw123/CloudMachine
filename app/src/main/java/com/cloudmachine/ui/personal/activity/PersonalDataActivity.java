@@ -181,7 +181,13 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         if (mLoginType == 0) {
             mBtnSynchronousWxData.setVisibility(View.GONE);
         } else {
-            mBtnSynchronousWxData.setVisibility(View.VISIBLE);
+            if (mWecharLogo != null && mWecharNickname != null) {
+                if (mWecharLogo.equals(mLogo) && mWecharNickname.equals(mNickName)) {
+                    mBtnSynchronousWxData.setVisibility(View.GONE);
+                } else {
+                    mBtnSynchronousWxData.setVisibility(View.VISIBLE);
+                }
+            }
         }
         initPermissionChecker();
         initListener();
@@ -280,12 +286,12 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                                         PermissionsActivity.startActivityForResult(PersonalDataActivity.this, REQUEST_PERMISSION_PICK,
                                                 PERMISSIONS_PICK);
                                     } else {
-                                        isForbidenAd=true;
+                                        isForbidenAd = true;
                                         startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                                 REQUEST_PICK_IMAGE);
                                     }
                                 } else {
-                                    isForbidenAd=true;
+                                    isForbidenAd = true;
                                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                                             REQUEST_PICK_IMAGE);
                                 }
@@ -321,7 +327,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
     //打开系统相机
     private void openCamera() {
-        isForbidenAd=true;
+        isForbidenAd = true;
         File file = new FileStorage().createIconFile();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             imageUri = FileProvider.getUriForFile(PersonalDataActivity.this, "com.cloudmachine.fileprovider", file);//通过FileProvider创建一个content类型的Uri
@@ -386,7 +392,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 break;
             case REQUEST_PERMISSION://权限请求
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    CommonUtils.showPermissionDialog(this,Constants.PermissionType.CAMERA);
+                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.CAMERA);
                 } else {
                     if (isClickCamera) {
                         openCamera();
@@ -399,7 +405,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
                     CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
                 } else {
-                    isForbidenAd=true;
+                    isForbidenAd = true;
                     startActivityForResult(PhotosGallery.gotoPhotosGallery(),
                             REQUEST_PICK_IMAGE);
                 }
@@ -444,7 +450,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
      * 从相册选择
      */
     private void selectFromAlbum() {
-        isForbidenAd=true;
+        isForbidenAd = true;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, REQUEST_PICK_IMAGE);
@@ -522,7 +528,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
      * 裁剪
      */
     private void cropPhoto() {
-        isForbidenAd=true;
+        isForbidenAd = true;
         File file = new FileStorage().createCropFile();
         Uri outputUri = Uri.fromFile(file);//缩略图保存地址
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -622,6 +628,8 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     @Override
     public void returnModifyNickName() {
         mNicknameTv.setText(mWecharNickname);
+        memberInfo.setNickName(mWecharNickname);
+        MemeberKeeper.saveOAuth(memberInfo, this);
     }
 
     @Override

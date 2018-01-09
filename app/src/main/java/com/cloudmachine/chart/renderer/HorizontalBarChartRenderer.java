@@ -2,8 +2,8 @@
 package com.cloudmachine.chart.renderer;
 
 import android.graphics.Canvas;
-import android.graphics.RectF;
 import android.graphics.Paint.Align;
+import android.graphics.RectF;
 
 import com.cloudmachine.chart.animation.ChartAnimator;
 import com.cloudmachine.chart.buffer.BarBuffer;
@@ -11,23 +11,24 @@ import com.cloudmachine.chart.buffer.HorizontalBarBuffer;
 import com.cloudmachine.chart.data.BarData;
 import com.cloudmachine.chart.data.BarDataSet;
 import com.cloudmachine.chart.data.BarEntry;
+import com.cloudmachine.chart.formatter.ValueFormatter;
 import com.cloudmachine.chart.interfaces.BarDataProvider;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.chart.utils.Transformer;
 import com.cloudmachine.chart.utils.Utils;
-import com.cloudmachine.chart.formatter.ValueFormatter;
 import com.cloudmachine.chart.utils.ViewPortHandler;
 
 import java.util.List;
 
 /**
  * Renderer for the HorizontalBarChart.
- * 
+ *
  * @author Philipp Jahoda
  */
 public class HorizontalBarChartRenderer extends BarChartRenderer {
 
     public HorizontalBarChartRenderer(BarDataProvider chart, ChartAnimator animator,
-            ViewPortHandler viewPortHandler) {
+                                      ViewPortHandler viewPortHandler) {
         super(chart, animator, viewPortHandler);
 
         mValuePaint.setTextAlign(Align.LEFT);
@@ -38,6 +39,7 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
 
         BarData barData = mChart.getBarData();
         mBarBuffers = new HorizontalBarBuffer[barData.getDataSetCount()];
+        AppLog.print("Hor___mBarBufffers__len_" + mBarBuffers.length);
 
         for (int i = 0; i < mBarBuffers.length; i++) {
             BarDataSet set = barData.getDataSetByIndex(i);
@@ -48,6 +50,8 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
     }
 
     protected void drawDataSet(Canvas c, BarDataSet dataSet, int index) {
+
+        AppLog.print("drawDataSet___index___" + index);
 
         Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());
 
@@ -66,8 +70,8 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
         buffer.setInverted(mChart.isInverted(dataSet.getAxisDependency()));
 
         buffer.feed(entries);
-
         trans.pointValuesToPixel(buffer.buffer);
+
 
         for (int j = 0; j < buffer.size(); j += 4) {
 
@@ -87,20 +91,32 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
             // is
             // out of bounds, reuse colors.
             mRenderPaint.setColor(dataSet.getColor(j / 4));
-            if(dataSet.getRound()[0]!=0 || dataSet.getRound()[1]!=0){
-            	RectF rf = new RectF();
+            if (dataSet.getRound()[0] != 0 || dataSet.getRound()[1] != 0) {
+                RectF rf = new RectF();
                 rf.left = buffer.buffer[j];
                 rf.top = buffer.buffer[j + 1];
                 rf.right = buffer.buffer[j + 2];
                 rf.bottom = buffer.buffer[j + 3];
+                AppLog.print("drawDataSet___j_" + j + ", rect__" + rf);
+                if (index == 0) {
+                    if (j == 0) {
+                        mReactFList.add(rf);
+                    }
+                } else {
+                    if (j == 4) {
+                        mReactFList.add(rf);
+                    }
+                }
                 c.drawRoundRect(rf, dataSet.getRound()[0], dataSet.getRound()[1], mRenderPaint);
-            }else{
-            	c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-            			buffer.buffer[j + 3], mRenderPaint);
+            } else {
+                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
+                        buffer.buffer[j + 3], mRenderPaint);
             }
-            
-            
+
+
         }
+
+
     }
 
     @Override
@@ -126,7 +142,7 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
 
                 // apply the text-styling defined by the DataSet
                 applyValueTextStyle(dataSet);
-                
+
                 final float halfTextHeight = Utils.calcTextHeight(mValuePaint, "10") / 2f;
 
                 ValueFormatter formatter = dataSet.getValueFormatter();
@@ -136,7 +152,7 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
                 List<BarEntry> entries = dataSet.getYVals();
 
                 float[] valuePoints = getTransformedValues(trans, entries, i);
-                
+
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {
 
@@ -206,7 +222,7 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
                             }
 
                             drawValue(c, formattedValue, valuePoints[j]
-                                    + (e.getVal() >= 0 ? posOffset : negOffset),
+                                            + (e.getVal() >= 0 ? posOffset : negOffset),
                                     valuePoints[j + 1] + halfTextHeight);
 
                         } else {
@@ -237,8 +253,8 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
                             for (int k = 0; k < transformed.length; k += 2) {
 
                                 float val = vals[k / 2];
-                                if(dataSet.getValuesColorsSameRect()){
-                                	mValuePaint.setColor(dataSet.getColor(k / 2));
+                                if (dataSet.getValuesColorsSameRect()) {
+                                    mValuePaint.setColor(dataSet.getColor(k / 2));
                                 }
                                 String formattedValue = formatter.getFormattedValue(val, e, i, mViewPortHandler);
 
@@ -280,7 +296,7 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
 
     @Override
     protected void prepareBarHighlight(float x, float y1, float y2, float barspaceHalf,
-            Transformer trans) {
+                                       Transformer trans) {
 
         float top = x - 0.5f + barspaceHalf;
         float bottom = x + 0.5f - barspaceHalf;
@@ -294,7 +310,7 @@ public class HorizontalBarChartRenderer extends BarChartRenderer {
 
     @Override
     public float[] getTransformedValues(Transformer trans, List<BarEntry> entries,
-            int dataSetIndex) {
+                                        int dataSetIndex) {
         return trans.generateTransformedValuesHorizontalBarChart(entries, dataSetIndex,
                 mChart.getBarData(), mAnimator.getPhaseY());
     }

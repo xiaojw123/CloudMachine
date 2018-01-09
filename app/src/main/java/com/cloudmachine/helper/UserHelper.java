@@ -68,6 +68,7 @@ public class UserHelper {
     private static final String loginLOGO = "logo_sp";
     private static final String GuideTag = "guide_tag";
     private static final String HConfigGuideTag = "guide_tag_h_config";
+    private static final String WorkTimeGuideTag="work_time_guide";
 
     public static void insertGuideTag(Context context, boolean flag) {
         if (GuideTagSp == null) {
@@ -86,7 +87,21 @@ public class UserHelper {
         editor.commit();
     }
 
+    public static void insertWorkTimeGuideTag(Context context,boolean flag){
+        if (GuideTagSp==null){
+            GuideTagSp=context.getSharedPreferences(GuideTag,Context.MODE_PRIVATE);
+        }
+        SharedPreferences.Editor editor=GuideTagSp.edit();
+        editor.putBoolean(WorkTimeGuideTag,flag);
+        editor.commit();
+    }
 
+    public static boolean getWorkTimeGuideTag(Context context){
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
+        }
+        return GuideTagSp.getBoolean(WorkTimeGuideTag, false);
+    }
 
 
     public static boolean getGuideTag(Context context) {

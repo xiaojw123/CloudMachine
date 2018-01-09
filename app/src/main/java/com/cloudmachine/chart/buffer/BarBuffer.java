@@ -2,6 +2,7 @@
 package com.cloudmachine.chart.buffer;
 
 import com.cloudmachine.chart.data.BarEntry;
+import com.cloudmachine.chart.utils.AppLog;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class BarBuffer extends AbstractBuffer<BarEntry> {
     }
 
     protected void addBar(float left, float top, float right, float bottom) {
-
+        AppLog.print("BarBuffer addBar_index="+index+", __left:"+left+", top:"+top+", right:"+right+", bottom:"+bottom);
         buffer[index++] = left;
         buffer[index++] = top;
         buffer[index++] = right;

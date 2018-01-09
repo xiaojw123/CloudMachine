@@ -14,6 +14,7 @@ import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.OnItemClickListener;
 import com.cloudmachine.bean.MessageBO;
+import com.cloudmachine.ui.home.activity.MessageDetailActivity;
 import com.cloudmachine.ui.home.contract.ViewMessageConract;
 import com.cloudmachine.ui.home.model.ViewMessageModel;
 import com.cloudmachine.ui.home.presenter.ViewMessagePresenter;
@@ -73,7 +74,7 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
     private void initRecyclerView() {
         messageRlv.setLayoutManager(new LinearLayoutManager(this));
 
-        DividerItemDecoration did=new DividerItemDecoration(this, LinearLayout.VERTICAL);
+        DividerItemDecoration did = new DividerItemDecoration(this, LinearLayout.VERTICAL);
         did.setDrawable(getResources().getDrawable(R.drawable.divider_line_horztial));
         messageRlv.addItemDecoration(did);
         messageRlv.setSwipeMenuCreator(CommonUtils.getMenuCreator(this));
@@ -83,7 +84,6 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
         mAdapter.setPresenter(mPresenter);
         messageRlv.setAdapter(mAdapter);
     }
-
 
 
     OnSwipeMenuItemClickListener menuItemClickListener = new OnSwipeMenuItemClickListener() {
@@ -136,11 +136,11 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
     public void retrunGetAllMsg(List<MessageBO> msgList) {
         AppLog.print("retrunGetAllMsg___");
         mAdapter.updateItems(msgList);
-        List<MessageBO> messageBOs=mAdapter.getItems();
-        if (messageBOs!=null&&messageBOs.size() >0) {
+        List<MessageBO> messageBOs = mAdapter.getItems();
+        if (messageBOs != null && messageBOs.size() > 0) {
             messageRlv.setVisibility(View.VISIBLE);
             emptyMsgView.setVisibility(View.GONE);
-        }else{
+        } else {
             messageRlv.setVisibility(View.GONE);
             emptyMsgView.setVisibility(View.VISIBLE);
         }
@@ -174,12 +174,21 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
                 url = msgBo.getMessage();
                 title = "问卷调查";
             }
-            if (!TextUtils.isEmpty(url)) {
-                MobclickAgent.onEvent(this,MobEvent.TIME_MESSAGE_DETAIL);
-                Bundle bundle = new Bundle();
-                bundle.putString(QuestionCommunityActivity.H5_TITLE, title);
-                bundle.putString(QuestionCommunityActivity.H5_URL, url);
-                Constants.toActivity(ViewMessageActivity.this, QuestionCommunityActivity.class, bundle);
+//            messageType=8消息内容
+            if (messageType == 8) {
+                MobclickAgent.onEvent(this, MobEvent.TIME_MESSAGE_DETAIL);
+                Bundle detailBundle = new Bundle();
+                detailBundle.putString(MessageDetailActivity.MESSAGE_CONTENT, msgBo.getContent());
+                detailBundle.putString(MessageDetailActivity.MESSAGE_TIME, msgBo.getInviteTime());
+                Constants.toActivity(this, MessageDetailActivity.class, detailBundle);
+            } else {
+                if (!TextUtils.isEmpty(url)) {
+                    MobclickAgent.onEvent(this, MobEvent.TIME_MESSAGE_DETAIL);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(QuestionCommunityActivity.H5_TITLE, title);
+                    bundle.putString(QuestionCommunityActivity.H5_URL, url);
+                    Constants.toActivity(ViewMessageActivity.this, QuestionCommunityActivity.class, bundle);
+                }
             }
         }
     }

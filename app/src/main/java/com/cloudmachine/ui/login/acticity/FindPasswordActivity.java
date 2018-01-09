@@ -16,20 +16,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudmachine.R;
-import com.cloudmachine.chart.utils.AppLog;
-import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.api.Api;
-import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.UserInfo;
+import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.net.task.ForgetPwdAsync;
 import com.cloudmachine.net.task.GetMobileCodeAsync;
 import com.cloudmachine.net.task.LoginAsync;
 import com.cloudmachine.net.task.RegisterNewAsync;
-import com.cloudmachine.bean.Member;
-import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
@@ -373,6 +374,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 break;
             case Constants.HANDLER_LOGIN_SUCCESS:
                 Constants.isGetScore = true;
+                MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 0);
                 mMember = (Member) msg.obj;
                 if (mMember != null) {
                     excamMaster(mMember.getId());

@@ -32,8 +32,9 @@
     	</list>
     -->
     <list>
-        <mapping class="com.cloudmachine.bean.ResidentAddressInfo"/>
-        <mapping class="com.cloudmachine.bean.AdBean"/>
+        <mapping class="com.cloudmachine.bean.ResidentAddressInfo" />
+        <mapping class="com.cloudmachine.bean.AdBean" />
+        <mapping class="com.cloudmachine.bean.LocationBean" />
     </list>
 
     <!--

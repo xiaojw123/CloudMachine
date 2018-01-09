@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 
 import com.cloudmachine.chart.animation.ChartAnimator;
 import com.cloudmachine.chart.data.DataSet;
@@ -14,6 +15,9 @@ import com.cloudmachine.chart.formatter.ValueFormatter;
 import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.utils.Utils;
 import com.cloudmachine.chart.utils.ViewPortHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Superclass of all render classes for the different data types (line, bar, ...).
@@ -44,6 +48,8 @@ public abstract class DataRenderer extends Renderer {
      * entries)
      */
     protected Paint mValuePaint;
+    public List<RectF> mReactFList = new ArrayList<>();
+
 
     public DataRenderer(ChartAnimator animator, ViewPortHandler viewPortHandler) {
         super(viewPortHandler);

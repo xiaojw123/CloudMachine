@@ -33,17 +33,17 @@ import com.cloudmachine.chart.components.MarkerView;
 import com.cloudmachine.chart.data.ChartData;
 import com.cloudmachine.chart.data.DataSet;
 import com.cloudmachine.chart.data.Entry;
+import com.cloudmachine.chart.formatter.DefaultValueFormatter;
+import com.cloudmachine.chart.formatter.ValueFormatter;
 import com.cloudmachine.chart.highlight.ChartHighlighter;
+import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.interfaces.ChartInterface;
 import com.cloudmachine.chart.listener.ChartTouchListener;
 import com.cloudmachine.chart.listener.OnChartGestureListener;
 import com.cloudmachine.chart.listener.OnChartValueSelectedListener;
 import com.cloudmachine.chart.renderer.DataRenderer;
 import com.cloudmachine.chart.renderer.LegendRenderer;
-import com.cloudmachine.chart.formatter.DefaultValueFormatter;
-import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.utils.Utils;
-import com.cloudmachine.chart.formatter.ValueFormatter;
 import com.cloudmachine.chart.utils.ViewPortHandler;
 
 import java.io.File;
@@ -65,7 +65,9 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
     public static final String LOG_TAG = "MPAndroidChart";
 
-    /** flag that indicates if logging is enabled or not */
+    /**
+     * flag that indicates if logging is enabled or not
+     */
     protected boolean mLogEnabled = false;
 
     /**
@@ -74,7 +76,9 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      */
     protected T mData = null;
 
-    /** If set to true, chart continues to scroll after touch up */
+    /**
+     * If set to true, chart continues to scroll after touch up
+     */
     private boolean mDragDecelerationEnabled = true;
 
     /**
@@ -85,7 +89,9 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      */
     private float mDragDecelerationFrictionCoef = 0.9f;
 
-    /** default value-formatter, number of digits depends on provided chart-data */
+    /**
+     * default value-formatter, number of digits depends on provided chart-data
+     */
     protected ValueFormatter mDefaultFormatter;
 
     /**
@@ -100,33 +106,49 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      */
     protected Paint mInfoPaint;
 
-    /** description text that appears in the bottom right corner of the chart */
+    /**
+     * description text that appears in the bottom right corner of the chart
+     */
     protected String mDescription = "Description";
 
-    /** flag that indicates if the chart has been fed with data yet */
+    /**
+     * flag that indicates if the chart has been fed with data yet
+     */
     protected boolean mDataNotSet = true;
 
-    /** if true, units are drawn next to the values in the chart */
+    /**
+     * if true, units are drawn next to the values in the chart
+     */
     protected boolean mDrawUnitInChart = false;
 
-    /** the number of x-values the chart displays */
+    /**
+     * the number of x-values the chart displays
+     */
     protected float mDeltaX = 1f;
 
     protected float mXChartMin = 0f;
     protected float mXChartMax = 0f;
 
-    /** if true, touch gestures are enabled on the chart */
+    /**
+     * if true, touch gestures are enabled on the chart
+     */
     protected boolean mTouchEnabled = true;
 
-    /** the legend object containing all data associated with the legend */
+    /**
+     * the legend object containing all data associated with the legend
+     */
     protected Legend mLegend;
 
-    /** listener that is called when a value on the chart is selected */
-    protected OnChartValueSelectedListener mSelectionListener;
+    /**
+     * listener that is called when a value on the chart is selected
+     */
+    public OnChartValueSelectedListener mSelectionListener;
 
     protected ChartTouchListener mChartTouchListener;
 
-    /** text that is displayed when the chart is empty */
+    /**
+     * text that is displayed when the chart is empty
+     */
     private String mNoDataText = "No chart data available.";
 
     /**
@@ -142,36 +164,50 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
     protected LegendRenderer mLegendRenderer;
 
-    /** object responsible for rendering the data */
+    /**
+     * object responsible for rendering the data
+     */
     protected DataRenderer mRenderer;
 
     protected ChartHighlighter mHighlighter;
 
-    /** object that manages the bounds and drawing constraints of the chart */
+    /**
+     * object that manages the bounds and drawing constraints of the chart
+     */
     protected ViewPortHandler mViewPortHandler;
 
-    /** object responsible for animations */
+    /**
+     * object responsible for animations
+     */
     protected ChartAnimator mAnimator;
 
-    /** Extra offsets to be appended to the viewport */
+    /**
+     * Extra offsets to be appended to the viewport
+     */
     private float mExtraTopOffset = 0.f,
             mExtraRightOffset = 0.f,
             mExtraBottomOffset = 0.f,
             mExtraLeftOffset = 0.f;
 
-    /** default constructor for initialization in code */
+    /**
+     * default constructor for initialization in code
+     */
     public Chart(Context context) {
         super(context);
         init();
     }
 
-    /** constructor for initialization in xml */
+    /**
+     * constructor for initialization in xml
+     */
     public Chart(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    /** even more awesome constructor */
+    /**
+     * even more awesome constructor
+     */
     public Chart(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
@@ -258,6 +294,10 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     // setData(data);
     // invalidate();
     // }
+    public void initTrasform(){
+
+
+    }
 
     /**
      * Sets a new data object for the chart. The data object contains all values
@@ -285,7 +325,6 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
             if (set.needsDefaultFormatter())
                 set.setValueFormatter(mDefaultFormatter);
         }
-
         // let the chart know there is new data
         notifyDataSetChanged();
 
@@ -371,10 +410,14 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
         mDefaultFormatter = new DefaultValueFormatter(digits);
     }
 
-    /** flag that indicates if offsets calculation has already been done or not */
+    /**
+     * flag that indicates if offsets calculation has already been done or not
+     */
     private boolean mOffsetsCalculated = false;
 
-    /** paint object used for drawing the bitmap */
+    /**
+     * paint object used for drawing the bitmap
+     */
     protected Paint mDrawPaint;
 
     @Override
@@ -382,10 +425,10 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
         // super.onDraw(canvas);
 
         if (mDataNotSet || mData == null || mData.getYValCount() <= 0) { // check
-                                                                         // if
-                                                                         // there
-                                                                         // is
-                                                                         // data
+            // if
+            // there
+            // is
+            // data
 
             // if no data, inform the user
             canvas.drawText(mNoDataText, getWidth() / 2, getHeight() / 2, mInfoPaint);
@@ -412,7 +455,9 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
         // mDrawBitmap.eraseColor(Color.TRANSPARENT);
     }
 
-    /** the custom position of the description text */
+    /**
+     * the custom position of the description text
+     */
     private PointF mDescriptionPosition;
 
     /**
@@ -447,7 +492,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     /**
      * Returns the array of currently highlighted values. This might a null or
      * empty array if nothing is highlighted.
-     * 
+     *
      * @return
      */
     public Highlight[] getHighlighted() {
@@ -480,7 +525,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
         // set the indices to highlight
         mIndicesToHighlight = highs;
 
-        if(highs == null || highs.length == 0)
+        if (highs == null || highs.length == 0)
             mChartTouchListener.setLastHighlighted(null);
 
         // redraw the chart
@@ -501,7 +546,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
             highlightValues(null);
         } else {
-            highlightValues(new Highlight[] {
+            highlightValues(new Highlight[]{
                     new Highlight(xIndex, dataSetIndex)
             });
         }
@@ -529,10 +574,9 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
             if (e == null || e.getXIndex() != high.getXIndex()) {
                 mIndicesToHighlight = null;
                 high = null;
-            }
-            else {
+            } else {
                 // set the indices to highlight
-                mIndicesToHighlight = new Highlight[] {
+                mIndicesToHighlight = new Highlight[]{
                         high
                 };
             }
@@ -566,10 +610,14 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      */
     /** BELOW CODE IS FOR THE MARKER VIEW */
 
-    /** if set to true, the marker view is drawn when a value is clicked */
+    /**
+     * if set to true, the marker view is drawn when a value is clicked
+     */
     protected boolean mDrawMarkerViews = true;
 
-    /** the view that represents the marker */
+    /**
+     * the view that represents the marker
+     */
     protected MarkerView mMarkerView;
 
     /**
@@ -644,7 +692,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
     /**
      * Returns the animator responsible for animating chart values.
-     * 
+     *
      * @return
      */
     public ChartAnimator getAnimator() {
@@ -669,7 +717,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
     /**
      * Returns drag deceleration friction coefficient
-     * 
+     *
      * @return
      */
     public float getDragDecelerationFrictionCoef() {
@@ -709,11 +757,11 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      *
      * @param durationMillisX
      * @param durationMillisY
-     * @param easingX a custom easing function to be used on the animation phase
-     * @param easingY a custom easing function to be used on the animation phase
+     * @param easingX         a custom easing function to be used on the animation phase
+     * @param easingY         a custom easing function to be used on the animation phase
      */
     public void animateXY(int durationMillisX, int durationMillisY, EasingFunction easingX,
-            EasingFunction easingY) {
+                          EasingFunction easingY) {
         mAnimator.animateXY(durationMillisX, durationMillisY, easingX, easingY);
     }
 
@@ -724,7 +772,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      * API LEVEL 11 (Android 3.0.x) AND HIGHER.
      *
      * @param durationMillis
-     * @param easing a custom easing function to be used on the animation phase
+     * @param easing         a custom easing function to be used on the animation phase
      */
     public void animateX(int durationMillis, EasingFunction easing) {
         mAnimator.animateX(durationMillis, easing);
@@ -737,7 +785,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      * API LEVEL 11 (Android 3.0.x) AND HIGHER.
      *
      * @param durationMillis
-     * @param easing a custom easing function to be used on the animation phase
+     * @param easing         a custom easing function to be used on the animation phase
      */
     public void animateY(int durationMillis, EasingFunction easing) {
         mAnimator.animateY(durationMillis, easing);
@@ -757,11 +805,11 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      *
      * @param durationMillisX
      * @param durationMillisY
-     * @param easingX a predefined easing option
-     * @param easingY a predefined easing option
+     * @param easingX         a predefined easing option
+     * @param easingY         a predefined easing option
      */
     public void animateXY(int durationMillisX, int durationMillisY, Easing.EasingOption easingX,
-            Easing.EasingOption easingY) {
+                          Easing.EasingOption easingY) {
         mAnimator.animateXY(durationMillisX, durationMillisY, easingX, easingY);
     }
 
@@ -772,7 +820,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      * API LEVEL 11 (Android 3.0.x) AND HIGHER.
      *
      * @param durationMillis
-     * @param easing a predefined easing option
+     * @param easing         a predefined easing option
      */
     public void animateX(int durationMillis, Easing.EasingOption easing) {
         mAnimator.animateX(durationMillis, easing);
@@ -785,7 +833,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      * API LEVEL 11 (Android 3.0.x) AND HIGHER.
      *
      * @param durationMillis
-     * @param easing a predefined easing option
+     * @param easing         a predefined easing option
      */
     public void animateY(int durationMillis, Easing.EasingOption easing) {
         mAnimator.animateY(durationMillis, easing);
@@ -842,7 +890,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     /**
      * Returns the default ValueFormatter that has been determined by the chart
      * considering the provided minimum and maximum values.
-     * 
+     *
      * @return
      */
     public ValueFormatter getDefaultValueFormatter() {
@@ -974,7 +1022,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
     /**
      * Sets a custom position for the description text in pixels on the screen.
-     * 
+     *
      * @param x - xcoordinate
      * @param y - ycoordinate
      */
@@ -1008,7 +1056,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
     /**
      * Sets the color of the description text.
-     * 
+     *
      * @param color
      */
     public void setDescriptionColor(int color) {
@@ -1018,7 +1066,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     /**
      * Sets extra offsets (around the chart view) to be appended to the
      * auto-calculated offsets.
-     * 
+     *
      * @param left
      * @param top
      * @param right
@@ -1099,7 +1147,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
     /**
      * Returns true if log-output is enabled for the chart, fals if not.
-     * 
+     *
      * @return
      */
     public boolean isLogEnabled() {
@@ -1168,7 +1216,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     /**
      * Returns the renderer object responsible for rendering / drawing the
      * Legend.
-     * 
+     *
      * @return
      */
     public LegendRenderer getLegendRenderer() {
@@ -1204,7 +1252,9 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
             parent.requestDisallowInterceptTouchEvent(false);
     }
 
-    /** paint for the grid background (only line and barchart) */
+    /**
+     * paint for the grid background (only line and barchart)
+     */
     public static final int PAINT_GRID_BACKGROUND = 4;
 
     /**
@@ -1213,25 +1263,33 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      */
     public static final int PAINT_INFO = 7;
 
-    /** paint for the description text in the bottom right corner */
+    /**
+     * paint for the description text in the bottom right corner
+     */
     public static final int PAINT_DESCRIPTION = 11;
 
-    /** paint for the hole in the middle of the pie chart */
+    /**
+     * paint for the hole in the middle of the pie chart
+     */
     public static final int PAINT_HOLE = 13;
 
-    /** paint for the text in the middle of the pie chart */
+    /**
+     * paint for the text in the middle of the pie chart
+     */
     public static final int PAINT_CENTER_TEXT = 14;
 
-    /** paint used for the legend */
+    /**
+     * paint used for the legend
+     */
     public static final int PAINT_LEGEND_LABEL = 18;
 
     /**
      * set a new paint object for the specified parameter in the chart e.g.
      * Chart.PAINT_VALUES
      *
-     * @param p the new paint object
+     * @param p     the new paint object
      * @param which Chart.PAINT_VALUES, Chart.PAINT_GRID, Chart.PAINT_VALUES,
-     *            ...
+     *              ...
      */
     public void setPaint(Paint p, int which) {
 
@@ -1344,7 +1402,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     /**
      * Returns the ViewPortHandler of the chart that is responsible for the
      * content area of the chart and its offsets and dimensions.
-     * 
+     *
      * @return
      */
     public ViewPortHandler getViewPortHandler() {
@@ -1353,7 +1411,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
     /**
      * Returns the Renderer object the chart uses for drawing data.
-     * 
+     *
      * @return
      */
     public DataRenderer getRenderer() {
@@ -1362,7 +1420,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
 
     /**
      * Sets a new DataRenderer object for the chart.
-     * 
+     *
      * @param renderer
      */
     public void setRenderer(DataRenderer renderer) {
@@ -1442,7 +1500,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      * compression (high quality). NOTE: Needs permission WRITE_EXTERNAL_STORAGE
      *
      * @param fileName e.g. "my_image"
-     * @param quality e.g. 50, min = 0, max = 100
+     * @param quality  e.g. 50, min = 0, max = 100
      * @return returns true if saving was successfull, false if not
      */
     public boolean saveToGallery(String fileName, int quality) {
@@ -1499,13 +1557,15 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
                 ? false : true;
     }
 
-    /** tasks to be done after the view is setup */
+    /**
+     * tasks to be done after the view is setup
+     */
     protected ArrayList<Runnable> mJobs = new ArrayList<Runnable>();
 
     /**
      * Adds a job to be executed after the chart-view is setup (after
      * onSizeChanged(...) is called).
-     * 
+     *
      * @param job
      */
     public void addJob(Runnable job) {
@@ -1523,7 +1583,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     /**
      * Returns all jobs that are scheduled to be executed after
      * onSizeChanged(...).
-     * 
+     *
      * @return
      */
     public ArrayList<Runnable> getJobs() {
@@ -1578,7 +1638,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     /**
      * Setting this to true will set the layer-type HARDWARE for the view, false
      * will set layer-type SOFTWARE.
-     * 
+     *
      * @param enabled
      */
     public void setHardwareAccelerationEnabled(boolean enabled) {

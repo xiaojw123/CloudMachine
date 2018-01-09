@@ -135,7 +135,6 @@
     <RelativeLayout
         android:id="@+id/my_qrcode"
         style="@style/layout_item"
-        android:visibility="gone"
         >
 
         <TextView
