@@ -1,27 +1,3 @@
 <resources>
 
-    <string-array name="str_status">
-        <item>已下单</item>
-        <item>已派工</item>
-        <item>已预约</item>
-        <item>已技师确认</item>
-        <item>已预约</item>
-        <item>已出发</item>
-        <item>已到达</item>
-        <item>已客户确认</item>
-        <item>已结算</item>
-        <item>已完工关单</item>
-        <item>已返程</item>
-    </string-array>
-    
-      <string-array name="str_repair_desc">
-        <item>名称</item>
-        <item>机型</item>
-        <item>品牌</item>
-        <item>型号</item>
-        <item>位置</item>
-        <item>联系方式</item>
-        <item>故障描述</item>
-    </string-array>
-
 </resources>

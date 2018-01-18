@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -17,6 +19,9 @@ import android.widget.TextView;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.DynamicWave;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSchedulers;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.ScanningOilLevelInfo;
 import com.cloudmachine.bean.ScanningOilLevelInfoArray;
 import com.cloudmachine.chart.charts.LineChart;
@@ -31,14 +36,22 @@ import com.cloudmachine.chart.data.LineData;
 import com.cloudmachine.chart.data.LineDataSet;
 import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.listener.OnChartValueSelectedListener;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.task.GetOilLevelListAsync;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ResV;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.mpchart.DrawTimerTask;
 import com.cloudmachine.utils.mpchart.MyMarkerView;
-import com.cloudmachine.utils.widgets.RadiusButtonView;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -51,21 +64,25 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
     private static final int ANIMATETIME = 2000;
     private Context mContext;
     private Handler mHandler;
-    private int oilLave;
     private long deviceId;
     private String deviceName;
     private ScanningOilLevelInfo[] oilLeve;
     private ScanningOilLevelInfo lastLevel;
-    private LineChart mChart;
+    private LineChart mChart, mWeekChat;
     private Typeface mTf;
     private int[] VORDIPLOM_COLORS = new int[2];
 
     private DynamicWave arcView;
     private TextView oil_proportion, last_date_oil_text, oil_proportion_last;
     private Timer myTimer;
-    private RelativeLayout add_chart_layout;
-    private TextView oilEmptyTv;
+    //    private TextView oilEmptyTv;
     private ViewGroup oilFormCotainer;
+    private TextView todayTv, weekTv;
+    private LinearLayout turnOffLayout;
+    RelativeLayout todayRbView, weekRbView;
+    String memberId;
+    RelativeLayout liearChatCotanienr, weekChatCotainer;
+    TextView oilEmptyTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +91,12 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         setContentView(R.layout.activity_mc_oilamount);
         this.mContext = this;
         mHandler = new Handler(this);
+        if (UserHelper.isLogin(this)) {
+            memberId = String.valueOf(UserHelper.getMemberId(this));
+        }
         getIntentData();
         initView();
+        getOilData();
     }
 
     @Override
@@ -90,7 +111,6 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
             try {
                 deviceId = bundle.getLong(Constants.P_DEVICEID);
                 deviceName = bundle.getString(Constants.P_DEVICENAME);
-                oilLave = bundle.getInt(Constants.P_OILLAVE);
 
 //        		oilLeve = ((ScanningOilLevelInfoArray)bundle.get(Constants.P_OILLEVE)).getOilLevelList();
 //        		lastLevel = (ScanningOilLevelInfo)bundle.get(Constants.P_LASTLEVEL);
@@ -107,11 +127,27 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
     }
 
     private void initView() {
+        liearChatCotanienr = (RelativeLayout) findViewById(R.id.linechart_cotainer);
+        weekChatCotainer = (RelativeLayout) findViewById(R.id.weekchart_cotainer);
+        turnOffLayout = (LinearLayout) findViewById(R.id.chart_bottom_layout);
+        todayTv = (TextView) findViewById(R.id.mc_oil_today_tv);
+        weekTv = (TextView) findViewById(R.id.mc_oil_week_tv);
+        mChart = (LineChart) findViewById(R.id.linechart);
+        mWeekChat = (LineChart) findViewById(R.id.weekchart);
         oilFormCotainer = (ViewGroup) findViewById(R.id.oil_form_container);
         oilEmptyTv = (TextView) findViewById(R.id.oil_empty_tv);
-        add_chart_layout = (RelativeLayout) findViewById(R.id.add_chart_layout);
-
         oil_proportion = (TextView) findViewById(R.id.oil_proportion);
+        todayTv.setOnClickListener(this);
+        weekTv.setOnClickListener(this);
+        todayTv.setSelected(true);
+        weekTv.setSelected(false);
+        last_date_oil_text = (TextView) findViewById(R.id.last_date_oil_text);
+        oil_proportion_last = (TextView) findViewById(R.id.oil_proportion_last);
+
+
+    }
+
+    private void setOilValue(int oilLave) {
         if (oilLave == -1) {
             oil_proportion.setText(ResV.getString(R.string.amount_text2));
         } else {
@@ -127,12 +163,6 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
             oilLave = 100;
         arcView = (DynamicWave) findViewById(R.id.arcView);
         arcView.setLave(oilLave);
-
-
-        last_date_oil_text = (TextView) findViewById(R.id.last_date_oil_text);
-        oil_proportion_last = (TextView) findViewById(R.id.oil_proportion_last);
-
-
     }
 
     private void setLastData() {
@@ -150,51 +180,49 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         }
     }
 
-    private void initChart() {
+    private void initChart(LineChart lineChart) {
         VORDIPLOM_COLORS[0] = getResources().getColor(R.color.oil_amount_proportion_last_text);
         VORDIPLOM_COLORS[1] = getResources().getColor(R.color.oil_amount_proportion_text);
 
-        mChart = (LineChart) findViewById(R.id.linechart);
-        mChart.setOnChartValueSelectedListener(this);
-        mChart.setDrawGridBackground(false);
+        lineChart.setOnChartValueSelectedListener(this);
+        lineChart.setDrawGridBackground(false);
 //        mChart.setViewPortOffsets(0, 20, 0, 0); //靠边
         // no description text
-        mChart.setNoDataTextDescription("");
-        mChart.setNoDataText("");
-        mChart.setDescription("");
+        lineChart.setNoDataTextDescription("");
+        lineChart.setNoDataText("");
+        lineChart.setDescription("");
 //        mChart.setDescriptionColor(Color.rgb(227, 135, 0)); 
 //        mChart.setDescriptionPosition(40f,60f);  
 
         // enable value highlighting
-        mChart.setHighlightEnabled(true);
+        lineChart.setHighlightEnabled(true);
 
         // enable touch gestures
-        mChart.setTouchEnabled(false);
+//        mChart.setTouchEnabled(false);
 
         // enable scaling and dragging
-        mChart.setDragEnabled(false);
-        mChart.setScaleEnabled(false);
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(false);
 
         // if disabled, scaling can be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
+        lineChart.setPinchZoom(false);
         mTf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
         // add data
-        setData();
+        setData(lineChart);
         // set an alternative background color
         // mChart.setBackgroundColor(Color.GRAY);
 
         // create a custom MarkerView (extend MarkerView) and specify the layout
         // to use for it
-        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view, mChart.getXAxis().getValues());
-
+        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view, oilLeve, todayTv.isSelected());
         // set the marker to the chart
-        mChart.setMarkerView(mv);
+        lineChart.setMarkerView(mv);
 
         // enable/disable highlight indicators (the lines that indicate the
         // highlighted Entry)
 //        mChart.setHighlightEnabled(false);
 
-        XAxis xl = mChart.getXAxis();
+        XAxis xl = lineChart.getXAxis();
         xl.setAvoidFirstLastClipping(true);
         xl.setPosition(XAxisPosition.BOTTOM/*XAxisPosition.BOTTOM_INSIDE*/);
         xl.setDrawGridLines(false);
@@ -205,7 +233,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
 //        YAxis leftAxis = mChart.getAxisLeft();
 //        leftAxis.setInverted(true);
 
-        YAxis y = mChart.getAxisLeft();
+        YAxis y = lineChart.getAxisLeft();
         y.setTypeface(mTf);
         y.setLabelCount(2, false);//第一个参数是Y轴坐标的个数，第二个参数是 是否不均匀分布，true是不均匀分布  
         y.setStartAtZero(true); //设置Y轴坐标是否从0开始  
@@ -220,7 +248,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         y.setAxisLineColor(getResources().getColor(R.color.cor12));
         y.setLabelCount(5, false);
         y.setTextColor(getResources().getColor(R.color.cor10));
-        YAxis rightAxis = mChart.getAxisRight();
+        YAxis rightAxis = lineChart.getAxisRight();
         rightAxis.setEnabled(false);
 
 
@@ -231,23 +259,23 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         // mChart.centerViewPort(10, 50);
 
         // get the legend (only possible after setting data)
-        Legend l = mChart.getLegend();
+        Legend l = lineChart.getLegend();
 
         // modify the legend ...
         // l.setPosition(LegendPosition.LEFT_OF_CHART);
         l.setForm(LegendForm.LINE);
 
-        mChart.getLegend().setEnabled(false);  //隐藏色素线条
+        lineChart.getLegend().setEnabled(false);  //隐藏色素线条
 
 //        mChart.animateXY(2000, 2000);
-        mChart.animateX(ANIMATETIME);
+        lineChart.animateX(ANIMATETIME);
 
         // dont forget to refresh the drawing
-        mChart.invalidate();
+        lineChart.invalidate();
     }
 
 
-    private void setData() {
+    private void setData(LineChart chart) {
 //		 focus
         if (null == oilLeve)
             return;
@@ -264,7 +292,11 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         }
 
         for (int i = 0; i < count; i++) {
-            xVals.add(oilLeve[i].getTime());
+            if (todayTv.isSelected()) {
+                xVals.add(oilLeve[i].getTime());
+            } else {
+                xVals.add(oilLeve[i].getDay());
+            }
         }
 
 
@@ -290,7 +322,11 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         LineDataSet set2 = new LineDataSet(yVals2, "");
         set2.setLineWidth(4);
         set2.setCircleSize(6);
-        set2.setCircleColors(VORDIPLOM_COLORS);
+        int[] circleColors = VORDIPLOM_COLORS.clone();
+        if (weekTv.isSelected()) {
+            circleColors[0] = circleColors[1];
+        }
+        set2.setCircleColors(circleColors);
         set2.setColor(getResources().getColor(R.color.transparent));
         set2.setDrawCircles(true);
 //	        yVals2.get(0).getData()
@@ -302,14 +338,17 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         data.setValueTextSize(10f);
         data.setValueTypeface(mTf);
         data.setDrawValues(false);
-        mChart.setData(data);
-//	        barChart.
+        chart.setData(data);
+        startTimer(chart, yVals2);
+    }
+
+    private void startTimer(LineChart chart, ArrayList<Entry> yVals2) {
         if (null != myTimer) {
             myTimer.cancel();
             myTimer = null;
         }
         myTimer = new Timer(true);
-        myTimer.schedule(new DrawTimerTask(mChart,
+        myTimer.schedule(new DrawTimerTask(chart,
                 yVals2.get(0), new Highlight(0, 1),
                 mHandler, Constants.HANDLER_CHART_MARKER_TIME), 200);
     }
@@ -321,67 +360,143 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
             case Constants.HANDLER_CHART_MARKER_TIME:
                 float[] f = (float[]) msg.obj;
                 if (null != f) {
-                    RadiusButtonView rbView = new RadiusButtonView(this);
-                    rbView.setText(String.valueOf((int) f[2]));
-                    rbView.setRoundRadius(14f);
-                    rbView.setTextSize(getResources().getDimension(R.dimen.text_size_15_sp));
-                    rbView.setTextColor(getResources().getColor(R.color.white));
-                    rbView.setColor(VORDIPLOM_COLORS[0],
-                            VORDIPLOM_COLORS[0],
-                            VORDIPLOM_COLORS[0]);
-                    rbView.inToButton();
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                            (int) getResources().getDimension(R.dimen.dimen_size_60),
-                            (int) getResources().getDimension(R.dimen.dimen_size_27)
-                    );
-//                    int offset = (int) getResources().getDimension(R.dimen.dimen_size_37);
-                    int offset = DensityUtil.dip2px(this,20);
-                    int offset1 = (int) getResources().getDimension(R.dimen.dimen_size_2);
-                    if (f[2] > 90) {
-                        layoutParams.leftMargin = (int) f[0] + offset1;
-//			        layoutParams.topMargin=(int)f[1]
-//			        		+5;
-                        layoutParams.topMargin = (int) f[1] - offset;
-                    } else {
-                        layoutParams.leftMargin = (int) f[0] + offset1;
-                        layoutParams.topMargin = (int) f[1]
-                                - (int) getResources().getDimension(R.dimen.chart_marker_height)
-                                - offset1 - offset;
+                    if (todayTv.isSelected()) {
+                        if (todayRbView == null) {
+                            todayRbView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.custom_marker_view, null);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, DensityUtil.dip2px(this, 27));
+                            liearChatCotanienr.addView(todayRbView, params);
+                        }
+                        setRaduiView(f, todayRbView, true);
+                    } else if (weekTv.isSelected()) {
+                        if (weekRbView == null) {
+                            weekRbView = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.custom_marker_view, null);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, DensityUtil.dip2px(this, 27));
+                            weekChatCotainer.addView(weekRbView, params);
+                        }
+                        setRaduiView(f, weekRbView, false);
                     }
-                    if (layoutParams.topMargin<0){
-                        layoutParams.topMargin+=(offset*2);
-                    }
-                    add_chart_layout.addView(rbView, layoutParams);
-                }
-
-                break;
-            case Constants.HANDLE_GETOILLIST_SUCCESS:
-                ScanningOilLevelInfoArray infoArray = (ScanningOilLevelInfoArray) msg.obj;
-                oilLeve = infoArray.getOilLevel();
-                lastLevel = infoArray.getLastLevel();
-                if (lastLevel == null && (oilLeve == null || oilLeve.length <= 0)) {
-                    oilFormCotainer.setVisibility(View.GONE);
-                    oilEmptyTv.setVisibility(View.VISIBLE);
-                } else {
-                    oilFormCotainer.setVisibility(View.VISIBLE);
-                    oilEmptyTv.setVisibility(View.GONE);
-                    initChart();
-                    setLastData();
                 }
                 break;
         }
         return false;
     }
 
+    private void setRaduiView(float[] f, RelativeLayout rbView, boolean isActived) {
+        TextView contentTv = (TextView) rbView.findViewById(R.id.tvContent);
+        if (oilLeve != null && oilLeve.length > 0) {
+            ScanningOilLevelInfo info = oilLeve[0];
+            if (info != null) {
+//                        rbView.setText(String.valueOf((int) f[2]) + "% " + xTime);
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rbView.getLayoutParams();
+                int offset = DensityUtil.dip2px(this, 20);
+                int offset1 = (int) getResources().getDimension(R.dimen.dimen_size_2);
+                if (f[2] > 90) {
+                    layoutParams.leftMargin = (int) f[0] + offset1;
+                    //			        layoutParams.topMargin=(int)f[1]
+//			        		+5;
+                    layoutParams.topMargin = (int) f[1] - offset;
+                } else {
+                    layoutParams.leftMargin = (int) f[0] + offset1;
+                    layoutParams.topMargin = (int) f[1]
+                            - (int) getResources().getDimension(R.dimen.chart_marker_height)
+                            - offset1 - offset;
+                }
+                if (layoutParams.topMargin < 0) {
+                    layoutParams.topMargin += (offset * 2);
+                }
+                if (rbView.getVisibility() != View.VISIBLE) {
+                    rbView.setVisibility(View.VISIBLE);
+                }
+                rbView.setActivated(isActived);
+                contentTv.setText(info.getLevel() + "% " + info.getTime());
+            } else {
+                rbView.setVisibility(View.GONE);
+            }
+        } else {
+            rbView.setVisibility(View.GONE);
+        }
+    }
+
+    public void updateOilChat(ScanningOilLevelInfoArray infoArray, LineChart lineChart) {
+        if (infoArray != null) {
+            oilLeve = infoArray.getOilLevel();
+            lastLevel = infoArray.getLastLevel();
+            if (lastLevel == null && oilLeve != null && oilLeve.length > 0) {
+                lastLevel = oilLeve[0];
+            }
+            if (oilLeve != null && oilLeve.length > 0) {
+                oilEmptyTv.setVisibility(View.GONE);
+                oilFormCotainer.setVisibility(View.VISIBLE);
+                initChart(lineChart);
+                if (todayTv.isSelected()) {
+                    setLastData();
+                    ScanningOilLevelInfo newOilLeve = oilLeve[oilLeve.length - 1];
+                    if (newOilLeve != null) {
+                        setOilValue(newOilLeve.getLevel());
+                    }
+                }
+            }else{
+                if (todayTv.isSelected()) {
+                    oilEmptyTv.setVisibility(View.VISIBLE);
+                    oilFormCotainer.setVisibility(View.GONE);
+                }
+            }
+        } else {
+            if (todayTv.isSelected()) {
+                oilEmptyTv.setVisibility(View.VISIBLE);
+                oilFormCotainer.setVisibility(View.GONE);
+            }
+        }
+    }
+
+
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
+        switch (v.getId()) {
+            case R.id.mc_oil_today_tv:
+                if (todayTv.isSelected()) {
+                    return;
+                }
+                todayTv.setSelected(true);
+                weekTv.setSelected(false);
+                liearChatCotanienr.setVisibility(View.VISIBLE);
+                weekChatCotainer.setVisibility(View.GONE);
+                turnOffLayout.setVisibility(View.VISIBLE);
+                if (mChart.getData() == null) {
+                    getOilData();
+                }
+                break;
+            case R.id.mc_oil_week_tv:
+                if (weekTv.isSelected()) {
+                    return;
+                }
+                todayTv.setSelected(false);
+                weekTv.setSelected(true);
+                liearChatCotanienr.setVisibility(View.GONE);
+                weekChatCotainer.setVisibility(View.VISIBLE);
+                turnOffLayout.setVisibility(View.INVISIBLE);
+                if (mWeekChat.getData() == null) {
+                    getOilData();
+                }
+                break;
+        }
 
     }
 
     @Override
     public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
         // TODO Auto-generated method stub
+        AppLog.print("onValuseSelected__Entry_" + e);
+        if (todayTv.isSelected()) {
+            if (todayRbView != null && todayRbView.getVisibility() == View.VISIBLE) {
+                todayRbView.setVisibility(View.GONE);
+            }
+        } else if (weekTv.isSelected()) {
+            if (weekRbView != null && weekRbView.getVisibility() == View.VISIBLE) {
+                weekRbView.setVisibility(View.GONE);
+            }
+        }
 
     }
 
@@ -435,12 +550,53 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         //MobclickAgent.onPageStart(UMengKey.time_machine_waterlevel);
         super.onResume();
         MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_WATERLEVEL);
-        new GetOilLevelListAsync(deviceId, mContext, mHandler).execute();
+//        getOilData();
     }
 
-    @Override
-    protected void onPause() {
-        //MobclickAgent.onPageEnd(UMengKey.time_machine_waterlevel);
-        super.onPause();
+    public void getOilData() {
+        if (todayTv.isSelected()) {
+            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getTodayOil(memberId, deviceId).compose(RxHelper.<ScanningOilLevelInfoArray>handleResult()).subscribe(new RxSubscriber<ScanningOilLevelInfoArray>(mContext) {
+                @Override
+                protected void _onNext(ScanningOilLevelInfoArray infoArray) {
+                    updateOilChat(infoArray, mChart);
+                }
+
+                @Override
+                protected void _onError(String message) {
+                    ToastUtils.showToast(mContext, message);
+                }
+            }));
+        } else if (weekTv.isSelected()) {
+            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getWeeklyOil(memberId, deviceId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
+                @Override
+                protected void _onNext(JsonObject responseJson) {
+                    if (responseJson != null) {
+                        JsonElement resutJe = responseJson.get("result");
+                        if (resutJe != null) {
+                            Gson gson = new Gson();
+                            JsonArray resultJarray = resutJe.getAsJsonArray();
+                            ScanningOilLevelInfoArray infoArray = null;
+                            if (resultJarray != null && resultJarray.size() > 0) {
+                                ScanningOilLevelInfo[] oilLevelInfoArray = gson.fromJson(resultJarray, new TypeToken<ScanningOilLevelInfo[]>() {
+                                }.getType());
+                                infoArray = new ScanningOilLevelInfoArray();
+                                infoArray.setOilLevel(oilLevelInfoArray);
+                            }
+                            updateOilChat(infoArray, mWeekChat);
+                        }
+
+                    }
+
+                }
+
+                @Override
+                protected void _onError(String message) {
+                    ToastUtils.showToast(mContext, message);
+                }
+            }));
+        }
+
     }
+
+
 }

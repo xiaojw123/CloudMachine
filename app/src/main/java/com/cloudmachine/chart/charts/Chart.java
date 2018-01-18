@@ -63,6 +63,9 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
         ViewGroup
         implements ChartInterface {
 
+    float yOffset = 20;
+    float xOffset;
+    int markerWidth;
     public static final String LOG_TAG = "MPAndroidChart";
 
     /**
@@ -149,7 +152,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     /**
      * text that is displayed when the chart is empty
      */
-    private String mNoDataText = "No chart data available.";
+    private String mNoDataText = "未获取到油耗历史数据";
 
     /**
      * Gesture listener for custom callbacks when making gestures on the chart.
@@ -294,7 +297,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     // setData(data);
     // invalidate();
     // }
-    public void initTrasform(){
+    public void initTrasform() {
 
 
     }
@@ -663,12 +666,22 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
                         MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
                 mMarkerView.layout(0, 0, mMarkerView.getMeasuredWidth(),
                         mMarkerView.getMeasuredHeight());
-
+                if (markerWidth == 0) {
+                    markerWidth = mMarkerView.getWidth();
+                }
+                if (xOffset == 0) {
+                    xOffset = markerWidth / 2 + 5;
+                }
+                float x = pos[0] + xOffset;
+                float rightBound = getWidth() + getX() - (x + markerWidth);
+                if (rightBound <= 0) {
+                    x -= xOffset * 2;
+                }
                 if (pos[1] - mMarkerView.getHeight() <= 0) {
                     float y = mMarkerView.getHeight() - pos[1];
-                    mMarkerView.draw(canvas, pos[0], pos[1] + y);
+                    mMarkerView.draw(canvas, x, pos[1] + y - yOffset);
                 } else {
-                    mMarkerView.draw(canvas, pos[0], pos[1]);
+                    mMarkerView.draw(canvas, x, pos[1] - yOffset);
                 }
             }
         }

@@ -97,7 +97,7 @@
                         android:ellipsize="end"
                         android:maxLines="3"
                         android:textColor="@color/cor9"
-                        android:textSize="@dimen/siz4" />
+                        android:textSize="@dimen/siz5" />
 
                     <TextView
                         android:id="@+id/device_info_status"

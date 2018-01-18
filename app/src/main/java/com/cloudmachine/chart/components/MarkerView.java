@@ -24,9 +24,9 @@ public abstract class MarkerView extends RelativeLayout {
 	 * @param layoutResource
 	 *            the layout resource to use for the MarkerView
 	 */
-	public MarkerView(Context context, int layoutResource) {
+	public MarkerView(Context context, int layoutResource,boolean isActFlag) {
 		super(context);
-		setupLayoutResource(layoutResource);
+		setupLayoutResource(layoutResource,isActFlag);
 	}
 
 	/**
@@ -34,10 +34,10 @@ public abstract class MarkerView extends RelativeLayout {
 	 *
 	 * @param layoutResource
 	 */
-	private void setupLayoutResource(int layoutResource) {
+	private void setupLayoutResource(int layoutResource,boolean isFlag) {
 
 		View inflated = LayoutInflater.from(getContext()).inflate(layoutResource, this);
-
+		inflated.setActivated(isFlag);
 		inflated.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		inflated.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 

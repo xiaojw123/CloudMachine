@@ -96,8 +96,8 @@ public class ViewMessagePresenter extends ViewMessageConract.Presenter {
     }
 
     @Override
-    public void getALLMsg(long memberId) {
-        mRxManage.add(mModel.getALLMsg(memberId).subscribe(new RxSubscriber<List<MessageBO>>(mContext,false) {
+    public void getALLMsg(long memberId, int pageNo) {
+        mRxManage.add(mModel.getALLMsg(memberId,pageNo).subscribe(new RxSubscriber<List<MessageBO>>(mContext,false) {
             @Override
             protected void _onNext(List<MessageBO> messageBOs) {
                 mView.retrunGetAllMsg(messageBOs);
@@ -118,12 +118,12 @@ public class ViewMessagePresenter extends ViewMessageConract.Presenter {
             protected void _onNext(MessageBO messageBO) {
                 messageBO.setMessageType(5);
                 mView.retrunQuestionNeed(messageBO);
-                getALLMsg(memberId);
+                getALLMsg(memberId,1);
             }
 
             @Override
             protected void _onError(String message) {
-                getALLMsg(memberId);
+                getALLMsg(memberId,1);
             }
         }));
 

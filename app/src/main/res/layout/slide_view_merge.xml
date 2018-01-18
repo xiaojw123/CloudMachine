@@ -14,7 +14,6 @@
 
     <!-- android:background="@drawable/holder_bg" -->
     <RelativeLayout
-        android:id="@+id/holder"
         android:layout_width="284px"
         android:layout_height="@dimen/main1_list_layout_height"
         android:clickable="true"

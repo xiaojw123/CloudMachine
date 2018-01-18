@@ -41,6 +41,13 @@ public class ApiConstants {
 //    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
 //    public static String H5_HOST = "http://h5.test.cloudm.com/";
 
+    /*110*/
+//    public static String CLOUDM_HOST = "http://192.168.1.110:8090/cloudm3/";
+//    public static String CLOUDM_YJX_HOST = "http://192.168.1.110:8090/cloudm3/yjx/";
+//    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
+//    public static String H5_HOST = "http://h5.test.cloudm.com/";
+//    public static String BOX_HIGH_COFIG_HOST = "http://192.168.1.176:18089/";//云黑子-高配-拍照
+
 
     /*H5配置URL*/
     public static String AppBoxDetail = "https://h5.cloudm.com/n/order/yunbox";
@@ -52,9 +59,10 @@ public class ApiConstants {
     public static String AppWorkTimeStatistics = "https://h5.cloudm.com/n/time_statistics";
     public static String AppOrderList = "https://h5.cloudm.com/n/order/olist";
     public static String AppWalletHelper = "http://h5.cloudm.com/n/wallet_description";
-    public static String AppFeedback="https://h5.cloudm.com/n/feedback";
+    public static String AppFeedback = "https://h5.cloudm.com/n/feedback";
     public static String AppMachineKnowledge;
-    public static String AppWorkReport;
+    // TODO: 2018/1/15 挖机周报测试
+    public static String AppWorkReport="http://192.168.1.109:7718/work_report?deviceId=795&week=2";
 
 
     /**

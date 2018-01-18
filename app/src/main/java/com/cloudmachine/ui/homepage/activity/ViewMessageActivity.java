@@ -8,22 +8,23 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.cloudmachine.R;
+import com.cloudmachine.adapter.BaseRecyclerAdapter;
 import com.cloudmachine.adapter.MessageListAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.MessageBO;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.OnItemClickListener;
-import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.ui.home.activity.MessageDetailActivity;
 import com.cloudmachine.ui.home.contract.ViewMessageConract;
 import com.cloudmachine.ui.home.model.ViewMessageModel;
 import com.cloudmachine.ui.home.presenter.ViewMessagePresenter;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.chart.utils.AppLog;
 import com.umeng.analytics.MobclickAgent;
-import com.yanzhenjie.recyclerview.swipe.Closeable;
-import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.util.List;
@@ -42,14 +43,15 @@ import butterknife.ButterKnife;
  * 修改备注：
  */
 
-public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePresenter, ViewMessageModel> implements ViewMessageConract.View, OnItemClickListener {
-    public static final String FRAGMENT_TYPE_SYSTEM = "system_message";
+public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePresenter, ViewMessageModel> implements ViewMessageConract.View, OnItemClickListener, BaseRecyclerAdapter.OnItemClickListener, SwipeMenuRecyclerView.LoadMoreListener {
     @BindView(R.id.view_message_smrlv)
     SwipeMenuRecyclerView messageRlv;
     @BindView(R.id.view_message_empty)
     View emptyMsgView;
     MessageListAdapter mAdapter;
     long memberId;
+    int pageNo = 1;
+    int toalPageSize = -1;
 
 
     @Override
@@ -73,12 +75,13 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
 
     private void initRecyclerView() {
         messageRlv.setLayoutManager(new LinearLayoutManager(this));
-
         DividerItemDecoration did = new DividerItemDecoration(this, LinearLayout.VERTICAL);
         did.setDrawable(getResources().getDrawable(R.drawable.divider_line_horztial));
         messageRlv.addItemDecoration(did);
         messageRlv.setSwipeMenuCreator(CommonUtils.getMenuCreator(this));
         messageRlv.setSwipeMenuItemClickListener(menuItemClickListener);
+        messageRlv.useDefaultLoadMore();
+        messageRlv.setLoadMoreListener(this);
         mAdapter = new MessageListAdapter(this);
         mAdapter.setOnItemClickListener(this);
         mAdapter.setPresenter(mPresenter);
@@ -86,18 +89,18 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
     }
 
 
-    OnSwipeMenuItemClickListener menuItemClickListener = new OnSwipeMenuItemClickListener() {
+    SwipeMenuItemClickListener menuItemClickListener = new SwipeMenuItemClickListener() {
 
 
         @Override
-        public void onItemClick(Closeable closeable, int adapterPosition, int menuPosition, int direction) {
+        public void onItemClick(SwipeMenuBridge menuBridge) {
             AppLog.print("onItemClick___");
-            if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
+            if (menuBridge.getDirection() == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
                 //删除item
-                MessageBO msgBo = mAdapter.getItem(adapterPosition);
+                MessageBO msgBo = mAdapter.getItem(menuBridge.getAdapterPosition());
                 if (msgBo != null) {
                     AppLog.print("onItemClick___deleMsg__");
-                    closeable.smoothCloseLeftMenu();
+                    menuBridge.closeMenu();
                     mPresenter.deleteMessage(memberId, msgBo);
                 }
 
@@ -138,6 +141,14 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
         mAdapter.updateItems(msgList);
         List<MessageBO> messageBOs = mAdapter.getItems();
         if (messageBOs != null && messageBOs.size() > 0) {
+            if (toalPageSize == -1) {
+                MessageBO bo = messageBOs.get(0);
+                if (bo != null) {
+                    int counut = bo.getCount();
+                    toalPageSize = counut % 20 > 0 ? (counut / 20) + 1 : counut / 20;
+                }
+            }
+            messageRlv.loadMoreFinish(false, true);
             messageRlv.setVisibility(View.VISIBLE);
             emptyMsgView.setVisibility(View.GONE);
         } else {
@@ -175,9 +186,10 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
                 title = "问卷调查";
             }
 //            messageType=8消息内容
-            if (messageType == 8) {
+            if (messageType == 8 || messageType == 3) {
                 MobclickAgent.onEvent(this, MobEvent.TIME_MESSAGE_DETAIL);
                 Bundle detailBundle = new Bundle();
+                detailBundle.putString(MessageDetailActivity.MESSAGE_TITLE,msgBo.getTitle());
                 detailBundle.putString(MessageDetailActivity.MESSAGE_CONTENT, msgBo.getContent());
                 detailBundle.putString(MessageDetailActivity.MESSAGE_TIME, msgBo.getInviteTime());
                 Constants.toActivity(this, MessageDetailActivity.class, detailBundle);
@@ -192,4 +204,18 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
             }
         }
     }
+
+    @Override
+    public void onLoadMore() {
+        AppLog.print("loadMore_____toalSize__"+toalPageSize+", curNo__"+pageNo);
+        if (toalPageSize != -1) {
+            if (pageNo < toalPageSize) {
+                ++pageNo;
+                mPresenter.getALLMsg(memberId, pageNo);
+            } else {
+                messageRlv.loadMoreFinish(false, false);
+            }
+        }
+    }
+
 }

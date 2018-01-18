@@ -93,7 +93,6 @@
 
 
             <TextView
-                android:id="@+id/tv_advantage"
                 android:layout_width="@dimen/dimen_size_106"
                 android:layout_height="wrap_content"
                 android:text="@string/advantage"
@@ -141,7 +140,6 @@
 
 
                     <TextView
-                        android:id="@+id/tv_advance"
                         android:layout_width="@dimen/dimen_size_106"
                         android:layout_height="wrap_content"
                         android:text="@string/tag_advice"

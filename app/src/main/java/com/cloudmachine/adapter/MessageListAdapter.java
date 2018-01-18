@@ -1,6 +1,7 @@
 package com.cloudmachine.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.adapter.holder.BaseHolder;
 import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.helper.UserHelper;
-import com.cloudmachine.listener.OnItemClickListener;
 import com.cloudmachine.ui.home.presenter.ViewMessagePresenter;
-import com.yanzhenjie.recyclerview.swipe.SwipeMenuAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,28 +27,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by xiaojw on 2017/7/17.
  */
 
-public class MessageListAdapter extends SwipeMenuAdapter<MessageListAdapter.MessageListHolder> {
+public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
     ViewMessagePresenter mPresenter;
-    Context mContext;
-    List<MessageBO> mItems;
     OnItemClickListener mOnItemClickListener;
 
     public MessageListAdapter(Context context) {
-        mContext = context;
+        super(context);
     }
 
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
-    }
-
-    public MessageListAdapter(Context context, List<MessageBO> items) {
-        mContext = context;
-        mItems = items;
-    }
-
-    public List<MessageBO> getItems() {
-        return mItems;
     }
 
 
@@ -75,40 +63,16 @@ public class MessageListAdapter extends SwipeMenuAdapter<MessageListAdapter.Mess
         notifyDataSetChanged();
     }
 
-    public MessageBO getItem(int position) {
-
-        return mItems.get(position);
-    }
 
     public void setPresenter(ViewMessagePresenter presenter) {
         mPresenter = presenter;
     }
 
-
     @Override
-    public void onBindViewHolder(MessageListHolder holder, int position) {
-        if (mItems != null && mItems.size() > 0) {
-            MessageBO item = mItems.get(position);
-            if (item != null) {
-                holder.initViewHolder(item);
-            }
-        }
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return  new MessageListHolder(LayoutInflater.from(mContext).inflate(R.layout.list_item_message, parent, false));
     }
 
-    @Override
-    public int getItemCount() {
-        return mItems != null ? mItems.size() : 0;
-    }
-
-    @Override
-    public View onCreateContentView(ViewGroup parent, int viewType) {
-        return LayoutInflater.from(mContext).inflate(R.layout.list_item_message, parent, false);
-    }
-
-    @Override
-    public MessageListHolder onCompatCreateViewHolder(View realContentView, int viewType) {
-        return new MessageListHolder(realContentView);
-    }
 
 
     class MessageListHolder extends BaseHolder<MessageBO> implements View.OnClickListener {
@@ -135,12 +99,7 @@ public class MessageListAdapter extends SwipeMenuAdapter<MessageListAdapter.Mess
         private MessageListHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnItemClickListener.onItemClick(v, getAdapterPosition());
-                }
-            });
+
         }
 
         @Override
@@ -248,6 +207,12 @@ public class MessageListAdapter extends SwipeMenuAdapter<MessageListAdapter.Mess
                 refuseTv.setTag(item);
             } else {
                 itemView.setTag(item);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mOnItemClickListener.onItemClick(v, getAdapterPosition());
+                    }
+                });
             }
             acceptTv.setOnClickListener(this);
             refuseTv.setOnClickListener(this);

@@ -155,14 +155,6 @@
         <item name="android:singleLine">true</item>
     </style>
     <!-- 三色View文字 -->
-    <style name="ImageView_Array">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:scaleType">centerCrop</item>
-        <item name="android:src">@drawable/mc_add_image</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_gravity">center_vertical</item>
-    </style>
 
     <style name="MyDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
@@ -260,30 +252,6 @@
 
     <style name="text_16_666666">
         <item name="android:textSize">16.0dip</item>
-        <item name="android:textColor">#ff666666</item>
-    </style>
-
-    <style name="sdw_white">
-        <item name="android:shadowColor">#7fffffff</item>
-        <item name="android:shadowDx">0.0</item>
-        <item name="android:shadowDy">0.65</item>
-        <item name="android:shadowRadius">1.0</item>
-    </style>
-
-    <style name="sdw_79351b">
-        <item name="android:shadowColor">#ff79351b</item>
-        <item name="android:shadowDx">0.0</item>
-        <item name="android:shadowDy">1.0</item>
-        <item name="android:shadowRadius">1.0</item>
-    </style>
-
-    <style name="text_15_ffffff_sdw" parent="@style/sdw_79351b">
-        <item name="android:textSize">15.0dip</item>
-        <item name="android:textColor">#ffffffff</item>
-    </style>
-
-    <style name="text_15_666666_sdw" parent="@style/sdw_white">
-        <item name="android:textSize">15.0dip</item>
         <item name="android:textColor">#ff666666</item>
     </style>
 
@@ -511,10 +479,6 @@
     </style>
 
     <!--底部弹出框样式-->
-    <style name="my_dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
-    </style>
 
     <!--底部弹窗进入退出时动画-->
     <style name="counponDialog" parent="android:Animation">
@@ -550,17 +514,6 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
-    <style name="HomeNavItemStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textSize">@dimen/text_size_18_sp</item>
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingBottom">5dp</item>
-        <item name="android:paddingLeft">40dp</item>
-        <item name="android:paddingRight">40dp</item>
-    </style>
-
     <style name="HomeMenuContainerStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/dimen_size_50</item>
@@ -580,11 +533,6 @@
     <style name="CommonLandscapeLine">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/dimen_size_1</item>
-        <item name="android:background">@color/cor12</item>
-    </style>
-    <style name="CommonVerticalLine">
-        <item name="android:layout_width">@dimen/dimen_size_1</item>
-        <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/cor12</item>
     </style>
 
@@ -693,13 +641,7 @@
         <item name="android:textSize">@dimen/siz5</item>
         <item name="android:layout_marginTop">@dimen/dimen_size_11</item>
     </style>
-    <style name="mc_main_no_data_text" >
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:textColor">@color/public_black_3</item>
-        <item name="android:textSize">@dimen/public_textsize1</item>
-    </style>
+
     <style name="login_left_text" >
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -732,15 +674,6 @@
         <item name="android:textColorHint">@color/login_hint_text</item>
         <item name="android:background">@null</item>
         <item name="android:layout_marginRight">@dimen/public_layout_padding_left</item>
-    </style>
-    <style name="repair_basic_item_text" >
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:textColor">@color/public_black</item>
-        <item name="android:textSize">@dimen/public_textsize1</item>
-        <item name="android:layout_marginLeft">@dimen/public_layout_padding_left</item>
-        <item name="android:singleLine">true</item>
     </style>
 
     <style name="device_name">

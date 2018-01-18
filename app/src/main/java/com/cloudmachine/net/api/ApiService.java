@@ -19,6 +19,7 @@ import com.cloudmachine.bean.PickItemBean;
 import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.bean.ResonItem;
+import com.cloudmachine.bean.ScanningOilLevelInfoArray;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.ui.home.model.CouponBean;
 import com.cloudmachine.ui.home.model.OrderCouponBean;
@@ -55,6 +56,13 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
+    @GET("device/oilLevelList")
+    Observable<BaseRespose<ScanningOilLevelInfoArray>> getTodayOil(@Query("memberId") String memberId,@Query("deviceId") long deviceId);
+
+    @GET("device/oilLevelListWeekly")
+    Observable<JsonObject>  getWeeklyOil(@Query("memberId") String memberId, @Query("deviceId") long deviceId);
+
+
     @GET("message/getMessageByid")
     Observable<BaseRespose<MessageBO>> getMessageByid(@Query("id") String id);
 
@@ -175,7 +183,7 @@ public interface ApiService {
 
     //获取消息列表
     @GET("device/getAllMessages")
-    Observable<BaseRespose<List<MessageBO>>> getAllMsg(@Query("memberId") long memberId);
+    Observable<BaseRespose<List<MessageBO>>> getAllMsg(@Query("memberId") long memberId,@Query("pageNo") int pageNo,@Query("pageSize") int pageSize);
 
     //问卷调查
     @GET("question/need")

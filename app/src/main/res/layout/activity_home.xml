@@ -272,7 +272,6 @@
                         android:src="@drawable/icon_my_order" />
 
                     <TextView
-                        android:id="@+id/item_order_tv"
                         style="@style/HomeMenuTvStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

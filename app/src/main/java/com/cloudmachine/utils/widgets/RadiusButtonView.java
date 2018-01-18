@@ -98,10 +98,9 @@ public class RadiusButtonView extends RelativeLayout {
     public void setOnClickListener(OnClickListener listener){
     	radius_button_text.setOnClickListener(listener);
     }
-    
+
+
     public void inToButton(){
-    	
-    	
     	gd_nm.setColor(fillColor_nm);
     	gd_nm.setCornerRadius(roundRadius);
     	gd_nm.setStroke(strokeWidth, strokeColor);

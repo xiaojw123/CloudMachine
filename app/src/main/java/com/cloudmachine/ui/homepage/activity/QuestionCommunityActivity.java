@@ -63,6 +63,7 @@ import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.widget.CommonTitleView;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
@@ -757,6 +758,14 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     if (scJobj != null) {
                         shareTitle = scJobj.get("title").getAsString();
                         shareDesc = scJobj.get("desc").getAsString();
+                        JsonElement imgJE = scJobj.get("is_image");
+                        if (imgJE != null) {
+                            isImg = imgJE.getAsInt();
+                        }
+                        JsonElement imgUrlJE=scJobj.get("image");
+                        if (imgUrlJE!=null){
+                            shareImgUrl=imgUrlJE.getAsString();
+                        }
                         if (TextUtils.isEmpty(shareLink)) {
                             shareLink = scJobj.get("link").getAsString();
                         }
@@ -821,10 +830,16 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             }
         }
 
+        // TODO: 2018/1/10 Test Share IMG
         private void shareUrl() {
-            ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, shareLink, shareTitle, shareDesc, sharePic);
-            shareDialog.setLinkUrl(mUrl);
-            shareDialog.show();
+            if (isImg == 0) {
+                ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, shareLink, shareTitle, shareDesc, sharePic);
+                shareDialog.setLinkUrl(mUrl);
+                shareDialog.show();
+            }else if (isImg==1){
+                ShareDialog shareDialog =new ShareDialog(QuestionCommunityActivity.this,shareImgUrl);
+                shareDialog.show();
+            }
             MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
         }
     };
@@ -854,6 +869,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private String h5Title;
     private String sharePic;
     private String rightEvent;
+    private int isImg;
+    private String shareImgUrl;
 
     public void clearWebCahe() {
         // 清除cookie即可彻底清除缓存

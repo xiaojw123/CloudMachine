@@ -2,7 +2,7 @@ package com.cloudmachine.bean;
 
 import java.io.Serializable;
 
-public class ScanningOilLevelInfoArray implements Serializable{
+public class ScanningOilLevelInfoArray implements Serializable {
 	
 	
 	/**
@@ -11,7 +11,8 @@ public class ScanningOilLevelInfoArray implements Serializable{
 	private static final long serialVersionUID = 7164648887989003701L;
 	private ScanningOilLevelInfo[] oilLevel;
 	private ScanningOilLevelInfo lastLevel;
-	
+
+
 	
 	public ScanningOilLevelInfo[] getOilLevel() {
 		return oilLevel;

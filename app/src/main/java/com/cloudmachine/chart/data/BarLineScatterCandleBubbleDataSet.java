@@ -13,7 +13,9 @@ import java.util.List;
 public abstract class BarLineScatterCandleBubbleDataSet<T extends Entry> extends DataSet<T> {
 
     /** default highlight color */
+//    protected int mHighLightColor = Color.rgb(229, 229, 229);
     protected int mHighLightColor = Color.rgb(255, 187, 115);
+
 
     public BarLineScatterCandleBubbleDataSet(List<T> yVals, String label) {
         super(yVals, label);

@@ -27,8 +27,8 @@ public class ViewMessageModel implements ViewMessageConract.Model {
     }
 
     @Override
-    public Observable<List<MessageBO>> getALLMsg(long memberId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getAllMsg(memberId).compose(RxHelper.<List<MessageBO>>handleResult());
+    public Observable<List<MessageBO>> getALLMsg(long memberId,int pageNo) {
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getAllMsg(memberId,pageNo,20).compose(RxHelper.<List<MessageBO>>handleResult());
     }
 
     @Override

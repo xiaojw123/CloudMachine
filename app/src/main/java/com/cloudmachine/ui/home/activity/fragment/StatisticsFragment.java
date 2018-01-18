@@ -1,7 +1,6 @@
 package com.cloudmachine.ui.home.activity.fragment;
 
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.SpannableString;
@@ -22,13 +21,10 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.utils.AutoUtils;
-import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.bean.StatisticsInfo;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.StatisticsAsync;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
@@ -70,7 +66,7 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
     private String mReplace;
     private TextView mEmptyTv;
     private LinearLayout daysItemCotainer;
-    private RadiusButtonView mViewReportBtn;
+//    private RadiusButtonView mViewReportBtn;
 
     @Override
     public void onResume() {
@@ -146,11 +142,11 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.radius_button_text:
-                Bundle vB = new Bundle();
-                vB.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppWorkReport);
-                Constants.toActivity(getActivity(), QuestionCommunityActivity.class, vB);
-                break;
+//            case R.id.radius_button_text:
+//                Bundle vB = new Bundle();
+//                vB.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppWorkReport);
+//                Constants.toActivity(getActivity(), QuestionCommunityActivity.class, vB);
+//                break;
             case R.id.iv_calendar:
                 mView = getActivity().getLayoutInflater().inflate(R.layout.check_calendar_view, null);
                 lvCalendar = (ListView) mView.findViewById(R.id.lv_calendar);
@@ -322,13 +318,13 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
         mTvTotalHoursValue = (TextView) viewParent.findViewById(R.id.tv_total_hours_value);
         mTvAveHoursValue = (TextView) viewParent.findViewById(R.id.tv_ave_hours_value);
         mTvWorkRateValue = (TextView) viewParent.findViewById(R.id.tv_work_rate_value);
-        mViewReportBtn = (RadiusButtonView) viewParent.findViewById(R.id.view_report_btn);
-        mViewReportBtn.setOnClickListener(this);
-        if (!TextUtils.isEmpty(ApiConstants.AppWorkReport)) {
-            mViewReportBtn.setVisibility(View.VISIBLE);
-            String deviceName = getActivity().getIntent().getStringExtra(Constants.P_DEVICENAME);
-            mViewReportBtn.setText("查看"+deviceName+"月度工作报表");
-        }
+//       mViewReportBtn = (RadiusButtonView) viewParent.findViewById(R.id.view_report_btn);
+//        mViewReportBtn.setOnClickListener(this);
+//        if (!TextUtils.isEmpty(ApiConstants.AppWorkReport)) {
+//            mViewReportBtn.setVisibility(View.VISIBLE);
+//            String deviceName = getActivity().getIntent().getStringExtra(Constants.P_DEVICENAME);
+//            mViewReportBtn.setText("查看"+deviceName+"月度工作报表");
+//        }
 
     }
 

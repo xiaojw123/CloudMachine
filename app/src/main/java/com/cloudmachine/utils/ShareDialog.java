@@ -30,7 +30,7 @@ import static com.cloudmachine.utils.WeChatShareUtil.weChatShareUtil;
 
 
 public class ShareDialog extends Dialog implements View.OnClickListener, UMShareListener {
-    private final View view;
+    private View view;
     private String webpageUrl;
     private String msgTitle;
     private String msgDesc;
@@ -39,6 +39,8 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
     private String iconUrl;
     private SHARE_MEDIA mMedia;
     private String mLinkUrl;
+    private boolean isImageShare;
+    private String imgUrl;
 
     public ShareDialog(Context context, String webpageUrl, String msgTitle, String msgDesc, int resource) {
         super(context, R.style.ShareDialog);
@@ -54,6 +56,18 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
         initView();
     }
 
+    public ShareDialog(Context context, String imgUrl) {
+        super(context, R.style.ShareDialog);
+        isImageShare = true;
+        mContext = context;
+        this.imgUrl = imgUrl;
+        view = getLayoutInflater().inflate(R.layout.widget_dialog_share, null);
+        setContentView(view);
+        initWindow();
+        initView();
+    }
+
+
     public ShareDialog(Context context, String webpageUrl, String msgTitle, String msgDesc, String icon) {
         super(context, R.style.ShareDialog);
 
@@ -68,8 +82,9 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
         initWindow();
         initView();
     }
-    public void setLinkUrl(String linkUrl){
-        mLinkUrl=linkUrl;
+
+    public void setLinkUrl(String linkUrl) {
+        mLinkUrl = linkUrl;
     }
 
     /**
@@ -103,7 +118,7 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
         ivSession.setOnClickListener(this);
         ivTimeline.setOnClickListener(this);
         ivCopyLink.setOnClickListener(this);
-        MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_APP);
+        MobclickAgent.onEvent(mContext, MobEvent.COUNT_SHARE_APP);
     }
 
     @Override
@@ -114,20 +129,20 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
                 break;
             case R.id.iv_copylink:
 //                webpageUrl
-                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_COPY);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_SHARE_COPY);
                 ClipboardManager cm = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 cm.setText(mLinkUrl);
                 ToastUtils.showCenterToast(v.getContext(), "复制成功");
                 dismiss();
                 break;
             case R.id.iv_qq:
-                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_QQ);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_SHARE_QQ);
                 mMedia = SHARE_MEDIA.QQ;
                 shareSocialUrl();
                 dismiss();
                 break;
             case R.id.iv_qq_zone:
-                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_QZONE);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_SHARE_QZONE);
                 mMedia = SHARE_MEDIA.QZONE;
                 shareSocialUrl();
                 dismiss();
@@ -140,13 +155,13 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
                 break;
 
             case R.id.iv_session:  // 分享给微信朋友
-                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_WECHAT);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_SHARE_WECHAT);
                 mMedia = SHARE_MEDIA.WEIXIN;
                 shareSocialUrl();
                 dismiss();
                 break;
             case R.id.iv_timeline: // 分享到朋友圈
-                MobclickAgent.onEvent(mContext,MobEvent.COUNT_SHARE_FRIENDS);
+                MobclickAgent.onEvent(mContext, MobEvent.COUNT_SHARE_FRIENDS);
                 AppLog.print("case1 分享--->wechat");
                 mMedia = SHARE_MEDIA.WEIXIN_CIRCLE;
                 shareSocialUrl();
@@ -160,28 +175,49 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
     public void shareSocialUrl() {
         //初试话一个WXWebpageObject对象，填写url
         RxPermissions.getInstance(mContext).request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE).subscribe(new Action1<Boolean>() {
+
             @Override
             public void call(Boolean grant) {
                 if (grant) {
-                    UMWeb web = new UMWeb(webpageUrl);
-                    web.setTitle(msgTitle);
-                    UMImage umImage=null;
-                    if (!TextUtils.isEmpty(iconUrl)){
-                        umImage=new UMImage(mContext,iconUrl);
-                    }else{
-                        umImage=new UMImage(mContext, R.drawable.corner);
+                    if (isImageShare) {
+                        shareImg();
+                    } else {
+                        shareWeb();
                     }
-                    web.setThumb(umImage);
-                    web.setDescription(msgDesc);
-                    ShareAction shareAction = new ShareAction((Activity) mContext);
-                    AppLog.print("setPlatform__");
-                    shareAction.setPlatform(mMedia).withMedia(web).setCallback(ShareDialog.this).share();
                 } else {
                     CommonUtils.showPermissionDialog(mContext, Constants.PermissionType.STORAGE);
                 }
             }
         });
     }
+
+    private void shareWeb() {
+        UMWeb web = new UMWeb(webpageUrl);
+        web.setTitle(msgTitle);
+        UMImage umImage = null;
+        if (!TextUtils.isEmpty(iconUrl)) {
+            umImage = new UMImage(mContext, iconUrl);
+        } else {
+            umImage = new UMImage(mContext, R.drawable.corner);
+        }
+        web.setThumb(umImage);
+        web.setDescription(msgDesc);
+        ShareAction shareAction = new ShareAction((Activity) mContext);
+        AppLog.print("setPlatform__");
+        shareAction.setPlatform(mMedia).withMedia(web).setCallback(ShareDialog.this).share();
+    }
+
+    private void shareImg() {
+        if (!TextUtils.isEmpty(imgUrl)) {
+            UMImage umImage = new UMImage(mContext, imgUrl);
+            ShareAction shareAction = new ShareAction((Activity) mContext);
+//                    AppLog.print("setPlatform__");
+            shareAction.setPlatform(mMedia).withMedia(umImage).setCallback(ShareDialog.this).share();
+        }else{
+            ToastUtils.showToast(mContext,"图片链接不能为空");
+        }
+    }
+
 
     @Override
     public void onStart(SHARE_MEDIA share_media) {

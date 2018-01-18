@@ -86,12 +86,10 @@
         android:visibility="gone">
 
         <RelativeLayout
-            android:id="@+id/rl_work_days"
             style="@style/layout_item"
             android:clickable="false">
 
             <TextView
-                android:id="@+id/tv_work_days"
                 style="@style/personal_left_text"
                 android:text="工作天数" />
 
@@ -107,12 +105,10 @@
         <View style="@style/CommonLandscapeLine" />
 
         <RelativeLayout
-            android:id="@+id/rl_total_hours"
             style="@style/layout_item"
             android:clickable="false">
 
             <TextView
-                android:id="@+id/tv_total_hours"
                 style="@style/personal_left_text"
                 android:text="累计工时" />
 
@@ -128,12 +124,10 @@
         <View style="@style/CommonLandscapeLine" />
 
         <RelativeLayout
-            android:id="@+id/rl_ave_hours"
             style="@style/layout_item"
             android:clickable="false">
 
             <TextView
-                android:id="@+id/tv_ave_hours"
                 style="@style/personal_left_text"
                 android:text="平均工时" />
 
@@ -149,12 +143,10 @@
         <View style="@style/CommonLandscapeLine" />
 
         <RelativeLayout
-            android:id="@+id/rl_work_rate"
             style="@style/layout_item"
             android:clickable="false">
 
             <TextView
-                android:id="@+id/tv_work_rate"
                 style="@style/personal_left_text"
                 android:text="开工率" />
 
@@ -181,22 +173,22 @@
         android:visibility="gone" />
 
 
-    <com.cloudmachine.autolayout.widgets.RadiusButtonView
-        android:id="@+id/view_report_btn"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spa3"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/pad1"
-        android:layout_marginRight="@dimen/pad1"
-        android:layout_alignParentBottom="true"
-        app:rbtn_fillColor_dw="@color/cor5"
-        app:rbtn_fillColor_nm="@color/cor5"
-        app:rbtn_strokeColor="@color/cor5"
-        app:rbtn_text="查看月度工作报表"
-        android:layout_marginBottom="@dimen/pad1"
-        android:visibility="gone"
-        app:rbtn_textColor="@color/white"
-        app:rbtn_textSize="@dimen/siz3" />
+    <!--<com.cloudmachine.autolayout.widgets.RadiusButtonView-->
+        <!--android:id="@+id/view_report_btn"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/spa3"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginLeft="@dimen/pad1"-->
+        <!--android:layout_marginRight="@dimen/pad1"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--app:rbtn_fillColor_dw="@color/cor5"-->
+        <!--app:rbtn_fillColor_nm="@color/cor5"-->
+        <!--app:rbtn_strokeColor="@color/cor5"-->
+        <!--app:rbtn_text="查看月度工作报表"-->
+        <!--android:layout_marginBottom="@dimen/pad1"-->
+        <!--android:visibility="gone"-->
+        <!--app:rbtn_textColor="@color/white"-->
+        <!--app:rbtn_textSize="@dimen/siz3" />-->
 
 
 </RelativeLayout>

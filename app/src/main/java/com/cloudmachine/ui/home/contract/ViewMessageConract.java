@@ -33,7 +33,7 @@ public interface ViewMessageConract {
         Observable<String> deleteMessage(long memberId, long messageId);
         Observable<List<MessageBO>> getSystemMsg(long memberId);
 
-        Observable<List<MessageBO>> getALLMsg(long memberId);
+        Observable<List<MessageBO>> getALLMsg(long memberId,int pageNo);
 
         Observable<MessageBO> questionNeed(long memberId);
 
@@ -55,7 +55,7 @@ public interface ViewMessageConract {
 
         public abstract void getSystemMsg(long memberId);
 
-        public abstract void getALLMsg(long memberId);
+        public abstract void getALLMsg(long memberId, int pageNo);
 
         public abstract void questionNeed(long memberId);
 

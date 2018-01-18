@@ -8,6 +8,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.view.View;
@@ -22,14 +23,17 @@ import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.widget.CommonTitleView;
 
 public class MessageDetailActivity extends BaseAutoLayoutActivity {
     public static final String MESSAGE_ID = "message_id";
     public static final String MESSAGE_CONTENT = "message_content";
     public static final String MESSAGE_TIME = "message_time";
+    public static final String MESSAGE_TITLE = "message_title";
 
     TextView mContentTv;
     TextView mTimeTv;
+    CommonTitleView mTitleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,10 @@ public class MessageDetailActivity extends BaseAutoLayoutActivity {
         initView();
         Intent intent = getIntent();
         String id = intent.getStringExtra(MESSAGE_ID);
+        String title = intent.getStringExtra(MESSAGE_TITLE);
+        if (!TextUtils.isEmpty(title)) {
+            mTitleView.setTitleName(title);
+        }
         if (!TextUtils.isEmpty(id)) {
             obtainDetailById(id);
         } else {
@@ -48,6 +56,7 @@ public class MessageDetailActivity extends BaseAutoLayoutActivity {
     }
 
     private void initView() {
+        mTitleView = (CommonTitleView) findViewById(R.id.message_detail_title);
         mContentTv = (TextView) findViewById(R.id.message_detail_content);
         mTimeTv = (TextView) findViewById(R.id.message_detail_time);
 
@@ -71,8 +80,11 @@ public class MessageDetailActivity extends BaseAutoLayoutActivity {
     }
 
     private void updateMessageDetailView(String content, String time) {
-        mContentTv.setText(content);
         mTimeTv.setText(time);
+        mContentTv.setText(content);
+        if (TextUtils.isEmpty(content)) {
+            return;
+        }
         CharSequence text = mContentTv.getText();
         if (text instanceof Spannable) {
             int length = text.length();
@@ -93,9 +105,27 @@ public class MessageDetailActivity extends BaseAutoLayoutActivity {
                         Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                 style.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
+            setTitleBlack(style, 0);
             mContentTv.setText(style);
+        } else {
+            if (content.contains("\"")) {
+                SpannableStringBuilder spannableStr = new SpannableStringBuilder(text);
+                setTitleBlack(spannableStr, 0);
+                mContentTv.setText(spannableStr);
+            }
         }
     }
+
+    public void setTitleBlack(SpannableStringBuilder style, int index) {
+        String content = style.toString();
+        String[] formartText = content.split("\"");
+        for (int i = 0; i < formartText.length - 1; i += 2) {
+            int start = formartText[i].length() + content.indexOf(formartText[i]);
+            int end = formartText[i + 1].length() + content.indexOf(formartText[i + 1]) + 1;
+            style.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.cor8)), start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+    }
+
 
     private void obtainDetailById(String messageId) {
         mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getMessageByid(messageId).compose(RxHelper.<MessageBO>handleResult()).subscribe(new RxSubscriber<MessageBO>(mContext) {

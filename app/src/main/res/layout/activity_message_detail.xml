@@ -9,6 +9,7 @@
     tools:context="com.cloudmachine.ui.home.activity.MessageDetailActivity">
 
     <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/message_detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:common_title_name="@string/system_message"

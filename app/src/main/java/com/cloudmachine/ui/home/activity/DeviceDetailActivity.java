@@ -283,8 +283,6 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 b_ail.putInt(Constants.P_OILLAVE, oilValue);
                 Constants.toActivity(this, OilAmountActivity.class, b_ail, false);
                 break;
-
-
         }
 
 

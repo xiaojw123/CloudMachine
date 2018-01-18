@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.cloudmachine.R;
+import com.cloudmachine.adapter.BaseRecyclerAdapter;
 import com.cloudmachine.adapter.MemberSlideAdapter;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
@@ -31,14 +32,14 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
-import com.yanzhenjie.recyclerview.swipe.Closeable;
-import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Callback, RecyclerItemClickListener.OnItemClickListener, OnItemClickListener {
+public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Callback, RecyclerItemClickListener.OnItemClickListener, OnItemClickListener, BaseRecyclerAdapter.OnItemClickListener {
 
     private Context mContext;
     private Handler mHandler;
@@ -98,7 +99,6 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
         pAdapter = new MemberSlideAdapter(dataResult, mContext);
         member_srlv = (SwipeMenuRecyclerView) findViewById(R.id.member_swipeRlv);
         member_srlv.setLayoutManager(new LinearLayoutManager(this));
-        member_srlv.setAdapter(pAdapter);
         add_member = (RadiusButtonView) findViewById(R.id.add_member);
         if (!Constants.isNoEditInMcMember(deviceId, deviceType)) {
             isOwner = true;
@@ -117,178 +117,123 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
         } else {
             add_member.setVisibility(View.GONE);
         }
+        member_srlv.setAdapter(pAdapter);
 
     }
 
-    OnSwipeMenuItemClickListener menuItemClickListener = new OnSwipeMenuItemClickListener() {
+    SwipeMenuItemClickListener menuItemClickListener = new SwipeMenuItemClickListener() {
 
 
         @Override
-        public void onItemClick(Closeable closeable, final int position, int menuPosition, int direction) {
-            if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
-                curMemberId = dataResult.get(position).getMemberId();
+        public void onItemClick(SwipeMenuBridge menuBridge) {
+            if (menuBridge.getDirection() == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
+                curMemberId = dataResult.get(menuBridge.getAdapterPosition()).getMemberId();
                 //删除item
                 MobclickAgent.onEvent(DeviceMcMemberActivity.this, UMengKey.count_memeber_delete);
                 showAlertPop();
-//                if (!TextUtils.isEmpty(dataResult.get(position).getName())) {
-//                    CustomDialog.Builder builder = new CustomDialog.Builder(DeviceMcMemberActivity.this);
-//                    String name = dataResult.get(position).getName();
-//                    builder.setMessage("确定删除" + "'" + name + "'" + ",删除之后该成员将无法查看此机器的数据", "");
-//                    builder.setTitle("提示");
-//                    builder.setLeftButtonColor(getResources().getColor(R.color.black));
-//                    builder.setRightButtonColor(getResources().getColor(R.color.black));
-//                    builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
-//
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            member_srlv.smoothCloseMenu();
-//                            dialog.dismiss();
-//                            return;
-//                        }
-//                    });
-//                    builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
-//
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            new DevicesDeleteMemberAsync(DeviceMcMemberActivity.this, mHandler).execute(String.valueOf(dataResult.get(position).getMemberId()),
-//                                    String.valueOf(deviceId));
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                    builder.create().show();
-//                }
-//                if (TextUtils.isEmpty(dataResult.get(position).getName())) {
-//                    CustomDialog.Builder builder = new CustomDialog.Builder(DeviceMcMemberActivity.this);
-//                    builder.setLeftButtonColor(getResources().getColor(R.color.black));
-//                    builder.setRightButtonColor(getResources().getColor(R.color.black));
-//                    builder.setMessage("确定删除?" + ",删除之后该成员将无法查看此机器的数据", "");
-//                    builder.setTitle("提示");
-//                    builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
-//
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            member_srlv.smoothCloseMenu();
-//                            dialog.dismiss();
-//                            return;
-//                        }
-//                    });
-//                    builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
-//
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            new DevicesDeleteMemberAsync(DeviceMcMemberActivity.this, mHandler).execute(String.valueOf(dataResult.get(position).getMemberId()),
-//                                    String.valueOf(deviceId));
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                    builder.create().show();
-//                }
-//			new DevicesDeleteMemberAsync(context,handler).execute(String.valueOf(dataResult.get(position).getMemberId()),
-//					String.valueOf(deviceId));
-
             }
-        }
-    };
+    }
+};
 
-    public void showAlertPop() {
-        CustomDialog.Builder builder = new CustomDialog.Builder(this);
+public void showAlertPop(){
+        CustomDialog.Builder builder=new CustomDialog.Builder(this);
         builder.setMessage("确认删除该成员吗？删除后成员将无法查看设备信息");
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
+        builder.setNegativeButton("取消",new DialogInterface.OnClickListener(){
+@Override
+public void onClick(DialogInterface dialog,int which){
+        dialog.dismiss();
+        }
         });
-        builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("删除",new DialogInterface.OnClickListener(){
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                MobclickAgent.onEvent(DeviceMcMemberActivity.this,MobEvent.COUNT_MEMEBER_DELETE);
-                dialog.dismiss();
-                new DevicesDeleteMemberAsync(DeviceMcMemberActivity.this, mHandler).execute(String.valueOf(curMemberId),
-                        String.valueOf(deviceId));
+@Override
+public void onClick(DialogInterface dialog,int which){
+        MobclickAgent.onEvent(DeviceMcMemberActivity.this,MobEvent.COUNT_MEMEBER_DELETE);
+        dialog.dismiss();
+        new DevicesDeleteMemberAsync(DeviceMcMemberActivity.this,mHandler).execute(String.valueOf(curMemberId),
+        String.valueOf(deviceId));
 
-            }
+        }
         });
         builder.create().show();
-    }
-
-
-    private void initTitleLayout() {
-        CommonTitleView title_layout = (CommonTitleView) findViewById(R.id.title_layout);
-        if (!Constants.isNoEditInMcMember(deviceId, deviceType)) {
-            title_layout.setRightText(getResources().getString(R.string.mc_member_add), new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gotoSearch();
-                }
-            });
         }
 
-    }
 
-    private void gotoSearch() {
-        Bundle bundle = new Bundle();
-        bundle.putInt(Constants.P_SEARCHLISTTYPE, 3);
-        bundle.putLong(Constants.P_DEVICEID, deviceId);
-        Constants.toActivity(this, SearchActivity.class, bundle);
-    }
+private void initTitleLayout(){
+        CommonTitleView title_layout=(CommonTitleView)findViewById(R.id.title_layout);
+        if(!Constants.isNoEditInMcMember(deviceId,deviceType)){
+        title_layout.setRightText(getResources().getString(R.string.mc_member_add),new OnClickListener(){
+@Override
+public void onClick(View v){
+        gotoSearch();
+        }
+        });
+        }
+
+        }
+
+private void gotoSearch(){
+        Bundle bundle=new Bundle();
+        bundle.putInt(Constants.P_SEARCHLISTTYPE,3);
+        bundle.putLong(Constants.P_DEVICEID,deviceId);
+        Constants.toActivity(this,SearchActivity.class,bundle);
+        }
 
 
-    @Override
-    public boolean handleMessage(Message msg) {
+@Override
+public boolean handleMessage(Message msg){
         // TODO Auto-generated method stub
-        switch (msg.what) {
-            case Constants.HANDLER_GETDEVICEMEMBER_SUCCESS:
-                List<MemberInfo> tM = (List<MemberInfo>) msg.obj;
-                if (null != tM) {
-                    dataResult.clear();
-                    for (int i = 0; i < tM.size(); i++) {
-                        MemberInfoSlide minfo = new MemberInfoSlide();
-                        MemberInfo tmInfo = tM.get(i);
-                        minfo.setId(tmInfo.getId());
-                        minfo.setRoleIdS(tmInfo.getRoleIdS());
-                        minfo.setMemberId(tmInfo.getMemberId());
-                        minfo.setName(tmInfo.getName());
-                        minfo.setRoleRemark(tmInfo.getRoleRemark());
-                        minfo.setRole(tmInfo.getRole());
-                        minfo.setMiddlelogo(tmInfo.getMiddlelogo());
-                        dataResult.add(minfo);
-                    }
+        switch(msg.what){
+        case Constants.HANDLER_GETDEVICEMEMBER_SUCCESS:
+        List<MemberInfo> tM=(List<MemberInfo>)msg.obj;
+        if(null!=tM){
+        dataResult.clear();
+        for(int i=0;i<tM.size();i++){
+        MemberInfoSlide minfo=new MemberInfoSlide();
+        MemberInfo tmInfo=tM.get(i);
+        minfo.setId(tmInfo.getId());
+        minfo.setRoleIdS(tmInfo.getRoleIdS());
+        minfo.setMemberId(tmInfo.getMemberId());
+        minfo.setName(tmInfo.getName());
+        minfo.setRoleRemark(tmInfo.getRoleRemark());
+        minfo.setRole(tmInfo.getRole());
+        minfo.setMiddlelogo(tmInfo.getMiddlelogo());
+        dataResult.add(minfo);
+        }
 //				dataResult.addAll(tM);
-                    if (null != dataResult && dataResult.size() > 0) {
-                        empty_layout.setVisibility(View.GONE);
-                    }
-                    pAdapter.notifyDataSetChanged();
-                    tM = null;
-                }
+        if(null!=dataResult&&dataResult.size()>0){
+        empty_layout.setVisibility(View.GONE);
+        }
+        pAdapter.notifyDataSetChanged();
+        tM=null;
+        }
 
-                break;
-            case Constants.HANDLER_GETDEVICEMEMBER_FAIL:
+        break;
+        case Constants.HANDLER_GETDEVICEMEMBER_FAIL:
 
-                break;
-            case Constants.HANDLER_DELETEMEMBER_SUCCESS:
-                Constants.MyToast((String) msg.obj);
-                getMemberList();
-                break;
-            case Constants.HANDLER_DELETEMBER_FAIL:
-                Constants.MyToast((String) msg.obj);
-                break;
+        break;
+        case Constants.HANDLER_DELETEMEMBER_SUCCESS:
+        Constants.MyToast((String)msg.obj);
+        getMemberList();
+        break;
+        case Constants.HANDLER_DELETEMBER_FAIL:
+        Constants.MyToast((String)msg.obj);
+        break;
 
         }
         return false;
-    }
+        }
 
 
-    private void getMemberList() {
+private void getMemberList(){
 //		if(deviceId != Constants.MC_Simulation_DeviceId){
 //			new DevicesMemberListAsync(deviceId,mContext,mHandler).execute();
 //		}
-        new DevicesMemberListAsync(deviceId, mContext, mHandler).execute();
-    }
+        new DevicesMemberListAsync(deviceId,mContext,mHandler).execute();
+        }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+@Override
+protected void onActivityResult(int requestCode,int resultCode,Intent data){
         // TODO Auto-generated method stub
 //		switch (resultCode)
 //		{
@@ -298,27 +243,27 @@ public class DeviceMcMemberActivity extends BaseAutoLayoutActivity implements Ca
 //					getMemberList();
 //			break;
 //		}
-    }
-
-
-    @Override
-    public void onItemClick(View view, int position) {
-        if (isOwner) {
-            MemberInfoSlide memberInfo = (MemberInfoSlide) view.getTag(R.id.id_RemarkInfo);
-            if (UserHelper.isLogin(this)) {
-                long memberId = UserHelper.getMemberId(this);
-                if (memberInfo != null && memberId != memberInfo.getMemberId()) {
-                    Intent intent = new Intent(this, RemarkInfoActivity.class);
-                    intent.putExtra(Constants.P_DEVICEID, deviceId);
-                    intent.putExtra(RemarkInfoActivity.ID, (long) memberInfo.getId());
-                    intent.putExtra(RemarkInfoActivity.NAME, memberInfo.getName());
-                    intent.putExtra(RemarkInfoActivity.MEMBER_ID, memberId);
-                    intent.putExtra(RemarkInfoActivity.ROLE, memberInfo.getRole());
-                    intent.putExtra(RemarkInfoActivity.ROLEIDS, memberInfo.getRoleIdS());
-                    intent.putExtra(RemarkInfoActivity.ROLEREMARK, memberInfo.getRoleRemark());
-                    startActivity(intent);
-                }
-            }
         }
-    }
-}
+
+
+@Override
+public void onItemClick(View view,int position){
+        if(isOwner){
+        MemberInfoSlide memberInfo=(MemberInfoSlide)view.getTag(R.id.id_RemarkInfo);
+        if(UserHelper.isLogin(this)){
+        long memberId=UserHelper.getMemberId(this);
+        if(memberInfo!=null&&memberId!=memberInfo.getMemberId()){
+        Intent intent=new Intent(this,RemarkInfoActivity.class);
+        intent.putExtra(Constants.P_DEVICEID,deviceId);
+        intent.putExtra(RemarkInfoActivity.ID,(long)memberInfo.getId());
+        intent.putExtra(RemarkInfoActivity.NAME,memberInfo.getName());
+        intent.putExtra(RemarkInfoActivity.MEMBER_ID,memberId);
+        intent.putExtra(RemarkInfoActivity.ROLE,memberInfo.getRole());
+        intent.putExtra(RemarkInfoActivity.ROLEIDS,memberInfo.getRoleIdS());
+        intent.putExtra(RemarkInfoActivity.ROLEREMARK,memberInfo.getRoleRemark());
+        startActivity(intent);
+        }
+        }
+        }
+        }
+        }

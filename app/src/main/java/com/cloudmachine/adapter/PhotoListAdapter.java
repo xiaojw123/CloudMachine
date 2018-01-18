@@ -9,6 +9,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.cloudmachine.activities.BigPicActivity;
+import com.cloudmachine.bean.ScreenInfo;
+import com.cloudmachine.utils.DensityUtil;
 
 import java.util.ArrayList;
 
@@ -19,7 +21,6 @@ import java.util.ArrayList;
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.PhotoHolder> {
     Context mContext;
     ArrayList<String> mItems = new ArrayList<>();
-
 
     public void updateItems(ArrayList<String> items) {
         mItems = items;
@@ -32,7 +33,8 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
         mContext = parent.getContext();
         ImageView img = new ImageView(mContext);
         img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300));
+        int width= (ScreenInfo.screen_width- DensityUtil.dip2px(mContext,20))/3;
+        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, width));
         return new PhotoHolder(img);
     }
 

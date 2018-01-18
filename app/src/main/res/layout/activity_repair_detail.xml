@@ -38,12 +38,9 @@
                     android:orientation="vertical"
                     android:showDividers="middle">
 
-                    <RelativeLayout
-                        android:id="@+id/rl_device_brand"
-                        style="@style/CommonTabContainerStyle">
+                    <RelativeLayout style="@style/CommonTabContainerStyle">
 
                         <TextView
-                            android:id="@+id/t1"
                             style="@style/personal_left_text"
                             android:text="品牌" />
 
@@ -56,12 +53,9 @@
                     </RelativeLayout>
 
 
-                    <RelativeLayout
-                        android:id="@+id/rl_device_model"
-                        style="@style/CommonTabContainerStyle">
+                    <RelativeLayout style="@style/CommonTabContainerStyle">
 
                         <TextView
-                            android:id="@+id/t2"
                             style="@style/personal_left_text"
                             android:text="机型" />
 
@@ -163,7 +157,6 @@
                         android:src="@drawable/ic_aliapy" />
 
                     <TextView
-                        android:id="@+id/tv_alipay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -204,7 +197,6 @@
                         android:src="@drawable/ic_weixinpay" />
 
                     <TextView
-                        android:id="@+id/tv_weixinpay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"

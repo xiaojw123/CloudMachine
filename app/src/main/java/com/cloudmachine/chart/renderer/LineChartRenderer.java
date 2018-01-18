@@ -14,11 +14,13 @@ import com.cloudmachine.chart.charts.LineChart;
 import com.cloudmachine.chart.data.Entry;
 import com.cloudmachine.chart.data.LineData;
 import com.cloudmachine.chart.data.LineDataSet;
-import com.cloudmachine.chart.interfaces.LineDataProvider;
 import com.cloudmachine.chart.highlight.Highlight;
+import com.cloudmachine.chart.interfaces.LineDataProvider;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.chart.utils.Transformer;
 import com.cloudmachine.chart.utils.ViewPortHandler;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class LineChartRenderer extends LineScatterCandleRadarRenderer {
@@ -299,7 +301,6 @@ public class LineChartRenderer extends LineScatterCandleRadarRenderer {
         buffer.limitFrom(minx);
         buffer.limitTo(maxx);
         buffer.feed(entries);
-
         trans.pointValuesToPixel(buffer.buffer);
 
         // more than 1 color
@@ -331,6 +332,7 @@ public class LineChartRenderer extends LineScatterCandleRadarRenderer {
             mRenderPaint.setColor(dataSet.getColor());
 
             // c.drawLines(buffer.buffer, mRenderPaint);
+            AppLog.print("drawLines___"+ Arrays.toString(buffer.buffer));
             canvas.drawLines(buffer.buffer, 0, range,
                     mRenderPaint);
         }

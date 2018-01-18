@@ -9,7 +9,6 @@ import com.cloudmachine.chart.data.BarData;
 import com.cloudmachine.chart.data.CandleEntry;
 import com.cloudmachine.chart.data.Entry;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -300,13 +299,9 @@ public class Transformer {
      * @param pts
      */
     public void pointValuesToPixel(float[] pts) {
-       AppLog.print("pointValuesToPixel__pts_1_"+ Arrays.toString(pts));
         mMatrixValueToPx.mapPoints(pts);
-       AppLog.print("pointValuesToPixel__pts_2_"+ Arrays.toString(pts));
         mViewPortHandler.getMatrixTouch().mapPoints(pts);
-       AppLog.print("pointValuesToPixel__pts_3_"+ Arrays.toString(pts));
         mMatrixOffset.mapPoints(pts);
-       AppLog.print("pointValuesToPixel__pts_4_"+ Arrays.toString(pts));
     }
 
     /**

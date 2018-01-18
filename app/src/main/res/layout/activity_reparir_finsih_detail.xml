@@ -27,12 +27,9 @@
             android:showDividers="middle">
 
 
-            <RelativeLayout
-                android:id="@+id/rl_device_brand"
-                style="@style/CommonTabContainerStyle">
+            <RelativeLayout style="@style/CommonTabContainerStyle">
 
                 <TextView
-                    android:id="@+id/t1"
                     style="@style/personal_left_text"
                     android:text="品牌" />
 
@@ -45,12 +42,9 @@
             </RelativeLayout>
 
 
-            <RelativeLayout
-                android:id="@+id/rl_device_model"
-                style="@style/CommonTabContainerStyle">
+            <RelativeLayout style="@style/CommonTabContainerStyle">
 
                 <TextView
-                    android:id="@+id/t2"
                     style="@style/personal_left_text"
                     android:text="机型" />
 
@@ -107,7 +101,6 @@
 
 
             <FrameLayout
-                android:id="@+id/finish_consumption_fl"
                 style="@style/CommonTabContainerStyle"
                 android:visibility="gone">
 

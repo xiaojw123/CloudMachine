@@ -38,9 +38,8 @@
 			android:background="@color/mc_engine_line"
 			android:layout_alignParentTop="true"
         	/>
-	    <TextView 
-	        android:id="@+id/line_bottom"
-     		android:layout_width="match_parent"
+	    <TextView
+            android:layout_width="match_parent"
 			android:layout_height="@dimen/common_line_width"
 			android:background="@color/mc_engine_line"
 			android:layout_alignParentBottom="true"
@@ -91,7 +90,6 @@
 	
 	
     <com.cloudmachine.utils.widgets.RadiusButtonView
-        android:id="@+id/delRButton"
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_layout_height"
         android:layout_marginLeft="@dimen/common_view_gap"

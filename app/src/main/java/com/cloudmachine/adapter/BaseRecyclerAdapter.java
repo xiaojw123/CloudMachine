@@ -16,10 +16,10 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter{
     Context mContext;
     List<T> mItems;
     OnItemClickListener listener;
+    int position;
 
     public BaseRecyclerAdapter(Context context) {
         this(context, null);
-
     }
 
 
@@ -38,14 +38,19 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter{
         notifyItemChanged(0);
     };
 
-    public List<T> getmItems(){
+    public List<T> getItems(){
         return  mItems;
     }
 
+    public T getItem(int position) {
+
+        return mItems.get(position);
+    }
 
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        this.position=position;
         if (mItems != null && mItems.size() > 0) {
             T item = mItems.get(position);
             if (item != null) {

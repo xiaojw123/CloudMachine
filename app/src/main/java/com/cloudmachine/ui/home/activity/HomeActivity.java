@@ -41,7 +41,6 @@ import android.widget.Toast;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.model.Marker;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -193,7 +192,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     ImageView promotionImg;
     PopupWindow promotionPop;
     List<PopItem> mItems;
-    Marker curMarker;
     private Handler mHandler;
     private MessageReceiver mMessageReceiver;
 
@@ -637,11 +635,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             case R.id.home_title_device:
             case R.id.home_title_maintenance:
                 showFragment(view);
-                break;
-            case R.id.home_marker_window_layout:
-                if (curMarker != null) {
-                    curMarker.hideInfoWindow();
-                }
                 break;
 
             case R.id.home_pop_bg:

@@ -22,7 +22,6 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/new_repair_height1"
                 android:layout_marginTop="@dimen/public_title_margin"
@@ -61,7 +60,6 @@
                 android:background="@color/list_divider_color" />
 
             <LinearLayout
-                android:id="@+id/et_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/common_layout_height"
                 android:background="@color/white"
@@ -143,7 +141,6 @@
                 >
 
                 <TextView
-                    android:id="@+id/t1"
                     style="@style/CommonTabTitleStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -179,7 +176,6 @@
                 android:paddingRight="@dimen/public_textsize3">
 
                 <TextView
-                    android:id="@+id/t2"
                     style="@style/CommonTabTitleStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -215,7 +211,6 @@
                 android:background="@color/public_white">
 
                 <TextView
-                    android:id="@+id/t3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -244,7 +239,6 @@
                 android:background="@color/list_divider_color" />
 
             <LinearLayout
-                android:id="@+id/et_rackId"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/new_repair_height1"
                 android:background="@color/white"
@@ -326,7 +320,6 @@
                 android:background="@color/list_divider_color" />
 
             <LinearLayout
-                android:id="@+id/et_desc"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/new_repair_height2"
                 android:background="@color/white"
