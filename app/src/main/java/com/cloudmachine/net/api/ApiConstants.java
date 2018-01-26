@@ -25,7 +25,7 @@ public class ApiConstants {
 //    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
 //    public static String H5_HOST = "http://192.168.1.109:7718/";
 //    public static String BOX_HIGH_COFIG_HOST="http://192.168.1.176:18089/";//云黑子-高配-拍照
-
+//
 
     /*21-wnb*/
 //    public static String CLOUDM_HOST = "http://192.168.1.21:8090/cloudm3/";
@@ -61,8 +61,7 @@ public class ApiConstants {
     public static String AppWalletHelper = "http://h5.cloudm.com/n/wallet_description";
     public static String AppFeedback = "https://h5.cloudm.com/n/feedback";
     public static String AppMachineKnowledge;
-    // TODO: 2018/1/15 挖机周报测试
-    public static String AppWorkReport="http://192.168.1.109:7718/work_report?deviceId=795&week=2";
+//    public static String AppWorkReport="http://192.168.1.109:7718/work_report?deviceId=795&week=2";
 
 
     /**

@@ -678,8 +678,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 }
                 break;
             case R.id.item_purse://钱包
+                // TODO: 2018/1/25 Purse_WX_test
                 if (UserHelper.isLogin(this)) {
-//                    Constants.toActivity(this, ViewCouponActivity.class, null, false);
                     String purseValue = purseTv.getText().toString();
                     if (getResources().getString(R.string.purse).equals(purseValue)) {
                         Bundle pb = new Bundle();

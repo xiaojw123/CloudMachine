@@ -1021,12 +1021,11 @@ public class Constants {
     }
 
     public static final boolean isNoEditInMcMember(long deviceId, int deviceType) {
-        boolean rb = false;
-        if (deviceId == Constants.MC_Simulation_DeviceId || deviceType == 2
-                || deviceType == 4 || deviceType == 8) {
-            rb = true;
-        } else {
+        boolean rb;
+        if (deviceId != MC_Simulation_DeviceId && deviceType == 1) {
             rb = false;
+        } else {
+            rb = true;
         }
         return rb;
     }
@@ -1455,10 +1454,10 @@ public class Constants {
 
     }
 
-    public  interface PermissionType {
+    public interface PermissionType {
         int CAMERA = 1;
         int STORAGE = 2;
-        int LOCATION=3;
+        int LOCATION = 3;
     }
 
 

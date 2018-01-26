@@ -139,10 +139,10 @@ public class HomePresenter extends HomeContract.Presenter {
                         if (j11 != null) {
                             ApiConstants.AppFeedback = j11.getAsString();
                         }
-                        JsonElement j12 = reslutJob.get("AppWorkReport");
-                        if (j12 != null) {
-                            ApiConstants.AppWorkReport = j12.getAsString();
-                        }
+//                        JsonElement j12 = reslutJob.get("AppWorkReport");
+//                        if (j12 != null) {
+//                            ApiConstants.AppWorkReport = j12.getAsString();
+//                        }
 
                     }
                 }

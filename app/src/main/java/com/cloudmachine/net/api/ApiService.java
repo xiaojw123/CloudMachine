@@ -111,7 +111,7 @@ public interface ApiService {
     @GET("app/reason/getRefundReason")
     Observable<BaseRespose<List<ResonItem>>>  getRefundReasonItems(@Query("memberId") long memberId);
 
-    @GET("app/pay/selectMyOrder")
+    @GET("app/pay/depositList")
     Observable<BaseRespose<List<DepositItem>>> getDepositList(@Query("memberId") long memberId);
 
     @GET("{key}")

@@ -394,26 +394,31 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
                     @Override
                     protected void _onNext(BaseRespose<JsonObject> userResultRes) {
                         if (userResultRes != null) {
-                            JsonObject userResJobj = userResultRes.getResult();
-                            if (userResJobj != null) {
-                                String nickName = userResJobj.get("nickName").getAsString();
-                                String userId = userResJobj.get("userId").getAsString();
-                                AppLog.print("nickName__" + nickName + ", userid__" + userId);
-                                String acount;
-                                if (!TextUtils.isEmpty(nickName)) {
-                                    acount = nickName;
-                                } else {
-                                    acount = userId;
+                            if (userResultRes.success()) {
+                                JsonObject userResJobj = userResultRes.getResult();
+                                if (userResJobj != null) {
+                                    String nickName = userResJobj.get("nickName").getAsString();
+                                    String userId = userResJobj.get("userId").getAsString();
+                                    AppLog.print("nickName__" + nickName + ", userid__" + userId);
+                                    String acount;
+                                    if (!TextUtils.isEmpty(nickName)) {
+                                        acount = nickName;
+                                    } else {
+                                        acount = userId;
+                                    }
+                                    purseAliplayBindTv.setText(acount);
+                                    mMember.setAlipayNickname(nickName);
+                                    mMember.setAlipayUserId(userId);
                                 }
-                                purseAliplayBindTv.setText(acount);
-                                mMember.setAlipayNickname(nickName);
-                                mMember.setAlipayUserId(userId);
+                            } else {
+                                ToastUtils.showToast(PurseActivity.this, userResultRes.getMessage());
                             }
                         }
                     }
 
                     @Override
                     protected void _onError(String message) {
+                        ToastUtils.showToast(PurseActivity.this, message);
 
                     }
                 });

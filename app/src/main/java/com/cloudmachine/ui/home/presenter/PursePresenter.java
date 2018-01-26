@@ -7,6 +7,7 @@ import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.ui.home.contract.PurseContract;
 import com.cloudmachine.ui.home.model.CouponBean;
+import com.cloudmachine.utils.ToastUtils;
 
 import java.util.Map;
 
@@ -81,11 +82,14 @@ public class PursePresenter extends PurseContract.Presenter {
                         accountText = openId;
                     }
                     mView.updateBindWxUserView(accountText);
+                }else{
+                    ToastUtils.showToast(mContext,baseRespose.getMessage());
                 }
             }
 
             @Override
             protected void _onError(String message) {
+                ToastUtils.showToast(mContext,message);
 
             }
         }));
