@@ -21,8 +21,10 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
@@ -63,6 +65,7 @@ import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.widget.CommonTitleView;
+import com.cloudmachine.widget.ItemLongClickedPopWindow;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.qiniu.android.http.ResponseInfo;
@@ -132,6 +135,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     boolean isQrCode;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,6 +197,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             mWvTitle.setVisibility(View.VISIBLE);
         }
         initSetting();
+        mWebView.setOnLongClickListener(lcl);
         mWebView.setWebChromeClient(new MyWebChromeClient());
         mWebView.setWebViewClient(new H5WebClient());
         mWebView.addJavascriptInterface(new JsInteface(this, mHandler), JS_INTERFACE_NAME);
@@ -204,6 +209,50 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         homeUrl = mUrl;
         AppLog.print("Common H5 URL__" + mUrl);
     }
+
+    private View.OnLongClickListener lcl = new View.OnLongClickListener() {
+
+
+        @Override
+        public boolean onLongClick(View v) {
+            WebView.HitTestResult result = ((WebView) v).getHitTestResult();
+            if (null == result)
+                return false;
+            int type = result.getType();
+            if (type == WebView.HitTestResult.UNKNOWN_TYPE)
+                return false;
+            if (type == WebView.HitTestResult.EDIT_TEXT_TYPE) {
+                //let TextViewhandles context menu return true;
+            }
+            // Setup custom handlingdepending on the type
+            switch (type) {
+                case WebView.HitTestResult.PHONE_TYPE: // 处理拨号
+                    break;
+                case WebView.HitTestResult.EMAIL_TYPE: // 处理Email
+                    break;
+                case WebView.HitTestResult.GEO_TYPE: // TODO
+                    break;
+                case WebView.HitTestResult.SRC_ANCHOR_TYPE: // 超链接
+                    // Log.d(DEG_TAG, "超链接");
+                    break;
+                case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
+                    break;
+                case WebView.HitTestResult.IMAGE_TYPE: // 处理长按图片的菜单项
+                    String url = result.getExtra();
+                    if (!TextUtils.isEmpty(url)) {
+                        View parent = ((ViewGroup)findViewById(android.R.id.content)).getChildAt(0);
+                        ItemLongClickedPopWindow pop=new ItemLongClickedPopWindow(QuestionCommunityActivity.this);
+                        pop.setImgUrl(url);
+                        pop.showAtLocation(parent, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return true;
+
+        }
+    };
 
 
     private void initSetting() {
@@ -564,7 +613,6 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         }
         FileOutputStream fileOutputStream = null;
         FileUtils.createDirFile(Constants.IMAGE_PATH);
-
         String fileName = UUID.randomUUID().toString() + ".JPEG";
         String newFilePath = Constants.IMAGE_PATH + fileName;
         File file = FileUtils.createNewFile(newFilePath);
@@ -762,9 +810,9 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                         if (imgJE != null) {
                             isImg = imgJE.getAsInt();
                         }
-                        JsonElement imgUrlJE=scJobj.get("image");
-                        if (imgUrlJE!=null){
-                            shareImgUrl=imgUrlJE.getAsString();
+                        JsonElement imgUrlJE = scJobj.get("image");
+                        if (imgUrlJE != null) {
+                            shareImgUrl = imgUrlJE.getAsString();
                         }
                         if (TextUtils.isEmpty(shareLink)) {
                             shareLink = scJobj.get("link").getAsString();
@@ -836,8 +884,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, shareLink, shareTitle, shareDesc, sharePic);
                 shareDialog.setLinkUrl(mUrl);
                 shareDialog.show();
-            }else if (isImg==1){
-                ShareDialog shareDialog =new ShareDialog(QuestionCommunityActivity.this,shareImgUrl);
+            } else if (isImg == 1) {
+                ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, shareImgUrl);
                 shareDialog.show();
             }
             MobclickAgent.onEvent(mContext, UMengKey.count_share_app);

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_lcpop_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/dimen_size_20"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_longclicked_saveImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_btn_saveimg"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_size_12"
+            android:paddingTop="@dimen/dimen_size_12"
+            android:text="保存图片"
+            android:textColor="@color/cor8"
+            android:textSize="16sp" />
+
+        <View style="@style/CommonLandscapeLine" />
+
+
+        <TextView
+            android:id="@+id/item_longclicked_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:background="@drawable/bg_btn_saveimg"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_size_12"
+            android:paddingTop="@dimen/dimen_size_12"
+            android:text="取消"
+            android:textColor="@color/cor8"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</FrameLayout>

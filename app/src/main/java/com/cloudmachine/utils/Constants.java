@@ -518,6 +518,8 @@ public class Constants {
             + File.separator
             + "cloudmachine" + File.separator + "images" + File.separator;
 
+    public static final String SYS_IMG_PATH=Environment
+            .getExternalStorageDirectory().toString()+File.separator+"DCIM"+File.separator;
 
     public static void ToastAction(String msg) {
         if (!TextUtils.isEmpty(msg))
