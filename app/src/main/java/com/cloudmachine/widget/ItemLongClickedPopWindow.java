@@ -1,10 +1,12 @@
 package com.cloudmachine.widget;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +14,12 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileUtils;
 import com.cloudmachine.utils.ToastUtils;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import com.umeng.socialize.sina.helper.MD5;
 
 import java.io.File;
@@ -23,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import rx.functions.Action1;
 
 public class ItemLongClickedPopWindow extends PopupWindow implements View.OnClickListener {
     private String mImgUrl;
@@ -60,8 +67,23 @@ public class ItemLongClickedPopWindow extends PopupWindow implements View.OnClic
                 break;
             case R.id.item_longclicked_saveImage:
                 dismiss();
-                SaveImage saveTask = new SaveImage();
-                saveTask.execute();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    RxPermissions.getInstance(mContext).request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE).subscribe(new Action1<Boolean>() {
+
+                        @Override
+                        public void call(Boolean grant) {
+                            if (grant) {
+                                SaveImage saveTask = new SaveImage();
+                                saveTask.execute();
+                            } else {
+                                CommonUtils.showPermissionDialog(mContext, Constants.PermissionType.STORAGE);
+                            }
+                        }
+                    });
+                }else{
+                    SaveImage saveTask = new SaveImage();
+                    saveTask.execute();
+                }
                 break;
 
 
@@ -84,6 +106,7 @@ public class ItemLongClickedPopWindow extends PopupWindow implements View.OnClic
                 FileUtils.createDirFile(Constants.SYS_IMG_PATH);
                 String fileName = MD5.hexdigest(mImgUrl) + ".jpg";
                 String newFilePath = Constants.SYS_IMG_PATH + fileName;
+                AppLog.print("new FilePaht__" + newFilePath);
                 File file = new File(newFilePath);
                 if (!file.exists()) {
                     try {
