@@ -131,8 +131,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     TextView homeNicknameTv;
     @BindView(R.id.item_message)
     FrameLayout itemMessage;
-    @BindView(R.id.item_ask)
-    FrameLayout itemAsk;
     @BindView(R.id.item_repair_history)
     FrameLayout itemRepairHistory;
     @BindView(R.id.item_purse)
@@ -610,7 +608,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
 
-    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_ask, R.id.item_repair_history, R.id.item_purse, R.id.item_machine_knowledge, R.id.item_about, R.id.home_me_img, R.id.home_actvite_img})
+    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_repair_history, R.id.item_purse, R.id.item_machine_knowledge, R.id.item_about, R.id.home_me_img, R.id.home_actvite_img})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.home_guide_sure_btn:
@@ -656,16 +654,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             case R.id.item_message:
                 if (UserHelper.isLogin(this)) {
                     Constants.toActivity(this, ViewMessageActivity.class, null);
-                } else {
-                    Constants.toActivity(this, LoginActivity.class, null);
-                }
-                break;
-            case R.id.item_ask://我的提问
-                if (UserHelper.isLogin(this)) {
-                    MobclickAgent.onEvent(this, MobEvent.TIME_H5_MY_ASK_PAGE);
-                    Bundle askBundle = new Bundle();
-                    askBundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppMyQuestion);
-                    Constants.toActivity(this, QuestionCommunityActivity.class, askBundle, false);
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
                 }

@@ -52,7 +52,7 @@ public class GuideActivity extends BaseAutoLayoutActivity {
         pageViews.add(inflater.inflate(R.layout.guide_page1, null));
         pageViews.add(inflater.inflate(R.layout.guide_page2, null));
         pageViews.add(inflater.inflate(R.layout.guide_page3, null));
-        pageViews.add(inflater.inflate(R.layout.guide_page4, null));
+//        pageViews.add(inflater.inflate(R.layout.guide_page4, null));
 
         //创建imageviews数组，大小是要显示的图片的数量
         imageViews = new ImageView[pageViews.size()];
@@ -141,7 +141,7 @@ public class GuideActivity extends BaseAutoLayoutActivity {
             ((ViewPager) v).addView(pageViews.get(position));
 
             // 测试页卡3内的按钮事件
-            if (position == 3) {
+            if (position == 2) {
                 RadiusButtonView btn = (RadiusButtonView) v.findViewById(R.id.intoMain);
                 if (null != btn) {
 //	                	btn.setTextSize((int)getResources().getDimension(R.dimen.guide_text));

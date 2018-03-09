@@ -2,6 +2,7 @@ package com.cloudmachine.ui.home.model;
 
 import android.content.Context;
 
+import com.cloudmachine.bean.AllianceDetail;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
@@ -33,6 +34,11 @@ public class RepairDetailModel implements RepairDetailContract.Model {
     @Override
     public Observable<CWInfo> getCWInfo(Context context, String orderNum,String flag) {
         return Api.getDefault(HostType.HOST_CLOUDM_YJX).getCWInfo(getParamsMap(context, orderNum,flag)).compose(RxHelper.<CWInfo>handleResult());
+    }
+
+    @Override
+    public Observable<AllianceDetail> getAllianceOrderDetail(long memberId, String orderNo) {
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getAllianceOrderDetail(memberId,orderNo).compose(RxHelper.<AllianceDetail>handleResult());
     }
 
     private Map<String, String> getParamsMap(Context context, String orderNum, String flag) {

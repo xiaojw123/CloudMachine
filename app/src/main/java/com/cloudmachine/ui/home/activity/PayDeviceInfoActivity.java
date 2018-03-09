@@ -36,7 +36,7 @@ public class PayDeviceInfoActivity extends BaseAutoLayoutActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_device_info);
         WorkDetailBean workDetail = (WorkDetailBean) getIntent().getSerializableExtra(Constants.WORK_DETAIL);
-        String flag=getIntent().getStringExtra(Constants.FLAG);
+        String flag = getIntent().getStringExtra(Constants.FLAG);
         logoList = getIntent().getStringArrayListExtra(Constants.LOGO_LIST);
         imgTitleTv = (TextView) findViewById(R.id.device_info_title);
         emptTv = (TextView) findViewById(R.id.pay_di_empty_tv);
@@ -58,7 +58,7 @@ public class PayDeviceInfoActivity extends BaseAutoLayoutActivity {
             infoImgRlv.setVisibility(View.VISIBLE);
             infoImgRlv.setLayoutManager(new GridLayoutManager(this, 3));
             infoImgRlv.addItemDecoration(new SpaceItemDecoration(this, 5));
-            PhotoListAdapter adapter= new PhotoListAdapter();
+            PhotoListAdapter adapter = new PhotoListAdapter();
             adapter.updateItems(logoList);
             infoImgRlv.setAdapter(adapter);
         }
@@ -73,10 +73,10 @@ public class PayDeviceInfoActivity extends BaseAutoLayoutActivity {
         noTv.setText(workDetail.getVmachinenum());
         locTv.setText(workDetail.getVworkaddress());
         String description;
-        if ("0".equals(flag)){
-            description=workDetail.getVdiscription();
-        }else{
-            description=workDetail.getCusdemanddesc();
+        if ("0".equals(flag)) {
+            description = workDetail.getVdiscription();
+        } else {
+            description = workDetail.getCusdemanddesc();
         }
         desTv.setText(description);
 
@@ -92,7 +92,6 @@ public class PayDeviceInfoActivity extends BaseAutoLayoutActivity {
     public void initPresenter() {
 
     }
-
 
 
 }

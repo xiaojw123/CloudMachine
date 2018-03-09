@@ -16,12 +16,14 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cloudmachine.R;
+import com.cloudmachine.bean.AllianceDetail;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.ScreenInfo;
 import com.cloudmachine.bean.WorkDetailBean;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.OrderStatus;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.contract.RepairDetailContract;
 import com.cloudmachine.ui.home.model.RepairDetailModel;
 import com.cloudmachine.ui.home.model.SiteBean;
@@ -75,16 +77,23 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
         top = ScreenInfo.screen_height / 4;
         setinfoWIndowHiden(false);
         initGeocoder();
+        boolean isAlliance = getIntent().getBooleanExtra("isAlliance", false);
         String orderNum = getIntent().getStringExtra("orderNum");
         flag = getIntent().getStringExtra("flag");
         nstatus = getIntent().getStringExtra("nstatus");
         repairDetailCtv.setTitleName(nstatus);
-        if (OrderStatus.CANCEL.equals(nstatus) || OrderStatus.WAIT.equals(nstatus)) {
-            isRepairing = false;
+        if (isAlliance) {//加盟站接口请求
+            if (UserHelper.isLogin(this)) {
+                mPresenter.updateAllianceDetail(UserHelper.getMemberId(this), orderNum);
+            }
         } else {
-            isRepairing = true;
+            if (OrderStatus.CANCEL.equals(nstatus) || OrderStatus.WAIT.equals(nstatus)) {
+                isRepairing = false;
+            } else {
+                isRepairing = true;
+            }
+            mPresenter.updateRepairFinishDetail(orderNum, flag);
         }
-        mPresenter.updateRepairFinishDetail(orderNum, flag);
 //        icon_head_technician
 //        ic_repair_detail_station
     }
@@ -179,6 +188,24 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
         updateDetail();
     }
 
+    @Override
+    public void returnAllianceDetail(AllianceDetail detail) {
+        detailBean=new WorkDetailBean();
+        detailBean.setVbrandname(detail.getBrandName());
+        detailBean.setVmaterialname(detail.getModelName());
+        detailBean.setCusdemanddesc(detail.getDemandDescription());
+        detailBean.setVmachinenum(detail.getMachineNum());
+        detailBean.setTech_NAME(detail.getArtificerName());
+        detailBean.setTech_MOBILE(detail.getArtificerMobile());
+        detailBean.setStation_LON(detail.getOrderLng());
+        detailBean.setStation_LAT(detail.getOrderLat());
+        detailBean.setService_LON(detail.getArtificerLng());
+        detailBean.setService_LAT(detail.getArtificerLat());
+        detailBean.setVworkaddress(detail.getAddressDetail());
+        logoList= (ArrayList<String>) detail.getAttachmentUrls();
+        updateDetail();
+    }
+
     private void updateDetail() {
         if (detailBean != null) {
             int resdId;
@@ -203,10 +230,10 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
             LatLngBuilder.include(curLatlng);
             rdDevicenameTv.setText(detailBean.getVbrandname());
             rdDevicenoTv.setText(detailBean.getVmaterialname());
-            if ("1".equals(flag)) {
-                rdDescriptionTv.setText(detailBean.getCusdemanddesc());
-            } else {
+            if ("0".equals(flag)) {
                 rdDescriptionTv.setText(detailBean.getVdiscription());
+            } else {
+                rdDescriptionTv.setText(detailBean.getCusdemanddesc());
             }
             if (isRepairing) {
                 resdId = R.drawable.icon_head_technician;

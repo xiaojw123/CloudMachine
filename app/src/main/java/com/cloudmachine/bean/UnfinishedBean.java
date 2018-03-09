@@ -26,9 +26,20 @@ public class UnfinishedBean {
     private String nloanamount;
     private int nloanamount_TYPE;
 
+
     public String getFlag() {
         return flag;
     }
+
+    public boolean isAlliance() {
+        return isAlliance;
+    }
+
+    public void setAlliance(boolean alliance) {
+        isAlliance = alliance;
+    }
+
+    private boolean isAlliance;
 
     public void setFlag(String flag) {
         this.flag = flag;

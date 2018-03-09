@@ -83,9 +83,8 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     LatLng lastLatLng;
     UnfinishedBean unfinishedBean;
     List<Marker> markerList = new ArrayList<>();
-    UnfinishedBean mUnfinishBean;
     String mProvince;
-    double locLng,locLat;
+    double locLng, locLat;
 
 
     @Override
@@ -101,7 +100,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden){
+        if (!hidden) {
             MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_REPAIR);
             loadData();
         }
@@ -110,7 +109,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     @Override
     public void onResume() {
         super.onResume();
-        if (isVisible()){
+        if (isVisible()) {
             MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_REPAIR);
         }
         loadData();
@@ -120,7 +119,8 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     private void loadData() {
         startlocaction(this);
         if (UserHelper.isLogin(getActivity())) {
-            mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
+//            mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
+            mPresenter.getAllianceItemView(UserHelper.getMemberId(getActivity()));
         }
     }
 
@@ -198,8 +198,8 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
                 mPresenter.updateStationView(lat.longitude, lat.latitude);
             }
         }
-        locLat=lat.latitude;
-        locLng=lat.longitude;
+        locLat = lat.latitude;
+        locLng = lat.longitude;
         LatLonPoint point = new LatLonPoint(lat.latitude, lat.longitude);
         RegeocodeQuery query = new RegeocodeQuery(point, 200,
                 GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
@@ -225,7 +225,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
                     describeAddress = city;
                 }
             }
-            mProvince =address.getProvince();
+            mProvince = address.getProvince();
             curLocTv.setText(describeAddress);
         }
     }
@@ -254,10 +254,9 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
 
     @Override
     public void returnRepairItemView(UnfinishedBean bean, String status) {
-        mUnfinishBean = bean;
         unfinishedBean = bean;
         orderCotainer.setVisibility(View.VISIBLE);
-        String logo_flag=bean.getLogo_flag();
+        String logo_flag = bean.getLogo_flag();
         if ("0".equals(logo_flag)) {
             if (logoImg.getVisibility() == View.VISIBLE) {
                 logoImg.setVisibility(View.INVISIBLE);
@@ -269,19 +268,19 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
             }
         }
         statusTv.setText(status);
-        modelTv.setText(bean.getVbrandname()+ " "
+        modelTv.setText(bean.getVbrandname() + " "
                 + bean.getVmaterialname());
         descTv.setText(bean.getVdiscription());
         timeTv.setText(bean.getDopportunity());
 
     }
 
-    @OnClick({R.id.maintence_cur_location,R.id.maintence_cardview, R.id.maintenance_order_container, R.id.radius_button_text})
+    @OnClick({R.id.maintence_cur_location, R.id.maintence_cardview, R.id.maintenance_order_container, R.id.radius_button_text})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.maintence_cur_location:
-                Intent intent=new Intent(getActivity(),SearchPoiActivity.class);
-                startActivityForResult(intent,REQCODE_LOC);
+                Intent intent = new Intent(getActivity(), SearchPoiActivity.class);
+                startActivityForResult(intent, REQCODE_LOC);
                 break;
             case R.id.maintence_cardview:
                 break;
@@ -289,29 +288,44 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
                 if (unfinishedBean == null) {
                     return;
                 }
-                String flag = mUnfinishBean.getFlag();
+                String flag = unfinishedBean.getFlag();
                 String status = statusTv.getText().toString();
+                if (unfinishedBean.isAlliance()) {
+                    switch (unfinishedBean.getNstatus()) {
+                        case "3"://待付款
+                            status = OrderStatus.PAY;
+                            break;
+                        case "4":
+                        case "5":
+                        case "6":
+                        case "7"://已完工
+                            if ("N".equals(unfinishedBean.getIs_EVALUATE())) {
+                                status = OrderStatus.EVALUATION;
+                            } else {
+                                status = OrderStatus.COMPLETED;
+                            }
+                            break;
+                    }
+                }
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isAlliance",unfinishedBean.isAlliance());
                 if (OrderStatus.EVALUATION.equals(status)) {
-                    Bundle eBundle = new Bundle();
-                    eBundle.putString("orderNum", unfinishedBean.getOrderNum());
-                    eBundle.putString("tel", unfinishedBean.getVmacoptel());
-                    Constants.toActivity(getActivity(), EvaluationActivity.class, eBundle);
+                    bundle.putString("orderNum", unfinishedBean.getOrderNum());
+                    bundle.putString("tel", unfinishedBean.getVmacoptel());
+                    Constants.toActivity(getActivity(), EvaluationActivity.class, bundle);
                 } else if (OrderStatus.COMPLETED.equals(status)) {
-                    Bundle fBundle = new Bundle();
-                    fBundle.putString("orderNum", unfinishedBean.getOrderNum());
-                    fBundle.putString("flag", unfinishedBean.getFlag());
-                    Constants.toActivity(getActivity(), RepairFinishDetailActivity.class, fBundle);
+                    bundle.putString("orderNum", unfinishedBean.getOrderNum());
+                    bundle.putString("flag", unfinishedBean.getFlag());
+                    Constants.toActivity(getActivity(), RepairFinishDetailActivity.class, bundle);
                 } else if (OrderStatus.PAY.equals(status)) {
-                    Bundle pBundle = new Bundle();
-                    pBundle.putString("orderNum", unfinishedBean.getOrderNum());
-                    pBundle.putString("flag", flag);
-                    Constants.toActivity(getActivity(), RepairPayDetailsActivity.class, pBundle, false);
+                    bundle.putString("orderNum", unfinishedBean.getOrderNum());
+                    bundle.putString("flag", flag);
+                    Constants.toActivity(getActivity(), RepairPayDetailsActivity.class, bundle);
                 } else {
-                    Bundle bundle0 = new Bundle();
-                    bundle0.putString("orderNum", mUnfinishBean.getOrderNum());
-                    bundle0.putString("nstatus", status);
-                    bundle0.putString("flag", flag);
-                    Constants.toActivity(getActivity(), RepairDetailMapActivity.class, bundle0);
+                    bundle.putString("orderNum", unfinishedBean.getOrderNum());
+                    bundle.putString("nstatus", status);
+                    bundle.putString("flag", flag);
+                    Constants.toActivity(getActivity(), RepairDetailMapActivity.class, bundle);
                 }
 
                 break;
@@ -325,9 +339,9 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
         if (UserHelper.isLogin(getActivity())) {
             Bundle bundle = new Bundle();
             bundle.putString(NewRepairActivity.DEFAULT_LOCAITOIN, curLocTv.getText().toString());
-            bundle.putString(NewRepairActivity.DEFAULT_PROVINCE,mProvince);
-            bundle.putDouble(NewRepairActivity.KEY_LOC_LAT,locLat);
-            bundle.putDouble(NewRepairActivity.KEY_LOC_LNG,locLng);
+            bundle.putString(NewRepairActivity.DEFAULT_PROVINCE, mProvince);
+            bundle.putDouble(NewRepairActivity.KEY_LOC_LAT, locLat);
+            bundle.putDouble(NewRepairActivity.KEY_LOC_LNG, locLng);
             Constants.toActivity(getActivity(), NewRepairActivity.class, bundle);
         } else {
             Constants.toActivity(getActivity(), LoginActivity.class, null);
@@ -342,7 +356,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
             if (data != null) {
                 ResidentAddressInfo info = (ResidentAddressInfo) data.getSerializableExtra(Constants.P_SEARCHINFO);
                 if (info != null) {
-                    LatLng latLng=new LatLng(info.getLat(),info.getLng());
+                    LatLng latLng = new LatLng(info.getLat(), info.getLng());
                     aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
                 }
             }

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	xmlns:cloudm="http://schemas.android.com/apk/res-auto"
 	android:background="@color/public_bg"
 	android:gravity="center_horizontal"
 	android:orientation="vertical">
@@ -46,13 +47,22 @@
 
 
 
-		<ImageView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginLeft="@dimen/guide_dot_left"
-			android:background="@drawable/bg_dot_unselect" />
 
 	</LinearLayout>
+
+
+	<com.cloudmachine.autolayout.widgets.RadiusButtonView
+		android:id="@+id/intoMain"
+		android:layout_width="@dimen/radius_button_width"
+		android:layout_height="@dimen/radius_button_height"
+		android:layout_marginTop="@dimen/guide_radius_button_top"
+		cloudm:rbtn_fillColor_dw="@color/cor5"
+		cloudm:rbtn_fillColor_nm="@color/cor5"
+		cloudm:rbtn_strokeColor="@color/cor5"
+		cloudm:rbtn_text="@string/guide_button_text"
+		cloudm:rbtn_textColor="@color/cor15"
+		cloudm:rbtn_textSize="@dimen/text_size_16_sp" />
+
 
 </LinearLayout>
 

@@ -1,6 +1,5 @@
 package com.cloudmachine.net.task;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
@@ -21,12 +20,12 @@ import java.util.List;
 
 public class GetTagInfoAsync extends ATask {
 
-    private Context mContext;
     private Handler handler;
+    private boolean isAlience;
 
-    public GetTagInfoAsync(Handler mHandler, Context mContext) {
-        this.mContext = mContext;
+    public GetTagInfoAsync(Handler mHandler,boolean isAlience) {
         this.handler = mHandler;
+        this.isAlience=isAlience;
 
     }
 
@@ -36,7 +35,8 @@ public class GetTagInfoAsync extends ATask {
         List<NameValuePair> list = new ArrayList<NameValuePair>();
         String result = null;
         try {
-            result = httpRequest.post(URLs.GET_TAG_INFO, list);
+            String url=isAlience?URLs.GET_TAG_INFO_ALLIANCE:URLs.GET_TAG_INFO;
+            result = httpRequest.post(url, list);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

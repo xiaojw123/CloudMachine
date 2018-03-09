@@ -25,7 +25,6 @@ public class ApiConstants {
 //    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
 //    public static String H5_HOST = "http://192.168.1.109:7718/";
 //    public static String BOX_HIGH_COFIG_HOST="http://192.168.1.176:18089/";//云黑子-高配-拍照
-//
 
     /*21-wnb*/
 //    public static String CLOUDM_HOST = "http://192.168.1.21:8090/cloudm3/";

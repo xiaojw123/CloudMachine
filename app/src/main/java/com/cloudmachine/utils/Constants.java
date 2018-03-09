@@ -290,6 +290,7 @@ public class Constants {
             "device/saveVbusiness";
     public static final String URL_SAVEEVALUATE = ApiConstants.CLOUDM_YJX_HOST
             + "device/saveEvaluate";
+    public static final String URL_SAVEEVALUATE_ALLIANCE=ApiConstants.CLOUDM_YJX_HOST+"device/saveAllianceEvaluate";
     public static final String URL_ADDCIRCLEFENCH = ApiConstants.CLOUDM_YJX_HOST
             + "device/addCricleFence";
     public static final String URL_CWPAY = ApiConstants.CLOUDM_YJX_HOST + "pay/getPaySign";
@@ -387,12 +388,7 @@ public class Constants {
     public static final String KEY_NewMessageSize = "NewMessageSize"; // 新邀请消息条数
 
     public static final int KEY_ImageUpload_Kinds_m1 = 2; // 机博上传照片
-    // 获取维修历史记录
-    public static final int HANDLER_GET_REPAIRHISTORY_SUCCESS = REQUEST_BLOGCOMMENT + 1;
-    public static final int HANDLER_GET_REPAIRHISTORY_FAILD = HANDLER_GET_REPAIRHISTORY_SUCCESS + 1;
-
-
-    public static final int CLICK_POSITION = HANDLER_GET_REPAIRHISTORY_FAILD;
+    public static final int CLICK_POSITION = REQUEST_BLOGCOMMENT;
     public static final java.lang.String APP_ID = "wxfb6afbcc23f867df";
 
     /**

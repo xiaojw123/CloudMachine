@@ -13,11 +13,13 @@ import com.cloudmachine.activities.EvaluationActivity;
 import com.cloudmachine.adapter.PhotoListAdapter;
 import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.AllianceDetail;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.WorkDetailBean;
 import com.cloudmachine.bean.WorkSettleBean;
 import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.repair.contract.RepairFinishContract;
 import com.cloudmachine.ui.repair.model.RepairFinishModel;
 import com.cloudmachine.ui.repair.presenter.RepairFinishPresenter;
@@ -26,6 +28,7 @@ import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +71,7 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
     @BindView(R.id.device_info_title)
     TextView imgTitleTv;
     String orderNum;
+    boolean isAlliance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +79,16 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
         setContentView(R.layout.activity_reparir_finsih_detail);
         ButterKnife.bind(this);
         orderNum = getIntent().getStringExtra("orderNum");
+        isAlliance = getIntent().getBooleanExtra("isAlliance", false);
         String flag = getIntent().getStringExtra("flag");
         finishCtv.setRightClickListener(this);
-        mPresenter.updateRepairFinishDetail(orderNum, flag);
+        if (isAlliance) {
+            if (UserHelper.isLogin(this)) {
+                mPresenter.updateAllianceDetail(UserHelper.getMemberId(this), orderNum);
+            }
+        } else {
+            mPresenter.updateRepairFinishDetail(orderNum, flag);
+        }
     }
 
     @Override
@@ -130,6 +141,26 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
         updateDeviceInfo(mBoInfo.getWorkDetail(), mBoInfo.getLogoList(), null);
     }
 
+    @Override
+    public void returnAllianceDetail(AllianceDetail detail) {
+        CWInfo info = new CWInfo();
+        WorkSettleBean settleBean = new WorkSettleBean();
+        settleBean.setNpaidinamount(detail.getActualAmount());
+        WorkDetailBean detailBean = new WorkDetailBean();
+        detailBean.setVbrandname(detail.getBrandName());
+        detailBean.setVmaterialname(detail.getModelName());
+        detailBean.setVmachinenum(detail.getMachineNum());
+        detailBean.setVworkaddress(detail.getAddressDetail());
+        detailBean.setCusdemanddesc(detail.getDemandDescription());
+        info.setWorkSettle(settleBean);
+        info.setWorkDetail(detailBean);
+        List<String> urls = detail.getAttachmentUrls();
+        if (urls != null && urls.size() > 0) {
+            info.setLogoList((ArrayList<String>) urls);
+        }
+        returnDetailView(info);
+    }
+
 
     public void onClick(View view) {
         switch (view.getId()) {
@@ -137,6 +168,7 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
                 Bundle bundle0 = new Bundle();
                 bundle0.putInt(EvaluationActivity.ACTION_TYPE, 1);
                 bundle0.putString("orderNum", orderNum);
+                bundle0.putBoolean("isAlliance", isAlliance);
                 Constants.toActivity(this, EvaluationActivity.class, bundle0);
                 break;
 //            case R.id.finish_deviceinfo_fl:

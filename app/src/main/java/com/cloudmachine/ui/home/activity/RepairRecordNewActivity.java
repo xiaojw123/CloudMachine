@@ -1,13 +1,11 @@
 package com.cloudmachine.ui.home.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.activities.EvaluationActivity;
@@ -15,6 +13,7 @@ import com.cloudmachine.activities.RepairPayDetailsActivity;
 import com.cloudmachine.adapter.RepairListAdapter;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.AllianceItem;
 import com.cloudmachine.bean.FinishBean;
 import com.cloudmachine.bean.RepairHistoryInfo;
 import com.cloudmachine.bean.RepairListInfo;
@@ -31,25 +30,30 @@ import com.cloudmachine.utils.widgets.XListView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistoryPresenter, RepairHistoryModel> implements RepairHistoryContract.View, Handler.Callback, XListView.IXListViewListener, AdapterView.OnItemClickListener {
+public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistoryPresenter, RepairHistoryModel> implements RepairHistoryContract.View, XListView.IXListViewListener, AdapterView.OnItemClickListener, View.OnClickListener {
 
-    private Handler mHandler;
     private View noRepairRecord, have_repair_records;
     private RadiusButtonView btnRepairNow;
-    private XListView xlvComplete;
+    private XListView xlvComplete, allianceXlv;
     // private View completedHeaderView;
     private View uncompleteView;
     // private XListView xlvUnComplete;
 
-    private RepairListAdapter repairListAdapter;
+    private RepairListAdapter repairListAdapter, allianceListAdapter;
     private LinearLayout rlRepairNow;
     private RadiusButtonView btnBottomRepair;
     private RepairListInfo repairListInfo;
     private ArrayList<FinishBean> finishBeans = new ArrayList<>(); // 已完成集合
     private ArrayList<UnfinishedBean> unfinishedBeans = new ArrayList<>();// 未完成集合
     private ArrayList<RepairHistoryInfo> repairList = new ArrayList<>();// 合并两个集合
+    private ArrayList<RepairHistoryInfo> allianceList = new ArrayList<>();
     private long deviceId;
+    LinearLayout navLlt;
+    TextView allTv, areaTv;
+    int pageNum = 1;
+    boolean isLastPage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +68,9 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
     }
 
     protected void initView() {
-        mHandler = new Handler(this);
+        navLlt = (LinearLayout) findViewById(R.id.repair_nav_container);
+        allTv = (TextView) findViewById(R.id.repair_all_tv);
+        areaTv = (TextView) findViewById(R.id.repair_area_tv);
         noRepairRecord = findViewById(R.id.no_repair_records); // 无维修记录布局
         have_repair_records = findViewById(R.id.have_repair_records); // 有维修记录布局
         btnRepairNow = (RadiusButtonView) findViewById(R.id.btn_repair_now); // 立刻报修
@@ -76,13 +82,20 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
                 Constants.toActivity(RepairRecordNewActivity.this, NewRepairActivity.class, null);
             }
         });
+        allianceXlv = (XListView) findViewById(R.id.repair_alliance_xlv);
         xlvComplete = (XListView) findViewById(R.id.xlv_complete); // 已完成的listview
         repairListAdapter = new RepairListAdapter(RepairRecordNewActivity.this, repairList);
+        allianceListAdapter = new RepairListAdapter(this, allianceList);
         xlvComplete.setPullRefreshEnable(true);
         xlvComplete.setPullLoadEnable(false);
         xlvComplete.setXListViewListener(this);
         xlvComplete.setAdapter(repairListAdapter);
         xlvComplete.setOnItemClickListener(this);
+        allianceXlv.setPullRefreshEnable(true);
+        allianceXlv.setPullLoadEnable(true);
+        allianceXlv.setXListViewListener(this);
+        allianceXlv.setAdapter(allianceListAdapter);
+        allianceXlv.setOnItemClickListener(this);
         rlRepairNow = (LinearLayout) findViewById(
                 R.id.rl_repair_now);
 
@@ -100,91 +113,19 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
         if (deviceId == Constants.INVALID_DEVICE_ID) {
             rlRepairNow.setVisibility(View.VISIBLE);
         }
+        allTv.setSelected(true);
+        areaTv.setSelected(false);
+        allTv.setOnClickListener(this);
+        areaTv.setOnClickListener(this);
     }
 
-
-    private void showData() {
-
-        if ((null != repairList && repairList.size() > 0)) {
-            have_repair_records.setVisibility(View.VISIBLE);
-            noRepairRecord.setVisibility(View.GONE);
-        } else {
-            have_repair_records.setVisibility(View.GONE);
-            noRepairRecord.setVisibility(View.VISIBLE);
-        }
-
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public boolean handleMessage(Message msg) {
-        switch (msg.what) {
-            case Constants.HANDLER_GET_REPAIRHISTORY_SUCCESS:
-//                updateView(msg);
-                break;
-            case Constants.HANDLER_GET_REPAIRHISTORY_FAILD:
-                showData();
-                break;
-            default:
-                break;
-        }
-
-        return false;
-    }
-
-    private void updateView(RepairListInfo info) {
-
-    }
-
-//    private void TestCode() {
-//        ArrayList<FinishBean> finishBeens = new ArrayList<>();
-//        FinishBean bean1 = new FinishBean();
-//        bean1.setVbrandname("何苗");
-//        bean1.setVprodname("挖掘机");
-//        bean1.setNloanamount("10");
-//        bean1.setVprodname("12390131");
-//        bean1.setLogo_flag("1");
-//        bean1.setFlag("1");
-//        bean1.setNstatus("12");
-//        bean1.setVmacoptel("15268168675");
-//        bean1.setIs_EVALUATE("Y");
-//        bean1.setDopportunity("fafasfajlasuioruwd");
-//        bean1.setPrice("100");
-//        bean1.setNloanamount_TYPE(1);
-//        bean1.setOrderNum("131341241234");
-//        bean1.setVmachinenum("23333");
-//        bean1.setVmacopname("dfasfas");
-//        finishBeens.add(bean1);
-//        FinishBean bean2 = new FinishBean();
-//        bean2.setVbrandname("li mid");
-//        bean2.setVprodname("挖掘机");
-//        bean2.setNloanamount("1012");
-//        bean2.setVprodname("12390112331");
-//        bean2.setLogo_flag("1");
-//        bean2.setFlag("1");
-//        bean2.setNstatus("12");
-//        bean2.setVmacoptel("15268168675");
-//        bean2.setIs_EVALUATE("N");
-//        bean2.setDopportunity("fafasfajlasuioruwd");
-//        bean2.setPrice("100");
-//        bean2.setNloanamount_TYPE(1);
-//        bean2.setOrderNum("131341241234");
-//        bean2.setVmachinenum("23333");
-//        bean2.setVmacopname("dfasfas");
-//        finishBeens.add(bean2);
-//        repairListInfo.setFinish(finishBeens);
-//    }
 
     @Override
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
         MobclickAgent.onEvent(this, MobEvent.REPAIR_HISTORY);
-        // Constants.MyLog("获取焦点");
-//        new AllRepairHistoryAsync(RepairRecordNewActivity.this, mHandler).execute();
-        //MobclickAgent.onPageStart(this.getClass().getName());
-        //MobclickAgent.onPageStart(UMengKey.time_repair_history);
-        mPresenter.getRepairList(deviceId);
+        mPresenter.getRepairList(deviceId, false);
     }
 
     @Override
@@ -192,116 +133,57 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
                             long id) {
         String orderStatus = (String) view.getTag(R.id.order_status);
         RepairHistoryInfo info = (RepairHistoryInfo) view.getTag(R.id.order_item);
-        if (info==null){
+        if (info == null) {
             return;
         }
         String orderNum = info.getOrderNum();
         String flag = info.getFlag();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isAlliance", info.isAlliance());
         switch (orderStatus) {
             case OrderStatus.PAY:
-                Bundle b = new Bundle();
-                b.putString("orderNum", orderNum);
-                b.putString("flag", flag);
-                Constants.toActivity(RepairRecordNewActivity.this, RepairPayDetailsActivity.class, b, false);
+                bundle.putString("orderNum", orderNum);
+                bundle.putString("flag", flag);
+                Constants.toActivity(RepairRecordNewActivity.this, RepairPayDetailsActivity.class, bundle);
                 break;
             case OrderStatus.EVALUATION:
-                Bundle eBundle = new Bundle();
-                eBundle.putString("orderNum", orderNum);
-                eBundle.putString("tel", info.getVmacoptel());
-                Constants.toActivity(RepairRecordNewActivity.this, EvaluationActivity.class, eBundle);
+                bundle.putString("orderNum", orderNum);
+                bundle.putString("tel", info.getVmacoptel());
+                Constants.toActivity(RepairRecordNewActivity.this, EvaluationActivity.class, bundle);
                 break;
             case OrderStatus.COMPLETED:
-                Intent intent = new Intent(RepairRecordNewActivity.this, RepairFinishDetailActivity.class);
-                intent.putExtra("orderNum", orderNum);
-                intent.putExtra("flag", flag);
-                startActivity(intent);
+                bundle.putString("orderNum", orderNum);
+                bundle.putString("flag", flag);
+                Constants.toActivity(RepairRecordNewActivity.this, RepairFinishDetailActivity.class, bundle);
                 break;
             default:
-                Bundle dBundle = new Bundle();
-                dBundle.putString("orderNum", orderNum);
-                dBundle.putString("nstatus", orderStatus);
-                dBundle.putString("flag", flag);
-                Constants.toActivity(RepairRecordNewActivity.this, RepairDetailMapActivity.class, dBundle);
+                bundle.putString("orderNum", orderNum);
+                bundle.putString("nstatus", orderStatus);
+                bundle.putString("flag", flag);
+                Constants.toActivity(RepairRecordNewActivity.this, RepairDetailMapActivity.class, bundle);
                 break;
         }
-
-//
-//        if (null != repairList && repairList.size() > 0            //跳转单个报修详情页面
-//                ) {
-//
-//            if (temp < unfinishedBeans.size()) {
-//
-//                if (unfinishedBeans.get(temp).getNstatus().equals("8")) {
-//                    switch (unfinishedBeans.get(temp).getNloanamount_TYPE()) {
-//                        case 0://正常状态(已付款,直接判断是否评价)
-//                            if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
-//                                //未评价
-//                                //nStatusString = "待评价";
-//                            } else if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("Y")) {
-//                                //nStatusString = "已完工";
-//                            }
-//                            break;
-//                        case -1://未知状态
-//                            try {
-//                                if (Double.parseDouble(unfinishedBeans.get(temp).getNloanamount()) > 0.0) {
-//                                    //nStatusString = "待付款";
-//                                } else {
-//                                    if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
-//                                        //nStatusString = "待评价";
-//                                    } else if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("Y")) {
-//                                        //nStatusString = "已完工";
-//                                    }
-//                                }
-//                            } catch (NumberFormatException e) {
-//                                e.printStackTrace();
-//                                Constants.ToastAction("服务器传参数错误");
-//                            }
-//                            break;
-//                        case 1:
-//                            if (Double.parseDouble(unfinishedBeans.get(temp).getNloanamount()) > 0.0) {
-//                                //nStatusString = "待支付";
-//                                String orderNum = unfinishedBeans.get(temp).getOrderNum();
-//                                String flag = unfinishedBeans.get(temp).getFlag();
-//                                Bundle b = new Bundle();
-//                                b.putString("orderNum", orderNum);
-//                                b.putString("flag", flag);
-//                                Constants.toActivity(RepairRecordNewActivity.this, RepairPayDetailsActivity.class, b, false);
-//                            } else {
-//                                if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("N")) {
-//                                    //	nStatusString = "待评价";
-//                                } else if (unfinishedBeans.get(temp).getIs_EVALUATE().equals("Y")) {
-//                                    //nStatusString = "已完工";
-//                                }
-//                            }
-//                            break;
-//                    }
-//                } else {
-//
-//                }
-//
-//            } else {
-//                int p = temp - unfinishedBeans.size();
-//                if (finishBeans.get(p).getIs_EVALUATE().equals("N")) {
-//
-//                } else {
-//
-//                }
-//            }
-//
-//        }
     }
-
 
     @Override
     public void onRefresh() {
-//        new AllRepairHistoryAsync(RepairRecordNewActivity.this, mHandler).execute();
-        mPresenter.getRepairList(deviceId);
-
+        if (xlvComplete.getVisibility() == View.VISIBLE) {
+            mPresenter.getRepairList(deviceId, true);
+        } else {
+            mPresenter.getAllianceList();
+        }
     }
 
     @Override
     public void onLoadMore() {
-
+        if (allianceXlv.getVisibility() == View.VISIBLE) {
+            if (!isLastPage) {
+                ++pageNum;
+                mPresenter.getAllianceList(pageNum);
+            } else {
+                allianceXlv.stopLoadMore();
+            }
+        }
     }
 
     @Override
@@ -313,8 +195,6 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
         repairList.clear();
         if (null != info) {
             repairListInfo = info;
-            noRepairRecord.setVisibility(View.GONE);
-            xlvComplete.setVisibility(View.VISIBLE);
 //                    TestCode();
             ArrayList<FinishBean> finish = repairListInfo.getFinish();
             ArrayList<UnfinishedBean> unfinished = repairListInfo
@@ -403,18 +283,112 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
                 repairList.add(historyInfo);
 
             }
-            showData();
             repairListAdapter.setUnFinishedNum(unfinishedBeans.size());
             repairListAdapter.notifyDataSetChanged();
-        } else {
-            xlvComplete.setVisibility(View.GONE);
-            noRepairRecord.setVisibility(View.VISIBLE);
-            btnBottomRepair.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void returnGetRepairError() {
-        showData();
+        xlvComplete.stopRefresh();
+        xlvComplete.stopLoadMore();
+    }
+
+    @Override
+    public void retrunGetAllianceList(List<AllianceItem> itemList, boolean isLastPage, int pageNum) {
+        allianceXlv.stopLoadMore();
+        allianceXlv.stopRefresh();
+        if (pageNum <= 1) {
+            allianceList.clear();
+        }
+        if (itemList != null && itemList.size() > 0) {
+            this.isLastPage = isLastPage;
+            this.pageNum = pageNum;
+            for (AllianceItem item : itemList) {
+                RepairHistoryInfo info = new RepairHistoryInfo();
+                info.setOrderNum(item.getOrderNo());
+                info.setAlliance(true);
+                info.setNstatus(String.valueOf(item.getOrderStatus()));
+                info.setVbrandname(item.getBrandName());
+                info.setVmacoptel(item.getReporterMobile());
+                info.setVmaterialname(item.getModelName());
+                info.setVdiscription(item.getDemandDescription());
+                info.setDopportunity(item.getGmtCreateStr());
+                List<String> urls = item.getAttachmentUrls();
+                if (urls != null && urls.size() > 0) {
+                    info.setLogo_flag("1");
+                } else {
+                    info.setLogo_flag("0");
+                }
+                if (item.getIsEvaluate() == 0) {
+                    info.setIs_EVALUATE("N");
+                } else {
+                    info.setIs_EVALUATE("Y");
+                }
+                info.setOrderStatusValue(item.getOrderStatusValue());
+                allianceList.add(info);
+            }
+            allianceListAdapter.notifyDataSetChanged();
+        }
+        if (repairList.size() > 0 && allianceList.size() > 0) {
+            navLlt.setVisibility(View.VISIBLE);
+            if (allTv.isSelected()) {
+                allianceXlv.setVisibility(View.VISIBLE);
+                xlvComplete.setVisibility(View.GONE);
+            } else {
+                allianceXlv.setVisibility(View.GONE);
+                xlvComplete.setVisibility(View.VISIBLE);
+            }
+            have_repair_records.setVisibility(View.VISIBLE);
+            noRepairRecord.setVisibility(View.GONE);
+        } else if (repairList.size() == 0 && allianceList.size() == 0) {
+            have_repair_records.setVisibility(View.GONE);
+            noRepairRecord.setVisibility(View.VISIBLE);
+        } else {
+            navLlt.setVisibility(View.GONE);
+            have_repair_records.setVisibility(View.VISIBLE);
+            noRepairRecord.setVisibility(View.GONE);
+            if (repairList.size() > 0 && allianceList.size() == 0) {
+                allianceXlv.setVisibility(View.GONE);
+                xlvComplete.setVisibility(View.VISIBLE);
+            } else if (allianceList.size() > 0 && repairList.size() == 0) {
+                allianceXlv.setVisibility(View.VISIBLE);
+                xlvComplete.setVisibility(View.GONE);
+            }
+
+        }
+    }
+
+    @Override
+    public void returnGetAllianceError() {
+        retrunGetAllianceList(null, false, 1);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.repair_all_tv:
+                if (allTv.isSelected()) {
+                    return;
+                }
+                allTv.setSelected(true);
+                areaTv.setSelected(false);
+                xlvComplete.setVisibility(View.GONE);
+                allianceXlv.setVisibility(View.VISIBLE);
+                break;
+            case R.id.repair_area_tv:
+                if (areaTv.isSelected()) {
+                    return;
+                }
+                allTv.setSelected(false);
+                areaTv.setSelected(true);
+                xlvComplete.setVisibility(View.VISIBLE);
+                allianceXlv.setVisibility(View.GONE);
+                break;
+
+        }
+
+
     }
 }

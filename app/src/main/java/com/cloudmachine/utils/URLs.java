@@ -27,10 +27,16 @@ public class URLs {
     public static String LOCUS = ApiConstants.CLOUDM_YJX_HOST + "device/locus";
     //获取评价标签
     public static String GET_TAG_INFO = ApiConstants.CLOUDM_YJX_HOST + "device/getTagInfo";
+    //获取加盟站评价标签
+    public static String GET_TAG_INFO_ALLIANCE=ApiConstants.CLOUDM_YJX_HOST+"device/getEvaluateTagFromAlliance";
+
     //获取工单详情
     public static String GET_WORK_DETAIL = ApiConstants.CLOUDM_YJX_HOST + "device/queryWorkDetail";
     //获取工作数据的统计
     public static String GET_WORK_STATISTICS = ApiConstants.CLOUDM_YJX_HOST + "device/getDataStatistic";
     //获取工单评价信息
     public static String GET_EVALUATE_INFO=ApiConstants.CLOUDM_YJX_HOST+"device/getEvaluateInfo";
+
+    public static String GET_EVALUATE_INFO_ALLIANCE=ApiConstants.CLOUDM_YJX_HOST+"device/getEvaluateInfoFromAlliance";
+
 }

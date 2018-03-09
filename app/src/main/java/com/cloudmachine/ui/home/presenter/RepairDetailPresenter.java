@@ -1,6 +1,7 @@
 package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.AllianceDetail;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.ui.home.contract.RepairDetailContract;
@@ -61,6 +62,23 @@ public class RepairDetailPresenter extends RepairDetailContract.Preseneter {
 
             }
         }));
+
+    }
+
+    @Override
+    public void updateAllianceDetail(long memberId, String orderNo) {
+        mRxManage.add(mModel.getAllianceOrderDetail(memberId,orderNo).subscribe(new RxSubscriber<AllianceDetail>(mContext) {
+            @Override
+            protected void _onNext(AllianceDetail detail) {
+                mView.returnAllianceDetail(detail);
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+
 
     }
 

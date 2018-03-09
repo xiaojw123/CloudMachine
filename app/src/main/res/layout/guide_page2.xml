@@ -43,11 +43,6 @@
             android:layout_marginLeft="@dimen/guide_dot_left"
             android:background="@drawable/bg_dot_unselect" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/guide_dot_left"
-            android:background="@drawable/bg_dot_unselect" />
 
     </LinearLayout>
 </LinearLayout>

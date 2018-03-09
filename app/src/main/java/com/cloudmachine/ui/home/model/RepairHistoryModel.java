@@ -2,15 +2,18 @@ package com.cloudmachine.ui.home.model;
 
 import android.content.Context;
 
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.bean.AllianceItem;
+import com.cloudmachine.bean.RepairListInfo;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.helper.UserHelper;
-import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.ui.home.contract.RepairHistoryContract;
 import com.cloudmachine.utils.Constants;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -23,7 +26,7 @@ public class RepairHistoryModel implements RepairHistoryContract.Model {
 
     @Override
     public Observable<RepairListInfo> getRepairList(Context context, long deviceId) {
-        Map<String, String> paramsMap =new HashMap<>();
+        Map<String, String> paramsMap = new HashMap<>();
         if (deviceId == Constants.INVALID_DEVICE_ID) {
             if (UserHelper.isLogin(context)) {
                 long memberId = UserHelper.getMemberId(context);
@@ -35,4 +38,16 @@ public class RepairHistoryModel implements RepairHistoryContract.Model {
         return Api.getDefault(HostType.HOST_CLOUDM_YJX).getRepairList(paramsMap).compose(RxHelper.<RepairListInfo>handleResult());
 
     }
+
+    @Override
+    public Observable<BaseRespose<List<AllianceItem>>> getAllianceList(Context context) {
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getAllianceListByMember(UserHelper.getMemberId(context)).compose(RxHelper.<List<AllianceItem>>handleBaseResult());
+    }
+
+    @Override
+    public Observable<BaseRespose<List<AllianceItem>>> getAllianceList(Context context, int pageNum) {
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getAllianceListByMember(UserHelper.getMemberId(context),pageNum).compose(RxHelper.<List<AllianceItem>>handleBaseResult());
+    }
+
+
 }

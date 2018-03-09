@@ -1,6 +1,7 @@
 package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.AllianceItem;
 import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.bean.UnfinishedBean;
 import com.cloudmachine.ui.home.contract.MSupervisorContract;
@@ -52,6 +53,50 @@ public class MSupervisorPresenter extends MSupervisorContract.Preseneter {
 
             }
         }));
+
+    }
+
+    //获取加盟站数据,若没有，拉取用户报修记录
+    @Override
+    public void getAllianceItemView(final long memberId) {
+        mRxManage.add(mModel.getAllianceList(memberId).subscribe(new RxSubscriber<List<AllianceItem>>(mContext) {
+            @Override
+            protected void _onNext(List<AllianceItem> itemList) {
+                if (itemList != null && itemList.size() > 0) {
+                    AllianceItem item = itemList.get(0);
+                    UnfinishedBean bean = new UnfinishedBean();
+                    bean.setAlliance(true);
+                    bean.setVbrandname(item.getBrandName());
+                    bean.setVmaterialname(item.getModelName());
+                    bean.setDopportunity(item.getGmtModifiedStr());
+                    bean.setVdiscription(item.getDemandDescription());
+                    bean.setVmacoptel(item.getReporterMobile());
+                    List<String> logoUrls = item.getAttachmentUrls();
+                    if (logoUrls != null && logoUrls.size() > 0) {
+                        bean.setLogo_flag("1");
+                    } else {
+                        bean.setLogo_flag("0");
+                    }
+                    if (item.getIsEvaluate() == 0) {
+                        bean.setIs_EVALUATE("N");
+                    }else{
+                        bean.setIs_EVALUATE("Y");
+                    }
+                    bean.setNstatus(String.valueOf(item.getOrderStatus()));
+                    bean.setOrderNum(item.getOrderNo());
+                    bean.setVmacoptel(item.getArtificerMobile());
+                    mView.returnRepairItemView(bean, item.getOrderStatusValue());
+                } else {
+                    getRepairItemView(memberId);
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+                getRepairItemView(memberId);
+            }
+        }));
+
 
     }
 

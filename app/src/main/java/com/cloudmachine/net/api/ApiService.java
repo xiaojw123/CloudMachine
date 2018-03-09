@@ -3,6 +3,8 @@ package com.cloudmachine.net.api;
 
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.AdBean;
+import com.cloudmachine.bean.AllianceDetail;
+import com.cloudmachine.bean.AllianceItem;
 import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
@@ -206,6 +208,10 @@ public interface ApiService {
     @GET("device/queryWorkDetail")
     Observable<BaseRespose<CWInfo>> getCWInfo(@QueryMap Map<String, String> map);
 
+    @GET("device/getAllianceOrderDetails")
+    Observable<BaseRespose<AllianceDetail>>    getAllianceOrderDetail(@Query("memberId") long memberId, @Query("orderNo") String orderNo);
+
+
     @GET("repairStation/updateMemberRemark")
     Observable<BaseRespose<String>> updateMemberRemark(@Query("fid") long fid, @Query("memberId") long memberId, @Query("deviceId") long deviceId, @Query("remark") String remark, @Query("roleId") long roleId);
 
@@ -220,6 +226,13 @@ public interface ApiService {
 
     @GET("device/getRepairList")
     Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("memberId") long memberId);
+
+    //获取加盟站工单列表
+    @GET("device/getAllianceListByMember")
+    Observable<BaseRespose<List<AllianceItem>>>  getAllianceListByMember(@Query("memberId") long memberId);
+    //获取加盟站工单列表
+    @GET("device/getAllianceListByMember")
+    Observable<BaseRespose<List<AllianceItem>>>  getAllianceListByMember(@Query("memberId") long memberId,@Query("page") int page);
 
     @GET("device/getRepairList")
     Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId, @Query("deviceId") long deviceId);

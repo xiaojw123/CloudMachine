@@ -37,7 +37,6 @@ import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
-import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.contract.DeviceContract;
@@ -66,8 +65,8 @@ import rx.functions.Action1;
 
 public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel> implements Handler.Callback, DeviceContract.View, View.OnClickListener, BaseRecyclerAdapter.OnItemClickListener {
     private static final long DEFUALT_UNLOGIN_ID = -1;
-    @BindView(R.id.device_ques_ans_tv)
-    TextView homeQuestionAnsTv;
+//    @BindView(R.id.device_ques_ans_tv)
+//    TextView homeQuestionAnsTv;
     @BindView(R.id.device_flush_imgBtn)
     ImageButton homeFlushBtn;
     @BindView(R.id.device_phone_imgBtn)
@@ -434,7 +433,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     }
 
 
-    @OnClick({R.id.device_box_act_tv, R.id.device_phone_imgBtn, R.id.device_menu_tv, R.id.device_ques_ans_tv, R.id.device_flush_imgBtn})
+    @OnClick({R.id.device_box_act_tv, R.id.device_phone_imgBtn, R.id.device_menu_tv, R.id.device_flush_imgBtn})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.device_box_act_tv:
@@ -475,13 +474,13 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 Marker marker = (Marker) view.getTag();
                 gotoDeviceDetail((McDeviceInfo) marker.getObject());
                 break;
-            case R.id.device_ques_ans_tv://问答
-                MobclickAgent.onEvent(getActivity(), MobEvent.TIME_H5_COMMUNITY_PAGE);
-                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_ASK_CLICK);
-                Bundle bundle = new Bundle();
-                bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppCommunity);
-                Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle);
-                break;
+//            case R.id.device_ques_ans_tv://问答
+//                MobclickAgent.onEvent(getActivity(), MobEvent.TIME_H5_COMMUNITY_PAGE);
+//                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_ASK_CLICK);
+//                Bundle bundle = new Bundle();
+//                bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppCommunity);
+//                Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle);
+//                break;
             case R.id.device_flush_imgBtn:
                 MobclickAgent.onEvent(getActivity(), UMengKey.count_machine_refresh);
                 flush();

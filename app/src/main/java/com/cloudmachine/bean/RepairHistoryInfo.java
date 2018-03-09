@@ -16,6 +16,24 @@ public class RepairHistoryInfo {
     private String     vmacopname;
     private String     vdiscription;
     private String     is_EVALUATE;
+	private boolean isAlliance;
+	private String orderStatusValue;
+
+	public String getOrderStatusValue() {
+		return orderStatusValue;
+	}
+
+	public void setOrderStatusValue(String orderStatusValue) {
+		this.orderStatusValue = orderStatusValue;
+	}
+
+	public boolean isAlliance() {
+		return isAlliance;
+	}
+
+	public void setAlliance(boolean alliance) {
+		isAlliance = alliance;
+	}
 
 	public String getLogo_flag() {
 		return logo_flag;

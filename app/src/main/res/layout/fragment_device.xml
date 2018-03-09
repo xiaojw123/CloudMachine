@@ -33,7 +33,7 @@
         android:id="@+id/device_menu_tv"
         android:layout_width="@dimen/dimen_size_44"
         android:layout_height="@dimen/dimen_size_44"
-        android:layout_alignRight="@+id/device_ques_ans_tv"
+        android:layout_alignRight="@+id/device_vp"
         android:layout_below="@+id/device_box_act_tv"
         android:layout_marginTop="@dimen/dimen_size_6"
         android:background="@drawable/bg_card_col14"
@@ -44,21 +44,21 @@
         android:textColor="@color/cor9"
         android:textSize="@dimen/siz8" />
 
-    <TextView
-        android:id="@+id/device_ques_ans_tv"
-        android:layout_width="@dimen/dimen_size_51"
-        android:layout_height="@dimen/dimen_size_51"
-        android:layout_alignRight="@+id/device_vp"
-        android:background="@drawable/bg_question_ask"
-        android:drawableTop="@drawable/icon_ask_add"
-        android:gravity="center_horizontal"
-        android:paddingBottom="@dimen/dimen_size_12"
-        android:paddingTop="@dimen/dimen_size_12"
-        android:layout_above="@+id/device_vp"
-        android:layout_marginBottom="@dimen/dimen_size_17"
-        android:text="@string/ask"
-        android:textColor="@color/white"
-        android:textSize="@dimen/siz8" />
+    <!--<TextView-->
+        <!--android:id="@+id/device_ques_ans_tv"-->
+        <!--android:layout_width="@dimen/dimen_size_51"-->
+        <!--android:layout_height="@dimen/dimen_size_51"-->
+        <!--android:layout_alignRight="@+id/device_vp"-->
+        <!--android:background="@drawable/bg_question_ask"-->
+        <!--android:drawableTop="@drawable/icon_ask_add"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:paddingBottom="@dimen/dimen_size_12"-->
+        <!--android:paddingTop="@dimen/dimen_size_12"-->
+        <!--android:layout_above="@+id/device_vp"-->
+        <!--android:layout_marginBottom="@dimen/dimen_size_17"-->
+        <!--android:text="@string/ask"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textSize="@dimen/siz8" />-->
 
 
     <ImageButton

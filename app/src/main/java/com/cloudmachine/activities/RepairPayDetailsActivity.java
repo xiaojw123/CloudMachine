@@ -23,6 +23,7 @@ import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
 import com.cloudmachine.alipay.PayResult;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.AliPayBean;
+import com.cloudmachine.bean.AllianceDetail;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.WeiXinEntityBean;
 import com.cloudmachine.bean.WorkDetailBean;
@@ -46,6 +47,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -69,7 +71,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
     private static final String FORMAT_REAL_PAY = "实付： ¥%s";
     public static final String PAY_TYPE_WECHAT = "10";
     public static final String PAY_TYPE_ALIPAY = "11";
-//    @BindView(R.id.pay_deviceinfo_fl)
+    //    @BindView(R.id.pay_deviceinfo_fl)
 //    FrameLayout infoFl;
     @BindView(R.id.tv_should_pay_price)
     TextView tvShouldPrice;
@@ -142,13 +144,20 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
         initParams();
         initView();
         initRxManager();
-        new GetWorkDetailAsync(mHandler, this, orderNum, flag).execute();
+        boolean isAlliance = getIntent().getBooleanExtra("isAlliance", false);
+        if (isAlliance) {
+            if (UserHelper.isLogin(this)) {
+                mPresenter.updateAllianceDetail(UserHelper.getMemberId(this), orderNum);
+            }
+        } else {
+            new GetWorkDetailAsync(mHandler, this, orderNum, flag).execute();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onEvent(this,MobEvent.REPAIR_PAY_ORDER);
+        MobclickAgent.onEvent(this, MobEvent.REPAIR_PAY_ORDER);
     }
 
     private void initView() {
@@ -211,7 +220,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
                         String ndiscounttotalamount = workSettle.getNdiscounttotalamount();
 //                        tvDiscountAmount.setText("-¥" + ndiscounttotalamount);
                         tvShouldPrice.setText("¥" + workSettle.getNtotalamount());
-                        formartPayAmount =workSettle.getNloanamount();
+                        formartPayAmount = workSettle.getNloanamount();
                         realPayAmount = Double.parseDouble(formartPayAmount);
                         if (!TextUtils.isEmpty(ndiscounttotalamount)) {
                             double a1 = Double.parseDouble(ndiscounttotalamount);
@@ -246,7 +255,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
                         }
 
                     }
-                    updateDeviceInfo(cwInfo.getWorkDetail(),cwInfo.getLogoList(),null);
+                    updateDeviceInfo(cwInfo.getWorkDetail(), cwInfo.getLogoList(), null);
                 }
                 mPresenter.getOrderCoupon(mRlCoupon, UserHelper.getMemberId(this), orderNum);
                 break;
@@ -280,6 +289,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
         }
         return false;
     }
+
     public void updateDeviceInfo(WorkDetailBean bean, ArrayList<String> logoList, String flag) {
         //刷新耗件详情列表
         if (bean == null) {
@@ -369,10 +379,10 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
                     return;
                 }
                 if (mCbWeiXinPay.isChecked()) {
-                    MobclickAgent.onEvent(this,MobEvent.COUNT_PAY_WECHAT);
+                    MobclickAgent.onEvent(this, MobEvent.COUNT_PAY_WECHAT);
                     payType = PAY_TYPE_WECHAT;
                 } else if (mCbAliPay.isChecked()) {
-                    MobclickAgent.onEvent(this,MobEvent.COUNT_PAY_ALIPAY);
+                    MobclickAgent.onEvent(this, MobEvent.COUNT_PAY_ALIPAY);
                     payType = PAY_TYPE_ALIPAY;
                 }
                 new CWPayAsync(mHandler, this, payType, orderNum, useCouponId).execute();
@@ -429,7 +439,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
                     useCouponId = data.getStringExtra("couponId");
                     int amount = data.getIntExtra("amount", 0);
                     tvCoupon.setText("-¥" + amount);
-                    tvPayPrice.setText(String.format(FORMAT_REAL_PAY, CommonUtils.formartPrice(String.valueOf(CommonUtils.subtractDouble(realPayAmount,amount)))));
+                    tvPayPrice.setText(String.format(FORMAT_REAL_PAY, CommonUtils.formartPrice(String.valueOf(CommonUtils.subtractDouble(realPayAmount, amount)))));
                 } else {
                     tvCoupon.setText("不使用");
                     tvPayPrice.setText(String.format(FORMAT_REAL_PAY, formartPayAmount));
@@ -441,7 +451,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
     @Override
     public void updateOrderCouponView(OrderCouponBean orderCouponBean) {
         if (orderCouponBean != null && orderCouponBean.getUseAmount() > 0) {
-            useCouponId="";
+            useCouponId = "";
             mOrderCouponBean = orderCouponBean;
             for (CouponItem item : mOrderCouponBean.getCouponList()) {
                 int useNum = item.getUseNum();
@@ -453,7 +463,7 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
                 }
             }
             tvCoupon.setText("-¥" + String.valueOf(orderCouponBean.getUseAmount()));
-            tvPayPrice.setText(String.format(FORMAT_REAL_PAY, CommonUtils.formartPrice(String.valueOf(CommonUtils.subtractDouble(realPayAmount,orderCouponBean.getUseAmount())))));
+            tvPayPrice.setText(String.format(FORMAT_REAL_PAY, CommonUtils.formartPrice(String.valueOf(CommonUtils.subtractDouble(realPayAmount, orderCouponBean.getUseAmount())))));
         } else {
             tvCoupon.setText("不使用");
             tvPayPrice.setText(String.format(FORMAT_REAL_PAY, formartPayAmount));
@@ -462,7 +472,31 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
 
     @Override
     public void updateOrderCouponError() {
-            tvPayPrice.setText(String.format(FORMAT_REAL_PAY, formartPayAmount));
+        tvPayPrice.setText(String.format(FORMAT_REAL_PAY, formartPayAmount));
+    }
+
+    @Override
+    public void returnAllianceDetail(AllianceDetail detail) {
+        CWInfo info = new CWInfo();
+        WorkSettleBean settleBean = new WorkSettleBean();
+        settleBean.setNtotalamount(detail.getReceivableAmount());//应付
+        settleBean.setNloanamount(detail.getActualAmount());
+        List<String> urls = detail.getAttachmentUrls();
+        if (urls != null && urls.size() > 0) {
+            info.setLogoList((ArrayList<String>) urls);
+        }
+        info.setWorkSettle(settleBean);
+        WorkDetailBean detailBean = new WorkDetailBean();
+        detailBean.setVbrandname(detail.getBrandName());
+        detailBean.setVmaterialname(detail.getModelName());
+        detailBean.setVmachinenum(detail.getMachineNum());
+        detailBean.setCusdemanddesc(detail.getDemandDescription());
+        detailBean.setVworkaddress(detail.getAddressDetail());
+        info.setWorkDetail(detailBean);
+        Message msg = new Message();
+        msg.obj = info;
+        msg.what = Constants.HANDLER_GET_CWDETAIL_SUCCESS;
+        mHandler.sendMessage(msg);
     }
 
 

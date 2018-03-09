@@ -53,8 +53,8 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
     private TagCloudLayout disadvantage;
     private RadiusButtonView submit;
     private String css_work_no;
+    private boolean isAlliance;
     private String cust_telString;
-    private StringBuffer sbAdvantage = new StringBuffer();
     private int actionType;
     private LinearLayout editLayout;
     private LinearLayout adItemLayout, disAdItemLayout;
@@ -89,14 +89,16 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
             //获取工单评价信息
             ratingBar.setIsIndicator(true);
             submit.setVisibility(View.GONE);
-            editLayout.setVisibility(View.GONE);
-            new GetEvaluateInfoTask(mHandler, css_work_no).execute();
+            sbjEdt.setEnabled(false);
+            new GetEvaluateInfoTask(mHandler, css_work_no,isAlliance).execute();
         } else {
+            sbjEdt.setEnabled(true);
             tvDesc.setText(getResources().getString(R.string.rating_bar));
             submit.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
+                    StringBuffer sbAdvantage = new StringBuffer();
                     StringBuffer sb1 = new StringBuffer();
                     StringBuffer sb2 = new StringBuffer();
 
@@ -148,11 +150,11 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
                     }
                     new SubmitCommentAsync(mContext, mHandler, css_work_no, String
                             .valueOf(rating), cust_telString, sbAdvantage
-                            .toString(), sbjEdt.getText().toString()).execute();
+                            .toString(), sbjEdt.getText().toString(),isAlliance).execute();
                 }
             });
 
-            new GetTagInfoAsync(mHandler, mContext).execute();
+            new GetTagInfoAsync(mHandler,isAlliance).execute();
 
         }
 
@@ -179,6 +181,7 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
 
     private void getIntentData() {
         Intent intent = this.getIntent();
+        isAlliance=intent.getBooleanExtra("isAlliance",false);
         css_work_no = intent.getStringExtra("orderNum");// 工单id
         cust_telString = intent.getStringExtra("tel");// 评价人电话
         actionType = intent.getIntExtra(ACTION_TYPE, 0);
@@ -195,6 +198,12 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
                     EvaluateInfoBean bean = (EvaluateInfoBean) msg.obj;
                     ratingBar.setRating(bean.getSatisfaction());
                     updateData(bean.getAdvantage(), bean.getDisadvantage());
+                    String suggestion=bean.getSuggestion();
+                    if (TextUtils.isEmpty(suggestion)){
+                        editLayout.setVisibility(View.GONE);
+                    }else{
+                        sbjEdt.setText(suggestion);
+                    }
                 }
                 break;
             case Constants.HANDLER_GET_EVALUATE_INFO_FAILED:

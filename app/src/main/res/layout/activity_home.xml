@@ -310,15 +310,6 @@
             </FrameLayout>
 
 
-            <FrameLayout
-                android:id="@+id/item_ask"
-                style="@style/HomeMenuContainerStyle">
-
-                <TextView
-                    style="@style/HomeMenuTvStyle"
-                    android:drawableLeft="@drawable/icon_ask"
-                    android:text="@string/my_ask" />
-            </FrameLayout>
 
 
         </LinearLayout>

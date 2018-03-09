@@ -2,12 +2,13 @@ package com.cloudmachine.ui.repair.model;
 
 import android.content.Context;
 
-import com.cloudmachine.net.api.Api;
-import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.bean.AllianceDetail;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.repair.contract.RepairFinishContract;
 
 import java.util.HashMap;
@@ -39,6 +40,11 @@ public class RepairFinishModel implements RepairFinishContract.Model {
             map.put("memberId", String.valueOf(UserHelper.getMemberId(context)));
         }
         return map;
+    }
+
+    @Override
+    public Observable<AllianceDetail> getAllianceOrderDetail(long memberId, String orderNo) {
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getAllianceOrderDetail(memberId,orderNo).compose(RxHelper.<AllianceDetail>handleResult());
     }
 
 }

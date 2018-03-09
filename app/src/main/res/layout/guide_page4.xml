@@ -58,17 +58,5 @@
     </LinearLayout>
 
 
-    <com.cloudmachine.autolayout.widgets.RadiusButtonView
-        android:id="@+id/intoMain"
-        android:layout_width="@dimen/radius_button_width"
-        android:layout_height="@dimen/radius_button_height"
-        android:layout_marginTop="@dimen/guide_radius_button_top"
-        cloudm:rbtn_fillColor_dw="@color/cor5"
-        cloudm:rbtn_fillColor_nm="@color/cor5"
-        cloudm:rbtn_strokeColor="@color/cor5"
-        cloudm:rbtn_text="@string/guide_button_text"
-        cloudm:rbtn_textColor="@color/cor15"
-        cloudm:rbtn_textSize="@dimen/text_size_16_sp" />
-
 </LinearLayout>
 
