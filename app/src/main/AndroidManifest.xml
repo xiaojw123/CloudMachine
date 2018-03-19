@@ -565,7 +565,11 @@
         <activity android:name=".ui.home.activity.DepositActivity" />
         <activity android:name=".ui.home.activity.RebundDepositActivity" />
         <activity android:name="com.alipay.sdk.app.H5AuthActivity" />
-        <activity android:name=".ui.home.activity.MessageDetailActivity"></activity>
+        <activity android:name=".ui.home.activity.MessageDetailActivity" />
+        <activity android:name=".ui.home.activity.WorkVideoActivity" />
+        <activity android:name=".ui.home.activity.FullScreenActivity"
+            android:screenOrientation="landscape"
+            />
     </application>
 
 </manifest>

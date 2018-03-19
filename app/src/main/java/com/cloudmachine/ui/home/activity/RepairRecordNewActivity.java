@@ -92,7 +92,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
         xlvComplete.setAdapter(repairListAdapter);
         xlvComplete.setOnItemClickListener(this);
         allianceXlv.setPullRefreshEnable(true);
-        allianceXlv.setPullLoadEnable(true);
+        allianceXlv.setPullLoadEnable(false);
         allianceXlv.setXListViewListener(this);
         allianceXlv.setAdapter(allianceListAdapter);
         allianceXlv.setOnItemClickListener(this);
@@ -160,6 +160,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
                 bundle.putString("orderNum", orderNum);
                 bundle.putString("nstatus", orderStatus);
                 bundle.putString("flag", flag);
+                bundle.putString("orderStatus",info.getNstatus());
                 Constants.toActivity(RepairRecordNewActivity.this, RepairDetailMapActivity.class, bundle);
                 break;
         }
@@ -304,6 +305,9 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
         if (itemList != null && itemList.size() > 0) {
             this.isLastPage = isLastPage;
             this.pageNum = pageNum;
+            if (!isLastPage&&pageNum==1) {
+                allianceXlv.setPullLoadEnable(true);
+            }
             for (AllianceItem item : itemList) {
                 RepairHistoryInfo info = new RepairHistoryInfo();
                 info.setOrderNum(item.getOrderNo());

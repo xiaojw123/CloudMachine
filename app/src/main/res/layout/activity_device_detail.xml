@@ -21,24 +21,42 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/device_detail_title_layout" />
 
+    <!--<TextView-->
+        <!--android:id="@+id/device_detail_work_tv"-->
+        <!--android:layout_width="@dimen/dimen_size_44"-->
+        <!--android:layout_height="@dimen/dimen_size_44"-->
+        <!--android:background="@drawable/bg_card_col14"-->
+        <!--android:drawableTop="@drawable/icon_work_pic"-->
+        <!--android:text="@string/pic"-->
+        <!--android:textSize="@dimen/siz8"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:textColor="@color/cor9"-->
+        <!--android:paddingTop="@dimen/dimen_size_10"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_9"-->
+        <!--android:layout_marginRight="@dimen/dimen_size_9"-->
+        <!--android:layout_alignTop="@+id/home_mapview"-->
+        <!--/>-->
+        <!--Todo:test-->
+        <!--android:visibility="gone"-->
     <TextView
         android:id="@+id/device_detail_work_tv"
         android:layout_width="@dimen/dimen_size_44"
         android:layout_height="@dimen/dimen_size_44"
         android:background="@drawable/bg_card_col14"
-        android:drawableTop="@drawable/icon_work_pic"
-        android:text="@string/pic"
+        android:drawableTop="@drawable/icon_work_video"
+        android:text="@string/video"
         android:textSize="@dimen/siz8"
         android:gravity="center_horizontal"
         android:layout_alignParentRight="true"
         android:textColor="@color/cor9"
+        android:drawablePadding="@dimen/dimen_size_5"
         android:paddingTop="@dimen/dimen_size_10"
         android:layout_marginTop="@dimen/dimen_size_9"
         android:layout_marginRight="@dimen/dimen_size_9"
-        android:layout_alignTop="@+id/home_mapview"
         android:visibility="gone"
+        android:layout_alignTop="@+id/home_mapview"
         />
-
 
 
 
@@ -272,29 +290,26 @@
         android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:visibility="gone"
         >
 
         <ImageView
-            android:id="@+id/device_detail_work_pic"
+            android:id="@+id/device_detail_work_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_guide_work_pic"
+            android:src="@drawable/icon_guide_video1"
             android:layout_marginTop="@dimen/dimen_size_44"
             android:layout_alignParentRight="true"
             />
         
         <ImageView
-            android:layout_below="@+id/device_detail_work_pic"
+            android:layout_below="@+id/device_detail_work_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_guide_work_text"
+            android:src="@drawable/icon_guide_video2"
             android:layout_marginLeft="-113dp"
             android:layout_marginTop="@dimen/dimen_size_15"
-            android:layout_alignLeft="@+id/device_detail_work_pic"
+            android:layout_alignLeft="@+id/device_detail_work_video"
             />
 
         <Button
@@ -309,5 +324,6 @@
 
 
     </RelativeLayout>
+
 
 </RelativeLayout>

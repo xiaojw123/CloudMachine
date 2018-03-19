@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.cloudmachine.ui.home.activity.WorkVideoActivity">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/work_video_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_right_text="@string/flush"
+        app:common_title_name="@string/work_pic" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spa5"
+        android:layout_marginTop="-4dp"
+        android:background="@color/public_bg"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/work_pic_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="照片"
+            android:textColor="@color/coupon_title_textcolor"
+            android:textSize="@dimen/siz3" />
+
+
+        <TextView
+            android:id="@+id/work_video_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="视频"
+            android:textColor="@color/coupon_title_textcolor"
+            android:textSize="@dimen/siz3" />
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/work_video_fragment_cotainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+
+</LinearLayout>

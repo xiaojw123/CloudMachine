@@ -62,7 +62,11 @@ public class MachineTypesListAsync extends ATask {
             BaseBO<List<MachineTypeInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<MachineTypeInfo>>>() {
             }.getType());
             msg.what = Constants.HANDLER_GETMACHINETYPES_SUCCESS;
-            msg.obj = baseBO.getResult();
+            if (baseBO != null) {
+                msg.obj = baseBO.getResult();
+            }else{
+                msg.obj=null;
+            }
 
         } else {
             msg.what = Constants.HANDLER_GETMACHINETYPES_FAIL;

@@ -118,6 +118,8 @@ dependencies {
     //    compile 'com.jcodecraeer:xrecyclerview:1.3.2'TODO://XRecyclerView定制需求
     compile project(':xrecyclerview')
     compile files('libs/alipaySdk-20170922.jar')
+    //    compile 'com.yanzhenjie:recyclerview-swipe:1.0.4'
+    compile files('libs/pldroid-player-2.1.0.jar')
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.github.rey5137:material:1.2.2'
     compile 'com.github.hotchemi:permissionsdispatcher:2.3.1'
@@ -135,7 +137,6 @@ dependencies {
     compile 'id.zelory:compressor:1.0.4'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
-//    compile 'com.yanzhenjie:recyclerview-swipe:1.0.4'
     compile 'com.yanzhenjie:recyclerview-swipe:1.1.4'
     compile 'com.amap.api:location:3.4.1'
     compile 'com.amap.api:search:5.2.1'

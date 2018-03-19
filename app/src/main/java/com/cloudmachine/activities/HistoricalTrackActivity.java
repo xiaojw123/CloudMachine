@@ -57,7 +57,7 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
 //		,{30.273788,119.999168},{30.273286,119.998397},{30.272638,119.999259},{30.272027,119.999771},{30.271434,119.99887}
 //		,{30.271879,119.997734},{30.273157,119.997627},{30.272933,119.998374}
 //	};
-    private static String FOMR_TIME_PROCESS = "%1$s / %2$s";
+    private static String FOMR_TIME_PROCESS = "%1$s / %2$s (秒)";
     // 通过设置间隔时间和距离可以控制速度和图标移动的距离
     private static final int TIME_INTERVAL = 60;
     private static final double DISTANCE = 0.0001;
@@ -94,6 +94,7 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
     int curTimeInterval = TIME_INTERVAL;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -112,7 +113,9 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
         MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_HISTORYLOCUS);
 //        initRoadData();
 //        moveLooper();
-        new LocusListAsync(mcDeviceBasicsInfo.getId(), mContext, mHandler).execute();
+        if (mcDeviceBasicsInfo != null) {
+            new LocusListAsync(mcDeviceBasicsInfo.getId(), mContext, mHandler).execute();
+        }
     }
 
     @Override
@@ -394,7 +397,7 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
                             mHandler.sendMessage(msg);
                             if (i < mVirtureRoad.getPoints().size() - 2) {
                                 try {
-                                    AppLog.print("sleep____millls__i+"+i);
+                                    AppLog.print("sleep____millls__i+" + i);
                                     Thread.sleep(curTimeInterval);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
@@ -683,6 +686,9 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
     }
 
     private void showPromptDialog(String message) {
+        if (isFinishing()) {
+            return;
+        }
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         builder.setMessage(message);
         builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
@@ -771,7 +777,8 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
             } else {
                 AppLog.print("no isAlive restart");
                 isComlete = false;
-                moveThread.start();
+//                moveThread.start();
+                moveLooper();
             }
         }
 

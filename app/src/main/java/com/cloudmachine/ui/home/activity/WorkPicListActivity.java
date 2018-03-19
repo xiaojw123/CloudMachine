@@ -21,6 +21,7 @@ import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.CommonUtils;
+import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
@@ -42,7 +43,6 @@ import butterknife.OnClick;
 
 public class WorkPicListActivity extends BaseAutoLayoutActivity implements View.OnClickListener, XRecyclerView.LoadingListener {
     private String prefix;
-    public static final String SN_ID = "snid";
     private static final int PAGE_SIZE = 20;
     @BindView(R.id.pic_ctv)
     CommonTitleView picCtv;
@@ -89,7 +89,7 @@ public class WorkPicListActivity extends BaseAutoLayoutActivity implements View.
     }
 
     private void obtainImei() {
-        String sn = getIntent().getStringExtra(SN_ID);
+        String sn = getIntent().getStringExtra(Constants.SN_ID);
         width = ScreenInfo.screen_width - 2 * DensityUtil.dip2px(this, 10);
         mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(this), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override

@@ -61,6 +61,7 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
     private EditText sbjEdt;
     private TextView tvDesc;
     RatingBar ratingBar;
+    private TextView advantageTv,adviceTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,8 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
         mContext = this;
         mHandler = new Handler(this);
         getIntentData();
+        advantageTv=(TextView) findViewById(R.id.comment_advantage_tv);
+        adviceTv= (TextView) findViewById(R.id.comment_advice_tv);
         tvDesc=(TextView) findViewById(R.id.tv_desc);
         sbjEdt = (EditText) findViewById(R.id.comment_my_sbj);
         adItemLayout = (LinearLayout) findViewById(R.id.advantage_item_layout);
@@ -86,6 +89,8 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
         disadvantage.setAdapter(disAdvantageAdapter);
         if (actionType == 1) {
             tvDesc.setText(getResources().getString(R.string.her_rate));
+            advantageTv.setText("我对他的评价");
+            adviceTv.setText("给平台的建议");
             //获取工单评价信息
             ratingBar.setIsIndicator(true);
             submit.setVisibility(View.GONE);

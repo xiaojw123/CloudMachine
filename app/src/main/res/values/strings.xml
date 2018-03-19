@@ -172,6 +172,15 @@
     <string name="ask">提问</string>
     <string name="machine_knowledge">挖机宝典</string>
     <string name="system_message">系统消息</string>
+    <string name="work_video">工作视频</string>
+    <string name="living">直播中</string>
+    <string name="live">直播</string>
+    <string name="today">今日</string>
+    <string name="yesterday">昨日</string>
+    <string name="time_period">时段</string>
+    <string name="video">视频</string>
+    <string name="replay">重新播放</string>
+    <string name="resumeplay">继续播放</string>
 
 
 </resources>

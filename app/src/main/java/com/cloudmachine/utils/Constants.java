@@ -1438,6 +1438,8 @@ public class Constants {
     public static final String DEVICE_ID = "device_id";
     public static final String DEVICE_DETAIL_NOW = "DEVICE_DETAIL_NOW";
     public static final String PAGET_TYPE = "page_type";
+    public static final String SN_ID = "snid";
+    public static final String VIDEO_ID="video_id";
 
 
     public static void callJsMethod(WebView webView, String jsParams) {

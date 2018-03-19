@@ -74,7 +74,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     @BindView(R.id.device_detail_rsv)
     ReboundScrollView mScrollView;
     @BindView(R.id.device_detail_work_tv)
-    TextView workPicTv;
+    TextView workVideoTv;
     @BindView(R.id.device_detail_guide_layout)
     RelativeLayout guideLayout;
     @BindView(R.id.device_detail_guide_sure_btn)
@@ -229,8 +229,10 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
             case R.id.device_detail_work_tv:
                 if (UserHelper.isLogin(this)) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(WorkPicListActivity.SN_ID, snId);
-                    Constants.toActivity(this, WorkPicListActivity.class, bundle);
+                    bundle.putString(Constants.SN_ID, snId);
+                    bundle.putString(Constants.DEVICE_ID,String.valueOf(deviceId));
+//                    Constants.toActivity(this, WorkPicListActivity.class, bundle);
+                    Constants.toActivity(this, WorkVideoActivity.class, bundle);
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
@@ -303,7 +305,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         }
         snId = info.getSnId();
         if (CommonUtils.isHConfig(snId)) {
-            workPicTv.setVisibility(View.VISIBLE);
+            workVideoTv.setVisibility(View.VISIBLE);
             if (!UserHelper.getHConfigGuideTag(this)) {
                 UserHelper.insertHConfigGuideTag(this, true);
                 guideLayout.setVisibility(View.VISIBLE);

@@ -263,7 +263,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
 
     private void setTime(int dataSetIndex) {
         int index = dataSetIndex / 2;
-        if (dailyWorkList.size() > index) {
+        if ((dailyWorkList != null) && dailyWorkList.size() > index) {
             DailyWorkInfo info = dailyWorkList.get(index);
             startTimeTv.setText("开机：" + info.getStartTime());
             endTimeTv.setText("关机：" + info.getEndTime());
@@ -370,6 +370,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
 //			setDailyData();
                 break;
             case Constants.HANDLE_GETWORKTIMELIST_SUCCESS:
+
                 ArrayList<ScanningWTInfo> wtInfo = (ArrayList<ScanningWTInfo>) msg.obj;
                 if (wtInfo == null || wtInfo.size() <= 0) {
                     wtEmptTv.setVisibility(View.VISIBLE);
@@ -412,8 +413,10 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
 			}*/
                 initPage(wtInfo);
                 changePage(0);
-                setData();
-                initDailyChart();
+                if (isAdded()) {
+                    setData();
+                    initDailyChart();
+                }
                 if (!UserHelper.getWorkTimeGuideTag(getActivity())) {
                     UserHelper.insertWorkTimeGuideTag(getActivity(), true);
                     ((WorkTimeActivity) getActivity()).showGuideView();
@@ -422,7 +425,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
             case Constants.HANDLE_GETWORKTIMELIST_FAILD:
                 Constants.MyToast((String) msg.obj);
                 if (null != mChart)
-                    mChart.setNoDataText(getResources().getString(R.string.work_time_daily_nodata));
+                    mChart.setNoDataText("没有数据哦");
                 break;
         }
         return false;

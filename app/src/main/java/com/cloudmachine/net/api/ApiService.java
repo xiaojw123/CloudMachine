@@ -23,6 +23,7 @@ import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.bean.ResonItem;
 import com.cloudmachine.bean.ScanningOilLevelInfoArray;
 import com.cloudmachine.bean.UserInfo;
+import com.cloudmachine.bean.VideoBean;
 import com.cloudmachine.ui.home.model.CouponBean;
 import com.cloudmachine.ui.home.model.OrderCouponBean;
 import com.cloudmachine.ui.home.model.PopItem;
@@ -58,6 +59,13 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
+    //视频地址下发接口
+    @GET("deviceVideo/videoUpload")
+    Observable<BaseRespose<String>> videoUpload(@Query("memberId") long memberId, @Query("deviceId") String deviceId,@Query("id") String id);
+    //获取视频列表(直播流地址+点播列表)
+    @GET("deviceVideo/getVideoList")
+    Observable<BaseRespose<VideoBean>> getVideoList(@Query("memberId") long memberId,@Query("deviceId") String deviceId,@Query("startTime") String startTime,@Query("endTime") String endTime);
+
     @GET("device/oilLevelList")
     Observable<BaseRespose<ScanningOilLevelInfoArray>> getTodayOil(@Query("memberId") String memberId,@Query("deviceId") long deviceId);
 

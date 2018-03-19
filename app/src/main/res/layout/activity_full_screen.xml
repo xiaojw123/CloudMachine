@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cloudmachine.ui.home.activity.FullScreenActivity">
+
+    <com.pili.pldroid.player.widget.PLVideoView
+        android:id="@+id/fullscreen_pvv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        />
+
+    <ImageView
+        android:id="@+id/fullscreen_back_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back_normal_white"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:paddingTop="@dimen/dimen_size_5"
+        android:paddingBottom="@dimen/dimen_size_5"
+        android:paddingRight="@dimen/dimen_size_8"
+        android:layout_marginTop="@dimen/dimen_size_24"
+        />
+
+    <TextView
+        android:id="@+id/fullscreen_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/fullscreen_back_img"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:layout_alignTop="@+id/fullscreen_back_img"
+        />
+
+    <ImageView
+        android:id="@+id/fullscreen_status_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_work_vide_play"
+        android:layout_centerInParent="true"
+        />
+    <Button
+        android:id="@+id/fullscreen_replay"
+        android:layout_width="@dimen/dimen_size_88"
+        android:layout_height="@dimen/dimen_size_33"
+        android:textColor="@color/white"
+        android:text="@string/replay"
+        android:textSize="@dimen/text_size_14_sp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_play_agian"
+        android:visibility="gone"
+        />
+
+
+
+</RelativeLayout>

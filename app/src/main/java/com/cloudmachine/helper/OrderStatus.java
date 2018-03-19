@@ -12,6 +12,7 @@ public interface OrderStatus {
     String WAIT="等待接单";
     String CANCEL="已取消";
     String DROP="已丢单";
+    String REPAIRING="维修中";
 
 
 

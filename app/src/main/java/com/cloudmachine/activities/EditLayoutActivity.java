@@ -268,24 +268,26 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
                 break;
             case Constants.HANDLER_GETMACHINETYPES_SUCCESS:
                 List<MachineTypeInfo> mTypeInfo = (List<MachineTypeInfo>) msg.obj;
-                len = mTypeInfo.size();
-                dataResult.clear();
-                int selectionId = -1;
-                for (int i = 0; i < len; i++) {
-                    MachineTypeInfo mInfo = mTypeInfo.get(i);
-                    EditListInfo data = new EditListInfo();
-                    data.setId(mInfo.getId());
-                    data.setName(mInfo.getName());
-                    data.setPK_PROD_DEF(mInfo.getPk_PROD_DEF());
-                    if (mInfo.getPk_PROD_DEF() == value1) {
-                        data.setIsClick(true);
-                        selectionId = i;
+                if (mTypeInfo != null) {
+                    len = mTypeInfo.size();
+                    dataResult.clear();
+                    int selectionId = -1;
+                    for (int i = 0; i < len; i++) {
+                        MachineTypeInfo mInfo = mTypeInfo.get(i);
+                        EditListInfo data = new EditListInfo();
+                        data.setId(mInfo.getId());
+                        data.setName(mInfo.getName());
+                        data.setPK_PROD_DEF(mInfo.getPk_PROD_DEF());
+                        if (mInfo.getPk_PROD_DEF() == value1) {
+                            data.setIsClick(true);
+                            selectionId = i;
+                        }
+                        dataResult.add(data);
                     }
-                    dataResult.add(data);
+                    if (selectionId != -1)
+                        edit_listview.setSelection(selectionId);
+                    eAdapter.notifyDataSetChanged();
                 }
-                if (selectionId != -1)
-                    edit_listview.setSelection(selectionId);
-                eAdapter.notifyDataSetChanged();
                 break;
             case Constants.HANDLER_GETMACHINETYPES_FAIL:
             case Constants.HANDLER_GETMACHINEBRAND_FAIL:

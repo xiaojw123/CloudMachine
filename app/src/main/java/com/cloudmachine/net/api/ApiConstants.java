@@ -9,22 +9,22 @@ public class ApiConstants {
 //    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
 //    public static String H5_HOST = "http://h5.test.cloudm.com/n/";
 //    public static String BOX_HIGH_COFIG_HOST="http://183.129.196.42:18089/";//云黑子-高配-拍照
-
+//
 
     /*线上环境*/
-        public static String CLOUDM_YJX_HOST = "http://api.cloudm.com/cloudm3/yjx/";
-        public static String CLOUDM_HOST = "http://api.cloudm.com/cloudm3/";
-        public static String CLOUDM_ASK_HOST = "http://ask.cloudm.com/";
-        public static String H5_HOST = "http://h5.cloudm.com/n/";
-        public static String BOX_HIGH_COFIG_HOST = "http://camera.cloudm.com:18089/";
+//        public static String CLOUDM_YJX_HOST = "http://api.cloudm.com/cloudm3/yjx/";
+//        public static String CLOUDM_HOST = "http://api.cloudm.com/cloudm3/";
+//        public static String CLOUDM_ASK_HOST = "http://ask.cloudm.com/";
+//        public static String H5_HOST = "http://h5.cloudm.com/n/";
+//        public static String BOX_HIGH_COFIG_HOST = "http://camera.cloudm.com:18089/";
 
 
     /*测试环境-109*/
-//    public static String CLOUDM_HOST = "http://192.168.1.109:18088/cloudm3/";
-//    public static String CLOUDM_YJX_HOST = "http://192.168.1.109:18088/cloudm3/yjx/";
-//    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
-//    public static String H5_HOST = "http://192.168.1.109:7718/";
-//    public static String BOX_HIGH_COFIG_HOST="http://192.168.1.176:18089/";//云黑子-高配-拍照
+    public static String CLOUDM_HOST = "http://192.168.1.109:18088/cloudm3/";
+    public static String CLOUDM_YJX_HOST = "http://192.168.1.109:18088/cloudm3/yjx/";
+    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
+    public static String H5_HOST = "http://192.168.1.109:7718/";
+    public static String BOX_HIGH_COFIG_HOST="http://192.168.1.176:18089/";//云黑子-高配-拍照
 
     /*21-wnb*/
 //    public static String CLOUDM_HOST = "http://192.168.1.21:8090/cloudm3/";

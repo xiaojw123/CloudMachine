@@ -204,6 +204,7 @@ public class MyReceiver extends BroadcastReceiver {
                         case 14:
                             Intent tbIntent=new Intent(context,QuestionCommunityActivity.class);
                             tbIntent.putExtra(QuestionCommunityActivity.H5_URL, extraJson.optString("url"));
+                            tbIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(tbIntent);
                             break;
                         case 15://消息内容跳转

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_size_60">
+
+
+    <TextView
+        android:id="@+id/item_video_time_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:drawableLeft="@drawable/ic_list_video_start"
+        android:drawablePadding="@dimen/dimen_size_8"
+        />
+
+    <TextView
+        android:id="@+id/item_video_time_len"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dimen_size_33"
+        android:layout_toRightOf="@+id/item_video_time_start"
+        android:drawableLeft="@drawable/ic_list_video_len"
+        android:drawablePadding="@dimen/dimen_size_10"
+        />
+
+
+    <ImageView
+        android:id="@+id/item_video_playstatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dimen_size_16"
+        android:src="@drawable/ic_item_video_status" />
+
+    <View
+        style="@style/CommonLandscapeLine"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

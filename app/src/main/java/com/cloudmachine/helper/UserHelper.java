@@ -67,7 +67,7 @@ public class UserHelper {
     private static SharedPreferences GuideTagSp;
     private static final String loginLOGO = "logo_sp";
     private static final String GuideTag = "guide_tag";
-    private static final String HConfigGuideTag = "guide_tag_h_config";
+    private static final String HConfigGuideTag = "guide_tag_hc";
     private static final String WorkTimeGuideTag="work_time_guide";
 
     public static void insertGuideTag(Context context, boolean flag) {

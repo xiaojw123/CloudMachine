@@ -302,6 +302,9 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private String backUrl;
 
     public void shoWAlertDialog(boolean isConfirm, String message, final String alertEvent) {
+        if (isFinishing()){
+            return;
+        }
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         if (isConfirm) {
             builder.setAlertIcon(R.drawable.icon_sucess);

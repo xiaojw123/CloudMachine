@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--视频-播放控制-->
+    <RelativeLayout
+        android:id="@+id/work_video_live_cotainer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_253"
+        >
+
+        <com.pili.pldroid.player.widget.PLVideoView
+            android:id="@+id/work_live_videoview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            />
+
+        <TextView
+            android:id="@+id/work_live_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_13"
+            android:background="@drawable/ic_work_vieo_live_1"
+            android:gravity="center"
+            android:text="@string/live"
+            android:paddingLeft="@dimen/dimen_size_8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12_sp" />
+
+        <ImageView
+            android:id="@+id/work_live_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_work_vide_pause" />
+        
+        <Button
+            android:id="@+id/work_video_replay"
+            android:layout_width="@dimen/dimen_size_88"
+            android:layout_height="@dimen/dimen_size_33"
+            android:textColor="@color/white"
+            android:text="@string/replay"
+            android:textSize="@dimen/text_size_14_sp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_play_agian"
+            android:visibility="gone"
+            />
+
+
+
+        <ImageView
+            android:id="@+id/work_live_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dimen_size_13"
+            android:layout_marginLeft="@dimen/dimen_size_16"
+            android:src="@drawable/btn_work_vide_pay"
+            android:visibility="gone"
+            />
+
+
+        <ImageView
+            android:id="@+id/work_video_fullscreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_work_vide_fullscreen"
+            android:layout_marginRight="@dimen/dimen_size_16"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dimen_size_13"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/work_video_list_cotainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        >
+
+        <TextView
+            android:id="@+id/work_video_tab_today"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_40"
+            android:gravity="center_vertical"
+            android:text="@string/today"
+            android:paddingLeft="@dimen/dimen_size_10"
+            android:paddingRight="@dimen/dimen_size_10"
+            android:layout_marginLeft="@dimen/dimen_size_14"
+            android:textColor="@color/textcolor_work_video_date"
+            android:textSize="@dimen/text_size_16_sp" />
+
+
+
+        <TextView
+            android:id="@+id/work_video_tab_yesterday"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_40"
+            android:gravity="center_vertical"
+            android:text="@string/yesterday"
+            android:layout_toRightOf="@+id/work_video_tab_today"
+            android:paddingLeft="@dimen/dimen_size_10"
+            android:paddingRight="@dimen/dimen_size_10"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:textColor="@color/textcolor_work_video_date"
+            android:textSize="@dimen/text_size_16_sp" />
+        <TextView
+            android:id="@+id/work_video_tab_period"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_40"
+            android:gravity="center_vertical"
+            android:text="@string/time_period"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen_size_14"
+            android:textColor="@color/color_66"
+            android:textSize="@dimen/text_size_16_sp" />
+
+
+        <View
+            android:id="@+id/work_video_tab_indicator"
+            android:layout_width="@dimen/dimen_size_40"
+            android:layout_height="@dimen/dimen_size_2"
+            android:background="@color/c_ff8903"
+            android:layout_alignBottom="@+id/work_video_divide_line"
+            android:layout_alignLeft="@+id/work_video_tab_today"
+            android:layout_alignRight="@+id/work_video_tab_today"
+            />
+
+        <View
+            android:id="@+id/work_video_divide_line"
+            android:layout_below="@+id/work_video_tab_today"
+            style="@style/CommonLandscapeLine" />
+
+
+        <com.jcodecraeer.xrecyclerview.XRecyclerView
+            android:id="@+id/work_video_xrlv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:layout_below="@+id/work_video_divide_line"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/work_video_list_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_work_video_empty"
+            android:layout_below="@+id/work_video_divide_line"
+            android:layout_centerHorizontal="true"
+            android:drawablePadding="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_60"
+            android:visibility="gone"
+            android:text="所选时段设备未工作，无工作视频"
+            />
+
+
+
+        <LinearLayout
+            android:id="@+id/video_wheelview_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:layout_below="@+id/work_video_divide_line"
+            android:clickable="true"
+            android:visibility="gone"
+            >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/common_layout_height"
+                >
+
+                <TextView
+                    android:id="@+id/video_wheelview_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/common_left_gap"
+                    android:text="@string/common_cancel" />
+
+                <TextView
+                    android:id="@+id/video_wheelview_determine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:paddingRight="@dimen/common_left_gap"
+                    android:text="@string/common_determine" />
+
+                <TextView
+                    android:id="@+id/video_wheelview_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/historical_track_wheelview_time_start" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+
+                <com.cloudmachine.utils.widgets.wheelview.WheelView
+                    android:id="@+id/video_hour_wheelview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" />
+
+                <com.cloudmachine.utils.widgets.wheelview.WheelView
+                    android:id="@+id/video_minute_wheelview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" />
+
+                <com.cloudmachine.utils.widgets.wheelview.WheelView
+                    android:id="@+id/video_second_wheelview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/common_line_height"
+                android:layout_marginBottom="@dimen/common_view_min_gap"
+                android:background="@color/line_bg" />
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/work_video_all_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_work_video_empty"
+        android:layout_gravity="center_horizontal"
+        android:drawablePadding="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_80"
+        android:text="当前设备未工作，无法观看视频"
+        android:visibility="gone"
+        />
+
+    <!---->
+    <!--<com.jcodecraeer.xrecyclerview.XRecyclerView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"/>-->
+
+
+</LinearLayout>

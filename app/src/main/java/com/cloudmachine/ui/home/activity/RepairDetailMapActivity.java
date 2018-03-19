@@ -83,6 +83,8 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
         nstatus = getIntent().getStringExtra("nstatus");
         repairDetailCtv.setTitleName(nstatus);
         if (isAlliance) {//加盟站接口请求
+            String status = getIntent().getStringExtra("orderStatus");
+            isRepairing = "2".equals(status);
             if (UserHelper.isLogin(this)) {
                 mPresenter.updateAllianceDetail(UserHelper.getMemberId(this), orderNum);
             }
@@ -190,19 +192,21 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
 
     @Override
     public void returnAllianceDetail(AllianceDetail detail) {
-        detailBean=new WorkDetailBean();
+        detailBean = new WorkDetailBean();
         detailBean.setVbrandname(detail.getBrandName());
         detailBean.setVmaterialname(detail.getModelName());
         detailBean.setCusdemanddesc(detail.getDemandDescription());
         detailBean.setVmachinenum(detail.getMachineNum());
         detailBean.setTech_NAME(detail.getArtificerName());
         detailBean.setTech_MOBILE(detail.getArtificerMobile());
+        detailBean.setStation_NAME(detail.getStationName());
+        detailBean.setStation_MOBILE(detail.getAllianceStationMobile());
         detailBean.setStation_LON(detail.getOrderLng());
         detailBean.setStation_LAT(detail.getOrderLat());
         detailBean.setService_LON(detail.getArtificerLng());
         detailBean.setService_LAT(detail.getArtificerLat());
         detailBean.setVworkaddress(detail.getAddressDetail());
-        logoList= (ArrayList<String>) detail.getAttachmentUrls();
+        logoList = (ArrayList<String>) detail.getAttachmentUrls();
         updateDetail();
     }
 
