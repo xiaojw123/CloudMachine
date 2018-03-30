@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.yanzhenjie:loading-1.0.2">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/54132e3a3cae5502448ec4ad2b04f4e50e6d363b/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/54132e3a3cae5502448ec4ad2b04f4e50e6d363b/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yanzhenjie/loading/1.0.2/51d13557109460b8c95eb200c087e6e9f4307a06/loading-1.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

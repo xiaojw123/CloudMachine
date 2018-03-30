@@ -115,6 +115,9 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
                 mTvAveHoursValue.setText(avgWorkTime);
                 mTvWorkRateValue.setText(workRate);
                 if (!TextUtils.isEmpty(statisticsInfo.getDeviceName()) && statisticsInfo.getRanking() != 0 && !TextUtils.isEmpty(statisticsInfo.getLeading())) {
+                    if (!isAdded()) {
+                        return false;
+                    }
                     String strLine2 = statisticsInfo.getDeviceName() + "  累计工时数在云机械设备中排名" + statisticsInfo.getRanking() + ", 请继续保持哦。";
                     SpannableString spanLine2 = new SpannableString(strLine2);
                     spanLine2.setSpan(new TextAppearanceSpan(getActivity(), R.style.device_name), 0, statisticsInfo.getDeviceName().length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
