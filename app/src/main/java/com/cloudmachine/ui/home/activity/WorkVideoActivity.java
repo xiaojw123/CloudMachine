@@ -7,9 +7,20 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxSchedulers;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.ScreenInfo;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.activity.fragment.WorkPicFragment;
 import com.cloudmachine.ui.home.activity.fragment.WorkVideoFragment;
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.DensityUtil;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.widget.CommonTitleView;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +38,7 @@ public class WorkVideoActivity extends BaseAutoLayoutActivity {
     WorkPicFragment mPicFragment = new WorkPicFragment();
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +47,7 @@ public class WorkVideoActivity extends BaseAutoLayoutActivity {
         workVideoCtv.setRightClickListener(rightClickListener);
         showFragment(workPicTv);
     }
+
 
 
     private View.OnClickListener rightClickListener = new View.OnClickListener() {

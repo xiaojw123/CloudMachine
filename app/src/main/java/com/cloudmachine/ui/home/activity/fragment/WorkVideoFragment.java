@@ -16,10 +16,15 @@ import com.cloudmachine.R;
 import com.cloudmachine.adapter.BaseRecyclerAdapter;
 import com.cloudmachine.adapter.VideoListAdapter;
 import com.cloudmachine.base.BaseFragment;
+import com.cloudmachine.base.baserx.RxSchedulers;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.VideoBean;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.activity.FullScreenActivity;
+import com.cloudmachine.ui.home.activity.WorkVideoActivity;
 import com.cloudmachine.ui.home.contract.WorkVideoContract;
 import com.cloudmachine.ui.home.model.WorkVideoModel;
 import com.cloudmachine.ui.home.presenter.WorkVideoPresenter;
@@ -29,6 +34,8 @@ import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
 import com.cloudmachine.utils.widgets.wheelview.WheelView;
 import com.cloudmachine.utils.widgets.wheelview.adapter.NumericWheelAdapter;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.pili.pldroid.player.AVOptions;
@@ -112,6 +119,9 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     String time2 = null;
     boolean isPause;
     int resultCode;
+    boolean hasVideo,isWork;
+    String sn;
+
 
     @Override
     protected void initView() {
@@ -122,9 +132,12 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
         initVideoView();
     }
 
+
     private void initParams() {
         deviceId = getActivity().getIntent().getStringExtra(Constants.DEVICE_ID);
         memberId = UserHelper.getMemberId(getActivity());
+        sn = getActivity().getIntent().getStringExtra(Constants.SN_ID);
+        isWork=getActivity().getIntent().getBooleanExtra(Constants.IS_WORK,false);
     }
 
     private void initWheelView() {
@@ -196,6 +209,55 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     public void onResume() {
         super.onResume();
         AppLog.print("onResume__");
+        if (isWork){
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(getActivity()), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(getActivity()) {
+            @Override
+            protected void _onNext(JsonObject respJobj) {
+                int code = respJobj.get("code").getAsInt();
+                if (code == 800) {
+                    JsonObject resultJobj = respJobj.getAsJsonObject("result");
+                    if (resultJobj != null) {
+                        JsonElement videoJel=resultJobj.get("haveVideo");
+                        if (videoJel!=null){
+                            hasVideo=videoJel.getAsBoolean();
+                            if (hasVideo){
+                                resumeVideo();
+                            }else{
+                                setEmptVideo();
+                            }
+                        }
+                    }
+                } else {
+                    JsonElement messageJEL = respJobj.get("message");
+                    if (messageJEL != null) {
+                        String message = messageJEL.getAsString();
+                        ToastUtils.showToast(getActivity(), message);
+                    }
+                    setEmptVideo();
+                }
+            }
+
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(getActivity(), message);
+                setEmptVideo();
+            }
+        }));
+        }else{
+            setEmptVideo();
+        }
+
+    }
+
+    public void setEmptVideo(){
+        emptyAllTv.setVisibility(View.VISIBLE);
+        liveContainer.setVisibility(View.GONE);
+        videoCotaniner.setVisibility(View.GONE);
+
+    }
+
+    public void resumeVideo(){
         mPresenter.getVideoList(memberId, deviceId, startTime, endTime);
         if (resultCode == FullScreenActivity.MEIA_STATUS_REPLAY) {
             playComptete();
@@ -207,6 +269,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
             }
         }
     }
+
 
 
     @Override
@@ -238,14 +301,12 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
     @Override
     public void returnGetVideoList(String liveUrl, List<VideoBean.VideoListBean> videoList) {
-        if (TextUtils.isEmpty(liveUrl) && videoList != null && videoList.size() > 0) {
-            emptyAllTv.setVisibility(View.VISIBLE);
-            liveContainer.setVisibility(View.GONE);
-            videoCotaniner.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(liveUrl) && (videoList == null || videoList.size()<=0)) {
+            setEmptVideo();
             return;
         }
-        liveContainer.setVisibility(View.VISIBLE);
-        videoCotaniner.setVisibility(View.VISIBLE);
+            liveContainer.setVisibility(View.VISIBLE);
+            videoCotaniner.setVisibility(View.VISIBLE);
         this.liveUrl = liveUrl;
         playUrl = liveUrl;
         workVideoXrlv.refreshComplete();
@@ -268,9 +329,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
     @Override
     public void returnGetVideoListError() {
-        emptyAllTv.setVisibility(View.VISIBLE);
-        liveContainer.setVisibility(View.GONE);
-        videoCotaniner.setVisibility(View.GONE);
+        setEmptVideo();
     }
 
     @OnClick({R.id.work_live_status, R.id.work_video_replay, R.id.video_wheelview_cancel, R.id.video_wheelview_determine, R.id.work_video_tab_period, R.id.work_video_fullscreen, R.id.work_live_pause, R.id.work_live_play, R.id.work_video_tab_today, R.id.work_video_tab_yesterday})

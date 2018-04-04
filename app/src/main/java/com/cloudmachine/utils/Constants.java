@@ -1440,6 +1440,7 @@ public class Constants {
     public static final String PAGET_TYPE = "page_type";
     public static final String SN_ID = "snid";
     public static final String VIDEO_ID="video_id";
+    public static final String IS_WORK="is_work";
 
 
     public static void callJsMethod(WebView webView, String jsParams) {

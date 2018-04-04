@@ -87,6 +87,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     String deviceName;
     int oilValue;
     String snId;
+    boolean isWork;
 
 
     @Override
@@ -231,6 +232,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.SN_ID, snId);
                     bundle.putString(Constants.DEVICE_ID,String.valueOf(deviceId));
+                    bundle.putBoolean(Constants.IS_WORK,isWork);
 //                    Constants.toActivity(this, WorkPicListActivity.class, bundle);
                     Constants.toActivity(this, WorkVideoActivity.class, bundle);
                 } else {
@@ -336,8 +338,10 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         Marker marker;
 
         if (info.getWorkStatus() == 1) {
+            isWork=true;
             marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_work));
         } else {
+            isWork=false;
             marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_unwork));
         }
 

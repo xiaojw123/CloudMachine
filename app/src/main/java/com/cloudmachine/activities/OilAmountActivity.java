@@ -424,15 +424,20 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
             if (lastLevel == null && oilLeve != null && oilLeve.length > 0) {
                 lastLevel = oilLeve[0];
             }
-            if (oilLeve != null && oilLeve.length > 0) {
+            if (lastLevel!=null||(oilLeve != null && oilLeve.length > 0)) {
                 oilEmptyTv.setVisibility(View.GONE);
                 oilFormCotainer.setVisibility(View.VISIBLE);
                 initChart(lineChart);
                 if (todayTv.isSelected()) {
                     setLastData();
-                    ScanningOilLevelInfo newOilLeve = oilLeve[oilLeve.length - 1];
-                    if (newOilLeve != null) {
-                        setOilValue(newOilLeve.getLevel());
+                    setOilValue(lastLevel.getLevel());
+                    if (oilLeve != null && oilLeve.length > 0){
+                        ScanningOilLevelInfo newOilLeve = oilLeve[oilLeve.length - 1];
+                        if (newOilLeve != null) {
+                            setOilValue(newOilLeve.getLevel());
+                        }
+                    }else{
+                        setOilValue(lastLevel.getLevel());
                     }
                 }
             }else{

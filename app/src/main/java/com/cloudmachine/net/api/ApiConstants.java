@@ -9,7 +9,7 @@ public class ApiConstants {
 //    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
 //    public static String H5_HOST = "http://h5.test.cloudm.com/n/";
 //    public static String BOX_HIGH_COFIG_HOST="http://183.129.196.42:18089/";//云黑子-高配-拍照
-//
+
 
     /*线上环境*/
         public static String CLOUDM_YJX_HOST = "http://api.cloudm.com/cloudm3/yjx/";
