@@ -80,6 +80,10 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     @BindView(R.id.device_detail_guide_sure_btn)
     Button sureBtn;
 
+    @BindView(R.id.device_info_loctime)
+    TextView locTimeTv;
+
+
 
     long deviceId;
     Location locNow;
@@ -157,7 +161,8 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 mcDeviceInfo.setLocation(loc);
             }
             deviceId = mcDeviceInfo.getId();
-            updateDeviceDetail(mcDeviceInfo);
+            mPresenter.getDeviceNowData(String.valueOf(deviceId));
+//            updateDeviceDetail(mcDeviceInfo);
         }
 
     }
@@ -315,6 +320,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         }
         oilValue = info.getOilLave();
         oilWaveTv.setText(CommonUtils.formatOilValue(oilValue));
+
         float time = info.getWorkTime();
         timeLenTv.setText(CommonUtils.formatTimeLen(time));
         deviceName = info.getName();
@@ -322,6 +328,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         mTitleView.setRightText(this);
         mcDeviceLoc = info.getLocation();
         mLocTv.setText(mcDeviceLoc.getPosition());
+        locTimeTv.setText(CommonUtils.formaLocTime(mcDeviceLoc.getCollectionTime()));
         if (info.getWorkStatus() == 1) {
             workStatusTv.setVisibility(View.VISIBLE);
         } else {

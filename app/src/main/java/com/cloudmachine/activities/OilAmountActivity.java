@@ -429,16 +429,18 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
                 oilFormCotainer.setVisibility(View.VISIBLE);
                 initChart(lineChart);
                 if (todayTv.isSelected()) {
-                    setLastData();
-                    setOilValue(lastLevel.getLevel());
-                    if (oilLeve != null && oilLeve.length > 0){
-                        ScanningOilLevelInfo newOilLeve = oilLeve[oilLeve.length - 1];
-                        if (newOilLeve != null) {
-                            setOilValue(newOilLeve.getLevel());
-                        }
+                    if (oilLeve == null ||oilLeve.length <=0){
+                        lineChart.setTouchEnabled(false);
+                        oilLeve=new ScanningOilLevelInfo[1];
+                        oilLeve[0]=lastLevel;
                     }else{
-                        setOilValue(lastLevel.getLevel());
+                        lineChart.setTouchEnabled(true);
                     }
+                    ScanningOilLevelInfo newOilLeve = oilLeve[oilLeve.length - 1];
+                    if (newOilLeve != null) {
+                        setOilValue(newOilLeve.getLevel());
+                    }
+                    setLastData();
                 }
             }else{
                 if (todayTv.isSelected()) {

@@ -242,6 +242,11 @@ public class CommonUtils {
         return Html.fromHtml("剩余油位  <font color=#0096e0>" + oilValue + "%<font>");
     }
 
+    public static Spanned formaLocTime(String locTime) {
+        return Html.fromHtml("定位时间  <font color=#0096e0>" + locTime + "<font>");
+    }
+
+
     public static Spanned formatTimeLen(float value) {
         String timelen = "0时";
         if (value > 0) {

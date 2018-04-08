@@ -235,9 +235,10 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 Constants.ToastAction("请输入验证码");
             } else if (TextUtils.isEmpty(pwdStr)) {
                 Constants.ToastAction("请输入密码");
-            } else if (pwdStr.length() < 6) {
+            }else if (pwdStr.length() < 6) {
                 Constants.ToastAction("新密码长度必须大于6位");
             } else {
+                if (phone.length()==11&&phone.charAt(0)=='1'){
                 //在这里判断是否有邀请码
                 if (!TextUtils.isEmpty(cet_invitationCode.getText().toString().trim())) {
                     inviteCode = cet_invitationCode.getText().toString().trim();
@@ -246,6 +247,9 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 }
                 MobclickAgent.onEvent(this, MobEvent.COUNT_LOGIN);
                 new RegisterNewAsync(phone, Utils.getPwdStr(pwdStr), code, mContext, mHandler, inviteCode).execute();
+                }else{
+                    Constants.ToastAction("手机号必须为11位且首位数字为1");
+                }
             }
         } else {
             if (TextUtils.isEmpty(phone)) {
