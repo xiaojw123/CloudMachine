@@ -258,7 +258,7 @@
         android:layout_gravity="center_horizontal"
         android:drawablePadding="@dimen/dimen_size_20"
         android:layout_marginTop="@dimen/dimen_size_80"
-        android:text="当前设备未工作，无法观看视频"
+        android:text="抱歉，当前暂无工作视频"
         android:visibility="gone"
         />
 

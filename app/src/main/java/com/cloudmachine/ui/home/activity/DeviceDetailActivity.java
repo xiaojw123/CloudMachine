@@ -1,10 +1,12 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.AddDeviceActivity;
@@ -21,6 +24,8 @@ import com.cloudmachine.activities.HistoricalTrackActivity;
 import com.cloudmachine.activities.MapOneActivity;
 import com.cloudmachine.activities.OilAmountActivity;
 import com.cloudmachine.activities.WorkTimeActivity;
+import com.cloudmachine.base.baserx.RxSchedulers;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.McDeviceLocation;
@@ -29,16 +34,19 @@ import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.navigation.NativeDialog;
 import com.cloudmachine.navigation.other.Location;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.DeviceDetailContract;
 import com.cloudmachine.ui.home.model.DeviceDetailModel;
 import com.cloudmachine.ui.home.presenter.DeviceDetailPresenter;
-import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.widget.CommonTitleView;
 import com.cloudmachine.widget.ReboundScrollView;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
@@ -77,6 +85,10 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     TextView workVideoTv;
     @BindView(R.id.device_detail_guide_layout)
     RelativeLayout guideLayout;
+    @BindView(R.id.device_detail_work_pic)
+    ImageView picImg;
+    @BindView(R.id.device_detail_work_text)
+    ImageView textImg;
     @BindView(R.id.device_detail_guide_sure_btn)
     Button sureBtn;
 
@@ -91,7 +103,13 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     String deviceName;
     int oilValue;
     String snId;
-    boolean isWork;
+    int type;
+    boolean isOwer;
+    boolean isOnline;
+    boolean   hasVideo;
+    String imei;
+    McDeviceInfo mcDeviceInfo;
+    int workStatus;
 
 
     @Override
@@ -133,11 +151,14 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     protected void onResume() {
         super.onResume();
         MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_DETECTION);
+        mPresenter.getDeviceNowData(String.valueOf(deviceId));
         if (UserHelper.isLogin(this)) {
             mPresenter.getDeviceInfo(String.valueOf(deviceId), UserHelper.getMemberId(this));
         } else {
             mPresenter.getDeviceInfo(String.valueOf(deviceId));
         }
+
+
     }
 
     private void initView() {
@@ -147,9 +168,9 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         if (isNowData) {
             String deviceIdStr = bundle.getString(Constants.DEVICE_ID);
             deviceId = Long.parseLong(deviceIdStr);
-            mPresenter.getDeviceNowData(deviceIdStr);
+//            mPresenter.getDeviceNowData(deviceIdStr);
         } else {
-            McDeviceInfo mcDeviceInfo = (McDeviceInfo) bundle.getSerializable(Constants.MC_DEVICEINFO);
+            mcDeviceInfo = (McDeviceInfo) bundle.getSerializable(Constants.MC_DEVICEINFO);
             if (mcDeviceInfo == null) {
                 mcDeviceInfo = new McDeviceInfo();
                 String position = bundle.getString("devicePosition");
@@ -161,7 +182,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 mcDeviceInfo.setLocation(loc);
             }
             deviceId = mcDeviceInfo.getId();
-            mPresenter.getDeviceNowData(String.valueOf(deviceId));
+//            mPresenter.getDeviceNowData(String.valueOf(deviceId));
 //            updateDeviceDetail(mcDeviceInfo);
         }
 
@@ -233,16 +254,14 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 break;
 
             case R.id.device_detail_work_tv:
-                if (UserHelper.isLogin(this)) {
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.SN_ID, snId);
                     bundle.putString(Constants.DEVICE_ID,String.valueOf(deviceId));
-                    bundle.putBoolean(Constants.IS_WORK,isWork);
-//                    Constants.toActivity(this, WorkPicListActivity.class, bundle);
+                    bundle.putBoolean(Constants.IS_OWER, isOwer);
+                    bundle.putBoolean(Constants.IS_ONLINE, isOnline);
+                    bundle.putBoolean(Constants.HAS_VIDEO,hasVideo);
+                    bundle.putString(Constants.IMEI,imei);
                     Constants.toActivity(this, WorkVideoActivity.class, bundle);
-                } else {
-                    Constants.toActivity(this, LoginActivity.class, null);
-                }
                 break;
             case R.id.common_titleview_right_tv:
                 if (mBundle == null) {
@@ -272,6 +291,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 Constants.toActivity(this, RepairRecordNewActivity.class, bundle_repair);
                 break;
             case R.id.device_fence_layout:
+                mBundle.putInt(Constants.WORK_STATUS,workStatus);
                 Constants.toActivity(this, MapOneActivity.class, mBundle);
                 break;
             case R.id.device_path_layout:
@@ -310,13 +330,17 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         if (info == null) {
             return;
         }
-        snId = info.getSnId();
+        if (mcDeviceInfo!=null){
+            snId=mcDeviceInfo.getSnId();
+            type=mcDeviceInfo.getType();
+        }else{
+            snId=info.getSnId();
+            type=info.getType();
+        }
         if (CommonUtils.isHConfig(snId)) {
-            workVideoTv.setVisibility(View.VISIBLE);
-            if (!UserHelper.getHConfigGuideTag(this)) {
-                UserHelper.insertHConfigGuideTag(this, true);
-                guideLayout.setVisibility(View.VISIBLE);
-            }
+            updateHCView();
+        }else{
+            workVideoTv.setVisibility(View.GONE);
         }
         oilValue = info.getOilLave();
         oilWaveTv.setText(CommonUtils.formatOilValue(oilValue));
@@ -329,31 +353,97 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         mcDeviceLoc = info.getLocation();
         mLocTv.setText(mcDeviceLoc.getPosition());
         locTimeTv.setText(CommonUtils.formaLocTime(mcDeviceLoc.getCollectionTime()));
-        if (info.getWorkStatus() == 1) {
-            workStatusTv.setVisibility(View.VISIBLE);
-        } else {
-            workStatusTv.setVisibility(View.GONE);
-        }
         LatLng latLng = new LatLng(mcDeviceLoc.getLat(), mcDeviceLoc.getLng());
-//        aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
-//        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-//        builder.include(latLng);
-//        aMap.moveCamera(CameraUpdateFactory.newLatLngBoundsRect(builder.build(), 0, 0, DensityUtil.dip2px(this,100), 0));
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
         setMapZoomTo(ZOOM_DEFAULT);
         aMap.moveCamera(CameraUpdateFactory.scrollBy(0, DensityUtil.dip2px(this, 100)));
-        Marker marker;
+        String statusText=null;
+        int mResId;
+        workStatus=info.getWorkStatus();
+        switch (workStatus){
+            case 1:
+                isOnline =true;
+                isOwer = !Constants.isNoEditInMcMember(deviceId, type);
+                statusText="工作中";
+                workStatusTv.setVisibility(View.VISIBLE);
+                mResId=R.drawable.icon_machine_work;
+                break;
+            case 2:
+                isOnline =true;
+                isOwer = !Constants.isNoEditInMcMember(deviceId, type);
+                statusText="在线";
+                workStatusTv.setVisibility(View.VISIBLE);
+                mResId=R.drawable.icon_machine_online;
+                break;
+            default:
+                isOnline =false;
+                isOwer = !Constants.isNoEditInMcMember(deviceId, type);
+                workStatusTv.setVisibility(View.GONE);
+                mResId=R.drawable.icon_machine_unwork;
+                break;
 
-        if (info.getWorkStatus() == 1) {
-            isWork=true;
-            marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_work));
-        } else {
-            isWork=false;
-            marker = aMap.addMarker(getMarkerOptions(this, latLng, R.drawable.icon_machine_unwork));
         }
-
+        workStatusTv.setText(statusText);
+        aMap.clear();
+        Marker  marker = aMap.addMarker(getMarkerOptions(this, latLng, mResId));
         marker.showInfoWindow();
     }
+
+
+    //更新高配图片、视频入口
+    public  void updateHCView(){
+        if (UserHelper.isLogin(this)){
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(this), snId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(this) {
+            @Override
+            protected void _onNext(JsonObject respJobj) {
+                int code = respJobj.get("code").getAsInt();
+                if (code == 800) {
+                    JsonObject resultJobj = respJobj.getAsJsonObject("result");
+                    JsonElement imeJel = resultJobj.get("imei");
+                    if (imeJel!=null){
+                        imei=imeJel.getAsString();
+                    }
+                    JsonElement videoJel=resultJobj.get("haveVideo");
+                    if (videoJel!=null) {
+                        hasVideo = videoJel.getAsBoolean();
+                        if (hasVideo){
+                            workVideoTv.setText(getResources().getString(R.string.video));
+                            workVideoTv.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dimen_size_5));
+                            Drawable topDrawable=getResources().getDrawable(R.drawable.icon_work_video);
+                            topDrawable.setBounds(0,0,topDrawable.getIntrinsicWidth(),topDrawable.getIntrinsicHeight());
+                            workVideoTv.setCompoundDrawables(null,topDrawable,null,null);
+                            picImg.setImageResource(R.drawable.icon_guide_video1);
+                            textImg.setImageResource(R.drawable.icon_guide_video2);
+
+                        }else{
+                            workVideoTv.setText(getResources().getString(R.string.pic));
+                            workVideoTv.setCompoundDrawablePadding(0);
+                            Drawable topDrawable=getResources().getDrawable(R.drawable.icon_work_pic);
+                            topDrawable.setBounds(0,0,topDrawable.getIntrinsicWidth(),topDrawable.getIntrinsicHeight());
+                            workVideoTv.setCompoundDrawables(null,topDrawable,null,null);
+                            picImg.setImageResource(R.drawable.icon_guide_work_pic);
+                            textImg.setImageResource(R.drawable.icon_guide_work_text);
+                        }
+                        workVideoTv.setVisibility(View.VISIBLE);
+                        if (!UserHelper.getHConfigGuideTag(DeviceDetailActivity.this,hasVideo)) {
+                            UserHelper.insertHConfigGuideTag(DeviceDetailActivity.this, true,hasVideo);
+                            guideLayout.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                }
+
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+        }
+    }
+
+
 
     @Override
     public void updateDeviceDetailError(String message) {

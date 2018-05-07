@@ -28,7 +28,7 @@ public interface WorkVideoContract {
         void returnVideoUploadSuccess();
         void returnVideoUploadError(String message);
         void returnGetVideoList(String liveUrl, List<VideoBean.VideoListBean> videoList);
-        void returnGetVideoListError();
+        void returnGetVideoListError(String message);
     }
 
     abstract class Presenter extends BasePresenter<WorkVideoContract.View,WorkVideoContract.Model> {

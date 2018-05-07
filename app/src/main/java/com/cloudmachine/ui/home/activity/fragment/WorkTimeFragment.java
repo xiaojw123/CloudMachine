@@ -416,10 +416,11 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
                 if (isAdded()) {
                     setData();
                     initDailyChart();
-                }
+                    // TODO: 2018/4/11 bug240
                 if (!UserHelper.getWorkTimeGuideTag(getActivity())) {
                     UserHelper.insertWorkTimeGuideTag(getActivity(), true);
                     ((WorkTimeActivity) getActivity()).showGuideView();
+                }
                 }
                 break;
             case Constants.HANDLE_GETWORKTIMELIST_FAILD:

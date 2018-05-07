@@ -1,30 +1,34 @@
 package com.cloudmachine.net.api;
 
 
+import com.cloudmachine.BuildConfig;
+
 public class ApiConstants {
 
+
+
     /* 测试环境*/
-//    public static String CLOUDM_HOST = "http://api.test.cloudm.com/cloudm3/";
-//    public static String CLOUDM_YJX_HOST = "http://api.test.cloudm.com/cloudm3/yjx/";
-//    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
-//    public static String H5_HOST = "http://h5.test.cloudm.com/n/";
-//    public static String BOX_HIGH_COFIG_HOST="http://183.129.196.42:18089/";//云黑子-高配-拍照
+    public static String REMOTE_HOST1 =BuildConfig.IS_ONLINE?"http://api.cloudm.com/cloudm3/": "http://api.test.cloudm.com/cloudm3/";
+    public static String REMOTE_HOST2 =BuildConfig.IS_ONLINE?"http://api.cloudm.com/cloudm3/yjx/": "http://api.test.cloudm.com/cloudm3/yjx/";
+    public static String REMOTE_HOST3 =BuildConfig.IS_ONLINE?"http://ask.cloudm.com/": "http://ask.test.cloudm.com/";
+    public static String REMOTE_HOST4 =BuildConfig.IS_ONLINE?"http://h5.cloudm.com/n/": "http://h5.test.cloudm.com/n/";
+    public static String REMOTE_HOST5=BuildConfig.IS_ONLINE?"http://camera.cloudm.com:18089/":"http://183.129.196.42:18089/";//云黑子-高配-拍照
 
-
+    /*测试环境-109/218*/
+    private static final String T_HOST1 =BuildConfig.IS_REMOTE? REMOTE_HOST1:"http://192.168.1.109:18088/cloudm3/";
+    private static final String T_HOST2 =BuildConfig.IS_REMOTE?REMOTE_HOST2: "http://192.168.1.109:18088/cloudm3/yjx/";
+    private static final String T_HOST3 =BuildConfig.IS_REMOTE?REMOTE_HOST3: "http://ask.test.cloudm.com/";
+    private static final String T_HOST4 =BuildConfig.IS_REMOTE?REMOTE_HOST4: "http://192.168.1.109:7718/";
+    private static final String T_HOST5=BuildConfig.IS_REMOTE?REMOTE_HOST5:"http://192.168.1.176:18089/";//云黑子-高配-拍照
     /*线上环境*/
-        public static String CLOUDM_YJX_HOST = "http://api.cloudm.com/cloudm3/yjx/";
-        public static String CLOUDM_HOST = "http://api.cloudm.com/cloudm3/";
-        public static String CLOUDM_ASK_HOST = "http://ask.cloudm.com/";
-        public static String H5_HOST = "http://h5.cloudm.com/n/";
-        public static String BOX_HIGH_COFIG_HOST = "http://camera.cloudm.com:18089/";
+    public static final String CLOUDM_HOST =BuildConfig.DEBUG?T_HOST1: "http://api.cloudm.com/cloudm3/";
+    public static final String CLOUDM_YJX_HOST =BuildConfig.DEBUG?T_HOST2 :"http://api.cloudm.com/cloudm3/yjx/";
+    public static final String CLOUDM_ASK_HOST = BuildConfig.DEBUG?T_HOST3:"http://ask.cloudm.com/";
+    private static final String H5_HOST =BuildConfig.DEBUG?T_HOST4: "http://h5.cloudm.com/n/";
+    private static final String BOX_HIGH_COFIG_HOST =BuildConfig.DEBUG?T_HOST5: "http://camera.cloudm.com:18089/";
 
 
-    /*测试环境-109*/
-//    public static String CLOUDM_HOST = "http://192.168.1.109:18088/cloudm3/";
-//    public static String CLOUDM_YJX_HOST = "http://192.168.1.109:18088/cloudm3/yjx/";
-//    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
-//    public static String H5_HOST = "http://192.168.1.109:7718/";
-//    public static String BOX_HIGH_COFIG_HOST="http://192.168.1.176:18089/";//云黑子-高配-拍照
+
 
     /*21-wnb*/
 //    public static String CLOUDM_HOST = "http://192.168.1.21:8090/cloudm3/";

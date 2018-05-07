@@ -13,13 +13,16 @@
         android:layout_height="wrap_content"
         app:common_right_text="@string/flush"
         app:common_title_name="@string/work_pic" />
-
+    <!--TODO video switch-->
     <LinearLayout
+        android:id="@+id/work_video_tab"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spa5"
         android:layout_marginTop="-4dp"
         android:background="@color/public_bg"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone"
+        >
 
         <TextView
             android:id="@+id/work_pic_tv"

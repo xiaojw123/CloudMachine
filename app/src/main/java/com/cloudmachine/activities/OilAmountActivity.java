@@ -389,7 +389,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
 //                        rbView.setText(String.valueOf((int) f[2]) + "% " + xTime);
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rbView.getLayoutParams();
                 int offset = DensityUtil.dip2px(this, 20);
-                int offset1 = (int) getResources().getDimension(R.dimen.dimen_size_2);
+                int offset1 = DensityUtil.dip2px(this,2);
                 if (f[2] > 90) {
                     layoutParams.leftMargin = (int) f[0] + offset1;
                     //			        layoutParams.topMargin=(int)f[1]
@@ -403,6 +403,9 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
                 }
                 if (layoutParams.topMargin < 0) {
                     layoutParams.topMargin += (offset * 2);
+                }
+                if (layoutParams.leftMargin<0){
+                    layoutParams.leftMargin=0;
                 }
                 if (rbView.getVisibility() != View.VISIBLE) {
                     rbView.setVisibility(View.VISIBLE);
@@ -421,20 +424,33 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         if (infoArray != null) {
             oilLeve = infoArray.getOilLevel();
             lastLevel = infoArray.getLastLevel();
-            if (lastLevel == null && oilLeve != null && oilLeve.length > 0) {
-                lastLevel = oilLeve[0];
-            }
             if (lastLevel!=null||(oilLeve != null && oilLeve.length > 0)) {
                 oilEmptyTv.setVisibility(View.GONE);
                 oilFormCotainer.setVisibility(View.VISIBLE);
-                initChart(lineChart);
                 if (todayTv.isSelected()) {
-                    if (oilLeve == null ||oilLeve.length <=0){
-                        lineChart.setTouchEnabled(false);
-                        oilLeve=new ScanningOilLevelInfo[1];
-                        oilLeve[0]=lastLevel;
-                    }else{
+                    if (lastLevel!=null){//array 空 or 不空
+                        ScanningOilLevelInfo level0=new ScanningOilLevelInfo();
+                        level0.setDay(lastLevel.getDay());
+                        level0.setLevel(lastLevel.getLevel());
+                        String time0=lastLevel.getTime();
+                        if (time0.length()>=5){
+                            time0=time0.substring(time0.length()-5,time0.length());
+                        }
+                        level0.setTime(time0);
+                        if (oilLeve!=null&&oilLeve.length>0){
+                            ScanningOilLevelInfo[] tmpOilLeve=new ScanningOilLevelInfo[oilLeve.length+1];
+                            tmpOilLeve[0]=level0;
+                            System.arraycopy(oilLeve, 0, tmpOilLeve, 1, tmpOilLeve.length - 1);
+                            oilLeve=tmpOilLeve;
+                            lineChart.setTouchEnabled(true);
+                        }else{
+                            lineChart.setTouchEnabled(false);
+                            oilLeve=new ScanningOilLevelInfo[1];
+                            oilLeve[0]=level0;
+                        }
+                    }else{//array必不空
                         lineChart.setTouchEnabled(true);
+                        lastLevel=oilLeve[0];
                     }
                     ScanningOilLevelInfo newOilLeve = oilLeve[oilLeve.length - 1];
                     if (newOilLeve != null) {
@@ -442,6 +458,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
                     }
                     setLastData();
                 }
+                initChart(lineChart);
             }else{
                 if (todayTv.isSelected()) {
                     oilEmptyTv.setVisibility(View.VISIBLE);

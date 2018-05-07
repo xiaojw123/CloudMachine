@@ -316,6 +316,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
                 } else if (OrderStatus.COMPLETED.equals(status)) {
                     bundle.putString("orderNum", unfinishedBean.getOrderNum());
                     bundle.putString("flag", unfinishedBean.getFlag());
+                    bundle.putString("tel", unfinishedBean.getVmacoptel());
                     Constants.toActivity(getActivity(), RepairFinishDetailActivity.class, bundle);
                 } else if (OrderStatus.PAY.equals(status)) {
                     bundle.putString("orderNum", unfinishedBean.getOrderNum());

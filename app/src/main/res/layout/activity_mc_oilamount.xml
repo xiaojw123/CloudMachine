@@ -182,7 +182,8 @@
                 android:layout_below="@id/chart_title_layout"
                 android:background="@color/white"
                 android:paddingLeft="@dimen/pad1"
-                android:paddingRight="@dimen/pad1">
+                android:paddingRight="@dimen/pad1"
+                >
 
 
                 <RelativeLayout
@@ -194,7 +195,9 @@
                 <com.cloudmachine.chart.charts.LineChart
                     android:id="@+id/linechart"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    />
+
 
                 </RelativeLayout>
                 <RelativeLayout

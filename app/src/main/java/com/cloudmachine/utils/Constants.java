@@ -1440,7 +1440,11 @@ public class Constants {
     public static final String PAGET_TYPE = "page_type";
     public static final String SN_ID = "snid";
     public static final String VIDEO_ID="video_id";
-    public static final String IS_WORK="is_work";
+    public static final String IS_OWER ="is_ower";
+    public static final String IS_ONLINE ="is_online";
+    public static final String HAS_VIDEO="has_video";
+    public static final String IMEI="imei";
+    public static final String WORK_STATUS="work_status";//接口返回workstatus纠正
 
 
     public static void callJsMethod(WebView webView, String jsParams) {

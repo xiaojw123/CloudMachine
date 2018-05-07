@@ -48,7 +48,7 @@
             android:textSize="@dimen/text_size_14_sp"
             android:paddingLeft="@dimen/pad1"
             android:paddingRight="@dimen/pad1"
-            android:hint="请输入要搜索的关键字"
+            android:hint="请输入机器名称"
             android:singleLine="true"
             android:imeOptions="actionSearch"
             android:paddingTop="@dimen/dimen_size_5"

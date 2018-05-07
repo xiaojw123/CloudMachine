@@ -65,7 +65,7 @@ public class TagBaseAdapter extends BaseAdapter {
         }
         DisadvantageBean disadvantageBean = getItem(position);
         String text = disadvantageBean.getCode_NAME();
-        holder.tagBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX,AutoUtils.getPercentHeightSizeBigger((int)mContext.getResources().getDimension(R.dimen.public_textsize5)));
+        holder.tagBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP,13);
         if (disadvantageBean.isChecked()) {
 			holder.tagBtn.setText(text);
 			holder.tagBtn.setBackground(mContext.getResources().getDrawable(R.drawable.tag_checked));

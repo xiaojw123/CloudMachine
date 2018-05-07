@@ -67,7 +67,8 @@ public class UserHelper {
     private static SharedPreferences GuideTagSp;
     private static final String loginLOGO = "logo_sp";
     private static final String GuideTag = "guide_tag";
-    private static final String HConfigGuideTag = "guide_tag_hc";
+    private static final String HConfigGuideTagPic = "guide_tag_hc_pic";
+    private static final String HConfigGuideTagVideo = "guide_tag_hc_video";
     private static final String WorkTimeGuideTag="work_time_guide";
 
     public static void insertGuideTag(Context context, boolean flag) {
@@ -78,12 +79,16 @@ public class UserHelper {
         editor.putBoolean(GuideTag, flag);
         editor.commit();
     }
-    public static void insertHConfigGuideTag(Context context, boolean flag) {
+    public static void insertHConfigGuideTag(Context context, boolean flag,boolean isVideoTag) {
         if (GuideTagSp == null) {
             GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
         }
         SharedPreferences.Editor editor = GuideTagSp.edit();
-        editor.putBoolean(HConfigGuideTag, flag);
+        if (isVideoTag){
+            editor.putBoolean(HConfigGuideTagVideo, flag);
+        }else{
+            editor.putBoolean(HConfigGuideTagPic, flag);
+        }
         editor.commit();
     }
 
@@ -111,11 +116,15 @@ public class UserHelper {
         return GuideTagSp.getBoolean(GuideTag, false);
     }
 
-    public static boolean getHConfigGuideTag(Context context) {
+    public static boolean getHConfigGuideTag(Context context,boolean isVideoTag) {
         if (GuideTagSp == null) {
             GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
         }
-        return GuideTagSp.getBoolean(HConfigGuideTag, false);
+        if (isVideoTag){
+            return GuideTagSp.getBoolean(HConfigGuideTagVideo, false);
+        }else{
+            return GuideTagSp.getBoolean(HConfigGuideTagPic, false);
+        }
     }
 
 

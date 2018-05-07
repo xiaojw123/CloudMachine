@@ -3,6 +3,7 @@ package com.cloudmachine.ui.home.activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
@@ -34,6 +35,10 @@ public class WorkVideoActivity extends BaseAutoLayoutActivity {
     TextView workPicTv;
     @BindView(R.id.work_video_tv)
     TextView workVideoTv;
+    @BindView(R.id.work_video_tab)
+    LinearLayout tabContainer;
+
+
     WorkVideoFragment mVideoFragment = new WorkVideoFragment();
     WorkPicFragment mPicFragment = new WorkPicFragment();
 
@@ -44,6 +49,12 @@ public class WorkVideoActivity extends BaseAutoLayoutActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_video);
         ButterKnife.bind(this);
+        boolean hasVideo=getIntent().getBooleanExtra(Constants.HAS_VIDEO,false);
+        if (hasVideo){
+            tabContainer.setVisibility(View.VISIBLE);
+        }else{
+            tabContainer.setVisibility(View.GONE);
+        }
         workVideoCtv.setRightClickListener(rightClickListener);
         showFragment(workPicTv);
     }

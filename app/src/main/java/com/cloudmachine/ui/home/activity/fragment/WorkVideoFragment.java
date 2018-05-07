@@ -24,7 +24,6 @@ import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.activity.FullScreenActivity;
-import com.cloudmachine.ui.home.activity.WorkVideoActivity;
 import com.cloudmachine.ui.home.contract.WorkVideoContract;
 import com.cloudmachine.ui.home.model.WorkVideoModel;
 import com.cloudmachine.ui.home.presenter.WorkVideoPresenter;
@@ -57,6 +56,9 @@ import butterknife.OnClick;
  */
 
 public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVideoModel> implements WorkVideoContract.View, XRecyclerView.LoadingListener, BaseRecyclerAdapter.OnItemClickListener {
+    private static final String PROMPT_NO_ONLINE = "当前设备离线，无法观看视频";
+    private static final String PROMPT_NO_SUPPORT = "抱歉，当前设备不支持查看视频";
+    private static final String PROMPT_NO_VIDEO = "抱歉，当前暂无工作视频";
     @BindView(R.id.work_live_videoview)
     PLVideoView workLiveVideoview;
     @BindView(R.id.work_live_status)
@@ -119,7 +121,8 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     String time2 = null;
     boolean isPause;
     int resultCode;
-    boolean hasVideo,isWork;
+    boolean isOwer, isOnLine;
+    boolean isFirst = true;
     String sn;
 
 
@@ -137,7 +140,8 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
         deviceId = getActivity().getIntent().getStringExtra(Constants.DEVICE_ID);
         memberId = UserHelper.getMemberId(getActivity());
         sn = getActivity().getIntent().getStringExtra(Constants.SN_ID);
-        isWork=getActivity().getIntent().getBooleanExtra(Constants.IS_WORK,false);
+        isOwer = getActivity().getIntent().getBooleanExtra(Constants.IS_OWER, false);
+        isOnLine = getActivity().getIntent().getBooleanExtra(Constants.IS_ONLINE, false);
     }
 
     private void initWheelView() {
@@ -205,59 +209,57 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
         endTime = todayDate + " " + time2;
     }
 
+
+    public void updateVideoInfo(final boolean isResume) {
+        if (isOwer) {
+            if (isResume) {
+                if (isFirst) {
+                    isFirst = false;
+                    if (isOnLine) {
+                        resumeVideo();
+                    } else {
+                        setEmptVideo(PROMPT_NO_ONLINE);
+                    }
+                } else {
+                    resumeVideo();
+                }
+
+            } else {
+
+                flush();
+            }
+
+
+        } else {
+            setEmptVideo(PROMPT_NO_SUPPORT);
+        }
+    }
+
+    public void flush() {
+        if (workVideoXrlv.getVisibility() == View.VISIBLE) {
+            workVideoXrlv.refresh();
+        } else {
+            onRefresh();
+        }
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
         AppLog.print("onResume__");
-        if (isWork){
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(getActivity()), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(getActivity()) {
-            @Override
-            protected void _onNext(JsonObject respJobj) {
-                int code = respJobj.get("code").getAsInt();
-                if (code == 800) {
-                    JsonObject resultJobj = respJobj.getAsJsonObject("result");
-                    if (resultJobj != null) {
-                        JsonElement videoJel=resultJobj.get("haveVideo");
-                        if (videoJel!=null){
-                            hasVideo=videoJel.getAsBoolean();
-                            if (hasVideo){
-                                resumeVideo();
-                            }else{
-                                setEmptVideo();
-                            }
-                        }
-                    }
-                } else {
-                    JsonElement messageJEL = respJobj.get("message");
-                    if (messageJEL != null) {
-                        String message = messageJEL.getAsString();
-                        ToastUtils.showToast(getActivity(), message);
-                    }
-                    setEmptVideo();
-                }
-            }
-
-
-            @Override
-            protected void _onError(String message) {
-                ToastUtils.showToast(getActivity(), message);
-                setEmptVideo();
-            }
-        }));
-        }else{
-            setEmptVideo();
-        }
-
+        updateVideoInfo(true);
     }
 
-    public void setEmptVideo(){
+    public void setEmptVideo(String promptMsg) {
+        emptyAllTv.setText(promptMsg);
         emptyAllTv.setVisibility(View.VISIBLE);
         liveContainer.setVisibility(View.GONE);
         videoCotaniner.setVisibility(View.GONE);
 
     }
 
-    public void resumeVideo(){
+    public void resumeVideo() {
         mPresenter.getVideoList(memberId, deviceId, startTime, endTime);
         if (resultCode == FullScreenActivity.MEIA_STATUS_REPLAY) {
             playComptete();
@@ -269,7 +271,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
             }
         }
     }
-
 
 
     @Override
@@ -291,22 +292,22 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
     @Override
     public void returnVideoUploadError(String message) {
-        if (rePlayBtn.getVisibility() != View.VISIBLE) {
-            workLivePlay.setVisibility(View.VISIBLE);
-            workLivePause.setVisibility(View.GONE);
-            fullScreenImg.setVisibility(View.GONE);
-        }
+//        if (rePlayBtn.getVisibility() != View.VISIBLE) {
+//            workLivePlay.setVisibility(View.VISIBLE);
+//            workLivePause.setVisibility(View.GONE);
+//            fullScreenImg.setVisibility(View.GONE);
+//        }
         ToastUtils.showToast(getActivity(), message);
     }
 
     @Override
     public void returnGetVideoList(String liveUrl, List<VideoBean.VideoListBean> videoList) {
-        if (TextUtils.isEmpty(liveUrl) && (videoList == null || videoList.size()<=0)) {
-            setEmptVideo();
+        if (TextUtils.isEmpty(liveUrl) && (videoList == null || videoList.size() <= 0)) {
+            setEmptVideo(PROMPT_NO_VIDEO);
             return;
         }
-            liveContainer.setVisibility(View.VISIBLE);
-            videoCotaniner.setVisibility(View.VISIBLE);
+        liveContainer.setVisibility(View.VISIBLE);
+        videoCotaniner.setVisibility(View.VISIBLE);
         this.liveUrl = liveUrl;
         playUrl = liveUrl;
         workVideoXrlv.refreshComplete();
@@ -328,8 +329,12 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     }
 
     @Override
-    public void returnGetVideoListError() {
-        setEmptVideo();
+    public void returnGetVideoListError(String message) {
+        if (!TextUtils.isEmpty(message)) {
+            setEmptVideo(message + "，无法观看视频");
+        } else {
+            setEmptVideo(PROMPT_NO_VIDEO);
+        }
     }
 
     @OnClick({R.id.work_live_status, R.id.work_video_replay, R.id.video_wheelview_cancel, R.id.video_wheelview_determine, R.id.work_video_tab_period, R.id.work_video_fullscreen, R.id.work_live_pause, R.id.work_live_play, R.id.work_video_tab_today, R.id.work_video_tab_yesterday})
@@ -386,16 +391,16 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                 pausePlay();
                 break;
             case R.id.work_video_fullscreen:
-                resultCode=0;
+                resultCode = 0;
                 Bundle bundle = new Bundle();
                 bundle.putString(FullScreenActivity.PLAY_URL, playUrl);
                 bundle.putString(FullScreenActivity.NAME, name);
                 bundle.putLong(Constants.MEMBER_ID, memberId);
                 bundle.putString(Constants.DEVICE_ID, deviceId);
                 bundle.putString(Constants.VIDEO_ID, videoId);
-                Intent intent=new Intent(getActivity(), FullScreenActivity.class);
+                Intent intent = new Intent(getActivity(), FullScreenActivity.class);
                 intent.putExtras(bundle);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, 1);
                 break;
             case R.id.work_live_play:
 //                Drawable resDrawable=workLivePuase.getDrawable();
@@ -569,11 +574,32 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     }
 
     public void flushData() {
-        if (workVideoXrlv.getVisibility() == View.VISIBLE) {
-            workVideoXrlv.refresh();
+        if (isOwer) {
+            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(getActivity()), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(getActivity()) {
+                @Override
+                protected void _onNext(JsonObject respJobj) {
+                    JsonObject resultJobj = respJobj.getAsJsonObject("result");
+                    JsonElement videoJel = resultJobj.get("haveVideo");
+                    if (videoJel != null) {
+                        boolean hasVideo = videoJel.getAsBoolean();
+                        if (hasVideo) {
+                            updateVideoInfo(false);
+
+                        } else {
+                            setEmptVideo(PROMPT_NO_VIDEO);
+                        }
+                    }
+                }
+
+                @Override
+                protected void _onError(String message) {
+                    ToastUtils.showToast(getActivity(), message);
+                }
+            }));
         } else {
-            onRefresh();
+            setEmptVideo(PROMPT_NO_SUPPORT);
         }
+
     }
 
     @Override
@@ -665,7 +691,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        AppLog.print("onActivityResult__"+resultCode);
+        AppLog.print("onActivityResult__" + resultCode);
         this.resultCode = resultCode;
     }
 

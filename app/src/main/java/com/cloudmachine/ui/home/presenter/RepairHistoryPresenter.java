@@ -21,22 +21,27 @@ public class RepairHistoryPresenter extends RepairHistoryContract.Presenter {
             @Override
             protected void _onNext(RepairListInfo info) {
                 mView.returnGetRepairList(info);
-                if (!isRefresh) {
-                    if (UserHelper.isLogin(mContext)) {
-                        getAllianceList();
-                    } else {
-                        mView.retrunGetAllianceList(null, false, 1);
-                    }
-                }
+                updateAlianceData(isRefresh);
             }
 
             @Override
             protected void _onError(String message) {
                 mView.returnGetRepairError();
+                updateAlianceData(isRefresh);
             }
         }));
 
 
+    }
+
+    private void updateAlianceData(boolean isRefresh) {
+        if (!isRefresh) {
+            if (UserHelper.isLogin(mContext)) {
+                getAllianceList();
+            } else {
+                mView.retrunGetAllianceList(null, false, 1);
+            }
+        }
     }
 
     @Override

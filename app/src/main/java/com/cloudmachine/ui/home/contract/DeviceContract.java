@@ -5,6 +5,7 @@ import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
 import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.McDeviceInfo;
+import com.cloudmachine.bean.TelBean;
 
 import java.util.List;
 
@@ -18,12 +19,16 @@ public interface DeviceContract {
     interface  View extends BaseView{
         void updateDevices(List<McDeviceInfo> deviceList);
         void updateArticles(List<ArticleInfo> articleInfoList);
+        void retrunGetServiceTel(String boxTel,String repairTel);
+
     }
     interface Model extends BaseModel{
 
         Observable<List<McDeviceInfo>> getDevices(long memberId, int type);
         Observable<List<McDeviceInfo>> getDevices(int type);
         Observable<List<ArticleInfo>> getArticles();
+        Observable<List<TelBean>> getServiceTel();
+
     }
 
     public abstract  class Prensenter extends BasePresenter<DeviceContract.View,DeviceContract.Model> {
@@ -32,6 +37,8 @@ public interface DeviceContract {
         public abstract void getDevices(int type);
 
         public abstract void getArticleList();
+
+        public abstract void getServiceTel();
 
     }
 

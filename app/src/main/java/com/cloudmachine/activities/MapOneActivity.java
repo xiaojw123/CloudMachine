@@ -198,10 +198,10 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         public void onClick(View v) {
             String rightTitle = titleView.getRightText();
             if (DELETE.equals(rightTitle)) {
-                MobclickAgent.onEvent(MapOneActivity.this,MobEvent.COUNT_FENCE_DELETE);
+                MobclickAgent.onEvent(MapOneActivity.this, MobEvent.COUNT_FENCE_DELETE);
                 deleteFence();
             } else if (NEWSET.equals(rightTitle)) {
-                MobclickAgent.onEvent(MapOneActivity.this,MobEvent.COUNT_FENCE_ADD);
+                MobclickAgent.onEvent(MapOneActivity.this, MobEvent.COUNT_FENCE_ADD);
                 if (myMarker != null && !myMarker.isRemoved()) {
                     myMarker.remove();
                     locRaiduMark = aMap.addMarker(getMarkerLocOptions(MapOneActivity.this, myMarker.getPosition(), MAP_DRAG));
@@ -220,7 +220,9 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         if (bundle != null) {
             mDeviceInfo = (McDeviceBasicsInfo) bundle//拿到设备基本信息
                     .getSerializable(Constants.P_MCDEVICEBASICSINFO);
+           int status=bundle.getInt(Constants.WORK_STATUS);
             if (mDeviceInfo != null) {
+                mDeviceInfo.setWorkStatus(status);
                 deviceId = mDeviceInfo.getId();//设备id
                 deviceType = mDeviceInfo.getType();
                 mWorkStatus = mDeviceInfo.getWorkStatus();//工作状态
@@ -260,7 +262,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
 //        if (null != myMarker && myMarker.isInfoWindowShown()) {
 //            myMarker.hideInfoWindow();
 //        }
-        MobclickAgent.onEvent(this,MobEvent.COUNT_FENCE_EDIT);
+        MobclickAgent.onEvent(this, MobEvent.COUNT_FENCE_EDIT);
         if (!isEnclosure) {
             showEditDialog();
             isEnclosure = true;
@@ -311,14 +313,14 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
                 } else {
                     //range.setText("100");
                     radiu = range.getText().toString().trim();//33
-                    String latStr =mLat;
-                    String lngStr =mLng;
+                    String latStr = mLat;
+                    String lngStr = mLng;
                     if (locRaiduMark != null && locRaiduMark.isVisible()) {
                         LatLng pos = locRaiduMark.getPosition();
                         latStr = String.valueOf(pos.latitude);
                         lngStr = String.valueOf(pos.longitude);
                     }
-                    MobclickAgent.onEvent(MapOneActivity.this,MobEvent.COUNT_FENCE_CONFIRM);
+                    MobclickAgent.onEvent(MapOneActivity.this, MobEvent.COUNT_FENCE_CONFIRM);
                     new AddCircleFenchAsync(MapOneActivity.this, mHandler, latStr,
                             lngStr, mDeviceInfo.getId(), radiu).execute();
                 }
@@ -379,7 +381,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         }
         if (markerTtileTv == null) {
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.bottomMargin =DensityUtil.dip2px(this,7);
+            params.bottomMargin = DensityUtil.dip2px(this, 7);
             markerTtileTv = new TextView(this);
             markerTtileTv.setGravity(Gravity.CENTER);
             markerTtileTv.setBackground(getResources().getDrawable(R.drawable.bg_marker_win));
@@ -439,12 +441,19 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
     private ImageView getDeviceMarkerView() {
         ImageView img = new ImageView(this);
         img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        if (mWorkStatus == 1) {
-            img.setImageResource(R.drawable.icon_machine_work);
-
-        } else {
-            img.setImageResource(R.drawable.icon_machine_unwork);
+        int resId;
+        switch (mWorkStatus) {
+            case 1:
+                resId = R.drawable.icon_machine_work;
+                break;
+            case 2:
+                resId = R.drawable.icon_machine_online;
+                break;
+            default:
+                resId = R.drawable.icon_machine_unwork;
+                break;
         }
+        img.setImageResource(resId);
         return img;
     }
 
@@ -495,7 +504,6 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         }
         return null;
     }
-
 
 
     @Override

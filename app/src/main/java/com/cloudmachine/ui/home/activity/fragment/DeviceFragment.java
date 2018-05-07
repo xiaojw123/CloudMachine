@@ -51,6 +51,8 @@ import com.cloudmachine.utils.locatecity.PingYinUtil;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.umeng.analytics.MobclickAgent;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +67,7 @@ import rx.functions.Action1;
 
 public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel> implements Handler.Callback, DeviceContract.View, View.OnClickListener, BaseRecyclerAdapter.OnItemClickListener {
     private static final long DEFUALT_UNLOGIN_ID = -1;
-//    @BindView(R.id.device_ques_ans_tv)
+    //    @BindView(R.id.device_ques_ans_tv)
 //    TextView homeQuestionAnsTv;
     @BindView(R.id.device_flush_imgBtn)
     ImageButton homeFlushBtn;
@@ -91,11 +93,15 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     List<ArticleInfo> infoList;
     Handler mHandler;
     int actIndex, actLen;
+    String mBoxTel =Constants.CUSTOMER_PHONE_BOX;
+    String mRepairTel =Constants.CUSTOMER_PHONE_REPAIR;
+
+
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden){
+        if (!hidden) {
             MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_MAP);
             loadData();
         }
@@ -104,7 +110,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     @Override
     public void onResume() {
         super.onResume();
-        if (isVisible()){
+        if (isVisible()) {
             MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_MAP);
         }
         loadData();
@@ -145,6 +151,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             mHandler = new Handler(this);
             mPresenter.getArticleList();
         }
+        mPresenter.getServiceTel();
     }
 
     @Override
@@ -220,8 +227,8 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         if (len >= 20) {
             popSearchEdt.setVisibility(View.VISIBLE);
             popLineView.setVisibility(View.GONE);
-            Editable editable=popSearchEdt.getText();
-            if (editable!=null&&editable.length()>0){
+            Editable editable = popSearchEdt.getText();
+            if (editable != null && editable.length() > 0) {
                 updateSearchList(editable);
             }
         } else {
@@ -322,10 +329,17 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             LatLng latLng = new LatLng(lat, lng);
             builder.include(latLng);
             b.include(latLng);
-            if (info.getWorkStatus() == 1) {
-                marker = aMap.addMarker(getMarkerOptions(getActivity(), latLng, R.drawable.icon_machine_work));
-            } else {
-                marker = aMap.addMarker(getMarkerOptions(getActivity(), latLng, R.drawable.icon_machine_unwork));
+            switch (info.getWorkStatus()) {
+                case 1:
+                    marker = aMap.addMarker(getMarkerOptions(getActivity(), latLng, R.drawable.icon_machine_work));
+                    break;
+                case 2:
+                    marker = aMap.addMarker(getMarkerOptions(getActivity(), latLng, R.drawable.icon_machine_online));
+                    break;
+
+                default:
+                    marker = aMap.addMarker(getMarkerOptions(getActivity(), latLng, R.drawable.icon_machine_unwork));
+                    break;
             }
             marker.setObject(info);
             curMarker = marker;
@@ -376,6 +390,17 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     }
 
+    @Override
+    public void retrunGetServiceTel(String boxTel, String repairTel) {
+        if (!TextUtils.isEmpty(boxTel)){
+            mBoxTel =boxTel;
+        }
+        if (!TextUtils.isEmpty(repairTel)){
+            mRepairTel =repairTel;
+        }
+
+    }
+
     private void setCurrentBoxAct() {
         ArticleInfo info = infoList.get(actIndex);
         if (info != null) {
@@ -395,10 +420,20 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         TextView oilTv = (TextView) v.findViewById(R.id.device_info_oil);
         TextView lenTv = (TextView) v.findViewById(R.id.device_info_timelen);
         McDeviceLocation location = info.getLocation();
-        if (info.getWorkStatus() == 1) {
-            statusTv.setVisibility(View.VISIBLE);
-        } else {
-            statusTv.setVisibility(View.GONE);
+        switch (info.getWorkStatus()){
+            case 1:
+                statusTv.setVisibility(View.VISIBLE);
+                statusTv.setText("工作中");
+                break;
+            case 2:
+                statusTv.setVisibility(View.VISIBLE);
+                statusTv.setText("在线");
+                break;
+
+            default:
+                statusTv.setVisibility(View.GONE);
+                break;
+
         }
         oilTv.setText(CommonUtils.formatOilValue(info.getOilLave()));
         lenTv.setText(CommonUtils.formatTimeLen(info.getWorkTime()));
@@ -449,12 +484,12 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             case R.id.phone_box_tv://客服热线-云盒子
                 MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_CALL_CLICK);
                 MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_CALL_YUNBOX_CLICK);
-                CommonUtils.callPhone(getActivity(), Constants.CUSTOMER_PHONE_BOX);
+                CommonUtils.callPhone(getActivity(), mBoxTel);
                 break;
             case R.id.phone_repair_tv://客服热线-报修
                 MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_CALL_CLICK);
                 MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_CALL_REPAIR_CLICK);
-                CommonUtils.callPhone(getActivity(), Constants.CUSTOMER_PHONE_REPAIR);
+                CommonUtils.callPhone(getActivity(), mRepairTel);
                 break;
             case R.id.device_phone_imgBtn:
                 showPhonePop();

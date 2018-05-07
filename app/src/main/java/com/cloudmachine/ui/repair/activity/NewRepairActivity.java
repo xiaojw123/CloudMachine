@@ -229,12 +229,10 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         tvType = (TextView) findViewById(R.id.tv_type);
         tvBrand = (TextView) findViewById(R.id.tv_brand);
         tvModel = (TextView) findViewById(R.id.tv_model);
-
         cetContactName = (ClearEditTextView) findViewById(R.id.et_repairname);
         cetContactMobile = (ClearEditTextView) findViewById(R.id.et_repair_mobile);
         cetContactDesc = (ClearEditTextView) findViewById(R.id.et_des);
         et_rackIdname = (ClearEditTextView) findViewById(R.id.et_rackIdname);
-
         NewRepairInfo repairInfo = DeviceHelper.getRepairInfo(this);
         if (repairInfo != null) {
             cetContactName.setText(repairInfo.getVmacopname());
@@ -355,7 +353,12 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         else if (TextUtils.isEmpty(locAddress)) {
             Constants.MyToast("机器位置信息不能为空！");
         } else {
-            mPresenter.getWarnMessage(UserHelper.getMemberId(this), vmacoptel, newRepairInfo);
+            // TODO: 2018/4/11 bug240
+            long memberId=-1;
+            if (UserHelper.isLogin(this)) {
+                memberId=UserHelper.getMemberId(this);
+            }
+            mPresenter.getWarnMessage(memberId, vmacoptel, newRepairInfo);
 //            showDialog(newRepairInfo);
         }
     }

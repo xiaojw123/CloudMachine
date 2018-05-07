@@ -41,13 +41,13 @@ public class WorkVideoPresenter extends WorkVideoContract.Presenter {
                 if (videoBean != null) {
                     mView.returnGetVideoList(videoBean.getLiveUrl(), videoBean.getVideoList());
                 } else {
-                    mView.returnGetVideoListError();
+                    mView.returnGetVideoListError(null);
                 }
             }
 
             @Override
             protected void _onError(String message) {
-                mView.returnGetVideoListError();
+                mView.returnGetVideoListError(message);
             }
         }));
 

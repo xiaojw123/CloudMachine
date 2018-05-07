@@ -28,6 +28,7 @@ import butterknife.OnClick;
 import rx.Subscriber;
 
 public class FullScreenActivity extends AppCompatActivity implements Handler.Callback, PLOnErrorListener {
+    private static final int HOLD_ON_TIME=5000;
     public static final String PLAY_URL = "play_url";
     public static final String NAME = "name";
     public static final int MSG_DELAY_CTRL = 0x11;
@@ -84,7 +85,7 @@ public class FullScreenActivity extends AppCompatActivity implements Handler.Cal
             } else {
                 showVideoCtrl(View.VISIBLE);
             }
-            mHandler.sendEmptyMessageDelayed(MSG_DELAY_CTRL, 10000);
+            mHandler.sendEmptyMessageDelayed(MSG_DELAY_CTRL, HOLD_ON_TIME);
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -102,7 +103,7 @@ public class FullScreenActivity extends AppCompatActivity implements Handler.Cal
     protected void onResume() {
         super.onResume();
         play();
-        mHandler.sendEmptyMessageDelayed(MSG_DELAY_CTRL, 10000);
+        mHandler.sendEmptyMessageDelayed(MSG_DELAY_CTRL, HOLD_ON_TIME);
     }
 
     @Override

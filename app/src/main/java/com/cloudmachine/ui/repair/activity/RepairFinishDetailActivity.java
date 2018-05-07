@@ -72,12 +72,14 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
     TextView imgTitleTv;
     String orderNum;
     boolean isAlliance;
+    String tel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reparir_finsih_detail);
         ButterKnife.bind(this);
+        tel = getIntent().getStringExtra("tel");// 评价人电话
         orderNum = getIntent().getStringExtra("orderNum");
         isAlliance = getIntent().getBooleanExtra("isAlliance", false);
         String flag = getIntent().getStringExtra("flag");
@@ -169,6 +171,7 @@ public class RepairFinishDetailActivity extends BaseAutoLayoutActivity<RepairFin
                 bundle0.putInt(EvaluationActivity.ACTION_TYPE, 1);
                 bundle0.putString("orderNum", orderNum);
                 bundle0.putBoolean("isAlliance", isAlliance);
+                bundle0.putString("tel", tel);
                 Constants.toActivity(this, EvaluationActivity.class, bundle0);
                 break;
 //            case R.id.finish_deviceinfo_fl:

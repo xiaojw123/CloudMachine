@@ -154,6 +154,7 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
             case OrderStatus.COMPLETED:
                 bundle.putString("orderNum", orderNum);
                 bundle.putString("flag", flag);
+                bundle.putString("tel", info.getVmacoptel());
                 Constants.toActivity(RepairRecordNewActivity.this, RepairFinishDetailActivity.class, bundle);
                 break;
             default:

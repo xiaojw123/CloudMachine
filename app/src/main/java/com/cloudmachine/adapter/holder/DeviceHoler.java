@@ -43,10 +43,19 @@ public class DeviceHoler extends BaseHolder<McDeviceInfo> {
         if (location != null) {
             itemDeviceLoc.setText(location.getPosition());
         }
-        if (item.getWorkStatus() == 1) {
-            itmeDeivesStatus.setVisibility(View.VISIBLE);
-        } else {
-            itmeDeivesStatus.setVisibility(View.GONE);
+
+        switch (item.getWorkStatus()){
+            case 1:
+                itmeDeivesStatus.setText("工作中");
+                itmeDeivesStatus.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                itmeDeivesStatus.setText("在线");
+                itmeDeivesStatus.setVisibility(View.VISIBLE);
+                break;
+            default:
+                itmeDeivesStatus.setVisibility(View.GONE);
+                break;
         }
         itemDeviceOil.setText(CommonUtils.formatOilValue(item.getOilLave()));
         itemDeviceWorktime.setText(CommonUtils.formatTimeLen(item.getWorkTime()));

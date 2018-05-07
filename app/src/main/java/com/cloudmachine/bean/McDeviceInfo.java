@@ -64,7 +64,7 @@ public class McDeviceInfo implements Serializable {
     private String image;
     private String macAddress;
     private int checkStatus;
-    private int workStatus;// 0表示不工作  1表示工作
+    private int workStatus;// 0表示不工作  1表示工作  2表示在线
     private int type; //1 2 4
     private String pk_PROD_DEF;
     private String pk_BRAND;

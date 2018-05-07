@@ -145,10 +145,16 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     }
 
     private void disMiss() {
-        if (progressDialog != null) {
+        if (progressDialog != null&&progressDialog.isShowing()) {
             progressDialog.dismiss();
             progressDialog = null;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        disMiss();
+        super.onDestroy();
     }
 
     @Override

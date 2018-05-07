@@ -90,7 +90,10 @@ public class WorkPicFragment extends BaseFragment implements View.OnClickListene
         picListXrlv.setPullRefreshEnabled(true);
         picListXrlv.setLoadingMoreEnabled(true);
         picListXrlv.setLoadingListener(this);
-        obtainImei();
+        width = ScreenInfo.screen_width - 2 * DensityUtil.dip2px(getActivity(), 10);
+        imei=getActivity().getIntent().getStringExtra(Constants.IMEI);
+        prefix = imei;
+        updatePicItems();
     }
 
 
@@ -104,40 +107,6 @@ public class WorkPicFragment extends BaseFragment implements View.OnClickListene
         super.onResume();
         MobclickAgent.onEvent(getActivity(), MobEvent.TIME_MACHINE_WORK_IMAGES);
 
-    }
-
-    private void obtainImei() {
-        String sn = getActivity().getIntent().getStringExtra(Constants.SN_ID);
-        width = ScreenInfo.screen_width - 2 * DensityUtil.dip2px(getActivity(), 10);
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(getActivity()), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(getActivity()) {
-            @Override
-            protected void _onNext(JsonObject respJobj) {
-                int code = respJobj.get("code").getAsInt();
-                if (code == 800) {
-                    JsonObject resultJobj = respJobj.getAsJsonObject("result");
-                    if (resultJobj != null) {
-                        JsonElement imeJel = resultJobj.get("imei");
-                        if (imeJel != null) {
-                            imei = imeJel.getAsString();
-                            prefix = imei;
-                            updatePicItems();
-                        }
-                    }
-                } else {
-                    JsonElement messageJEL = respJobj.get("message");
-                    if (messageJEL != null) {
-                        String message = messageJEL.getAsString();
-                        ToastUtils.showToast(getActivity(), message);
-                    }
-                }
-            }
-
-
-            @Override
-            protected void _onError(String message) {
-                ToastUtils.showToast(getActivity(), message);
-            }
-        }));
     }
 
 

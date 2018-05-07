@@ -3,6 +3,7 @@ package com.cloudmachine.ui.home.model;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.McDeviceInfo;
+import com.cloudmachine.bean.TelBean;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.DeviceContract;
@@ -28,5 +29,10 @@ public class DeviceModel implements DeviceContract.Model {
     @Override
     public Observable<List<ArticleInfo>> getArticles() {
         return Api.getDefault(HostType.HOST_CLOUDM).getArticleList(0).compose(RxHelper.<List<ArticleInfo>>handleResult());
+    }
+
+    @Override
+    public Observable<List<TelBean>> getServiceTel() {
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getServiceTel("BoxServiceTel,RepairTel").compose(RxHelper.<List<TelBean>>handleResult());
     }
 }

@@ -133,7 +133,7 @@ public class CommonUtils {
     public static boolean isHConfig(String sn) {
         if (!TextUtils.isEmpty(sn)) {
             if (sn.length() >= 9) {
-                if (!sn.substring(2, 5).equals("2016") && sn.charAt(8) == 'A') {
+                if (!sn.substring(2, 6).equals("2016") && sn.charAt(8) == 'A') {
                     return true;
                 }
             }

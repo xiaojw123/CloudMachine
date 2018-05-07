@@ -22,6 +22,7 @@ import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.bean.ResonItem;
 import com.cloudmachine.bean.ScanningOilLevelInfoArray;
+import com.cloudmachine.bean.TelBean;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.bean.VideoBean;
 import com.cloudmachine.ui.home.model.CouponBean;
@@ -59,6 +60,10 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
+    @GET("device/getConfigKV")
+    Observable<BaseRespose<List<TelBean>>> getServiceTel(@Query("keys") String keys);
+
+
     //视频地址下发接口
     @GET("deviceVideo/videoUpload")
     Observable<BaseRespose<String>> videoUpload(@Query("memberId") long memberId, @Query("deviceId") String deviceId,@Query("id") String id);

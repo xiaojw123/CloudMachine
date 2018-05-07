@@ -76,9 +76,12 @@ public class DevicesMemberListAsync extends ATask {
             Gson gson = new Gson();
             BaseBO<List<MemberInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<MemberInfo>>>() {
             }.getType());
-            msg.what = Constants.HANDLER_GETDEVICEMEMBER_SUCCESS;
-            msg.obj = baseBO.getResult();
-            handler.sendMessage(msg);
+            // TODO: 2018/4/11 bug240
+            if (baseBO!=null){
+                msg.what = Constants.HANDLER_GETDEVICEMEMBER_SUCCESS;
+                msg.obj = baseBO.getResult();
+                handler.sendMessage(msg);
+            }
         } else {
             msg.what = Constants.HANDLER_GETDEVICEMEMBER_FAIL;
             msg.obj = message;
