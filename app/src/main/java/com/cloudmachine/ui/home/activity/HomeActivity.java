@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
+import com.autonavi.rtbt.IFrameForRTBT;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -86,6 +87,8 @@ import com.cloudmachine.widget.MenuTextView;
 import com.cloudmachine.widget.NotfyImgView;
 import com.cloudmachine.zxing.activity.CaptureActivity;
 import com.umeng.analytics.MobclickAgent;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -586,6 +589,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             mPresenter.getCountByStatus(memberId, 0);
             mPresenter.updateUnReadMessage(memberId);
             mPresenter.getWalletAmount(memberId);
+
         } else {
             homeHeadImg.setImageResource(R.drawable.ic_default_head);
             homeNicknameTv.setText("登录");
@@ -599,6 +603,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         }
         mPresenter.getHomeBannerInfo();
     }
+
+
 
     public void updateDeviceMessage() {
         if (UserHelper.isLogin(this)) {
@@ -777,6 +783,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
 
+
     @Override
     public void updatePromotionInfo(List<PopItem> items) {
         AppLog.print("updatePromotionInfo items___" + items);
@@ -931,8 +938,13 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             } else {
 //                clearCache();
                 this.finish();
-                MobclickAgent.onKillProcess(this);
-                System.exit(0);
+                try{
+                    MobclickAgent.onKillProcess(this);
+                    System.exit(0);
+                }catch (Exception e){
+                 AppLog.print("Finish Error__"+e);
+                }
+
             }
             return true;
         }

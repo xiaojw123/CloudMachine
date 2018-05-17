@@ -202,12 +202,15 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         username_ed.addTextChangedListener(this);
         password_ed.addTextChangedListener(this);
         login_btn = (RadiusButtonView) findViewById(R.id.login_btn);
+        login_btn.setButtonEnable(false);
         login_btn.setOnClickListener(new OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                MobclickAgent.onEvent(mContext, MobEvent.COUNT_LOGIN);
-                // TODO Auto-generated method stub
-                doCheck();
+                if (login_btn.isButtonEanble()){
+                    MobclickAgent.onEvent(mContext, MobEvent.COUNT_LOGIN);
+                    doCheck();
+                }
             }
         });
         forget_pw_tv.setOnClickListener(this);
@@ -583,8 +586,10 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         }
         if (pswStr.length() > 0 && usernameStr.length() > 0) {
             login_btn.setTextColor(getResources().getColor(R.color.cor15));
+            login_btn.setButtonEnable(true);
         } else {
             login_btn.setTextColor(getResources().getColor(R.color.cor2015));
+            login_btn.setButtonEnable(false);
         }
 
     }

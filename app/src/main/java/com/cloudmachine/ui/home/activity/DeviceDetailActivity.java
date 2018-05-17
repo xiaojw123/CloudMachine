@@ -1,5 +1,7 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +18,6 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
-import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.AddDeviceActivity;
@@ -65,8 +66,6 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     CommonTitleView mTitleView;
     @BindView(R.id.device_info_loc)
     TextView mLocTv;
-    //    @BindView(R.id.device_detail_bottom)
-//    LinearLayout bottomLayout;
     @BindView(R.id.device_info_oil)
     TextView oilWaveTv;
     @BindView(R.id.device_info_timelen)
@@ -95,6 +94,12 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     @BindView(R.id.device_info_loctime)
     TextView locTimeTv;
 
+    @BindView(R.id.device_detail_custom_pic)
+    ImageView customImg;
+
+    @BindView(R.id.device_info_oil_container)
+    LinearLayout oilContainer;
+
 
 
     long deviceId;
@@ -104,12 +109,11 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     int oilValue;
     String snId;
     int type;
-    boolean isOwer;
-    boolean isOnline;
-    boolean   hasVideo;
+    boolean isOnline,isVideo;
     String imei;
     McDeviceInfo mcDeviceInfo;
     int workStatus;
+    String errorMessage;
 
 
     @Override
@@ -128,9 +132,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         MyLocationStyle myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
         myLocationStyle.radiusFillColor(getResources().getColor(R.color.transparent));
         myLocationStyle.strokeColor(getResources().getColor(R.color.transparent));
-//        myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER);
-//        myLocationStyle.showMyLocation(true);
         aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
         aMap.setMyLocationEnabled(true);
     }
@@ -168,7 +170,6 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         if (isNowData) {
             String deviceIdStr = bundle.getString(Constants.DEVICE_ID);
             deviceId = Long.parseLong(deviceIdStr);
-//            mPresenter.getDeviceNowData(deviceIdStr);
         } else {
             mcDeviceInfo = (McDeviceInfo) bundle.getSerializable(Constants.MC_DEVICEINFO);
             if (mcDeviceInfo == null) {
@@ -182,38 +183,15 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 mcDeviceInfo.setLocation(loc);
             }
             deviceId = mcDeviceInfo.getId();
-//            mPresenter.getDeviceNowData(String.valueOf(deviceId));
-//            updateDeviceDetail(mcDeviceInfo);
         }
 
     }
 
     private void initBottomAnim() {
-//        mScrollView.setScrollAnimListener(animListener);
         mScrollView.setScrollVisible(true);
         bottomLayout.startAnimation(CommonUtils.getTraslateAnim());
         bottomLayout.setVisibility(View.VISIBLE);
     }
-//    Animation.AnimationListener animListener= new Animation.AnimationListener() {
-//        @Override
-//        public void onAnimationStart(Animation animation) {
-//            if (mScrollView.deltaY > 0) {
-//                itemContainer.setVisibility(View.GONE);
-//            } else if (mScrollView.deltaY<0){
-//                itemContainer.setVisibility(View.VISIBLE);
-//            }
-//        }
-//
-//        @Override
-//        public void onAnimationEnd(Animation animation) {
-//            AppLog.print("onAnimationEnd___");
-//        }
-//
-//        @Override
-//        public void onAnimationRepeat(Animation animation) {
-//
-//        }
-//    };
 
     @Override
     public void initPresenter() {
@@ -245,7 +223,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     }
 
 
-    @OnClick({R.id.device_detail_guide_sure_btn, R.id.device_detail_work_tv, R.id.device_info_timelen, R.id.device_info_oil, R.id.device_detail_repair_record, R.id.device_fence_layout, R.id.device_path_layout})
+    @OnClick({R.id.device_info_oil_container,R.id.device_detail_guide_sure_btn, R.id.device_detail_work_tv, R.id.device_info_timelen,  R.id.device_detail_repair_record, R.id.device_fence_layout, R.id.device_path_layout})
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
@@ -254,14 +232,13 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 break;
 
             case R.id.device_detail_work_tv:
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Constants.SN_ID, snId);
-                    bundle.putString(Constants.DEVICE_ID,String.valueOf(deviceId));
-                    bundle.putBoolean(Constants.IS_OWER, isOwer);
-                    bundle.putBoolean(Constants.IS_ONLINE, isOnline);
-                    bundle.putBoolean(Constants.HAS_VIDEO,hasVideo);
-                    bundle.putString(Constants.IMEI,imei);
-                    Constants.toActivity(this, WorkVideoActivity.class, bundle);
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.SN_ID, snId);
+                bundle.putString(Constants.DEVICE_ID, String.valueOf(deviceId));
+                bundle.putBoolean(Constants.IS_ONLINE, isOnline);
+                bundle.putBoolean(Constants.IS_VIDEO, isVideo);
+                bundle.putString(Constants.IMEI, imei);
+                Constants.toActivity(this, WorkVideoActivity.class, bundle);
                 break;
             case R.id.common_titleview_right_tv:
                 if (mBundle == null) {
@@ -270,13 +247,13 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 mBundle.putBoolean(AddDeviceActivity.IMG_TITLE_SHOW, true);
                 mBundle.putBoolean(AddDeviceActivity.DEVICE_SHOW, true);
                 mBundle.putInt(Constants.P_ADDMCDEVICETYPE, 0);
+                mBundle.putString(Constants.ERROR_MESSAGE,errorMessage);
                 Constants.toActivity(DeviceDetailActivity.this,
                         AddDeviceActivity.class, mBundle);
                 break;
 
             case R.id.navigation_tv:
                 MobclickAgent.onEvent(this, MobEvent.COUNT_LOCATION_NAVIGATION);
-                AppLog.print("nav start lat__" + mcDeviceLoc.getLat() + ", lng___" + mcDeviceLoc.getLng() + ", position___" + mcDeviceLoc.getPosition());
                 Location locEnd = new Location(mcDeviceLoc.getLat(), mcDeviceLoc.getLng(), mcDeviceLoc.getPosition());
                 if (locNow == null) {
                     ToastUtils.showToast(this, "无法定位当前位置");
@@ -291,21 +268,19 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 Constants.toActivity(this, RepairRecordNewActivity.class, bundle_repair);
                 break;
             case R.id.device_fence_layout:
-                mBundle.putInt(Constants.WORK_STATUS,workStatus);
                 Constants.toActivity(this, MapOneActivity.class, mBundle);
                 break;
             case R.id.device_path_layout:
-//                Constants.toActivity(this, HistoricalTrackNewActivity.class, mBundle);
                 Constants.toActivity(this, HistoricalTrackActivity.class, mBundle);
                 break;
             case R.id.device_info_timelen:
                 MobclickAgent.onEvent(mContext, MobEvent.COUNT_WORKTIME_TIME);
                 Bundle b_wt = new Bundle();
                 b_wt.putLong(Constants.P_DEVICEID, deviceId);
-                b_wt.putString(Constants.P_DEVICENAME,deviceName);
+                b_wt.putString(Constants.P_DEVICENAME, deviceName);
                 Constants.toActivity(this, WorkTimeActivity.class, b_wt, false);
                 break;
-            case R.id.device_info_oil:
+            case R.id.device_info_oil_container:
                 Bundle b_ail = new Bundle();
                 b_ail.putLong(Constants.P_DEVICEID, deviceId);
                 b_ail.putString(Constants.P_DEVICENAME, deviceName);
@@ -330,17 +305,12 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         if (info == null) {
             return;
         }
-        if (mcDeviceInfo!=null){
-            snId=mcDeviceInfo.getSnId();
-            type=mcDeviceInfo.getType();
-        }else{
-            snId=info.getSnId();
-            type=info.getType();
-        }
-        if (CommonUtils.isHConfig(snId)) {
-            updateHCView();
-        }else{
-            workVideoTv.setVisibility(View.GONE);
+        if (mcDeviceInfo != null) {
+            snId = mcDeviceInfo.getSnId();
+            type = mcDeviceInfo.getType();
+        } else {
+            snId = info.getSnId();
+            type = info.getType();
         }
         oilValue = info.getOilLave();
         oilWaveTv.setText(CommonUtils.formatOilValue(oilValue));
@@ -357,97 +327,125 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
         setMapZoomTo(ZOOM_DEFAULT);
         aMap.moveCamera(CameraUpdateFactory.scrollBy(0, DensityUtil.dip2px(this, 100)));
-        String statusText=null;
+        String statusText = null;
         int mResId;
-        workStatus=info.getWorkStatus();
-        switch (workStatus){
+        workStatus = info.getWorkStatus();
+        switch (workStatus) {
             case 1:
-                isOnline =true;
-                isOwer = !Constants.isNoEditInMcMember(deviceId, type);
-                statusText="工作中";
+                isOnline = true;
+                statusText = "工作中";
                 workStatusTv.setVisibility(View.VISIBLE);
-                mResId=R.drawable.icon_machine_work;
+                mResId = R.drawable.icon_machine_work;
                 break;
             case 2:
-                isOnline =true;
-                isOwer = !Constants.isNoEditInMcMember(deviceId, type);
-                statusText="在线";
+                isOnline = true;
+                statusText = "在线";
                 workStatusTv.setVisibility(View.VISIBLE);
-                mResId=R.drawable.icon_machine_online;
+                mResId = R.drawable.icon_machine_online;
                 break;
             default:
-                isOnline =false;
-                isOwer = !Constants.isNoEditInMcMember(deviceId, type);
+                isOnline = false;
                 workStatusTv.setVisibility(View.GONE);
-                mResId=R.drawable.icon_machine_unwork;
+                mResId = R.drawable.icon_machine_unwork;
                 break;
 
         }
         workStatusTv.setText(statusText);
         aMap.clear();
-        Marker  marker = aMap.addMarker(getMarkerOptions(this, latLng, mResId));
+        Marker marker = aMap.addMarker(getMarkerOptions(this, latLng, mResId));
         marker.showInfoWindow();
+        if (CommonUtils.isHConfig(snId)) {
+            updateHCView();
+        } else {
+            workVideoTv.setVisibility(View.GONE);
+        }
+        showCustomGuide();
+    }
+
+    private void showCustomGuide() {
+        if (!UserHelper.getCustomTextTag(this)) {
+            UserHelper.insertCustomTextTag(this, true);
+            customImg.setVisibility(View.VISIBLE);
+            if (guideLayout.getVisibility() != View.VISIBLE) {
+                guideLayout.setVisibility(View.VISIBLE);
+                picImg.setVisibility(View.GONE);
+                textImg.setVisibility(View.GONE);
+            }
+        }
     }
 
 
     //更新高配图片、视频入口
-    public  void updateHCView(){
-        if (UserHelper.isLogin(this)){
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(this), snId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(this) {
-            @Override
-            protected void _onNext(JsonObject respJobj) {
-                int code = respJobj.get("code").getAsInt();
-                if (code == 800) {
-                    JsonObject resultJobj = respJobj.getAsJsonObject("result");
-                    JsonElement imeJel = resultJobj.get("imei");
-                    if (imeJel!=null){
-                        imei=imeJel.getAsString();
-                    }
-                    JsonElement videoJel=resultJobj.get("haveVideo");
-                    if (videoJel!=null) {
-                        hasVideo = videoJel.getAsBoolean();
-                        if (hasVideo){
-                            workVideoTv.setText(getResources().getString(R.string.video));
-                            workVideoTv.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dimen_size_5));
-                            Drawable topDrawable=getResources().getDrawable(R.drawable.icon_work_video);
-                            topDrawable.setBounds(0,0,topDrawable.getIntrinsicWidth(),topDrawable.getIntrinsicHeight());
-                            workVideoTv.setCompoundDrawables(null,topDrawable,null,null);
-                            picImg.setImageResource(R.drawable.icon_guide_video1);
-                            textImg.setImageResource(R.drawable.icon_guide_video2);
+    public void updateHCView() {
+        if (UserHelper.isLogin(this)) {
+            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(this), snId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(this) {
+                @Override
+                protected void _onNext(JsonObject respJobj) {
+                    int code = respJobj.get("code").getAsInt();
+                    if (code == 800) {
+                        JsonObject resultJobj = respJobj.getAsJsonObject("result");
+                        JsonElement imeJel = resultJobj.get("imei");
+                        if (imeJel != null) {
+                            imei = imeJel.getAsString();
+                        }
+                        JsonElement videoJel = resultJobj.get("haveVideo");
+                        if (videoJel != null) {
+                            boolean   hasVideo = videoJel.getAsBoolean();
+                            boolean   isOwer = !Constants.isNoEditInMcMember(deviceId, type);
+                            isVideo=hasVideo&&isOwer;
+                            if (isVideo) {
+                                workVideoTv.setText(getResources().getString(R.string.video));
+                                workVideoTv.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dimen_size_5));
+                                Drawable topDrawable = getResources().getDrawable(R.drawable.icon_work_video);
+                                topDrawable.setBounds(0, 0, topDrawable.getIntrinsicWidth(), topDrawable.getIntrinsicHeight());
+                                workVideoTv.setCompoundDrawables(null, topDrawable, null, null);
+                                picImg.setImageResource(R.drawable.icon_guide_video1);
+                                textImg.setImageResource(R.drawable.icon_guide_video2);
 
-                        }else{
-                            workVideoTv.setText(getResources().getString(R.string.pic));
-                            workVideoTv.setCompoundDrawablePadding(0);
-                            Drawable topDrawable=getResources().getDrawable(R.drawable.icon_work_pic);
-                            topDrawable.setBounds(0,0,topDrawable.getIntrinsicWidth(),topDrawable.getIntrinsicHeight());
-                            workVideoTv.setCompoundDrawables(null,topDrawable,null,null);
-                            picImg.setImageResource(R.drawable.icon_guide_work_pic);
-                            textImg.setImageResource(R.drawable.icon_guide_work_text);
+                            } else {
+                                workVideoTv.setText(getResources().getString(R.string.pic));
+                                workVideoTv.setCompoundDrawablePadding(0);
+                                Drawable topDrawable = getResources().getDrawable(R.drawable.icon_work_pic);
+                                topDrawable.setBounds(0, 0, topDrawable.getIntrinsicWidth(), topDrawable.getIntrinsicHeight());
+                                workVideoTv.setCompoundDrawables(null, topDrawable, null, null);
+                                picImg.setImageResource(R.drawable.icon_guide_work_pic);
+                                textImg.setImageResource(R.drawable.icon_guide_work_text);
+                            }
+                            workVideoTv.setVisibility(View.VISIBLE);
+                            if (!UserHelper.getHConfigGuideTag(DeviceDetailActivity.this, isVideo)) {
+                                UserHelper.insertHConfigGuideTag(DeviceDetailActivity.this, true, isVideo);
+//                            guideLayout.setVisibility(View.VISIBLE);
+                                picImg.setVisibility(View.VISIBLE);
+                                textImg.setVisibility(View.VISIBLE);
+                                if (guideLayout.getVisibility() != View.VISIBLE) {
+                                    textImg.setVisibility(View.GONE);
+                                    guideLayout.setVisibility(View.VISIBLE);
+                                }
+
+                            }
                         }
-                        workVideoTv.setVisibility(View.VISIBLE);
-                        if (!UserHelper.getHConfigGuideTag(DeviceDetailActivity.this,hasVideo)) {
-                            UserHelper.insertHConfigGuideTag(DeviceDetailActivity.this, true,hasVideo);
-                            guideLayout.setVisibility(View.VISIBLE);
-                        }
+
                     }
 
                 }
 
-            }
+                @Override
+                protected void _onError(String message) {
 
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
+                }
+            }));
         }
     }
-
 
 
     @Override
     public void updateDeviceDetailError(String message) {
         ToastUtils.showToast(this, message);
+    }
+
+    @Override
+    public void retrunDeviceInfoError(String message) {
+        errorMessage=message;
     }
 
 
@@ -460,6 +458,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         mlocClient.stopLocation();
 
     }
+
 
 
 }

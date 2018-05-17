@@ -35,16 +35,16 @@ android {
 
     buildTypes {
         release {
-            buildConfigField("boolean","IS_REMOTE","true")
-            buildConfigField("boolean","IS_ONLINE","true")
+            buildConfigField("boolean", "IS_REMOTE", "true")
+            buildConfigField("boolean", "IS_ONLINE", "true")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             manifestPlaceholders = [UMENG_KEY_VALUE: "59e5ba57677baa51d3000b93"]
         }
         debug {
-            buildConfigField("boolean","IS_REMOTE",cfg.isRmote)
-            buildConfigField("boolean","IS_ONLINE",cfg.isOnline)
+            buildConfigField("boolean", "IS_REMOTE", cfg.isRmote)
+            buildConfigField("boolean", "IS_ONLINE", cfg.isOnline)
             signingConfig signingConfigs.release
             manifestPlaceholders = [UMENG_KEY_VALUE: "57bd696d67e58e71d3000d02"]
         }
@@ -140,7 +140,6 @@ dependencies {
     compile 'cn.bingoogolapple:bga-zxing:1.1.7@aar'
     compile 'id.zelory:compressor:1.0.4'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
     compile 'com.yanzhenjie:recyclerview-swipe:1.1.4'
     compile 'com.amap.api:location:3.4.1'
     compile 'com.amap.api:search:5.2.1'

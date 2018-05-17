@@ -204,17 +204,17 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
         }
     }
 
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//			resultActivity();
-            cancel();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+//
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        // TODO Auto-generated method stub
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+////			resultActivity();
+//            cancel();
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -348,16 +348,6 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
         switch (editType) {
             case Constants.E_DEVICE_TEXT:
                 String str = text_edit.getText().toString();
-                switch (itemType) {
-                    case Constants.E_ITEMS_buyPrice:
-                        try {
-                            float price = Float.valueOf(str);
-                        } catch (Exception e) {
-                            Constants.MyToast("输入格式错误！");
-                            return;
-                        }
-                        break;
-                }
                 intent.putExtra(Constants.P_EDITRESULTSTRING, str);
                 break;
             case Constants.E_DEVICE_DATA:

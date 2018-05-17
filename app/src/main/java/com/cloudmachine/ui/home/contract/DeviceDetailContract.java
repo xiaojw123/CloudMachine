@@ -17,6 +17,7 @@ public interface DeviceDetailContract {
         void retrunDeviceInfo(McDeviceBasicsInfo info);
         void updateDeviceDetail(McDeviceInfo info);
         void updateDeviceDetailError(String message);
+         void retrunDeviceInfoError(String message);
     }
 
      interface Model extends BaseModel {

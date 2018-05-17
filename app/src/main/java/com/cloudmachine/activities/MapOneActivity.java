@@ -220,9 +220,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         if (bundle != null) {
             mDeviceInfo = (McDeviceBasicsInfo) bundle//拿到设备基本信息
                     .getSerializable(Constants.P_MCDEVICEBASICSINFO);
-           int status=bundle.getInt(Constants.WORK_STATUS);
             if (mDeviceInfo != null) {
-                mDeviceInfo.setWorkStatus(status);
                 deviceId = mDeviceInfo.getId();//设备id
                 deviceType = mDeviceInfo.getType();
                 mWorkStatus = mDeviceInfo.getWorkStatus();//工作状态

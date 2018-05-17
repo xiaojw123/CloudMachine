@@ -22,6 +22,7 @@ public class DeviceDetailPresenter extends DeviceDetailContract.Presenter{
 
             @Override
             protected void _onError(String message) {
+                mView.retrunDeviceInfoError(message);
 
             }
         }));
@@ -57,7 +58,7 @@ public class DeviceDetailPresenter extends DeviceDetailContract.Presenter{
 
             @Override
             protected void _onError(String message) {
-
+                mView.retrunDeviceInfoError(message);
             }
         }));
     }

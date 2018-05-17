@@ -31,6 +31,8 @@ public class RadiusButtonView extends AutoRelativeLayout {
     private GradientDrawable gd_nm,gd_dw;
     private StateListDrawable bg_drawable = new StateListDrawable();
 
+    private boolean isEnable=true;
+
     public RadiusButtonView(Context context) {
         super(context);
         initView(context);
@@ -79,6 +81,16 @@ public class RadiusButtonView extends AutoRelativeLayout {
     public void setTextColor(int textColor){
     	radius_button_text.setTextColor(textColor);
     }
+    public void setButtonEnable(boolean flag){
+        isEnable=flag;
+    }
+    public boolean isButtonEanble(){
+
+        return  isEnable;
+
+    }
+
+
     public void setTextSize(float sizef){
     	//TypedValue.COMPLEX_UNIT_SP 
     	//TypedValue.COMPLEX_UNIT_DIP
@@ -101,7 +113,6 @@ public class RadiusButtonView extends AutoRelativeLayout {
     public void setOnClickListener(OnClickListener listener){
     	radius_button_text.setOnClickListener(listener);
     }
-    
     public void inToButton(){
     	
     	

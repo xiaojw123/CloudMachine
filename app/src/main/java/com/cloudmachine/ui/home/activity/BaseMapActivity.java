@@ -51,6 +51,7 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
     protected Marker curMarker;
     boolean isHidenAble = true;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

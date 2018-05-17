@@ -17,6 +17,7 @@ import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.MenuBean;
 import com.cloudmachine.bean.MessageBO;
+import com.cloudmachine.bean.OilSynBean;
 import com.cloudmachine.bean.PickItemBean;
 import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.bean.RepairListInfo;
@@ -60,6 +61,18 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
+    //复位-油位定制
+    @GET("device/oil/reset")
+    Observable<BaseRespose<String>>   resetOilLevel(@Query("deviceId") long deviceId);
+    //开启状态-油位定制
+    @GET("device/oil/isWork")
+    Observable<BaseRespose<JsonObject>> queryWorkStatus(@Query("deviceId")long deviceId);
+    //油位列表-油位定制
+    @GET("device/oil/oilSynList")
+    Observable<BaseRespose<List<OilSynBean>>>   getOilSynList(@Query("deviceId") long deviceId);
+    //油位同步-油位定制
+    @GET("device/oil/synSubmit")
+    Observable<BaseRespose<String>>  syncOil(@Query("deviceId") long deviceId,@Query("oilPosition") int oilPosition, @Query("memberId")long memberId);
     @GET("device/getConfigKV")
     Observable<BaseRespose<List<TelBean>>> getServiceTel(@Query("keys") String keys);
 

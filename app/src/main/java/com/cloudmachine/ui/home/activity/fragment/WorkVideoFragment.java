@@ -121,7 +121,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     String time2 = null;
     boolean isPause;
     int resultCode;
-    boolean isOwer, isOnLine;
+    boolean  isOnLine;
     boolean isFirst = true;
     String sn;
 
@@ -140,7 +140,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
         deviceId = getActivity().getIntent().getStringExtra(Constants.DEVICE_ID);
         memberId = UserHelper.getMemberId(getActivity());
         sn = getActivity().getIntent().getStringExtra(Constants.SN_ID);
-        isOwer = getActivity().getIntent().getBooleanExtra(Constants.IS_OWER, false);
         isOnLine = getActivity().getIntent().getBooleanExtra(Constants.IS_ONLINE, false);
     }
 
@@ -211,7 +210,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
 
     public void updateVideoInfo(final boolean isResume) {
-        if (isOwer) {
             if (isResume) {
                 if (isFirst) {
                     isFirst = false;
@@ -230,9 +228,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
             }
 
 
-        } else {
-            setEmptVideo(PROMPT_NO_SUPPORT);
-        }
     }
 
     public void flush() {
@@ -574,7 +569,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     }
 
     public void flushData() {
-        if (isOwer) {
             mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(getActivity()), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(getActivity()) {
                 @Override
                 protected void _onNext(JsonObject respJobj) {
@@ -596,9 +590,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                     ToastUtils.showToast(getActivity(), message);
                 }
             }));
-        } else {
-            setEmptVideo(PROMPT_NO_SUPPORT);
-        }
 
     }
 

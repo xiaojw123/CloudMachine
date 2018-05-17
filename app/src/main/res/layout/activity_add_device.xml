@@ -12,6 +12,7 @@
             cloudm:common_title_name="@string/basic_information" />
 
         <com.cloudmachine.widget.ReboundScrollView
+            android:id="@+id/basic_info_rsv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/basic_info_ctv"
@@ -278,6 +279,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/basic_info_btncontainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -302,6 +304,15 @@
             cloudm:rbtn_textColor="@color/cor15"
             cloudm:rbtn_textSize="@dimen/siz3" />
     </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/basic_error_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
 
 
 </RelativeLayout>

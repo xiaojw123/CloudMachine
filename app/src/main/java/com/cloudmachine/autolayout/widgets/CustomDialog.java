@@ -6,10 +6,15 @@ import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.autonavi.rtbt.IFrameForRTBT;
 import com.cloudmachine.R;
 
 public class CustomDialog extends Dialog {
@@ -43,6 +48,9 @@ public class CustomDialog extends Dialog {
         private ImageView mAlertImg;
         private int resId;
         private boolean isLeft;
+        private boolean isRotateAmim;
+        RotateAnimation anim;
+        CustomDialog dialog;
 
         public Builder(Context context) {
             this.context = context;
@@ -71,6 +79,7 @@ public class CustomDialog extends Dialog {
         }
 
         private void initContentView(final CustomDialog dialog, View layout) {
+            this.dialog=dialog;
             mAlertImg = (ImageView) layout.findViewById(R.id.alert_img);
             mNetrualBtn = (TextView) layout.findViewById(R.id.netrualButton);
             mPositvieBtn = (TextView) layout.findViewById(R.id.positiveButton);
@@ -80,6 +89,14 @@ public class CustomDialog extends Dialog {
             // set the content message
             if (resId != 0) {
                 mAlertImg.setBackgroundResource(resId);
+            }
+            if (isRotateAmim){
+                anim=new RotateAnimation(-5,30,0.5f,0.0f);
+                anim.setRepeatMode(Animation.REVERSE);
+                anim.setDuration(500);
+                anim.setRepeatCount(Integer.MAX_VALUE);
+                anim.setInterpolator(new AccelerateDecelerateInterpolator());
+                mAlertImg.startAnimation(anim);
             }
             if (message != null) {
                 if (isLeft) {
@@ -144,6 +161,9 @@ public class CustomDialog extends Dialog {
                 mNegativeBtn.setVisibility(
                         View.GONE);
             }
+            if (positiveButtonText==null&&negativeButtonText==null){
+                mChooseBtnLayout.setVisibility(View.GONE);
+            }
         }
 
 
@@ -175,6 +195,10 @@ public class CustomDialog extends Dialog {
 
         public Builder setAlertIcon(int resId) {
             this.resId = resId;
+            return this;
+        }
+        public Builder setRotateAmimEnable(boolean isRotateAmim){
+            this.isRotateAmim=isRotateAmim;
             return this;
         }
 
@@ -229,6 +253,16 @@ public class CustomDialog extends Dialog {
             this.negativeButtonClickListener = listener;
             return this;
         }
+
+        public void updateSyncSucess(CharSequence message, View.OnClickListener listener){
+            dialog.setCancelable(true);
+            mMessageTv.setText(message);
+            mNetrualBtn.setVisibility(View.VISIBLE);
+            mNetrualBtn.setText("好");
+            mNetrualBtn.setOnClickListener(listener);
+            mAlertImg.clearAnimation();
+        }
+
 
     }
 

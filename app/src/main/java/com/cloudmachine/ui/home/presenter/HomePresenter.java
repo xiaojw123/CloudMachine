@@ -67,7 +67,7 @@ public class HomePresenter extends HomeContract.Presenter {
     }
 
     @Override
-    public void getPromotionInfo(long memberId) {
+    public void getPromotionInfo(final long memberId) {
 
 
         mRxManage.add(mModel.getPromotionModel(memberId).subscribe(new RxSubscriber<List<PopItem>>(mContext, false) {
@@ -79,11 +79,12 @@ public class HomePresenter extends HomeContract.Presenter {
 
             @Override
             protected void _onError(String message) {
-
             }
         }));
 
     }
+
+
 
     @Override
     public void getH5ConfigInfo() {

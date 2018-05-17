@@ -181,6 +181,9 @@
     <string name="video">视频</string>
     <string name="replay">重新播放</string>
     <string name="resumeplay">继续播放</string>
+    <string name="calibration">校准</string>
+    <string name="oil_calibration">校准油位</string>
+    <string name="oil_reset">复位</string>
 
 
 </resources>

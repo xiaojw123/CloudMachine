@@ -20,7 +20,7 @@
         android:orientation="vertical">
 
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_size_90"
             android:layout_marginTop="@dimen/dimen_size_6"
@@ -36,19 +36,18 @@
                                android:layout_alignParentRight="true"
                                android:layout_centerVertical="true"
                             /> -->
-            <com.cloudmachine.autolayout.widgets.DynamicWave
-                android:id="@+id/arcView"
-                android:layout_width="@dimen/dimen_size_49"
-                android:layout_height="@dimen/dimen_size_49"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:padding="@dimen/public_line_wh" />
+            <!--<com.cloudmachine.autolayout.widgets.DynamicWave-->
+                <!--android:id="@+id/arcView"-->
+                <!--android:layout_width="@dimen/dimen_size_49"-->
+                <!--android:layout_height="@dimen/dimen_size_49"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:padding="@dimen/public_line_wh" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/arcView"
+                android:layout_gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
@@ -71,7 +70,20 @@
                         android:textColor="@color/c_4db6e9" />
                 </LinearLayout>
             </LinearLayout>
-        </RelativeLayout>
+
+
+            <Button
+                android:id="@+id/mc_custom_btn"
+                android:layout_width="@dimen/dimen_size_100"
+                android:layout_height="@dimen/dimen_size_37"
+                android:layout_gravity="right|center_vertical"
+                android:textColor="@color/public_blue_bg"
+                android:text="@string/calibration"
+                android:background="@drawable/bg_btn_custom"
+                style="?android:attr/borderlessButtonStyle"
+                />
+
+        </FrameLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

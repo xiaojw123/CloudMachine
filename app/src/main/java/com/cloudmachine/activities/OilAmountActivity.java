@@ -1,6 +1,7 @@
 package com.cloudmachine.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -11,17 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.DynamicWave;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.ScanningOilLevelInfo;
 import com.cloudmachine.bean.ScanningOilLevelInfoArray;
 import com.cloudmachine.chart.charts.LineChart;
@@ -40,7 +44,10 @@ import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.net.api.ApiService;
 import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.ui.home.activity.OilSyncActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ResV;
@@ -53,6 +60,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -72,7 +81,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
     private Typeface mTf;
     private int[] VORDIPLOM_COLORS = new int[2];
 
-    private DynamicWave arcView;
+    //    private DynamicWave arcView;
     private TextView oil_proportion, last_date_oil_text, oil_proportion_last;
     private Timer myTimer;
     //    private TextView oilEmptyTv;
@@ -83,6 +92,9 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
     String memberId;
     RelativeLayout liearChatCotanienr, weekChatCotainer;
     TextView oilEmptyTv;
+
+    Button customBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +139,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
     }
 
     private void initView() {
+        customBtn = (Button) findViewById(R.id.mc_custom_btn);
         liearChatCotanienr = (RelativeLayout) findViewById(R.id.linechart_cotainer);
         weekChatCotainer = (RelativeLayout) findViewById(R.id.weekchart_cotainer);
         turnOffLayout = (LinearLayout) findViewById(R.id.chart_bottom_layout);
@@ -139,11 +152,11 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         oil_proportion = (TextView) findViewById(R.id.oil_proportion);
         todayTv.setOnClickListener(this);
         weekTv.setOnClickListener(this);
+        customBtn.setOnClickListener(this);
         todayTv.setSelected(true);
         weekTv.setSelected(false);
         last_date_oil_text = (TextView) findViewById(R.id.last_date_oil_text);
         oil_proportion_last = (TextView) findViewById(R.id.oil_proportion_last);
-
 
     }
 
@@ -157,12 +170,12 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
                 oilLave = 100;
             oil_proportion.setText(oilLave + "%");
         }
-        if (oilLave < 0)
-            oilLave = 0;
-        if (oilLave > 100)
-            oilLave = 100;
-        arcView = (DynamicWave) findViewById(R.id.arcView);
-        arcView.setLave(oilLave);
+//        if (oilLave < 0)
+//            oilLave = 0;
+//        if (oilLave > 100)
+//            oilLave = 100;
+//        arcView = (DynamicWave) findViewById(R.id.arcView);
+//        arcView.setLave(oilLave);
     }
 
     private void setLastData() {
@@ -389,7 +402,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
 //                        rbView.setText(String.valueOf((int) f[2]) + "% " + xTime);
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rbView.getLayoutParams();
                 int offset = DensityUtil.dip2px(this, 20);
-                int offset1 = DensityUtil.dip2px(this,2);
+                int offset1 = DensityUtil.dip2px(this, 2);
                 if (f[2] > 90) {
                     layoutParams.leftMargin = (int) f[0] + offset1;
                     //			        layoutParams.topMargin=(int)f[1]
@@ -404,8 +417,8 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
                 if (layoutParams.topMargin < 0) {
                     layoutParams.topMargin += (offset * 2);
                 }
-                if (layoutParams.leftMargin<0){
-                    layoutParams.leftMargin=0;
+                if (layoutParams.leftMargin < 0) {
+                    layoutParams.leftMargin = 0;
                 }
                 if (rbView.getVisibility() != View.VISIBLE) {
                     rbView.setVisibility(View.VISIBLE);
@@ -424,33 +437,33 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
         if (infoArray != null) {
             oilLeve = infoArray.getOilLevel();
             lastLevel = infoArray.getLastLevel();
-            if (lastLevel!=null||(oilLeve != null && oilLeve.length > 0)) {
+            if (lastLevel != null || (oilLeve != null && oilLeve.length > 0)) {
                 oilEmptyTv.setVisibility(View.GONE);
                 oilFormCotainer.setVisibility(View.VISIBLE);
                 if (todayTv.isSelected()) {
-                    if (lastLevel!=null){//array 空 or 不空
-                        ScanningOilLevelInfo level0=new ScanningOilLevelInfo();
+                    if (lastLevel != null) {//array 空 or 不空
+                        ScanningOilLevelInfo level0 = new ScanningOilLevelInfo();
                         level0.setDay(lastLevel.getDay());
                         level0.setLevel(lastLevel.getLevel());
-                        String time0=lastLevel.getTime();
-                        if (time0.length()>=5){
-                            time0=time0.substring(time0.length()-5,time0.length());
+                        String time0 = lastLevel.getTime();
+                        if (time0.length() >= 5) {
+                            time0 = time0.substring(time0.length() - 5, time0.length());
                         }
                         level0.setTime(time0);
-                        if (oilLeve!=null&&oilLeve.length>0){
-                            ScanningOilLevelInfo[] tmpOilLeve=new ScanningOilLevelInfo[oilLeve.length+1];
-                            tmpOilLeve[0]=level0;
+                        if (oilLeve != null && oilLeve.length > 0) {
+                            ScanningOilLevelInfo[] tmpOilLeve = new ScanningOilLevelInfo[oilLeve.length + 1];
+                            tmpOilLeve[0] = level0;
                             System.arraycopy(oilLeve, 0, tmpOilLeve, 1, tmpOilLeve.length - 1);
-                            oilLeve=tmpOilLeve;
+                            oilLeve = tmpOilLeve;
                             lineChart.setTouchEnabled(true);
-                        }else{
+                        } else {
                             lineChart.setTouchEnabled(false);
-                            oilLeve=new ScanningOilLevelInfo[1];
-                            oilLeve[0]=level0;
+                            oilLeve = new ScanningOilLevelInfo[1];
+                            oilLeve[0] = level0;
                         }
-                    }else{//array必不空
+                    } else {//array必不空
                         lineChart.setTouchEnabled(true);
-                        lastLevel=oilLeve[0];
+                        lastLevel = oilLeve[0];
                     }
                     ScanningOilLevelInfo newOilLeve = oilLeve[oilLeve.length - 1];
                     if (newOilLeve != null) {
@@ -459,7 +472,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
                     setLastData();
                 }
                 initChart(lineChart);
-            }else{
+            } else {
                 if (todayTv.isSelected()) {
                     oilEmptyTv.setVisibility(View.VISIBLE);
                     oilFormCotainer.setVisibility(View.GONE);
@@ -478,6 +491,9 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
+            case R.id.mc_custom_btn:
+                gotoCustomOil();
+                break;
             case R.id.mc_oil_today_tv:
                 if (todayTv.isSelected()) {
                     return;
@@ -505,6 +521,59 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
                 }
                 break;
         }
+
+    }
+
+    public void gotoCustomOil() {
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).queryWorkStatus(deviceId).compose(RxSchedulers.<BaseRespose<JsonObject>>io_main()).subscribe(new RxSubscriber<BaseRespose<JsonObject>>(mContext) {
+            @Override
+            protected void _onNext(BaseRespose<JsonObject> respose) {
+
+                if (respose.success()) {
+
+                    JsonObject resJobj = respose.getResult();
+                    if (resJobj != null) {
+                        JsonElement isWorkJE = resJobj.get("isWork");
+                        boolean isWork = isWorkJE.getAsBoolean();
+                        if (isWork) {
+                            Bundle data = new Bundle();
+                            data.putLong(Constants.P_DEVICEID, deviceId);
+                            Constants.toActivity(OilAmountActivity.this, OilSyncActivity.class, data);
+                        } else {
+                            showPromptDialog(R.drawable.ic_alert_mc, "请启动机器再进行校准哦！");
+                        }
+                    }
+
+                } else {
+                    showPromptDialog(-1, respose.getMessage());
+                }
+
+
+            }
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(OilAmountActivity.this, message);
+
+            }
+        }));
+
+
+    }
+
+    public void showPromptDialog(int resId, String message) {
+        CustomDialog.Builder builder = new CustomDialog.Builder(OilAmountActivity.this);
+        if (resId != -1) {
+            builder.setAlertIcon(resId);
+        }
+        builder.setMessage(message);
+        builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
 
     }
 

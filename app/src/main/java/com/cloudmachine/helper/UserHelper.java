@@ -2,13 +2,17 @@ package com.cloudmachine.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.ArraySet;
 
+import com.autonavi.rtbt.IFrameForRTBT;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.utils.MemeberKeeper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by xiaojw on 2017/5/6.
@@ -69,7 +73,8 @@ public class UserHelper {
     private static final String GuideTag = "guide_tag";
     private static final String HConfigGuideTagPic = "guide_tag_hc_pic";
     private static final String HConfigGuideTagVideo = "guide_tag_hc_video";
-    private static final String WorkTimeGuideTag="work_time_guide";
+    private static final String WorkTimeGuideTag = "work_time_guide";
+    private static final String OilCustomTextTag = "oil_custom_text_tag";
 
     public static void insertGuideTag(Context context, boolean flag) {
         if (GuideTagSp == null) {
@@ -79,29 +84,30 @@ public class UserHelper {
         editor.putBoolean(GuideTag, flag);
         editor.commit();
     }
-    public static void insertHConfigGuideTag(Context context, boolean flag,boolean isVideoTag) {
+
+    public static void insertHConfigGuideTag(Context context, boolean flag, boolean isVideoTag) {
         if (GuideTagSp == null) {
             GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
         }
         SharedPreferences.Editor editor = GuideTagSp.edit();
-        if (isVideoTag){
+        if (isVideoTag) {
             editor.putBoolean(HConfigGuideTagVideo, flag);
-        }else{
+        } else {
             editor.putBoolean(HConfigGuideTagPic, flag);
         }
         editor.commit();
     }
 
-    public static void insertWorkTimeGuideTag(Context context,boolean flag){
-        if (GuideTagSp==null){
-            GuideTagSp=context.getSharedPreferences(GuideTag,Context.MODE_PRIVATE);
+    public static void insertWorkTimeGuideTag(Context context, boolean flag) {
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
         }
-        SharedPreferences.Editor editor=GuideTagSp.edit();
-        editor.putBoolean(WorkTimeGuideTag,flag);
+        SharedPreferences.Editor editor = GuideTagSp.edit();
+        editor.putBoolean(WorkTimeGuideTag, flag);
         editor.commit();
     }
 
-    public static boolean getWorkTimeGuideTag(Context context){
+    public static boolean getWorkTimeGuideTag(Context context) {
         if (GuideTagSp == null) {
             GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
         }
@@ -116,15 +122,34 @@ public class UserHelper {
         return GuideTagSp.getBoolean(GuideTag, false);
     }
 
-    public static boolean getHConfigGuideTag(Context context,boolean isVideoTag) {
+    public static boolean getHConfigGuideTag(Context context, boolean isVideoTag) {
         if (GuideTagSp == null) {
             GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
         }
-        if (isVideoTag){
+        if (isVideoTag) {
             return GuideTagSp.getBoolean(HConfigGuideTagVideo, false);
-        }else{
+        } else {
             return GuideTagSp.getBoolean(HConfigGuideTagPic, false);
         }
+    }
+
+
+
+
+    public static void insertCustomTextTag(Context context, boolean isShowed) {
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
+        }
+        SharedPreferences.Editor editor = GuideTagSp.edit();
+        editor.putBoolean(OilCustomTextTag, isShowed);
+        editor.commit();
+    }
+
+    public static boolean getCustomTextTag(Context context) {
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
+        }
+        return GuideTagSp.getBoolean(OilCustomTextTag,false);
     }
 
 

@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:cloudm="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/public_bg"
+    tools:context="com.cloudmachine.ui.home.activity.OilSyncActivity">
+
+<com.cloudmachine.widget.CommonTitleView
+    android:id="@+id/oil_sync_ctv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:common_title_name="@string/oil_calibration"
+    app:common_right_text="@string/oil_reset"
+    />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dimen_size_16"
+        android:layout_marginTop="@dimen/spa7"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingBottom="@dimen/text_size_16_sp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_14_sp"
+            android:textColor="@color/cor8"
+            android:text="操作步骤:"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cor9"
+            android:layout_marginTop="@dimen/dimen_size_16"
+            android:textSize="@dimen/text_size_13_sp"
+            android:lineSpacingExtra="@dimen/dimen_size_16"
+            android:text="1.查看您仪表盘油位剩余量。\n2.仪表盘油位在下面5个选项中任意一个吻合时，选中该项。\n3.提交同步。\n4.选项中5个数值都进行同步后，软件中显示的油位计将和仪表盘一致。"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/spa7"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/oil_sync_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="仪表盘油位值"
+            android:textSize="@dimen/text_size_14_sp"
+            android:textColor="@color/cor8"
+            android:layout_marginTop="@dimen/dimen_size_17"
+            android:layout_marginBottom="@dimen/dimen_size_23"
+            android:layout_centerHorizontal="true"
+            />
+
+
+        <com.cloudmachine.widget.ReboundScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:layout_below="@+id/oil_sync_value"
+            android:layout_above="@+id/oil_sync_submit_btn"
+            android:layout_marginBottom="@dimen/dimen_size_2"
+            >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+
+            >
+
+        <RelativeLayout
+            android:id="@+id/oil_sync_layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/pad1"
+            android:paddingRight="@dimen/pad1"
+            >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_14_sp"
+                android:textColor="@color/cor8"
+                android:text="油位为空"
+                />
+
+           <ProgressBar
+               android:layout_width="@dimen/dimen_size_120"
+               android:layout_height="@dimen/dimen_size_17"
+               android:layout_marginLeft="@dimen/pad1"
+               style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+               android:progressDrawable="@drawable/bg_oil_progress"
+               />
+
+
+
+        </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/oil_sync_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_toLeftOf="@+id/oil_sync_cb1"
+                android:layout_centerVertical="true"
+                android:textColor="@color/cor20"
+                android:layout_marginRight="@dimen/pad1"
+                />
+
+            <CheckBox
+                android:id="@+id/oil_sync_cb1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/bg_oil_sysn_cb"
+                />
+
+
+
+
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/oil_sync_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_size_11"
+            android:paddingRight="@dimen/pad1"
+            android:layout_below="@+id/oil_sync_layout1"
+            android:layout_marginTop="@dimen/dimen_size_12"
+            >
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_14_sp"
+                    android:textColor="@color/cor8"
+                    android:text="25%"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_14_sp"
+                    android:textColor="@color/cor20"
+                    android:text="油位"
+                    />
+
+                <ProgressBar
+                    android:layout_width="@dimen/dimen_size_120"
+                    android:layout_height="@dimen/dimen_size_17"
+                    android:layout_marginLeft="@dimen/pad1"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:progressDrawable="@drawable/bg_oil_progress"
+                    android:progress="25"
+                    />
+
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/oil_sync_tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_toLeftOf="@+id/oil_sync_cb2"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/pad1"
+                android:textColor="@color/cor20"
+                />
+
+            <CheckBox
+                android:id="@+id/oil_sync_cb2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/bg_oil_sysn_cb"
+                android:paddingTop="@dimen/dimen_size_2"
+                android:paddingBottom="@dimen/dimen_size_2"
+                />
+
+
+
+
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/oil_sync_layout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_size_11"
+            android:paddingRight="@dimen/pad1"
+            android:layout_below="@+id/oil_sync_layout2"
+            android:layout_marginTop="@dimen/dimen_size_12"
+            >
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_14_sp"
+                    android:textColor="@color/cor8"
+                    android:text="50%"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_14_sp"
+                    android:textColor="@color/cor20"
+                    android:text="油位"
+                    />
+
+                <ProgressBar
+                    android:layout_width="@dimen/dimen_size_120"
+                    android:layout_height="@dimen/dimen_size_17"
+                    android:layout_marginLeft="@dimen/pad1"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:progressDrawable="@drawable/bg_oil_progress"
+                    android:progress="50"
+                    />
+
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/oil_sync_tv3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_toLeftOf="@+id/oil_sync_cb3"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/pad1"
+                android:textColor="@color/cor20"
+                />
+
+            <CheckBox
+                android:id="@+id/oil_sync_cb3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/bg_oil_sysn_cb"
+                android:paddingTop="@dimen/dimen_size_2"
+                android:paddingBottom="@dimen/dimen_size_2"
+                />
+
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/oil_sync_layout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_size_11"
+            android:paddingRight="@dimen/pad1"
+            android:layout_below="@+id/oil_sync_layout3"
+            android:layout_marginTop="@dimen/dimen_size_12"
+            >
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_14_sp"
+                    android:textColor="@color/cor8"
+                    android:text="75%"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_14_sp"
+                    android:textColor="@color/cor20"
+                    android:text="油位"
+                    />
+
+                <ProgressBar
+                    android:layout_width="@dimen/dimen_size_120"
+                    android:layout_height="@dimen/dimen_size_17"
+                    android:layout_marginLeft="@dimen/pad1"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:progressDrawable="@drawable/bg_oil_progress"
+                    android:progress="75"
+                    />
+
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/oil_sync_tv4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_toLeftOf="@+id/oil_sync_cb4"
+                android:layout_centerVertical="true"
+                android:textColor="@color/cor20"
+                android:layout_marginRight="@dimen/pad1"
+                />
+
+            <CheckBox
+                android:id="@+id/oil_sync_cb4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/bg_oil_sysn_cb"
+                android:paddingTop="@dimen/dimen_size_2"
+                android:paddingBottom="@dimen/dimen_size_2"
+                />
+
+
+
+
+
+
+        </RelativeLayout>
+
+
+
+
+
+        <RelativeLayout
+            android:id="@+id/oil_sync_layout5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_size_11"
+            android:paddingRight="@dimen/pad1"
+            android:layout_below="@+id/oil_sync_layout4"
+            android:layout_marginTop="@dimen/dimen_size_12"
+            >
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_14_sp"
+                    android:textColor="@color/cor8"
+                    android:text="油箱加满"
+                    />
+
+                <ProgressBar
+                    android:layout_width="@dimen/dimen_size_120"
+                    android:layout_height="@dimen/dimen_size_17"
+                    android:layout_marginLeft="@dimen/pad1"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:progressDrawable="@drawable/bg_oil_progress"
+                    android:progress="100"
+                    />
+
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/oil_sync_tv5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_toLeftOf="@+id/oil_sync_cb5"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/pad1"
+                android:textColor="@color/cor20"
+                />
+
+            <CheckBox
+                android:id="@+id/oil_sync_cb5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/bg_oil_sysn_cb"
+                android:paddingTop="@dimen/dimen_size_2"
+                android:paddingBottom="@dimen/dimen_size_2"
+                />
+
+        </RelativeLayout>
+
+        </LinearLayout>
+
+        </com.cloudmachine.widget.ReboundScrollView>
+
+
+        <com.cloudmachine.autolayout.widgets.RadiusButtonView
+            android:id="@+id/oil_sync_submit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spa3"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/pad2"
+            android:layout_marginRight="@dimen/pad2"
+            cloudm:rbtn_fillColor_dw="@color/cor5"
+            cloudm:rbtn_fillColor_nm="@color/cor5"
+            cloudm:rbtn_strokeColor="@color/cor5"
+            cloudm:rbtn_text="@string/submit"
+            cloudm:rbtn_textColor="@color/white"
+            cloudm:rbtn_textSize="@dimen/siz3"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dimen_size_20"
+            />
+
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>

@@ -49,6 +49,7 @@ import com.cloudmachine.utils.photo.util.FileUtils;
 import com.cloudmachine.utils.photo.util.ImageItem;
 import com.cloudmachine.utils.photo.util.PublicWay;
 import com.cloudmachine.utils.photo.util.Res;
+import com.cloudmachine.widget.ReboundScrollView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
@@ -92,6 +93,11 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
     private LinearLayout deveimgCotainer;
     CanBeEditItemView licenseNoEiv;
     ArrayList<String> imgList = new ArrayList<>();
+    private String errorMessage;
+    RelativeLayout btnContainer;
+    ReboundScrollView mRsv;
+    TextView mErrorTv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +128,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             try {
+                errorMessage=bundle.getString(Constants.ERROR_MESSAGE);
                 showDevice = bundle.getBoolean(DEVICE_SHOW);
                 showImgTitle = bundle.getBoolean(IMG_TITLE_SHOW);
                 mcDeviceBasicsInfo = (McDeviceBasicsInfo) bundle.getSerializable(Constants.P_MCDEVICEBASICSINFO);
@@ -178,6 +185,9 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
 
 
     private void initAddDeviceItemView() {
+        mErrorTv= (TextView) findViewById(R.id.basic_error_tv);
+        mRsv= (ReboundScrollView) findViewById(R.id.basic_info_rsv);
+        btnContainer= (RelativeLayout) findViewById(R.id.basic_info_btncontainer);
         licenseNoEiv = (CanBeEditItemView) findViewById(R.id.device_license);
         imgTv1 = (TextView) findViewById(R.id.mac_img_tv1);
         imgTv2 = (TextView) findViewById(R.id.mac_img_tv2);
@@ -215,6 +225,11 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 device_name.isArrow(true);
                 device_name.setOnClickListener(this);
             }
+        }else{
+            mRsv.setVisibility(View.GONE);
+            btnContainer.setVisibility(View.GONE);
+            mErrorTv.setVisibility(View.VISIBLE);
+            mErrorTv.setText(errorMessage);
         }
         memberLayout.setOnClickListener(this);
             /*device_type.setOnClickListener(this);

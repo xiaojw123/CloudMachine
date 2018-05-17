@@ -4,6 +4,7 @@ import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.AllianceItem;
 import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.bean.UnfinishedBean;
+import com.cloudmachine.helper.OrderStatus;
 import com.cloudmachine.ui.home.contract.MSupervisorContract;
 import com.cloudmachine.ui.home.model.SiteBean;
 import com.cloudmachine.utils.Constants;
@@ -68,7 +69,7 @@ public class MSupervisorPresenter extends MSupervisorContract.Preseneter {
                     bean.setAlliance(true);
                     bean.setVbrandname(item.getBrandName());
                     bean.setVmaterialname(item.getModelName());
-                    bean.setDopportunity(item.getGmtModifiedStr());
+                    bean.setDopportunity(item.getGmtCreateStr());
                     bean.setVdiscription(item.getDemandDescription());
                     bean.setVmacoptel(item.getReporterMobile());
                     List<String> logoUrls = item.getAttachmentUrls();
@@ -79,13 +80,29 @@ public class MSupervisorPresenter extends MSupervisorContract.Preseneter {
                     }
                     if (item.getIsEvaluate() == 0) {
                         bean.setIs_EVALUATE("N");
-                    }else{
+                    } else {
                         bean.setIs_EVALUATE("Y");
                     }
+                    String nStatusString = item.getOrderStatusValue();
                     bean.setNstatus(String.valueOf(item.getOrderStatus()));
+                    switch (bean.getNstatus()) {
+                        case "3"://待付款
+                            nStatusString = OrderStatus.PAY;
+                            break;
+                        case "4":
+                        case "5":
+                        case "6":
+                            if ("N".equals(bean.getIs_EVALUATE())) {
+                                nStatusString = OrderStatus.EVALUATION;
+                            } else {
+                                nStatusString = OrderStatus.COMPLETED;
+                            }
+                            break;
+                    }
+
                     bean.setOrderNum(item.getOrderNo());
-                    bean.setVmacoptel(item.getArtificerMobile());
-                    mView.returnRepairItemView(bean, item.getOrderStatusValue());
+//                    bean.setVmacoptel(item.getArtificerMobile());
+                    mView.returnRepairItemView(bean, nStatusString);
                 } else {
                     getRepairItemView(memberId);
                 }
