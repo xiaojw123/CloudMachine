@@ -455,8 +455,10 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
                         timeOut--;
                         String text;
                         if (timeOut <= 0) {
-                            mTimer.cancel();
-                            mTimer = null;
+                            if (mTimer != null) {
+                                mTimer.cancel();
+                                mTimer = null;
+                            }
                             text = "重新获取";
                             v.setEnabled(true);
                         } else {

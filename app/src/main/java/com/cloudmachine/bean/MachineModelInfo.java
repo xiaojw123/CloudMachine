@@ -36,7 +36,7 @@ public class MachineModelInfo  implements Serializable{
     private long brandId;
     private String createTime;
     private String updateTime;
-    private long id;
+    private String id;
 
     public int getStandard() {
         return standard;
@@ -150,11 +150,11 @@ public class MachineModelInfo  implements Serializable{
         this.updateTime = updateTime;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 	

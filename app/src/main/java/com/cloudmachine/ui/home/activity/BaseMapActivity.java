@@ -24,6 +24,7 @@ import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
@@ -160,6 +161,7 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
     }
 
 
+
     protected MarkerOptions getMarkerOptions(Context context, LatLng latLng, int resid, String title) {
         MarkerOptions options = new MarkerOptions();
         ImageView img = new ImageView(context);
@@ -190,6 +192,19 @@ public abstract class BaseMapActivity<T extends BasePresenter, E extends BaseMod
         options.position(latLng);
         return options;
     }
+    protected MarkerOptions getMarkerOptions(Context context, LatLng latLng, String url) {
+        MarkerOptions options = new MarkerOptions();
+        ImageView img = new ImageView(context);
+//        img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(context, Constants.MACHINE_ICON_WIDTH),DensityUtil.dip2px(context,Constants.MACHINE_ICON_HEIGHT)));
+        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        img.setScaleType(ImageView.ScaleType.FIT_XY);
+        Glide.with(context).load(url).into(img);
+        options.icon(BitmapDescriptorFactory.fromView(img));
+        options.title("mark");
+        options.position(latLng);
+        return options;
+    }
+
 
 
     protected MarkerOptions getNormalMarkerOptions(Context context, LatLng latLng, int resid, String title) {

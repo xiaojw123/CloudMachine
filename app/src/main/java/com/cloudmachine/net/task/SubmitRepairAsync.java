@@ -93,9 +93,9 @@ public class SubmitRepairAsync extends ATask {
         if (null != newRepairInfo) {
             list.add(Utils.addBasicValue("vmacopname", newRepairInfo.getVmacopname()));
             list.add(Utils.addBasicValue("vmacoptel", newRepairInfo.getVmacoptel()));
-            list.add(Utils.addBasicValue("pk_prod_def", newRepairInfo.getPk_prod_def()));
-            list.add(Utils.addBasicValue("pk_brand", newRepairInfo.getPk_brand()));
-            list.add(Utils.addBasicValue("pk_vhcl_material", newRepairInfo.getPk_vhcl_material()));
+            list.add(Utils.addBasicValue("typeId", newRepairInfo.getTypeId()));
+            list.add(Utils.addBasicValue("brandId", newRepairInfo.getBrandId()));
+            list.add(Utils.addBasicValue("modelId", newRepairInfo.getModelId()));
             list.add(Utils.addBasicValue("vdiscription", newRepairInfo.getVdiscription()));
             list.add(Utils.addBasicValue("vservicetype", newRepairInfo.getVservicetype()));
             list.add(Utils.addBasicValue("vworkaddress", newRepairInfo.getVworkaddress()));

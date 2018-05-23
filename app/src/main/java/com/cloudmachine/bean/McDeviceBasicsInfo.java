@@ -9,6 +9,7 @@ public class McDeviceBasicsInfo implements Serializable{
 	private String[] devicePhoto;
 	private String[] nameplatePhoto;
 	private String category;
+	private String typePicUrl;
 
 	public String getSnId() {
 		return snId;
@@ -351,5 +352,13 @@ public class McDeviceBasicsInfo implements Serializable{
 
 	public void setCircleFence(McDeviceCircleFence circleFence) {
 		this.circleFence = circleFence;
+	}
+
+	public String getTypePicUrl() {
+		return typePicUrl;
+	}
+
+	public void setTypePicUrl(String typePicUrl) {
+		this.typePicUrl = typePicUrl;
 	}
 }

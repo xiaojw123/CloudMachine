@@ -1,6 +1,7 @@
 package com.cloudmachine.ui.home.activity.fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,20 +22,29 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.BaseRecyclerAdapter;
 import com.cloudmachine.adapter.DeviceListAdpater;
 import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.McDeviceLocation;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
@@ -46,6 +56,7 @@ import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.locatecity.PingYinUtil;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
@@ -85,7 +96,6 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     TextView devicesNumTv;
     DeviceListAdpater deviceListAdpater;
     long lasMemberId;
-    int pageLen;
     List<View> viewList;
     ClearEditTextView popSearchEdt;
     View popLineView;
@@ -93,9 +103,9 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     List<ArticleInfo> infoList;
     Handler mHandler;
     int actIndex, actLen;
-    String mBoxTel =Constants.CUSTOMER_PHONE_BOX;
-    String mRepairTel =Constants.CUSTOMER_PHONE_REPAIR;
-
+    String mBoxTel = Constants.CUSTOMER_PHONE_BOX;
+    String mRepairTel = Constants.CUSTOMER_PHONE_REPAIR;
+    private int deviceSize;
 
 
     @Override
@@ -305,64 +315,79 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         return R.layout.fragment_device;
     }
 
+    LatLngBounds.Builder latLngBuilder;
+
     @Override
     public void updateDevices(List<McDeviceInfo> deviceList) {
         aMap.clear();
         aMap.reloadMap();
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        mDeviceList = new ArrayList<>(deviceList);
+        mDeviceList = deviceList;
         viewList = new ArrayList<>();
-        List<McDeviceInfo> myDevices = new ArrayList<>();
-        LatLngBounds.Builder b = LatLngBounds.builder();
-        for (McDeviceInfo info : deviceList) {
-            if (info.getType() == 1) {
-                myDevices.add(info);
+        if (mDeviceList != null) {
+            deviceSize = mDeviceList.size();
+            if (deviceSize > 0) {
+                deviceVp.setVisibility(View.VISIBLE);
+                latLngBuilder = LatLngBounds.builder();
+                addMarkerView(0);
+            }else{
+                menuTv.setVisibility(View.GONE);
+                deviceVp.setVisibility(View.INVISIBLE);
             }
-            Marker marker;
-            McDeviceLocation location = info.getLocation();
-            double lat = location.getLat();
-            double lng = location.getLng();
-            if (lat == 0 || lng == 0) {
-                mDeviceList.remove(info);
-                continue;
-            }
-            LatLng latLng = new LatLng(lat, lng);
-            builder.include(latLng);
-            b.include(latLng);
-            switch (info.getWorkStatus()) {
-                case 1:
-                    marker = aMap.addMarker(getMarkerOptions(getActivity(), latLng, R.drawable.icon_machine_work));
-                    break;
-                case 2:
-                    marker = aMap.addMarker(getMarkerOptions(getActivity(), latLng, R.drawable.icon_machine_online));
-                    break;
-
-                default:
-                    marker = aMap.addMarker(getMarkerOptions(getActivity(), latLng, R.drawable.icon_machine_unwork));
-                    break;
-            }
-            marker.setObject(info);
-            curMarker = marker;
-            viewList.add(getItemView(info, marker));
+        }else{
+            menuTv.setVisibility(View.GONE);
+            deviceVp.setVisibility(View.INVISIBLE);
         }
-        UserHelper.setMyDevices(myDevices);
-        int size = mDeviceList.size();
-        if (size > 1) {
+
+    }
+    //递归遍历DeviceList添加Marker
+    public void addMarkerView(final int position) {
+        final McDeviceInfo info = mDeviceList.get(position);
+        String imgUrl = CommonUtils.getMarkerIconUrl(info.getTypePicUrl(), info.getWorkStatus());
+        final McDeviceLocation location = info.getLocation();
+        final LatLng latLng = new LatLng(location.getLat(), location.getLng());
+        latLngBuilder.include(latLng);
+        Glide.with(this).load(imgUrl)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        ImageView img = new ImageView(getActivity());
+                        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        img.setImageDrawable(resource);
+                        MarkerOptions options = new MarkerOptions();
+                        options.icon(BitmapDescriptorFactory.fromView(img));
+                        options.position(latLng);
+                        Marker marker = aMap.addMarker(options);
+                        marker.setObject(info);
+                        curMarker = marker;
+                        viewList.add(getItemView(info, marker));
+                        if (position < deviceSize - 1) {
+                            addMarkerView(position + 1);
+                        } else {
+                            updateViewPager(viewList.size());
+                        }
+                    }
+                });
+
+
+    }
+
+
+
+    public void updateViewPager(int pageLen) {
+        if (pageLen > 1) {
             menuTv.setVisibility(View.VISIBLE);
         } else {
             menuTv.setVisibility(View.GONE);
         }
-        pageLen = viewList.size();
         if (pageLen > 0) {
             if (pageLen > 1) {
                 setMapZoomTo(ZOOM_HOME);
-                aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(b.build(), 0));
+                aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBuilder.build(), 0));
             } else {
                 setMapZoomTo(ZOOM_DEFAULT);
             }
             setSelectedMarker(0);
         }
-
         deviceVp.addOnPageChangeListener(onPageChangeL);
         deviceVp.setAdapter(new DevicePagerAdapter(viewList));
         deviceVp.setCurrentItem(0);
@@ -371,7 +396,6 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             ((HomeActivity) getActivity()).updateGuide(mDeviceList);
         }
     }
-
 
     @Override
     public void updateArticles(List<ArticleInfo> articleInfoList) {
@@ -392,13 +416,22 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     @Override
     public void retrunGetServiceTel(String boxTel, String repairTel) {
-        if (!TextUtils.isEmpty(boxTel)){
-            mBoxTel =boxTel;
+        if (!TextUtils.isEmpty(boxTel)) {
+            mBoxTel = boxTel;
         }
-        if (!TextUtils.isEmpty(repairTel)){
-            mRepairTel =repairTel;
+        if (!TextUtils.isEmpty(repairTel)) {
+            mRepairTel = repairTel;
         }
 
+    }
+
+    @Override
+    public void updateDevicesError(String errorMsg) {
+        ToastUtils.showToast(getActivity(),errorMsg);
+        aMap.clear();
+        aMap.reloadMap();
+        menuTv.setVisibility(View.GONE);
+        deviceVp.setVisibility(View.INVISIBLE);
     }
 
     private void setCurrentBoxAct() {
@@ -420,7 +453,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         TextView oilTv = (TextView) v.findViewById(R.id.device_info_oil);
         TextView lenTv = (TextView) v.findViewById(R.id.device_info_timelen);
         McDeviceLocation location = info.getLocation();
-        switch (info.getWorkStatus()){
+        switch (info.getWorkStatus()) {
             case 1:
                 statusTv.setVisibility(View.VISIBLE);
                 statusTv.setText("工作中");
@@ -450,6 +483,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
         @Override
         public void onPageSelected(int position) {
+            AppLog.print("onPageSelected_____" + position);
             setSelectedMarker(position);
         }
 

@@ -2,10 +2,12 @@ package com.cloudmachine.ui.home.activity;
 
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -16,9 +18,15 @@ import android.widget.TextView;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.AddDeviceActivity;
 import com.cloudmachine.activities.HistoricalTrackActivity;
@@ -33,6 +41,7 @@ import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.listener.IMapListener;
 import com.cloudmachine.navigation.NativeDialog;
 import com.cloudmachine.navigation.other.Location;
 import com.cloudmachine.net.api.Api;
@@ -54,7 +63,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
-public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter, DeviceDetailModel> implements DeviceDetailContract.View, View.OnClickListener, AMapLocationListener {
+public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter, DeviceDetailModel> implements DeviceDetailContract.View, View.OnClickListener, AMapLocationListener, IMapListener {
     McDeviceLocation mcDeviceLoc;
     @BindView(R.id.device_detail_repair_record)
     FrameLayout recordFl;
@@ -101,7 +110,6 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     LinearLayout oilContainer;
 
 
-
     long deviceId;
     Location locNow;
     Bundle mBundle;
@@ -109,7 +117,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     int oilValue;
     String snId;
     int type;
-    boolean isOnline,isVideo;
+    boolean isOnline, isVideo;
     String imei;
     McDeviceInfo mcDeviceInfo;
     int workStatus;
@@ -223,7 +231,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     }
 
 
-    @OnClick({R.id.device_info_oil_container,R.id.device_detail_guide_sure_btn, R.id.device_detail_work_tv, R.id.device_info_timelen,  R.id.device_detail_repair_record, R.id.device_fence_layout, R.id.device_path_layout})
+    @OnClick({R.id.device_info_oil_container, R.id.device_detail_guide_sure_btn, R.id.device_detail_work_tv, R.id.device_info_timelen, R.id.device_detail_repair_record, R.id.device_fence_layout, R.id.device_path_layout})
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
@@ -247,7 +255,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 mBundle.putBoolean(AddDeviceActivity.IMG_TITLE_SHOW, true);
                 mBundle.putBoolean(AddDeviceActivity.DEVICE_SHOW, true);
                 mBundle.putInt(Constants.P_ADDMCDEVICETYPE, 0);
-                mBundle.putString(Constants.ERROR_MESSAGE,errorMessage);
+                mBundle.putString(Constants.ERROR_MESSAGE, errorMessage);
                 Constants.toActivity(DeviceDetailActivity.this,
                         AddDeviceActivity.class, mBundle);
                 break;
@@ -301,7 +309,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     }
 
     @Override
-    public void updateDeviceDetail(McDeviceInfo info) {
+    public void updateDeviceDetail(final McDeviceInfo info) {
         if (info == null) {
             return;
         }
@@ -323,37 +331,37 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         mcDeviceLoc = info.getLocation();
         mLocTv.setText(mcDeviceLoc.getPosition());
         locTimeTv.setText(CommonUtils.formaLocTime(mcDeviceLoc.getCollectionTime()));
-        LatLng latLng = new LatLng(mcDeviceLoc.getLat(), mcDeviceLoc.getLng());
+        final LatLng latLng = new LatLng(mcDeviceLoc.getLat(), mcDeviceLoc.getLng());
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
         setMapZoomTo(ZOOM_DEFAULT);
         aMap.moveCamera(CameraUpdateFactory.scrollBy(0, DensityUtil.dip2px(this, 100)));
         String statusText = null;
-        int mResId;
+//        int mResId;
         workStatus = info.getWorkStatus();
         switch (workStatus) {
             case 1:
                 isOnline = true;
                 statusText = "工作中";
                 workStatusTv.setVisibility(View.VISIBLE);
-                mResId = R.drawable.icon_machine_work;
+//                mResId = R.drawable.icon_machine_work;
                 break;
             case 2:
                 isOnline = true;
                 statusText = "在线";
                 workStatusTv.setVisibility(View.VISIBLE);
-                mResId = R.drawable.icon_machine_online;
+//                mResId = R.drawable.icon_machine_online;
                 break;
             default:
                 isOnline = false;
                 workStatusTv.setVisibility(View.GONE);
-                mResId = R.drawable.icon_machine_unwork;
+//                mResId = R.drawable.icon_machine_unwork;
                 break;
 
         }
         workStatusTv.setText(statusText);
         aMap.clear();
-        Marker marker = aMap.addMarker(getMarkerOptions(this, latLng, mResId));
-        marker.showInfoWindow();
+//        Marker marker = aMap.addMarker(getMarkerOptions(this, latLng, mResId));
+        CommonUtils.updateReomteMarkerOpt(this,CommonUtils.getMarkerIconUrl(info.getTypePicUrl(),workStatus),latLng,this);
         if (CommonUtils.isHConfig(snId)) {
             updateHCView();
         } else {
@@ -361,6 +369,14 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         }
         showCustomGuide();
     }
+
+    @Override
+    public void updateMarkerOptions(MarkerOptions options) {
+        Marker marker = aMap.addMarker(options);
+        marker.showInfoWindow();
+    }
+
+
 
     private void showCustomGuide() {
         if (!UserHelper.getCustomTextTag(this)) {
@@ -390,9 +406,9 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                         }
                         JsonElement videoJel = resultJobj.get("haveVideo");
                         if (videoJel != null) {
-                            boolean   hasVideo = videoJel.getAsBoolean();
-                            boolean   isOwer = !Constants.isNoEditInMcMember(deviceId, type);
-                            isVideo=hasVideo&&isOwer;
+                            boolean hasVideo = videoJel.getAsBoolean();
+                            boolean isOwer = !Constants.isNoEditInMcMember(deviceId, type);
+                            isVideo = hasVideo && isOwer;
                             if (isVideo) {
                                 workVideoTv.setText(getResources().getString(R.string.video));
                                 workVideoTv.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dimen_size_5));
@@ -445,7 +461,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
 
     @Override
     public void retrunDeviceInfoError(String message) {
-        errorMessage=message;
+        errorMessage = message;
     }
 
 

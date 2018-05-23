@@ -275,11 +275,11 @@ public class Constants {
     public static final String URL_GETPERMISSIONS = ApiConstants.CLOUDM_YJX_HOST
             + "member/getPermissions";// 获取权限列表
     public static final String URL_GETMACHINETYPES = ApiConstants.CLOUDM_YJX_HOST
-            + "device/getMachineTypesNC";// 获取机器种类列表
+            + "device/getMachineTypes";// 获取机器种类列表
     public static final String URL_GETMACHINEBRAND = ApiConstants.CLOUDM_YJX_HOST
-            + "device/getMachineBrandNC";// 获取机器品牌列表
+            + "device/getMachineBrand";// 获取机器品牌列表
     public static final String URL_GETMACHINEMODEL = ApiConstants.CLOUDM_YJX_HOST
-            + "device/getMachineModelNC";// 获取机器型号列表
+            + "device/getMachineModel";// 获取机器型号列表
     public static final String URL_UPDATEDEVICEINFO = ApiConstants.CLOUDM_YJX_HOST
             + "device/updateDeviceInfo";// 获取机器型号列表
     public static final String URL_GETVERSION = ApiConstants.CLOUDM_YJX_HOST
@@ -305,6 +305,10 @@ public class Constants {
     public static final String P_TITLENAME = "titleName";
     public static final String P_EDITTYPE = "editType";
     public static final String P_ITEMTYPE = "itemType";
+    public static final String P_TYPEID = "typeid";
+    public static final String P_BRANDID = "brandid";
+    public static final String P_MODELID = "modelid";
+
     public static final String P_EDITRESULTSTRING = "editResultString";
     public static final String P_EDITRESULTITEM = "editResultItem";
     public static final String P_IMAGEBROWERDELETE = "imageBrowerDelete";
@@ -322,7 +326,6 @@ public class Constants {
     public static final String P_DEVICEINFO_modelId = "modelId";
     public static final String P_CITYNAME = "city_name";
     public static final String P_SEARCHINFO = "searchInfo";
-    public static final String P_DEVICEINFO_MY = "deviceInfo_my";
     public static final String S_FG = ":&&:";
     public static final String S_DEVICE_LOCATION_NO = "暂无";
     public static final String S_TIME_FG = "-";
@@ -372,7 +375,7 @@ public class Constants {
     public static final int E_ITEMS_filtNumber = E_ITEMS_idCard + 1;// 网关编号
 
     public static final int E_ITEMS_role_remark = E_ITEMS_filtNumber + 1;// 成员备注
-    public static final int E_ITEMS_role_list = E_ITEMS_role_remark + 1;// 成员备注
+//    public static final int E_ITEMS_role_list = E_ITEMS_role_remark + 1;// 成员备注
 
     public static final int REQUEST_EditActivity = 0;
     public static final int REQUEST_ImageActivity = 100;

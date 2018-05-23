@@ -3,12 +3,16 @@ package com.cloudmachine.ui.home.presenter;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.McDeviceInfo;
+import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.bean.TelBean;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.navigation.other.Location;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.contract.DeviceContract;
 
 import java.util.List;
+
+import rx.functions.Func1;
 
 /**
  * Created by xiaojw on 2017/7/19.
@@ -21,16 +25,13 @@ public class DevicePresenter extends DeviceContract.Prensenter {
         mRxManage.add(mModel.getDevices(memberId, type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
             @Override
             protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
-                AppLog.print("getDevices onext__"+mcDeviceInfos);
-                if (mcDeviceInfos != null && mcDeviceInfos.size() > 0) {
-                    mView.updateDevices(mcDeviceInfos);
-                }
+                mView.updateDevices(mcDeviceInfos);
                 ((HomeActivity) mContext).requestPromotion(memberId);
             }
 
             @Override
             protected void _onError(String message) {
-                AppLog.print("getDevices error_message__"+message);
+                mView.updateDevicesError(message);
                 ((HomeActivity) mContext).requestPromotion(memberId);
             }
         }));
@@ -42,7 +43,7 @@ public class DevicePresenter extends DeviceContract.Prensenter {
         mRxManage.add(mModel.getDevices(type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
             @Override
             protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
-                AppLog.print("getDevices onext__"+mcDeviceInfos);
+                AppLog.print("getDevices onext__" + mcDeviceInfos);
                 if (mcDeviceInfos != null && mcDeviceInfos.size() > 0) {
                     mView.updateDevices(mcDeviceInfos);
                 }
@@ -50,7 +51,7 @@ public class DevicePresenter extends DeviceContract.Prensenter {
 
             @Override
             protected void _onError(String message) {
-                AppLog.print("getDevices error_message__"+message);
+                AppLog.print("getDevices error_message__" + message);
 
             }
         }));
@@ -77,19 +78,19 @@ public class DevicePresenter extends DeviceContract.Prensenter {
         mRxManage.add(mModel.getServiceTel().subscribe(new RxSubscriber<List<TelBean>>(mContext) {
             @Override
             protected void _onNext(List<TelBean> telBeanList) {
-                if (telBeanList!=null&&telBeanList.size()>0){
-                    String boxTel=null;
-                    String  repairTel=null;
-                    for (TelBean bean:telBeanList){
-                        String key=bean.getKey();
-                        String value=bean.getValue();
-                        if ("BoxServiceTel".equals(key)){
-                            boxTel=value;
-                        }else if ("RepairTel".equals(key)){
-                            repairTel=value;
+                if (telBeanList != null && telBeanList.size() > 0) {
+                    String boxTel = null;
+                    String repairTel = null;
+                    for (TelBean bean : telBeanList) {
+                        String key = bean.getKey();
+                        String value = bean.getValue();
+                        if ("BoxServiceTel".equals(key)) {
+                            boxTel = value;
+                        } else if ("RepairTel".equals(key)) {
+                            repairTel = value;
                         }
                     }
-                    mView.retrunGetServiceTel(boxTel,repairTel);
+                    mView.retrunGetServiceTel(boxTel, repairTel);
                 }
 
             }

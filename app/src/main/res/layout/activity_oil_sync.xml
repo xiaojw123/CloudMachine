@@ -43,7 +43,7 @@
             android:layout_marginTop="@dimen/dimen_size_16"
             android:textSize="@dimen/text_size_13_sp"
             android:lineSpacingExtra="@dimen/dimen_size_16"
-            android:text="1.查看您仪表盘油位剩余量。\n2.仪表盘油位在下面5个选项中任意一个吻合时，选中该项。\n3.提交同步。\n4.选项中5个数值都进行同步后，软件中显示的油位计将和仪表盘一致。"
+            android:text="1.查看您仪表盘油位剩余量。\n2.仪表盘油位与下面5个选项中任意一个吻合时，选中该项。\n3.提交同步。\n4.选项中5个数值都进行同步后，软件中显示的油位将和仪表盘一致。"
             />
     </LinearLayout>
 

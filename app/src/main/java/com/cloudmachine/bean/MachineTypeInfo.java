@@ -22,7 +22,7 @@ public class MachineTypeInfo implements Serializable{
 
     private String name;
     private String pk_PROD_DEF;
-    private long id;
+    private String id;
     private String createTime;
     private String updateTime;
 
@@ -42,11 +42,11 @@ public class MachineTypeInfo implements Serializable{
         this.pk_PROD_DEF = pk_PROD_DEF;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

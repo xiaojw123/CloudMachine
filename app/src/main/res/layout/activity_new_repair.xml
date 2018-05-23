@@ -346,7 +346,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@null"
-                    android:hint="详细描述故障信息有利于技师更好的诊断(选填)"
+                    android:hint="详细描述故障信息有利于技师更好的诊断(必填)"
                     android:maxLines="16"
                     android:padding="10dp"
                     android:textColor="@color/black"

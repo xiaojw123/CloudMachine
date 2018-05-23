@@ -3,6 +3,7 @@ package com.cloudmachine.net.task;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.cloudmachine.MyApplication;
 import com.cloudmachine.bean.BaseBO;
@@ -29,6 +30,8 @@ public class MachineModelListAsync extends ATask {
     public MachineModelListAsync(Context context, Handler handler) {
         this.context = context;
         this.handler = handler;
+
+
     }
 
     @Override
@@ -43,15 +46,24 @@ public class MachineModelListAsync extends ATask {
     @Override
     protected String doInBackground(String... params) {
         try {
-            String pk_prod_def = params[0];
-            String pk_brand = params[1];
-
-            IHttp httpRequest = new HttpURLConnectionImp();
             List<NameValuePair> list = new ArrayList<NameValuePair>();
-            list.add(new BasicNameValuePair("pk_prod_def", pk_prod_def));
-            list.add(new BasicNameValuePair("pk_brand", pk_brand));
+            if (params != null && params.length >=3) {
+                String memberId = params[0];
+                String typeId = params[1];
+                String brandId = params[2];
+                if (!TextUtils.isEmpty(memberId)) {
+                    list.add(new BasicNameValuePair("memberId", memberId));
+                }
+                if (!TextUtils.isEmpty(typeId)) {
+                    list.add(new BasicNameValuePair("typeId", typeId));
+                }
+                if (!TextUtils.isEmpty(brandId)) {
+                    list.add(new BasicNameValuePair("brandId", brandId));
+                }
+            }
             String result = null;
-            result = httpRequest.post(Constants.URL_GETMACHINEMODEL, list);
+            IHttp httpRequest = new HttpURLConnectionImp();
+            result = httpRequest.get(Constants.URL_GETMACHINEMODEL, list);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

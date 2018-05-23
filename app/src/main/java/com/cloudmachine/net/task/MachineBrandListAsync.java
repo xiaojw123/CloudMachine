@@ -3,7 +3,9 @@ package com.cloudmachine.net.task;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
+import com.amap.api.navi.view.PoiInputResItemWidget;
 import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.bean.MachineBrandInfo;
 import com.cloudmachine.net.ATask;
@@ -21,12 +23,10 @@ import java.util.List;
 
 public class MachineBrandListAsync extends ATask {
 
-    private Context context;
     private Handler handler;
-    private String pk_prod_def;
 
-    public MachineBrandListAsync(Context context, Handler handler) {
-        this.context = context;
+
+    public MachineBrandListAsync(Handler handler) {
         this.handler = handler;
         getCacheName(Constants.URL_GETMACHINEBRAND);
     }
@@ -34,13 +34,21 @@ public class MachineBrandListAsync extends ATask {
 
     @Override
     protected String doInBackground(String... params) {
-        pk_prod_def = params[0];
         IHttp httpRequest = new HttpURLConnectionImp();
         List<NameValuePair> list = new ArrayList<NameValuePair>();
-        list.add(new BasicNameValuePair("pk_prod_def", pk_prod_def));
+        if (params != null && params.length >= 2) {
+            String memberId = params[0];
+            String typeId = params[1];
+            if (!TextUtils.isEmpty(memberId)) {
+                list.add(new BasicNameValuePair("memberId", memberId));
+            }
+            if (!TextUtils.isEmpty(typeId)) {
+                list.add(new BasicNameValuePair("typeId", typeId));
+            }
+        }
         String result = null;
         try {
-            result = httpRequest.post(Constants.URL_GETMACHINEBRAND, list);
+            result = httpRequest.get(Constants.URL_GETMACHINEBRAND, list);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

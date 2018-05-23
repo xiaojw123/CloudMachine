@@ -128,7 +128,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             try {
-                errorMessage=bundle.getString(Constants.ERROR_MESSAGE);
+                errorMessage = bundle.getString(Constants.ERROR_MESSAGE);
                 showDevice = bundle.getBoolean(DEVICE_SHOW);
                 showImgTitle = bundle.getBoolean(IMG_TITLE_SHOW);
                 mcDeviceBasicsInfo = (McDeviceBasicsInfo) bundle.getSerializable(Constants.P_MCDEVICEBASICSINFO);
@@ -185,9 +185,9 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
 
 
     private void initAddDeviceItemView() {
-        mErrorTv= (TextView) findViewById(R.id.basic_error_tv);
-        mRsv= (ReboundScrollView) findViewById(R.id.basic_info_rsv);
-        btnContainer= (RelativeLayout) findViewById(R.id.basic_info_btncontainer);
+        mErrorTv = (TextView) findViewById(R.id.basic_error_tv);
+        mRsv = (ReboundScrollView) findViewById(R.id.basic_info_rsv);
+        btnContainer = (RelativeLayout) findViewById(R.id.basic_info_btncontainer);
         licenseNoEiv = (CanBeEditItemView) findViewById(R.id.device_license);
         imgTv1 = (TextView) findViewById(R.id.mac_img_tv1);
         imgTv2 = (TextView) findViewById(R.id.mac_img_tv2);
@@ -225,7 +225,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 device_name.isArrow(true);
                 device_name.setOnClickListener(this);
             }
-        }else{
+        } else {
             mRsv.setVisibility(View.GONE);
             btnContainer.setVisibility(View.GONE);
             mErrorTv.setVisibility(View.VISIBLE);
@@ -644,7 +644,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                                 EditListInfo eInfoType = (EditListInfo) bundle.getSerializable(Constants.P_EDITRESULTITEM);
                                 if (null != eInfoType) {
                                     deviceType = eInfoType.getName();
-                                    typeId = (int) eInfoType.getId();
+                                    typeId = Integer.parseInt(eInfoType.getId());
                                     device_type.setContent(deviceType);
 
                                     deviceModel = "";
@@ -657,7 +657,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                                 EditListInfo eInfoBrand = (EditListInfo) bundle.getSerializable(Constants.P_EDITRESULTITEM);
                                 if (null != eInfoBrand) {
                                     deviceBrand1 = eInfoBrand.getName();
-                                    brand1Id = (int) eInfoBrand.getId();
+                                    brand1Id = Integer.parseInt(eInfoBrand.getId());
                                     device_brand1.setContent(deviceBrand1);
 
                                     deviceModel = "";
@@ -670,7 +670,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                                 EditListInfo eInfoModel = (EditListInfo) bundle.getSerializable(Constants.P_EDITRESULTITEM);
                                 if (null != eInfoModel) {
                                     deviceModel = eInfoModel.getName();
-                                    modeId = (int) eInfoModel.getId();
+                                    modeId = Integer.parseInt(eInfoModel.getId());
                                     device_model.setContent(deviceModel);
 
                                     String key = Constants.P_DEVICEINFO_category + Constants.S_UPDATEDEVICEKEY_FG +

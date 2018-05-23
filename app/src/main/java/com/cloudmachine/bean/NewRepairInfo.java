@@ -11,13 +11,38 @@ public class NewRepairInfo implements Serializable {
 
     private String vmacopname;
     private String vmacoptel;
-    private String pk_prod_def;
-    private String pk_brand;
-    private String pk_vhcl_material;
     private String vmachinenum;
     private String vdiscription;
     private String vservicetype;
     private String vworkaddress;
+    private String typeId;
+    private String brandId;
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(String brandId) {
+        this.brandId = brandId;
+    }
+
+    public String getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
+    }
+
+    private String modelId;
     private double lat;
     private double lng;
 
@@ -59,6 +84,15 @@ public class NewRepairInfo implements Serializable {
     private String logo_address;
     private String modelname;
     private String brandname;
+    private String typeName;
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
 
     public String getLogo_address() {
         return logo_address;
@@ -84,29 +118,10 @@ public class NewRepairInfo implements Serializable {
         this.vmacoptel = vmacoptel;
     }
 
-    public String getPk_prod_def() {
-        return pk_prod_def;
-    }
 
-    public void setPk_prod_def(String pk_prod_def) {
-        this.pk_prod_def = pk_prod_def;
-    }
 
-    public String getPk_brand() {
-        return pk_brand;
-    }
 
-    public void setPk_brand(String pk_brand) {
-        this.pk_brand = pk_brand;
-    }
 
-    public String getPk_vhcl_material() {
-        return pk_vhcl_material;
-    }
-
-    public void setPk_vhcl_material(String pk_vhcl_material) {
-        this.pk_vhcl_material = pk_vhcl_material;
-    }
 
     public String getVmachinenum() {
         return vmachinenum;

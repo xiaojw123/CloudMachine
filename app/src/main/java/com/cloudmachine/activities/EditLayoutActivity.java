@@ -39,6 +39,8 @@ import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -66,13 +68,17 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
     private EditListAdapter eAdapter;
     private List<EditListInfo> dataResult = new ArrayList<EditListInfo>();
     private EditListInfo editListInfo;
-    private String value1, value2, value3;
+//    private String value1, value2, value3;
     CommonTitleView title_layout;
 
     String deviceID, deviceName;
     String name;
     String itemName;
     String titleName;
+    String typeId;
+    String brandId;
+    String modelId;
+    String memberId;
 
 
     @Override
@@ -108,6 +114,10 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             try {
+                memberId=bundle.getString(Constants.MEMBER_ID);
+                brandId=bundle.getString(Constants.P_BRANDID);
+                typeId=bundle.getString(Constants.P_TYPEID);
+                modelId=bundle.getString(Constants.P_MODELID);
                 titleName = bundle.getString(Constants.P_TITLENAME);
                 itemName = bundle.getString(Constants.P_EDIT_LIST_ITEM_NAME);
                 deviceID = bundle.getString(Constants.P_DEVICEID);
@@ -116,10 +126,6 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
                 itemType = bundle.getInt(Constants.P_ITEMTYPE);
                 titleText = bundle.getString(Constants.P_TITLETEXT);
                 cText = bundle.getString(Constants.P_EDITRESULTSTRING);
-                value1 = bundle.getString(Constants.P_EDIT_LIST_VALUE1);
-                value2 = bundle.getString(Constants.P_EDIT_LIST_VALUE2);
-                value3 = bundle.getString(Constants.P_EDIT_LIST_VALUE3);
-
             } catch (Exception e) {
             }
 
@@ -161,20 +167,21 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
                 list_layout.setVisibility(View.VISIBLE);
                 //
                 switch (itemType) {
-                    case Constants.E_ITEMS_role_list:
-
-                        new GetRootNodesAsync(mContext, mHandler).execute(
-                                String.valueOf(value1), String.valueOf(value2));
-                        break;
+//                    case Constants.E_ITEMS_role_list:
+//
+//                        new GetRootNodesAsync(mContext, mHandler).execute(
+//                                String.valueOf(value1), String.valueOf(value2));
+//                        break;
                     case Constants.E_ITEMS_category:
-                        new MachineTypesListAsync(mContext, mHandler).execute();
+                        new MachineTypesListAsync(mContext, mHandler).execute(memberId);
                         break;
                     case Constants.E_ITEMS_brand:
-                        new MachineBrandListAsync(mContext, mHandler).execute(value1);
+//                        new MachineBrandListAsync(mContext, mHandler).execute(value1);
+                        new MachineBrandListAsync(mHandler).execute(memberId,typeId);
                         break;
                     case Constants.E_ITEMS_model:
                         new MachineModelListAsync(mContext, mHandler).execute(
-                                value1, value2);
+                                memberId, typeId,brandId);
                         break;
                 }
 
@@ -254,7 +261,7 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
                 for (int i = 0; i < len; i++) {
                     RootNodesInfo rInfo = rNodes.get(i);
                     EditListInfo data = new EditListInfo();
-                    data.setId(rInfo.getId());
+                    data.setId(String.valueOf(rInfo.getId()));
                     data.setName(rInfo.getName());
                     data.setStr2(rInfo.getRemark());
                     data.setStr1(rInfo.getPermissionId());
@@ -278,7 +285,7 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
                         data.setId(mInfo.getId());
                         data.setName(mInfo.getName());
                         data.setPK_PROD_DEF(mInfo.getPk_PROD_DEF());
-                        if (mInfo.getPk_PROD_DEF() == value1) {
+                        if (mInfo.getPk_PROD_DEF() == typeId) {
                             data.setIsClick(true);
                             selectionId = i;
                         }
@@ -306,7 +313,7 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
                     data.setId(mInfo.getId());
                     data.setName(mInfo.getName());
                     data.setPK_BRAND(mInfo.getPk_BRAND());
-                    if (mInfo.getPk_BRAND() == value2) {
+                    if (TextUtils.equals(mInfo.getId(),brandId)) {
                         data.setIsClick(true);
                         selectionId2 = i;
                     }
@@ -327,7 +334,7 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
                     data.setId(mInfo.getId());
                     data.setName(mInfo.getModelName());
                     data.setPK_VHCL_MATERIAL(mInfo.getPk_VHCL_MATERIAL());
-                    if (mInfo.getPk_VHCL_MATERIAL() == value3) {
+                    if (TextUtils.equals(mInfo.getId(),modelId)) {
                         data.setIsClick(true);
                         selectionId3 = i;
                     }
@@ -427,10 +434,12 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
         if (parent.getId() == R.id.edit_listview) {
             int len = dataResult.size();
             for (int i = 0; i < len; i++) {
+                EditListInfo info=dataResult.get(i);
+
                 if (i == position) {
-                    dataResult.get(i).setIsClick(true);
+                    info.setIsClick(true);
                 } else {
-                    dataResult.get(i).setIsClick(false);
+                    info.setIsClick(false);
                 }
             }
             eAdapter.notifyDataSetChanged();

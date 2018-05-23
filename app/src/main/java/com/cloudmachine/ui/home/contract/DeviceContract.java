@@ -20,6 +20,7 @@ public interface DeviceContract {
         void updateDevices(List<McDeviceInfo> deviceList);
         void updateArticles(List<ArticleInfo> articleInfoList);
         void retrunGetServiceTel(String boxTel,String repairTel);
+        void updateDevicesError(String errorMsg);
 
     }
     interface Model extends BaseModel{

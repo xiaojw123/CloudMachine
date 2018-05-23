@@ -12,11 +12,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.listener.IMapListener;
+import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.fragment.BaseMapFragment;
 import com.cloudmachine.widget.CustomSucessDialog;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
@@ -43,6 +55,28 @@ import java.util.Map;
  */
 
 public class CommonUtils {
+
+    public static void updateReomteMarkerOpt(final Context context, String picUrl, final LatLng latLng, final IMapListener listener){
+        Glide.with(context).load(picUrl)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        ImageView img = new ImageView(context);
+                        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        img.setImageDrawable(resource);
+                        MarkerOptions options = new MarkerOptions();
+                        options.icon(BitmapDescriptorFactory.fromView(img));
+                        options.position(latLng);
+                        listener.updateMarkerOptions(options);
+                    }
+                });
+    }
+
+
+    public static String getMarkerIconUrl(String typePicUrl,int status){
+        return  typePicUrl+"_"+status+"@3x.png";
+    }
+
     public static String formartTime(long timeL) {
 //        if (timeL > 0) {
 //            timeL /= 1000;

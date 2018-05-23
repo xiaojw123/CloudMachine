@@ -11,7 +11,7 @@ public class EditListInfo implements Serializable{
 	private static final long serialVersionUID = -2480655924189887879L;
 	private String name;
 	private boolean isClick;
-	private long id;
+	private String id;
 	private String str1;
 	private String str2;
 	private String PK_PROD_DEF;
@@ -38,10 +38,10 @@ public class EditListInfo implements Serializable{
 	public void setPK_PROD_DEF(String pK_PROD_DEF) {
 		PK_PROD_DEF = pK_PROD_DEF;
 	}
-	public long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(long l) {
+	public void setId(String l) {
 		this.id = l;
 	}
 	public String getName() {

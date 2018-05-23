@@ -30,9 +30,9 @@ public class ApiConstants {
 
 
 
-    /*21-wnb*/
-//    public static String CLOUDM_HOST = "http://192.168.1.21:8090/cloudm3/";
-//    public static String CLOUDM_YJX_HOST = "http://192.168.1.21:8090/cloudm3/yjx/";
+//    /*21-wnb*/
+//    public static String CLOUDM_HOST = "http://192.168.1.109:18088/cloudm3/";
+//    public static String CLOUDM_YJX_HOST = "http://192.168.10.46:8090/cloudm3/yjx/";
 //    public static String CLOUDM_ASK_HOST = "http://ask.test.cloudm.com/";
 //    public static String H5_HOST = "http://192.168.1.109:7718/";
 //    public static String BOX_HIGH_COFIG_HOST="http://192.168.1.176:18089/";//云黑子-高配-拍照

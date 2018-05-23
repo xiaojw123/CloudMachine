@@ -46,6 +46,7 @@ import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CircleFenchDialog;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
@@ -55,9 +56,11 @@ import com.cloudmachine.bean.McDeviceCircleFence;
 import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.listener.IMapListener;
 import com.cloudmachine.net.task.AddCircleFenchAsync;
 import com.cloudmachine.net.task.DeleteFenceAsync;
 import com.cloudmachine.net.task.DevicesBasicsInfoAsync;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ToastUtils;
@@ -73,7 +76,7 @@ import java.util.List;
 
 public class MapOneActivity extends BaseAutoLayoutActivity implements
         AMap.OnMarkerClickListener,
-        AMap.InfoWindowAdapter, AMap.CancelableCallback, Callback, AMap.OnMarkerDragListener, AMap.OnCameraChangeListener, GeocodeSearch.OnGeocodeSearchListener {
+        AMap.InfoWindowAdapter, AMap.CancelableCallback, Callback, AMap.OnMarkerDragListener, AMap.OnCameraChangeListener, GeocodeSearch.OnGeocodeSearchListener, IMapListener {
     private static final String MAP_DRAG = "拖动地图";
     private static final String SET_RADUIS_BY_CLICK_THIS = "点我设置半径";
     private static final int zoomDefault = 15;
@@ -286,9 +289,51 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
             aMap.setInfoWindowAdapter(this);// 设置自定义InfoWindow样式
             aMap.setOnMarkerDragListener(this);
             aMap.setOnCameraChangeListener(this);
-            addMarkerToMap();// 往地图上添加marker
+            if (mDeviceInfo != null) {
+                deviceName = mDeviceInfo.getDeviceName();
+                location = mDeviceInfo.getLocation();
+                double lat = 0;
+                double lng = 0;
+                if (location != null) {
+                    lat = location.getLat();
+                    lng = location.getLng();
+                }
+                LatLng myLatLng = new LatLng(lat, lng);
+                CommonUtils.updateReomteMarkerOpt(this, CommonUtils.getMarkerIconUrl(mDeviceInfo.getTypePicUrl(), mDeviceInfo.getWorkStatus()), myLatLng, this);
+            }
         }
         initFencn();
+    }
+
+    @NonNull
+    private MarkerOptions getDeviceMarkerOptions() {
+        MarkerOptions markerOption = new MarkerOptions();
+        location = mDeviceInfo.getLocation();
+        double lat = 0;
+        double lng = 0;
+        if (location != null) {
+            lat = location.getLat();
+            lng = location.getLng();
+        }
+        LatLng myLatLng = new LatLng(lat, lng);
+        markerOption.position(myLatLng);
+        markerOption.icon(BitmapDescriptorFactory
+                .fromView(getDeviceMarkerView()));
+        return markerOption;
+    }
+
+    @Override
+    public void updateMarkerOptions(MarkerOptions options) {
+        if (null != mDeviceInfo) {
+            myMarker = aMap.addMarker(options);
+            myMarker.showInfoWindow();
+            aMap.moveCamera(CameraUpdateFactory
+                    .changeLatLng(myMarker
+                            .getPosition()));// 18
+            scaleMap();
+            aMap.moveCamera(CameraUpdateFactory.zoomTo(zoomDefault));
+        }
+
     }
 
     //展示新增/编辑对话框
@@ -405,53 +450,28 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         return markerTtileTv;
     }
 
-    private void addMarkerToMap() {
-        if (null != mDeviceInfo) {
-            myMarker = aMap.addMarker(getDeviceMarkerOptions());
-            myMarker.showInfoWindow();
-            aMap.moveCamera(CameraUpdateFactory
-                    .changeLatLng(myMarker
-                            .getPosition()));// 18
-            scaleMap();
-            aMap.moveCamera(CameraUpdateFactory.zoomTo(zoomDefault));
-        }
-    }
-
-    @NonNull
-    private MarkerOptions getDeviceMarkerOptions() {
-        MarkerOptions markerOption = new MarkerOptions();
-        location = mDeviceInfo.getLocation();
-        double lat = 0;
-        double lng = 0;
-        if (location != null) {
-            lat = location.getLat();
-            lng = location.getLng();
-        }
-        LatLng myLatLng = new LatLng(lat, lng);
-        markerOption.position(myLatLng);
-        deviceName = mDeviceInfo.getDeviceName();
-        markerOption.icon(BitmapDescriptorFactory
-                .fromView(getDeviceMarkerView()));
-        return markerOption;
-    }
 
     @NonNull
     private ImageView getDeviceMarkerView() {
         ImageView img = new ImageView(this);
         img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        int resId;
-        switch (mWorkStatus) {
-            case 1:
-                resId = R.drawable.icon_machine_work;
-                break;
-            case 2:
-                resId = R.drawable.icon_machine_online;
-                break;
-            default:
-                resId = R.drawable.icon_machine_unwork;
-                break;
+//        int resId;
+//        switch (mWorkStatus) {
+//            case 1:
+//                resId = R.drawable.icon_machine_work;
+//                break;
+//            case 2:
+//                resId = R.drawable.icon_machine_online;
+//                break;
+//            default:
+//                resId = R.drawable.icon_machine_unwork;
+//                break;
+//        }
+        if (mDeviceInfo != null) {
+            Glide.with(this).load(CommonUtils.getMarkerIconUrl(mDeviceInfo.getTypePicUrl(), mWorkStatus)).into(img);
         }
-        img.setImageResource(resId);
+
+//        img.setImageResource(resId);
         return img;
     }
 
@@ -951,4 +971,6 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
 
     }
+
+
 }

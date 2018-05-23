@@ -1,5 +1,7 @@
 package com.cloudmachine.bean;
 
+import android.renderscript.ScriptIntrinsicYuvToRGB;
+
 import java.io.Serializable;
 
 public class McDeviceInfo implements Serializable {
@@ -70,6 +72,42 @@ public class McDeviceInfo implements Serializable {
     private String pk_BRAND;
     private String pk_VHCL_MATERIAL;
     private String rackId;
+    private String typePicUrl;
+    private int typeId;
+    private int brandId;
+    private int modelId;
+
+    public int getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(int brandId) {
+        this.brandId = brandId;
+    }
+
+    public int getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(int modelId) {
+        this.modelId = modelId;
+    }
+
+    public String getTypePicUrl() {
+        return typePicUrl;
+    }
+
+    public void setTypePicUrl(String typePicUrl) {
+        this.typePicUrl = typePicUrl;
+    }
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
 
     public String getPk_PROD_DEF() {
         return pk_PROD_DEF;
