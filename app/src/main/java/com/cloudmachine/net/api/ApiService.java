@@ -275,7 +275,6 @@ public interface ApiService {
     @GET("device/getDeviceNowData")
     Observable<BaseRespose<McDeviceInfo>> getDeviceNowData(@Query("deviceId") String deviceId);
 
-
     @GET("device/getDeviceByKey")
     Observable<BaseRespose<List<McDeviceInfo>>> getDevices(@Query("memberId") long memberId, @Query("type") int type);
 

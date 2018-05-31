@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -121,6 +122,8 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
     RecyclerView infoImgRlv;
     @BindView(R.id.device_info_title)
     TextView imgTitleTv;
+    @BindView(R.id.tv_should_pay_cotainer)
+    LinearLayout showPayContainer;
     private OrderCouponBean mOrderCouponBean;
     private CWInfo cwInfo;
     private Handler mHandler;
@@ -479,8 +482,15 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
     public void returnAllianceDetail(AllianceDetail detail) {
         CWInfo info = new CWInfo();
         WorkSettleBean settleBean = new WorkSettleBean();
-        settleBean.setNtotalamount(detail.getReceivableAmount());//应付
-        settleBean.setNloanamount(detail.getActualAmount());
+        String toalAmount=detail.getTotalAmount();
+        String debtAmount=detail.getDebtAmount();
+        if (TextUtils.equals(toalAmount,debtAmount)){
+            showPayContainer.setVisibility(View.GONE);
+        }else{
+            showPayContainer.setVisibility(View.VISIBLE);
+        }
+        settleBean.setNtotalamount(toalAmount);//应付
+        settleBean.setNloanamount(debtAmount);
         List<String> urls = detail.getAttachmentUrls();
         if (urls != null && urls.size() > 0) {
             info.setLogoList((ArrayList<String>) urls);

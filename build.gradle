@@ -8,8 +8,8 @@ ext {
             targetSdk        : 25,
             version_code     : 280,
             version_name     : "4.8.0",
-            isRmote           : "false",//Debug remote/local
-            isOnline          : "false"//Debug formal/test
+            isRmote           : "true",//Debug remote/local
+            isOnline          : "true"//Debug formal/test
     ]
     libraries = [
             support: "25.2.0",

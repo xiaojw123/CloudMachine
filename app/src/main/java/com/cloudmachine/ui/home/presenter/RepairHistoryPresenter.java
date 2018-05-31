@@ -7,6 +7,7 @@ import com.cloudmachine.bean.AllianceItem;
 import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.contract.RepairHistoryContract;
+import com.cloudmachine.utils.Constants;
 
 import java.util.List;
 
@@ -16,18 +17,26 @@ import java.util.List;
 
 public class RepairHistoryPresenter extends RepairHistoryContract.Presenter {
     @Override
-    public void getRepairList(long deviceId, final boolean isRefresh) {
+    public void getRepairList(final long deviceId, final boolean isRefresh) {
         mRxManage.add(mModel.getRepairList(mContext, deviceId).subscribe(new RxSubscriber<RepairListInfo>(mContext, false) {
             @Override
             protected void _onNext(RepairListInfo info) {
                 mView.returnGetRepairList(info);
-                updateAlianceData(isRefresh);
+                if (deviceId == Constants.INVALID_DEVICE_ID) {
+                    updateAlianceData(isRefresh);
+                }else{
+                    mView.returnGetAllianceError();
+                }
             }
 
             @Override
             protected void _onError(String message) {
-                mView.returnGetRepairError();
-                updateAlianceData(isRefresh);
+                if (deviceId == Constants.INVALID_DEVICE_ID) {
+                    mView.returnGetRepairError();
+                    updateAlianceData(isRefresh);
+                }else{
+                    mView.returnGetAllianceError();
+                }
             }
         }));
 
@@ -65,7 +74,7 @@ public class RepairHistoryPresenter extends RepairHistoryContract.Presenter {
 
     @Override
     public void getAllianceList(final int pageNum) {
-        mRxManage.add(mModel.getAllianceList(mContext,pageNum).subscribe(new RxSubscriber<BaseRespose<List<AllianceItem>>>(mContext) {
+        mRxManage.add(mModel.getAllianceList(mContext, pageNum).subscribe(new RxSubscriber<BaseRespose<List<AllianceItem>>>(mContext) {
             @Override
             protected void _onNext(BaseRespose<List<AllianceItem>> respose) {
                 PageBean page = respose.getPage();

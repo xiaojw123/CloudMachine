@@ -427,7 +427,6 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     @Override
     public void updateDevicesError(String errorMsg) {
-        ToastUtils.showToast(getActivity(),errorMsg);
         aMap.clear();
         aMap.reloadMap();
         menuTv.setVisibility(View.GONE);

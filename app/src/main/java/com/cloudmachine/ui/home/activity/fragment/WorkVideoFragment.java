@@ -121,7 +121,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     String time2 = null;
     boolean isPause;
     int resultCode;
-    boolean  isOnLine;
+    boolean isOnLine;
     boolean isFirst = true;
     String sn;
 
@@ -210,22 +210,22 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
 
     public void updateVideoInfo(final boolean isResume) {
-            if (isResume) {
-                if (isFirst) {
-                    isFirst = false;
-                    if (isOnLine) {
-                        resumeVideo();
-                    } else {
-                        setEmptVideo(PROMPT_NO_ONLINE);
-                    }
-                } else {
+        if (isResume) {
+            if (isFirst) {
+                isFirst = false;
+                if (isOnLine) {
                     resumeVideo();
+                } else {
+                    setEmptVideo(PROMPT_NO_ONLINE);
                 }
-
             } else {
-
-                flush();
+                resumeVideo();
             }
+
+        } else {
+
+            flush();
+        }
 
 
     }
@@ -340,7 +340,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                 mPresenter.videoUpload(memberId, deviceId, videoId);
                 break;
             case R.id.work_live_status://回到直播
-                setVideoSelectedItem(null, -1);
+                setVideoSelectedItem(null);
                 playUrl = liveUrl;
                 videoId = null;
                 name = null;
@@ -434,15 +434,20 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
     }
 
-    private void setVideoSelectedItem(VideoBean.VideoListBean item, int position) {
-        for (VideoBean.VideoListBean bean : mVideoListAdapter.getItems()) {
-            if (item == bean) {
-                bean.setSelected(true);
-            } else {
-                bean.setSelected(false);
+    private void setVideoSelectedItem(VideoBean.VideoListBean item) {
+        if (mVideoListAdapter != null) {
+            List<VideoBean.VideoListBean> videoItems = mVideoListAdapter.getItems();
+            if (videoItems != null && videoItems.size() > 0) {
+                for (VideoBean.VideoListBean bean : videoItems) {
+                    if (item == bean) {
+                        bean.setSelected(true);
+                    } else {
+                        bean.setSelected(false);
+                    }
+                }
+                mVideoListAdapter.notifyDataSetChanged();
             }
         }
-        mVideoListAdapter.notifyDataSetChanged();
     }
 
     public void pausePlay() {
@@ -569,27 +574,27 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     }
 
     public void flushData() {
-            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(getActivity()), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(getActivity()) {
-                @Override
-                protected void _onNext(JsonObject respJobj) {
-                    JsonObject resultJobj = respJobj.getAsJsonObject("result");
-                    JsonElement videoJel = resultJobj.get("haveVideo");
-                    if (videoJel != null) {
-                        boolean hasVideo = videoJel.getAsBoolean();
-                        if (hasVideo) {
-                            updateVideoInfo(false);
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(getActivity()), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(getActivity()) {
+            @Override
+            protected void _onNext(JsonObject respJobj) {
+                JsonObject resultJobj = respJobj.getAsJsonObject("result");
+                JsonElement videoJel = resultJobj.get("haveVideo");
+                if (videoJel != null) {
+                    boolean hasVideo = videoJel.getAsBoolean();
+                    if (hasVideo) {
+                        updateVideoInfo(false);
 
-                        } else {
-                            setEmptVideo(PROMPT_NO_VIDEO);
-                        }
+                    } else {
+                        setEmptVideo(PROMPT_NO_VIDEO);
                     }
                 }
+            }
 
-                @Override
-                protected void _onError(String message) {
-                    ToastUtils.showToast(getActivity(), message);
-                }
-            }));
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(getActivity(), message);
+            }
+        }));
 
     }
 
@@ -612,7 +617,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
             name = item.getName();
             videoId = String.valueOf(item.getId());
             playUrl = item.getLiveUrl();
-            setVideoSelectedItem(item, position);
+            setVideoSelectedItem(item);
             mPresenter.videoUpload(memberId, deviceId, String.valueOf(item.getId()));
         }
 

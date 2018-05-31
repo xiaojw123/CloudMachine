@@ -1,7 +1,13 @@
 package com.cloudmachine.base.baserx;
 
+import com.amap.api.navi.view.PoiInputResItemWidget;
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.chart.utils.AppLog;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import okio.Timeout;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,6 +27,8 @@ import rx.schedulers.Schedulers;
         .//省略*/
 
 public class RxHelper {
+
+
     /**
      * 对服务器返回数据进行预处理(正常情况只需要result)
      *
@@ -49,6 +57,7 @@ public class RxHelper {
 
     /**
      * 对带分页信息的服务器返回数据进行预处理（拿到大父类）
+     *
      * @param <T>
      * @return
      */
@@ -71,9 +80,9 @@ public class RxHelper {
     }
 
 
-
     /**
      * 对结果类型的数据进行预处理(只需要拿到message信息的)
+     *
      * @return
      */
     public static Observable.Transformer<BaseRespose, String> handleBooleanResult() {
@@ -150,7 +159,6 @@ public class RxHelper {
             }
         });
     }
-
 
 
 }

@@ -839,7 +839,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 if (AUTORITY_HTTP.equals(authory.substring(0, 4))) {
                     jumpH5Page(authory);
                 }
-                ;
+
             }
         }
     }

@@ -17,6 +17,8 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observer;
+
 /**
  * Created by xiaojw on 2017/5/22.
  */
@@ -42,7 +44,6 @@ public class HomePresenter extends HomeContract.Presenter {
 
             }
         }));
-
     }
 
     @Override

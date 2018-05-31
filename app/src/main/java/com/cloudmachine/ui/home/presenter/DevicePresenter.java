@@ -1,5 +1,7 @@
 package com.cloudmachine.ui.home.presenter;
 
+import com.cloudmachine.base.baserx.RetryWithDelay;
+import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.ArticleInfo;
 import com.cloudmachine.bean.McDeviceInfo;
@@ -22,7 +24,7 @@ public class DevicePresenter extends DeviceContract.Prensenter {
 
     @Override
     public void getDevices(final long memberId, int type) {
-        mRxManage.add(mModel.getDevices(memberId, type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
+        mRxManage.add(mModel.getDevices(memberId, type).retryWhen(new RetryWithDelay(2,1000)).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
             @Override
             protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
                 mView.updateDevices(mcDeviceInfos);
@@ -40,7 +42,7 @@ public class DevicePresenter extends DeviceContract.Prensenter {
 
     @Override
     public void getDevices(int type) {
-        mRxManage.add(mModel.getDevices(type).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
+        mRxManage.add(mModel.getDevices(type).retryWhen(new RetryWithDelay(2,1000)).subscribe(new RxSubscriber<List<McDeviceInfo>>(mContext, false) {
             @Override
             protected void _onNext(List<McDeviceInfo> mcDeviceInfos) {
                 AppLog.print("getDevices onext__" + mcDeviceInfos);
