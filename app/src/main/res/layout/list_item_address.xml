@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_size_60"
+    android:background="@color/white"
+    >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="@dimen/dimen_size_24"
+        >
+
+        <TextView
+            android:id="@+id/address_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_16_sp"
+            android:textColor="@color/cor8"
+            />
+
+        <TextView
+            android:id="@+id/address_mobile_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/text_size_13_sp"
+            android:layout_marginTop="@dimen/dimen_size_8"
+            />
+
+
+
+    </LinearLayout>
+
+
+
+    <View
+        style="@style/CommonLandscapeLine"
+        android:layout_gravity="bottom"
+        />
+
+
+
+</FrameLayout>

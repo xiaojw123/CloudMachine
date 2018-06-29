@@ -2,6 +2,7 @@ package com.cloudmachine.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.util.ArraySet;
 
 import com.autonavi.rtbt.IFrameForRTBT;
@@ -134,8 +135,6 @@ public class UserHelper {
     }
 
 
-
-
     public static void insertCustomTextTag(Context context, boolean isShowed) {
         if (GuideTagSp == null) {
             GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
@@ -149,7 +148,23 @@ public class UserHelper {
         if (GuideTagSp == null) {
             GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
         }
-        return GuideTagSp.getBoolean(OilCustomTextTag,false);
+        return GuideTagSp.getBoolean(OilCustomTextTag, false);
+    }
+
+    public static void setOwner(Context context, long memberId, boolean isOwner) {
+
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
+        }
+        SharedPreferences.Editor editor = GuideTagSp.edit();
+        editor.putBoolean(String.valueOf(memberId),isOwner);
+        editor.commit();
+    }
+    public static boolean isOwner(Context context, long memberId){
+        if (GuideTagSp == null) {
+            GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
+        }
+        return GuideTagSp.getBoolean(String.valueOf(memberId),false);
     }
 
 

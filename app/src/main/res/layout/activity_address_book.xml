@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.cloudmachine.ui.home.activity.AddressBookActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/address_book_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="通讯录"
+        />
+    <RelativeLayout
+        android:id="@+id/address_book_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/address_book_xrlv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+
+    <com.cloudmachine.widget.LetterIndexView
+        android:id="@+id/address_book_liv"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_size_60"
+        android:layout_marginBottom="@dimen/dimen_size_70"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dimen_size_5"
+        />
+
+    <TextView
+        android:id="@+id/address_word_tv"
+        android:layout_width="@dimen/dimen_size_22"
+        android:layout_height="@dimen/dimen_size_22"
+        android:background="@color/c_ff8901"
+        android:textColor="@color/white"
+        android:padding="@dimen/dimen_size_2"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/address_book_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="通讯录无联系人"
+        android:layout_marginTop="@dimen/dimen_size_120"
+        android:drawableTop="@drawable/ic_member_empty"
+        android:drawablePadding="@dimen/pad1"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        />
+
+</LinearLayout>
+
+

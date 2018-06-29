@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Layout_Item_Style"
+    >
+    <TextView
+        android:id="@+id/item_person_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_16_sp"
+        android:textColor="@color/cor8"
+        android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:id="@+id/item_person_unauth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_12_sp"
+        android:textColor="@color/c_ff8901"
+        android:text="未实名认证"
+        android:layout_marginLeft="@dimen/pad1"
+        android:layout_toRightOf="@+id/item_person_name"
+        android:layout_alignBottom="@+id/item_person_name"
+        android:visibility="gone"
+        />
+
+    <CheckBox
+        android:id="@+id/item_person_cb"
+        style="@style/PayCheckBox2"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
+        />
+
+
+
+
+</RelativeLayout>

@@ -15,6 +15,19 @@ public class Member implements Serializable{
 	private static final long serialVersionUID = 263723165474245016L;
 
 	private Long num = 1L;
+	private int isAuth;//1:已认证 0：未认证
+
+	public int getIsAuth() {
+		return isAuth;
+	}
+
+
+	public void setIsAuth(int isAuth) {
+		this.isAuth = isAuth;
+	}
+	public boolean isAuth(){
+		return isAuth==1;
+	}
 
 	private Long wjdsId;//对应挖机大师id
 	private Long wjdsStatus;//对应挖机大师角色

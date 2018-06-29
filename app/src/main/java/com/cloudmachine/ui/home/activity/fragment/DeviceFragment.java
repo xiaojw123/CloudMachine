@@ -1,7 +1,6 @@
 package com.cloudmachine.ui.home.activity.fragment;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,7 +35,6 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.BaseRecyclerAdapter;
@@ -56,13 +54,10 @@ import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
-import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.locatecity.PingYinUtil;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.umeng.analytics.MobclickAgent;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +101,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     String mBoxTel = Constants.CUSTOMER_PHONE_BOX;
     String mRepairTel = Constants.CUSTOMER_PHONE_REPAIR;
     private int deviceSize;
+    long memberId;
 
 
     @Override
@@ -135,7 +131,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     private void loadData() {
         if (UserHelper.isLogin(getActivity())) {
-            long memberId = UserHelper.getMemberId(getActivity());
+            memberId = UserHelper.getMemberId(getActivity());
             // TODO: 2017/8/14 for v3.2.0 Test
 //            if (memberId==lasMemberId){
 //                return;
@@ -145,6 +141,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             } else {
                 menuTv.setVisibility(View.GONE);
             }
+            UserHelper.setOwner(getActivity(), memberId, false);
             mPresenter.getDevices(memberId, Constants.MC_DevicesList_AllType);
             lasMemberId = memberId;
         } else {
@@ -329,19 +326,21 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 deviceVp.setVisibility(View.VISIBLE);
                 latLngBuilder = LatLngBounds.builder();
                 addMarkerView(0);
-            }else{
+            } else {
                 menuTv.setVisibility(View.GONE);
                 deviceVp.setVisibility(View.INVISIBLE);
             }
-        }else{
+        } else {
             menuTv.setVisibility(View.GONE);
             deviceVp.setVisibility(View.INVISIBLE);
         }
 
     }
+
     //递归遍历DeviceList添加Marker
     public void addMarkerView(final int position) {
         final McDeviceInfo info = mDeviceList.get(position);
+        checkOwner(info);
         String imgUrl = CommonUtils.getMarkerIconUrl(info.getTypePicUrl(), info.getWorkStatus());
         final McDeviceLocation location = info.getLocation();
         final LatLng latLng = new LatLng(location.getLat(), location.getLng());
@@ -351,8 +350,9 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         ImageView img = new ImageView(getActivity());
-                        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(getActivity(), 50), DensityUtil.dip2px(getActivity(), 37)));
                         img.setImageDrawable(resource);
+                        img.setScaleType(ImageView.ScaleType.FIT_XY);
                         MarkerOptions options = new MarkerOptions();
                         options.icon(BitmapDescriptorFactory.fromView(img));
                         options.position(latLng);
@@ -371,6 +371,14 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     }
 
+    private void checkOwner(McDeviceInfo info) {
+        if (!UserHelper.isOwner(getActivity(), memberId)) {
+            boolean isOwner = !Constants.isNoEditInMcMember(info.getId(), info.getType());
+            if (isOwner) {
+                UserHelper.setOwner(getActivity(), memberId, true);
+            }
+        }
+    }
 
 
     public void updateViewPager(int pageLen) {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="oil_chat_title_bottom">8dp</dimen>
+    <dimen name="oil_chat_title_left">10dp</dimen>
+    <dimen name="device_detail_custom_left">2dp</dimen>
+    <dimen name="device_detail_custom_width">40dp</dimen>
+    <dimen name="login_other_top">24dp</dimen>
+    <dimen name="guide_dot_top">15dp</dimen>
+</resources>

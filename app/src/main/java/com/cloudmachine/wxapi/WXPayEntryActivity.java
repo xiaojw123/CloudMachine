@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.cloudmachine.activities.RepairPayDetailsActivity;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.ui.home.activity.PayInfoActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
@@ -54,6 +55,7 @@ public class WXPayEntryActivity extends BaseAutoLayoutActivity implements IWXAPI
 		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
 			if (resp.errCode == 0) {
 				mRxManager.post(RepairPayDetailsActivity.FINISH_PAY_DETAIL,"支付成功");
+				mRxManager.post(PayInfoActivity.FINISH_PAY_SALALARY,"支付成功");
 				mRxManager.post(QuestionCommunityActivity.GO_TO_MY_ORDER,null);
                 finish();
 //				Bundle b = new Bundle();
@@ -63,6 +65,7 @@ public class WXPayEntryActivity extends BaseAutoLayoutActivity implements IWXAPI
 //				Constants.toActivity(WXPayEntryActivity.this, PaymentResultsActivity.class,b,true);
 			} else {
 				mRxManager.post(RepairPayDetailsActivity.FINISH_PAY_DETAIL,"支付失败");
+				mRxManager.post(PayInfoActivity.FINISH_PAY_SALALARY,"支付失败");
 				mRxManager.post(QuestionCommunityActivity.FAILED_WX_PAY,null);
                 finish();
 //				Bundle b = new Bundle();

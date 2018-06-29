@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.cloudmachine.R;
+import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.widgets.wheelview.adapter.WheelViewAdapter;
 
 
@@ -57,6 +58,8 @@ public class WheelView extends View {
 	//*/
 	private int[] SHADOWS_COLORS = new int[] { 0xefE9E9E9,
 			0xcfE9E9E9, 0x3fE9E9E9 };
+
+
 
 	/** Top and bottom items offset (to hide that) */
 	private static final int ITEM_OFFSET_PERCENT = 0;
@@ -676,7 +679,7 @@ public class WheelView extends View {
 		Paint paint = new Paint();
 		paint.setColor(getResources().getColor(R.color.wheelview_province_line_border));
 		// 设置线宽
-		paint.setStrokeWidth((float) 3);
+		paint.setStrokeWidth(2f);
 		// 绘制上边直线
 		canvas.drawLine(0, center - offset, getWidth(), center - offset, paint);
 		// 绘制下边直线

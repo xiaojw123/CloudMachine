@@ -18,6 +18,7 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -25,9 +26,11 @@ import com.cloudmachine.R;
 import com.cloudmachine.alipay.PayResult;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseFragment;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.model.JsInteface;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.utils.CommonUtils;
@@ -35,6 +38,7 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileStorage;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.PhotosGallery;
+import com.cloudmachine.utils.VersionU;
 
 import org.json.JSONObject;
 
@@ -85,24 +89,36 @@ public class WebFragment extends BaseFragment {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        mWebView.setWebViewClient(new H5WebClient());
         mWebView.setWebChromeClient(new MyWebChromeClient());
         mWebView.addJavascriptInterface(new JsInteface(getActivity(), mHandler), JS_INTERFACE_NAME);
         loadUrl();
     }
+    private class H5WebClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            return false;
+        }
+    }
+
 
     public void loadUrl(String loadUrl) {
         mUrl = loadUrl;
         if (UserHelper.isLogin(getActivity())) {
             fillParams(PARAMS_KEY_MEMBERID, UserHelper.getMemberId(getActivity()));
         }
-        mWebView.loadUrl(mUrl);
+        loadWebUrl();
+    }
+
+    private void loadWebUrl() {
+        mWebView.loadUrl(CommonUtils.fillParams(mUrl, QuestionCommunityActivity.PARAMS_KEY_VERSION, VersionU.getVersionName()));
     }
 
     public void loadUrl() {
         if (UserHelper.isLogin(getActivity())) {
             fillParams(PARAMS_KEY_MEMBERID, UserHelper.getMemberId(getActivity()));
         }
-        mWebView.loadUrl(mUrl);
+        loadWebUrl();
     }
 
 
@@ -265,15 +281,12 @@ public class WebFragment extends BaseFragment {
                         Constants.toActivityForR(getActivity(), LoginActivity.class, null);
                     }
                     break;
-                case FLUSH_PAGE:
-                    loadUrl();
-                    break;
                 case Constants.HANDLER_JS_JUMP:
                     String methodStr = (String) msg.obj;
                     if (JsInteface.Go_Login_Page.equals(methodStr)) {
-                        Bundle b = new Bundle();
-                        b.putInt("flag", 4);
-                        Constants.toActivityForR(getActivity(), LoginActivity.class, b, FLUSH_PAGE);
+                        Intent loginIntent=new Intent(getActivity(),LoginActivity.class);
+                        loginIntent.putExtra("flag", 4);
+                        startActivityForResult(loginIntent,FLUSH_PAGE);
                     }
                     break;
             }
@@ -349,5 +362,15 @@ public class WebFragment extends BaseFragment {
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case FLUSH_PAGE:
+                loadUrl();
+                break;
+        }
+
+    }
 }
 

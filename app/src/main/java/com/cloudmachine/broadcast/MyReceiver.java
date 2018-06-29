@@ -4,16 +4,21 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cloudmachine.R;
 import com.cloudmachine.activities.AboutCloudActivity;
+import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.helper.CustomActivityManager;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
+import com.cloudmachine.ui.home.activity.IncomeSpendActivity;
 import com.cloudmachine.ui.home.activity.MessageDetailActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.homepage.activity.ViewMessageActivity;
@@ -49,7 +54,7 @@ public class MyReceiver extends BroadcastReceiver {
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知, content:" + context + "___Activity__" + CustomActivityManager.getInstance().getTopActivity());
-            updateView(bundle);
+            updateView(context, bundle);
             int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
 
@@ -80,7 +85,7 @@ public class MyReceiver extends BroadcastReceiver {
     }
 
     // TODO: 2017/11/30 通知类型 type
-    private void updateView(Bundle bundle) {
+    private void updateView(Context context, Bundle bundle) {
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
         if (!TextUtils.isEmpty(extras)) {
             try {
@@ -100,6 +105,10 @@ public class MyReceiver extends BroadcastReceiver {
                                 String url = extraJson.optString("url");
                                 ((BaseAutoLayoutActivity) topAct).showDepsitPayPop(url);
                             }
+                            break;
+                        case "17":
+                            MediaPlayer player = MediaPlayer.create(context, R.raw.diaoluo);
+                            player.start();
                             break;
 
                     }
@@ -202,16 +211,29 @@ public class MyReceiver extends BroadcastReceiver {
                             break;
                         case 12:
                         case 14:
-                            Intent tbIntent=new Intent(context,QuestionCommunityActivity.class);
+                            Intent tbIntent = new Intent(context, QuestionCommunityActivity.class);
                             tbIntent.putExtra(QuestionCommunityActivity.H5_URL, extraJson.optString("url"));
                             tbIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(tbIntent);
                             break;
                         case 15://消息内容跳转
-                            String idStr=extraJson.getString("id");
-                            Intent detailIntent=new Intent(context, MessageDetailActivity.class);
-                            detailIntent.putExtra(MessageDetailActivity.MESSAGE_ID,idStr);
+                            String idStr = extraJson.getString("id");
+                            Intent detailIntent = new Intent(context, MessageDetailActivity.class);
+                            detailIntent.putExtra(MessageDetailActivity.MESSAGE_ID, idStr);
                             context.startActivity(detailIntent);
+                            break;
+                        case 16://支出
+                            Bundle spendData = new Bundle();
+                            spendData.putInt(IncomeSpendActivity.TYPE, IncomeSpendActivity.TYPE_SPEND);
+                            gotoActivity(context, IncomeSpendActivity.class, spendData);
+                            break;
+                        case 17://收入
+                            Bundle incomeData = null;
+                            if (!UserHelper.isOwner(context, UserHelper.getMemberId(context))) {
+                                incomeData = new Bundle();
+                                incomeData.putBoolean(IncomeSpendActivity.IS_MEMBER, true);
+                            }
+                            gotoActivity(context, IncomeSpendActivity.class, incomeData);
                             break;
 
                         default:
@@ -230,5 +252,15 @@ public class MyReceiver extends BroadcastReceiver {
         }
 
     }
+
+    public void gotoActivity(Context context, Class<?> cls, Bundle bundle) {
+        Intent intent = new Intent(context, cls);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        context.startActivity(intent);
+
+    }
+
 
 }

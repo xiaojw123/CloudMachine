@@ -28,6 +28,7 @@ import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.PermissionsListAsync;
@@ -250,6 +251,7 @@ public class Constants {
     public static final int HANDLER_CHANGE_BOX_ACT = HANDLER_H5_JUMP + 1;
     public static final int HANDLER_RESULT_APLIPAY = HANDLER_CHANGE_BOX_ACT + 1;
     public static final int HANDLER_UPDATE_PROGRESS = HANDLER_RESULT_APLIPAY + 1;
+    public static final int HANDLER_BACk_LOCATION=HANDLER_UPDATE_PROGRESS+1;
 
     public static final String URL_H5_ARGUMENT = "http://www.cloudm.com/agreement";
     public static final String URL_LOGOCLOUDM = "https://f1.cloudm.com/logocloudm.png";
@@ -308,7 +310,9 @@ public class Constants {
     public static final String P_TYPEID = "typeid";
     public static final String P_BRANDID = "brandid";
     public static final String P_MODELID = "modelid";
-
+    public static final String P_PAYTYPE="payType";
+    public static final String P_PAYAMOUNT="payAmount";
+    public static final String P_RECEIVERLIST="receiverList";
     public static final String P_EDITRESULTSTRING = "editResultString";
     public static final String P_EDITRESULTITEM = "editResultItem";
     public static final String P_IMAGEBROWERDELETE = "imageBrowerDelete";
@@ -1447,9 +1451,14 @@ public class Constants {
     public static final String IS_VIDEO ="is_video";
     public static final String IMEI="imei";
     public static final String ERROR_MESSAGE="error_message";
-
+    public static final String OPERATOR_LIST="operator_list";
+    public static final String NAME="name";
+    public static final String MOBILE="mobie";
+    public static final String RELATION="relation";
+    public static final String RELATION_POSITION="relation_position";
 
     public static void callJsMethod(WebView webView, String jsParams) {
+        AppLog.print("call jsMethod__"+jsParams);
         webView.loadUrl("javascript:" + jsParams);
     }
 

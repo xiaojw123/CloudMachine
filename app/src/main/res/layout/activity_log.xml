@@ -202,14 +202,14 @@
         android:layout_marginTop="@dimen/spa8"
         android:text="忘记密码?"
         android:textColor="@color/cor10"
-        android:textSize="@dimen/siz6"></TextView>
+        android:textSize="@dimen/siz6"/>
 
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="94dp"
+        android:layout_marginTop="@dimen/login_other_top"
         android:gravity="center_vertical">
 
 
@@ -242,7 +242,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="18dp">
+        android:layout_marginTop="@dimen/dimen_size_18">
 
         <ImageView
             android:id="@+id/iv_wechat"

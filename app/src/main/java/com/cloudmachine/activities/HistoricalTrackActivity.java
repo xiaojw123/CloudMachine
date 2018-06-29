@@ -11,7 +11,9 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -37,6 +39,7 @@ import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.LocusListAsync;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
 import com.cloudmachine.utils.widgets.wheelview.WheelView;
@@ -193,7 +196,7 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
         for (int i = 0; i < locationXY.size(); i++) {
             polylineOptions.add(new LatLng(locationXY.get(i).getY(), locationXY.get(i).getX()));
         }
-        polylineOptions.width(10);
+        polylineOptions.width(DensityUtil.dip2px(this,3));
         polylineOptions.color(Color.parseColor("#7bb4f5"));
         mVirtureRoad = mAmap.addPolyline(polylineOptions);
         pointSize = mVirtureRoad.getPoints().size();
@@ -204,21 +207,26 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
 //		markerOptions.setFlat(true);
         markerOptions.anchor(0.5f, 0.5f);
         markerOptions.icon(BitmapDescriptorFactory
-                .fromResource(R.drawable.location_marker));
+                .fromView(CommonUtils.getMarkerView(this,32,32,R.drawable.location_marker)));
         markerOptions.position(polylineOptions.getPoints().get(0));
         mMoveMarker = mAmap.addMarker(markerOptions);
         mMoveMarker.setRotateAngle((float) getAngle(0));
 //		mAmap.moveCamera(CameraUpdateFactory.changeLatLng(mMoveMarker.getPosition()));
+
+
+
         if (polylineOptions.getPoints().size() > 2) {
             mAmap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
-                    .fromResource(R.drawable.location_start))
+                    .fromView(CommonUtils.getMarkerView(this,19,25,R.drawable.location_start)))
                     .position(polylineOptions.getPoints().get(0)));
             mAmap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
-                    .fromResource(R.drawable.location_end))
+                    .fromView(CommonUtils.getMarkerView(this,19,25,R.drawable.location_end)))
                     .position(polylineOptions.getPoints().get(polylineOptions.getPoints().size() - 1)));
         }
         initMapMarker();
     }
+
+
 
 
     private void initMapMarker() {

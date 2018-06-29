@@ -38,5 +38,6 @@ public class URLs {
     public static String GET_EVALUATE_INFO=ApiConstants.CLOUDM_YJX_HOST+"device/getEvaluateInfo";
 
     public static String GET_EVALUATE_INFO_ALLIANCE=ApiConstants.CLOUDM_YJX_HOST+"device/getEvaluateInfoFromAlliance";
+    public static String CONFIRMPAY_URL=ApiConstants.CLOUDM_HOST+"salary/confirmPay";
 
 }

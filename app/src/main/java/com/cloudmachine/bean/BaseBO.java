@@ -12,8 +12,17 @@ public class BaseBO<T> implements Serializable {
 	private static final long serialVersionUID = -1495290738122413991L;
 
 	private boolean ok;
-	
+
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
 	private int code;
+	private boolean success;
 	
 	private String message;
 	private T result;

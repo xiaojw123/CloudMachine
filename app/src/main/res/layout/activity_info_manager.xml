@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    tools:context="com.cloudmachine.ui.home.activity.InfoManagerActivity">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/manager_title_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="身份管理中心" />
+
+    <LinearLayout
+        android:id="@+id/manager_layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dimen_size_30"
+        android:layout_below="@+id/manager_title_ctv"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/pad2"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="完成以下所有信息，即可开通"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/text_size_13_sp"
+            />
+
+        <TextView
+            android:id="@+id/ticket_question_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/small_ticket"
+            android:textColor="@color/c_ff8901"
+            android:drawablePadding="@dimen/dimen_size_2"
+            android:drawableRight="@drawable/ic_question_mark1"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/manager_item_cotainer"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:showDividers="middle"
+        android:divider="@drawable/divider_line_horztial"
+        android:layout_below="@+id/manager_layout1"
+        >
+
+
+        <RelativeLayout
+            android:id="@+id/mamager_personalinfo_rl"
+            style="@style/Layout_Item2_Style"
+            >
+            <TextView
+                android:id="@+id/manger_item_title"
+                style="@style/manager_item_title_style"
+                android:text="个人信息" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_size_17"
+                android:layout_marginLeft="@dimen/dimen_size_4"
+                android:layout_alignTop="@+id/manger_item_title"
+                android:layout_toRightOf="@+id/manger_item_title"
+                android:paddingLeft="@dimen/dimen_size_5"
+                android:paddingRight="@dimen/dimen_size_5"
+                android:textColor="@color/c_ff8901"
+                android:text="优先"
+                android:textSize="@dimen/text_size_11_sp"
+                android:gravity="center"
+                android:background="@drawable/bg_manager_mark"
+                />
+
+            <TextView
+                android:layout_below="@+id/manger_item_title"
+                style="@style/manager_item_content_style"
+                android:text="完善身份证信息，确保资金安全" />
+
+
+            <TextView
+                android:id="@+id/person_status_tv"
+                style="@style/manager_item_status_style"
+                android:textColor="@color/c_ff8901"
+                android:text="@string/no_complete" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/mamager_bank_rl"
+            style="@style/Layout_Item2_Style"
+            >
+
+            <TextView
+                android:id="@+id/bank_item_title"
+                style="@style/manager_item_title_style"
+                android:text="银行卡验证" />
+
+            <TextView
+                android:layout_below="@+id/bank_item_title"
+                style="@style/manager_item_content_style"
+                android:text="上传银行卡信息，还款方便便捷" />
+
+
+            <TextView
+                android:id="@+id/bank_status_tv"
+                style="@style/manager_item_status_style"
+                android:textColor="@color/c_64baa4"
+                android:text="@string/no_verify" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/mamager_face_rl"
+            style="@style/Layout_Item2_Style"
+            >
+
+            <TextView
+                android:id="@+id/face_item_title"
+                style="@style/manager_item_title_style"
+                android:text="刷脸验证" />
+
+            <TextView
+                android:layout_below="@+id/face_item_title"
+                style="@style/manager_item_content_style"
+                android:text="体验刷脸新科技，享受更多服务" />
+
+
+            <TextView
+                android:id="@+id/face_status_tv"
+                style="@style/manager_item_status_style"
+                android:textColor="@color/c_64baa4"
+                android:text="@string/no_verify" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/mamager_contact_rl"
+            style="@style/Layout_Item2_Style"
+            >
+
+            <TextView
+                android:id="@+id/contact_item_title"
+                style="@style/manager_item_title_style"
+                android:text="联系人信息"
+
+                />
+
+            <TextView
+                android:layout_below="@+id/contact_item_title"
+                style="@style/manager_item_content_style"
+                android:text="添加联系人信息，体验更多服务" />
+
+
+            <TextView
+                android:id="@+id/contact_status_tv"
+                style="@style/manager_item_status_style"
+                android:textColor="@color/c_64baa4"
+                android:text="@string/no_complete" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/mamager_operator_rl"
+            style="@style/Layout_Item2_Style"
+
+            >
+
+            <TextView
+                android:id="@+id/operator_item_title"
+                style="@style/manager_item_title_style"
+                android:text="运营商授权" />
+
+            <TextView
+                android:layout_below="@+id/operator_item_title"
+                style="@style/manager_item_content_style"
+                android:text="授权运营商信息，提升信用额度" />
+
+
+            <TextView
+                android:id="@+id/operator_status_tv"
+                style="@style/manager_item_status_style"
+                android:textColor="@color/c_64baa4"
+                android:text="@string/no_authorization" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <com.cloudmachine.autolayout.widgets.RadiusButtonView
+        android:id="@+id/manager_ticket_btn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spa3"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/pad1"
+        android:layout_marginRight="@dimen/pad1"
+        app:rbtn_fillColor_dw="@color/cor5"
+        android:layout_marginTop="@dimen/dimen_size_20"
+        app:rbtn_fillColor_nm="@color/cor5"
+        android:layout_below="@+id/manager_item_cotainer"
+        android:layout_centerHorizontal="true"
+        app:rbtn_strokeColor="@color/cor5"
+        app:rbtn_text="开通小票"
+        app:rbtn_textColor="@color/white"
+        app:rbtn_textSize="@dimen/siz3" />
+
+
+
+    <LinearLayout
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/manager_ticket_btn"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="个人隐私安全信息保障中 "
+            android:textSize="@dimen/text_size_13_sp"
+            android:textColor="@color/cor10"
+            android:layout_marginBottom="@dimen/pad1"
+            />
+
+        <TextView
+            android:id="@+id/manger_more_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_13_sp"
+            android:textColor="@color/cor10"
+            android:text="查看更多>"
+            />
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

@@ -329,8 +329,8 @@
                 <TextView
                     android:id="@+id/item_purse_tv"
                     style="@style/HomeMenuTvStyle"
-                    android:drawableLeft="@drawable/icon_card_coupon_1"
-                    android:text="@string/card_coupon" />
+                    android:drawableLeft="@drawable/icon_purse"
+                    android:text="@string/purse" />
             </FrameLayout>
 
 

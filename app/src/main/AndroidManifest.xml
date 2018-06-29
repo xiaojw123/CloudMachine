@@ -87,6 +87,8 @@
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
     <uses-permission android:name="android.permission.SET_DEBUG_APP" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <!-- 照相及图片选择器 -->
     <uses-feature
@@ -524,7 +526,7 @@
             android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="f2d4c2e7ac5f3f997b8278ab" />
+            android:value="${JPUSH_KEY_VALUE}" />
         <!--
             UMENG_APPKEY
             线上环境:59e5ba57677baa51d3000b93
@@ -573,6 +575,23 @@
             android:name=".ui.home.activity.FullScreenActivity"
             android:screenOrientation="landscape" />
         <activity android:name=".ui.home.activity.OilSyncActivity" />
+        <activity android:name=".ui.home.activity.AuthNameActivity" />
+        <activity android:name=".ui.home.activity.SalaryActivity" />
+        <activity android:name=".ui.home.activity.PersonChooseActivity" />
+        <activity android:name=".ui.home.activity.PayInfoActivity" />
+        <activity android:name=".ui.home.activity.IncomeSpendActivity" />
+        <activity android:name=".ui.home.activity.AuthPersonalInfoActivity" />
+        <activity android:name=".ui.home.activity.InfoManagerActivity" />
+        <activity android:name=".ui.home.activity.FaceInfoActivity" />
+        <activity
+            android:name=".camera.CameraActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ui.home.activity.BankVerifyctivity" />
+        <activity android:name=".ui.home.activity.TicketActivity" />
+        <activity android:name=".ui.home.activity.ContactActivity" />
+        <activity android:name=".ui.home.activity.OperateActivity" />
+        <activity android:name=".ui.home.activity.AddressBookActivity" />
+        <activity android:name=".ui.home.activity.RelationActivity"></activity>
     </application>
 
 </manifest>

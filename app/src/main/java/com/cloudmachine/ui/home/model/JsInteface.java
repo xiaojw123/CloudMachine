@@ -41,14 +41,17 @@ public class JsInteface {
     private Handler mHandler;
     private static final String CLOSE_EVENT = "close_event";
     public static final String Go_Login_Page = "goLoginPage()";
+    public static final String SCAN_EVENT = "scan_event";
+    public static final String LOCATION_EVENT = "location_event";
     private static final String CLICK_REPAIR = "click_repair()";
+    private static final String Go_Scan_Code = "goScan()";
     public static final String ALERT_TYPE = "alert_type";
     public static final String ALERT_TIPS = "alert_tips";
     public static final String ALERT_EVENT = "alert_event";
     public static final String UPLOAD_IMG = "upload_img";
-    public static final String ALERT_IMAGE="alert_image";
-    public static final String ALERT_IMAGE_WARN="CM_icon_warning";
-    public static final String ALERT_IMAGE_CONFIRM="CM_icon_confirm";
+    public static final String ALERT_IMAGE = "alert_image";
+    public static final String ALERT_IMAGE_WARN = "CM_icon_warning";
+    public static final String ALERT_IMAGE_CONFIRM = "CM_icon_confirm";
     public static final String UPLOAD_QINIU_IMG = "upload_qiniu_img_qrcode";
     Context mContext;
 
@@ -58,14 +61,18 @@ public class JsInteface {
 
     }
 
+    @JavascriptInterface
     public String getVersionName() {
         return VersionU.getVersionName();
+
     }
 
+    @JavascriptInterface
     public String getVersionCode() {
         return VersionU.getVersionCode();
     }
 
+    @JavascriptInterface
     public void clearWebViewCache() {
         PermissionsChecker checker = new PermissionsChecker(mContext);
         try {
@@ -84,11 +91,11 @@ public class JsInteface {
     }
 
     @JavascriptInterface
-    public void gotoNextWebPage(String url){
+    public void gotoNextWebPage(String url) {
         MobclickAgent.onEvent(mContext, MobEvent.TIME_H5_HOME_NAV_MENU_ITEM);
-        Bundle bundle=new Bundle();
-        bundle.putString(QuestionCommunityActivity.H5_URL,url);
-        Constants.toActivity((Activity) mContext,QuestionCommunityActivity.class,bundle);
+        Bundle bundle = new Bundle();
+        bundle.putString(QuestionCommunityActivity.H5_URL, url);
+        Constants.toActivity((Activity) mContext, QuestionCommunityActivity.class, bundle);
     }
 
 
@@ -200,6 +207,25 @@ public class JsInteface {
         } else if (jobj.has(CLOSE_EVENT)) {
             ((Activity) mContext).finish();
 
+        } else if (jobj.has("scan")) {
+            JSONObject scanJobj = jobj.optJSONObject("scan");
+            String scanEvent = scanJobj.optString(SCAN_EVENT);
+            if (Go_Scan_Code.equals(scanEvent)) {
+                if (mContext instanceof QuestionCommunityActivity) {
+                    ((QuestionCommunityActivity) mContext).gotoScanCode();
+                } else if (mContext instanceof HomeActivity) {
+                    ((HomeActivity) mContext).gotoScanCode();
+                }
+            }
+        } else if (jobj.has("location")) {
+            JSONObject locJobj = jobj.optJSONObject("location");
+            String locEvent = locJobj.optString(LOCATION_EVENT);
+            if (!TextUtils.isEmpty(locEvent)) {
+                Message locMsg = mHandler.obtainMessage();
+                locMsg.what = Constants.HANDLER_BACk_LOCATION;
+                locMsg.obj = locEvent;
+                mHandler.sendMessage(locMsg);
+            }
         } else {
             Gson gson = new Gson();
             JsBody jsBody = gson.fromJson(jsonStr, JsBody.class);

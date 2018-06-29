@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/public_bg"
+    android:layout_height="match_parent"
+    tools:context="com.cloudmachine.ui.home.activity.PersonChooseActivity">
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/person_choose_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="@string/choose_person"
+        app:common_right_textcolor="@color/cor12"
+        app:common_right_text_enable="false"
+        app:common_right_text="@string/finish"
+        />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/person_choose_rlv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spa7"
+        android:overScrollMode="never"
+        android:background="@color/white"
+        android:layout_below="@+id/person_choose_ctv"
+        />
+
+    <TextView
+        android:id="@+id/person_choose_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_member"
+        android:drawableTop="@drawable/ic_member_empty"
+        android:drawablePadding="@dimen/pad1"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
+
+
+
+</RelativeLayout>

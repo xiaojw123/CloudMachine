@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/public_bg"
+        tools:context="com.cloudmachine.ui.home.activity.BankVerifyctivity">
+
+        <com.cloudmachine.widget.CommonTitleView
+            android:id="@+id/bank_verify_titleview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:common_title_name="@string/bank_card_verify" />
+
+
+        <LinearLayout
+            style="@style/Layout_Item_Style"
+            android:orientation="horizontal">
+
+
+            <TextView
+                style="@style/layout_key_style"
+                android:text="持卡人" />
+
+            <com.cloudmachine.utils.widgets.ClearEditTextView
+                android:id="@+id/bank_verify_name"
+                style="@style/layout_value_style"
+                android:hint="持卡人姓名" />
+
+        </LinearLayout>
+
+        <View style="@style/CommonLandscapeLine" />
+
+        <LinearLayout
+            style="@style/Layout_Item_Style"
+            android:orientation="horizontal">
+
+
+            <TextView
+                style="@style/layout_key_style"
+                android:text="手机号码" />
+
+            <com.cloudmachine.utils.widgets.ClearEditTextView
+                android:id="@+id/bank_verify_mobile"
+                style="@style/layout_value_style"
+                android:hint="请输入银行预留手机号"
+                android:inputType="number"
+                />
+
+        </LinearLayout>
+
+        <View style="@style/CommonLandscapeLine" />
+
+        <LinearLayout
+            style="@style/Layout_Item_Style"
+            android:orientation="horizontal">
+
+
+            <TextView
+                style="@style/layout_key_style"
+                android:text="银行卡号" />
+
+            <com.cloudmachine.utils.widgets.ClearEditTextView
+                android:id="@+id/bank_verify_cardno"
+                style="@style/layout_value_style"
+                android:hint="请输入银行卡号" />
+
+        </LinearLayout>
+
+
+        <com.cloudmachine.autolayout.widgets.RadiusButtonView
+            android:id="@+id/bank_verify_submit_btn"
+            style="@style/RadiusButtonStyle"
+            android:layout_marginTop="@dimen/dimen_size_20"
+            android:layout_below="@+id/item_layout_container"
+            app:rbtn_fillColor_dw="@color/cor5"
+            app:rbtn_fillColor_nm="@color/cor5"
+            app:rbtn_strokeColor="@color/cor5"
+            app:rbtn_text="@string/submit"
+            app:rbtn_textColor="@color/cor2015"
+            app:rbtn_textSize="@dimen/siz3" />
+
+
+    </LinearLayout>
+
+    <include layout="@layout/security_info_state" />
+</merge>

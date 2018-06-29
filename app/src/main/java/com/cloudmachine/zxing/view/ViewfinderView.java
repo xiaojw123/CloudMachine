@@ -96,7 +96,7 @@ public final class ViewfinderView extends View {
         resultColor = array.getColor(R.styleable.ViewfinderView_result_color, 0xB0000000);
         labelTextColor = array.getColor(R.styleable.ViewfinderView_label_text_color, 0x90FFFFFF);
         labelText = array.getString(R.styleable.ViewfinderView_label_text);
-        labelTextSize = array.getFloat(R.styleable.ViewfinderView_label_text_size, 36f);
+        labelTextSize = array.getFloat(R.styleable.ViewfinderView_label_text_size, DensityUtil.dip2px(context,12));
 
         // Initialize these once for performance rather than calling them every time in onDraw().
         paint = new Paint();

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="@dimen/dimen_size_80"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/pad2"
+            android:text="@string/payee"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/text_size_14_sp" />
+
+
+        <FrameLayout
+            android:id="@+id/item_collection_per"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/item_collection_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:hint="@string/choose_payee"
+                android:textColor="@color/cor8"
+                android:textColorHint="@color/cor11"
+                android:textSize="@dimen/text_size_14_sp" />
+
+
+
+
+
+
+            <ImageView
+                android:id="@+id/item_collection_del"
+                android:layout_width="@dimen/dimen_size_22"
+                android:layout_height="@dimen/dimen_size_22"
+                android:layout_marginRight="@dimen/dimen_size_16"
+                android:src="@drawable/ic_salary_del"
+                android:layout_gravity="right|center_vertical"
+                android:visibility="gone"
+                />
+
+
+
+
+
+            <ImageView
+                android:id="@+id/item_collection_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="@dimen/dimen_size_16"
+                android:src="@drawable/arrow_right"
+                />
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+    <View style="@style/CommonLandscapeLine" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="@dimen/dimen_size_80"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/pad2"
+            android:text="@string/t_money"
+            android:textColor="@color/cor9"
+            android:textSize="@dimen/text_size_14_sp" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingRight="@dimen/dimen_size_16"
+            >
+
+
+            <!--@dimen/dimen_size_90-->
+            <com.cloudmachine.utils.widgets.ClearEditTextView
+                android:id="@+id/item_collection_edt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:hint="@string/input_salary_amount"
+                android:focusable="false"
+                android:textColor="@color/cor8"
+                android:textColorHint="@color/cor11"
+                android:singleLine="true"
+                android:inputType="numberDecimal"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_toLeftOf="@+id/item_collection_record"
+
+                />
+
+
+
+            <TextView
+                android:id="@+id/item_collection_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_12_sp"
+                android:textColor="@color/cor20"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="@dimen/pad1"
+                />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/item_collection_bline"
+        style="@style/CommonLandscapeLine"
+        android:visibility="gone"
+        />
+
+
+</LinearLayout>

@@ -30,10 +30,6 @@ public class HomeModel implements HomeContract.Model {
         return Api.getDefault(HostType.HOST_CLOUDM).getCountByStatus(memberId,status).compose(RxHelper.<Integer>handleResult());
     }
 
-    @Override
-    public Observable<JsonObject> getWalletAmount(long memberId) {
-        return Api.getDefault(HostType.HOST_CLOUDM).getWalletAmount(memberId).compose(RxHelper.<JsonObject>handleResult());
-    }
 
     @Override
     public Observable<ForceVBean> forceUpdate() {

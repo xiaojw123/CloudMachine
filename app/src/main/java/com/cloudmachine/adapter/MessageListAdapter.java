@@ -119,9 +119,17 @@ public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
                 case 5:
                 case 8:
                 case 9:
-                    Glide.with(mContext).load(item.getImgpath())
-                            .error(R.drawable.ic_message_system)
-                            .into(itemMessageImg);
+                case 10:
+                case 11:
+                    if (messageType==10||messageType==11){
+                        Glide.with(mContext).load(item.getImgpath())
+                                .error(R.drawable.ic_message_money)
+                                .into(itemMessageImg);
+                    }else{
+                        Glide.with(mContext).load(item.getImgpath())
+                                .error(R.drawable.ic_message_system)
+                                .into(itemMessageImg);
+                    }
                     //系统消息
 //                    itemMessageImg.setImageResource(R.drawable.ic_message_system);
                     itemTitleTv.setText(item.getTitle());

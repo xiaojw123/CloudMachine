@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/public_bg"
+    tools:context="com.cloudmachine.ui.home.activity.IncomeSpendActivity">
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/inspend_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="@string/income_spend_detail"
+        />
+
+
+    <LinearLayout
+        android:id="@+id/inspend_title_cotainer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@+id/inspend_title_tv"
+        >
+        <TextView
+            android:id="@+id/inspend_income_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size_16_sp"
+            android:textColor="@color/coupon_title_textcolor"
+            android:gravity="center"
+            android:text="@string/income"
+            />
+
+
+
+        <TextView
+            android:id="@+id/inspend_spend_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size_16_sp"
+            android:textColor="@color/coupon_title_textcolor"
+            android:gravity="center"
+            android:text="@string/spend"
+            />
+
+    </LinearLayout>
+
+
+
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/inspend_in_xrlv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="true"
+        android:saveEnabled="false"
+        android:layout_below="@+id/inspend_title_cotainer"
+        />
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/inspend_out_xrlv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="true"
+        android:saveEnabled="false"
+        android:layout_below="@+id/inspend_title_cotainer"
+        android:visibility="gone"
+        />
+
+
+
+    <FrameLayout
+        android:id="@+id/inspend_calendar_cotainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pop_bg_color"
+        android:animateLayoutChanges="true"
+        android:visibility="gone"
+        >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_200"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:layout_gravity="bottom"
+        >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/common_layout_height"
+            android:background="@color/cor13"
+            >
+            <TextView
+                android:id="@+id/inspned_wv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/common_left_gap"
+                android:textColor="@color/c_ff8901"
+                android:text="@string/common_cancel" />
+
+            <TextView
+                android:id="@+id/inspned_wv_sure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:paddingRight="@dimen/common_left_gap"
+                android:textColor="@color/c_ff8901"
+                android:text="@string/common_determine" />
+
+            <TextView
+                android:id="@+id/inspned_wv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/cor8"
+                android:text="@string/select_time" />
+
+        </FrameLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            >
+
+
+            <com.cloudmachine.utils.widgets.wheelview.WheelView
+                android:id="@+id/inspned_wv_year"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                />
+
+            <com.cloudmachine.utils.widgets.wheelview.WheelView
+                android:id="@+id/inspned_wv_month"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    </FrameLayout>
+    <TextView
+        android:id="@+id/inspend_empty_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dimen_size_120"
+        android:drawablePadding="@dimen/pad1"
+        android:drawableTop="@drawable/ic_oil_empty"
+        android:text="暂无历史数据"
+        android:textColor="@color/cor10"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
+
+
+</RelativeLayout>

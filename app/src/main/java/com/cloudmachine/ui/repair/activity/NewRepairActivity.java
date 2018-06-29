@@ -312,6 +312,8 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
             Constants.MyToast("机器铭牌号码不能为空！");
         } else if (TextUtils.isEmpty(locAddress)) {
             Constants.MyToast("机器位置信息不能为空！");
+        }else  if (TextUtils.isEmpty(vdiscription)){
+            Constants.MyToast("故障描述不能为空！");
         } else {
             long memberId = -1;
             if (UserHelper.isLogin(this)) {

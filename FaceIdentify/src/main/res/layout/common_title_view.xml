@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+        android:layout_height="49dp"
+    android:background="@drawable/bg_common_title"
+   >
+
+        <ImageView
+            android:id="@+id/common_titleview_back_img"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:src="@drawable/ic_back" />
+
+
+        <TextView
+            android:id="@+id/common_titleview_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxEms="10"
+            android:singleLine="true"
+            android:textColor="@color/cor8"
+            android:textSize="18sp"
+            />
+
+
+        <TextView
+            android:id="@+id/common_titleview_right_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:gravity="center_vertical"
+            android:paddingRight="14dp"
+            android:textSize="14sp"
+            />
+        <!--android:textColor="@color/cor9"-->
+        <ImageView
+            android:id="@+id/common_titleview_right_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:paddingRight="10dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:visibility="gone"
+            />
+
+
+
+</FrameLayout>

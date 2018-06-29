@@ -47,6 +47,7 @@ import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.net.task.ImageUploadAsync;
 import com.cloudmachine.net.task.UpdateMemberInfoAsync;
+import com.cloudmachine.ui.home.activity.InfoManagerActivity;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.personal.contract.PersonalDataContract;
 import com.cloudmachine.ui.personal.model.PersonalDataModel;
@@ -114,6 +115,10 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     ImageView mArrowTip1;
     @BindView(R.id.my_qrcode)
     RelativeLayout myQrCodeRl;
+    @BindView(R.id.my_certification)
+    RelativeLayout certificateRl;
+
+
 
 
     private int imgsign = -1;
@@ -223,6 +228,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         mNickLayout.setOnClickListener(this);
         mMyPwd.setOnClickListener(this);
         myQrCodeRl.setOnClickListener(this);
+        certificateRl.setOnClickListener(this);
     }
 
     @Override
@@ -233,6 +239,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.my_certification://身份认证
+                Constants.toActivity(this, InfoManagerActivity.class,null);
+                break;
             case R.id.my_qrcode:
                 Constants.toActivity(this, MyQRCodeActivity.class, null);
                 break;

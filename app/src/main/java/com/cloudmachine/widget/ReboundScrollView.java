@@ -111,16 +111,13 @@ public class ReboundScrollView extends ScrollView {
      */
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        AppLog.print("dispatchTouchEvent____");
         if (contentView == null) {
             return super.dispatchTouchEvent(ev);
         }
-
         int action = ev.getAction();
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                AppLog.print("dispatchTouchEvent____actionDown");
 
                 //判断是否可以上拉和下拉
                 canPullDown = isCanPullDown();
@@ -133,7 +130,6 @@ public class ReboundScrollView extends ScrollView {
                 break;
 
             case MotionEvent.ACTION_UP:
-                AppLog.print("dispatchTouchEvent____actionUp");
 
                 if (!isMoved) break;  //如果没有移动布局， 则跳过执行
 
@@ -157,7 +153,6 @@ public class ReboundScrollView extends ScrollView {
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                AppLog.print("dispatchTouchEvent____actionMove");
 
                 //在移动的过程中， 既没有滚动到可以上拉的程度， 也没有滚动到可以下拉的程度
                 if (!canPullDown && !canPullUp) {

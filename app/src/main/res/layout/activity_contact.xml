@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/public_bg"
+        tools:context="com.cloudmachine.ui.home.activity.BankVerifyctivity">
+
+        <com.cloudmachine.widget.CommonTitleView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:common_title_name="@string/contact_info" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_30"
+            android:layout_marginLeft="@dimen/pad2"
+            android:gravity="center_vertical"
+            android:text="请选择紧急联系人信息"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/text_size_13_sp" />
+
+
+        <LinearLayout
+            style="@style/Layout_Item_Style"
+            android:orientation="horizontal">
+
+
+            <TextView
+                style="@style/layout_key_style"
+                android:text="紧急联系人" />
+
+
+            <FrameLayout
+                android:id="@+id/contact_emergency_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/contact_name_tv"
+                    style="@style/layout_value_style"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="@dimen/dimen_size_19"
+                    android:hint="请选择紧急联系人" />
+
+
+                <ImageView
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_width="@dimen/dimen_size_19"
+                    android:layout_height="@dimen/dimen_size_16"
+                    android:src="@drawable/ic_contact" />
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <View style="@style/CommonLandscapeLine" />
+
+        <LinearLayout
+            style="@style/Layout_Item_Style"
+            android:orientation="horizontal">
+
+
+            <TextView
+                style="@style/layout_key_style"
+                android:text="手机号码" />
+
+            <TextView
+                android:id="@+id/contact_mobile_tv"
+                style="@style/layout_value_style"
+                android:gravity="center_vertical"
+                android:hint="紧急联系人手机号" />
+
+        </LinearLayout>
+
+        <View style="@style/CommonLandscapeLine" />
+
+        <LinearLayout
+            style="@style/Layout_Item_Style"
+            android:orientation="horizontal">
+
+
+            <TextView
+                style="@style/layout_key_style"
+                android:text="所属关系" />
+            <FrameLayout
+                android:id="@+id/contact_relation_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/contact_relation_tv"
+                style="@style/layout_value_style"
+                android:gravity="center_vertical"
+                android:layout_marginRight="@dimen/dimen_size_19"
+                android:hint="与本人关系" />
+              <ImageView
+                  android:layout_width="@dimen/dimen_size_7"
+                  android:layout_height="@dimen/dimen_size_13"
+                  android:src="@drawable/arrow_right"
+                  android:layout_gravity="right|center_vertical"
+                  />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+
+        <com.cloudmachine.autolayout.widgets.RadiusButtonView
+            android:id="@+id/contact_submit_btn"
+            style="@style/RadiusButtonStyle"
+            android:layout_marginTop="@dimen/dimen_size_20"
+            app:rbtn_fillColor_dw="@color/cor5"
+            app:rbtn_fillColor_nm="@color/cor5"
+            app:rbtn_strokeColor="@color/cor5"
+            app:rbtn_text="@string/submit"
+            app:rbtn_textColor="@color/cor2015"
+            app:rbtn_textSize="@dimen/siz3" />
+
+
+    </LinearLayout>
+
+    <include layout="@layout/security_info_state" />
+</merge>

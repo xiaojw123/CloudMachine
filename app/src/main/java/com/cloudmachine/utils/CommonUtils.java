@@ -26,6 +26,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
+import com.cloudmachine.camera.CameraActivity;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.listener.IMapListener;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
@@ -56,14 +57,24 @@ import java.util.Map;
 
 public class CommonUtils {
 
-    public static void updateReomteMarkerOpt(final Context context, String picUrl, final LatLng latLng, final IMapListener listener){
+    public static ImageView getMarkerView(Context context, float width, float height, int resId) {
+        ImageView img = new ImageView(context);
+        img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(context, width), DensityUtil.dip2px(context, height)));
+        img.setImageResource(resId);
+        img.setScaleType(ImageView.ScaleType.FIT_XY);
+        return img;
+
+    }
+
+    public static void updateReomteMarkerOpt(final Context context, String picUrl, final LatLng latLng, final IMapListener listener) {
         Glide.with(context).load(picUrl)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         ImageView img = new ImageView(context);
-                        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(context, 50), DensityUtil.dip2px(context, 37)));
                         img.setImageDrawable(resource);
+                        img.setScaleType(ImageView.ScaleType.FIT_XY);
                         MarkerOptions options = new MarkerOptions();
                         options.icon(BitmapDescriptorFactory.fromView(img));
                         options.position(latLng);
@@ -73,8 +84,8 @@ public class CommonUtils {
     }
 
 
-    public static String getMarkerIconUrl(String typePicUrl,int status){
-        return  typePicUrl+"_"+status+"@3x.png";
+    public static String getMarkerIconUrl(String typePicUrl, int status) {
+        return typePicUrl + "_" + status + "@3x.png";
     }
 
     public static String formartTime(long timeL) {
@@ -86,9 +97,9 @@ public class CommonUtils {
 //            String sStr = s < 10 ? "0" + s : String.valueOf(s);
 //            return mStr + ":" + sStr;
 //        }
-        double timeLD= timeL/1000.0;
-        DecimalFormat df   = new DecimalFormat("######0.00");
-        return  df.format(timeLD);
+        double timeLD = timeL / 1000.0;
+        DecimalFormat df = new DecimalFormat("######0.00");
+        return df.format(timeLD);
     }
 
     public static void showSuccessDialog(Context context, String title, String cashAmount, String message) {
@@ -185,12 +196,47 @@ public class CommonUtils {
         return sdf.format(today);
     }
 
+    public static String getPastYear(int offset) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, c.get(Calendar.YEAR) - offset);
+        Date today = c.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        return sdf.format(today);
+    }
+
+    public static String getPastMonth(int offset) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.MONTH, c.get(Calendar.MONTH) - offset);
+        Date today = c.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM");
+        return sdf.format(today);
+    }
+
+
     public static String getDateStamp() {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR));
         Date today = c.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         return sdf.format(today);
+    }
+
+    public static String getDateStamp(long timeStamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
+        return sdf.format(new Date(timeStamp));
+    }
+
+    public static String getSalaryMonth(long timeStamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月");//这个是你要转成后的时间的格式
+        String fm = sdf.format(new Date(timeStamp)).substring(2);
+        return fm;
+    }
+
+    public static long getMonth(long timeStamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");//这个是你要转成后的时间的格式
+        String fm = sdf.format(new Date(timeStamp));
+        return Long.parseLong(fm);
+
     }
 
     public static double subtractDouble(double a, double b) {
@@ -399,4 +445,19 @@ public class CommonUtils {
         }
         return false;
     }
+
+    public static String fillParams(String url, String key, String value) {
+        if (!TextUtils.isEmpty(value)) {
+            if (url != null && !url.contains(key)) {
+                if (url.contains("?")) {
+                    url += "&";
+                } else {
+                    url += "?";
+                }
+                url += key + "=" + value;
+            }
+        }
+        return url;
+    }
+
 }

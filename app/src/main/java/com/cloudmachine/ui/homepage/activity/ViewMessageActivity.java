@@ -16,6 +16,7 @@ import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.OnItemClickListener;
+import com.cloudmachine.ui.home.activity.IncomeSpendActivity;
 import com.cloudmachine.ui.home.activity.MessageDetailActivity;
 import com.cloudmachine.ui.home.contract.ViewMessageConract;
 import com.cloudmachine.ui.home.model.ViewMessageModel;
@@ -189,10 +190,18 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
             if (messageType == 8 || messageType == 3) {
                 MobclickAgent.onEvent(this, MobEvent.TIME_MESSAGE_DETAIL);
                 Bundle detailBundle = new Bundle();
-                detailBundle.putString(MessageDetailActivity.MESSAGE_TITLE,msgBo.getTitle());
+                detailBundle.putString(MessageDetailActivity.MESSAGE_TITLE, msgBo.getTitle());
                 detailBundle.putString(MessageDetailActivity.MESSAGE_CONTENT, msgBo.getContent());
                 detailBundle.putString(MessageDetailActivity.MESSAGE_TIME, msgBo.getInviteTime());
                 Constants.toActivity(this, MessageDetailActivity.class, detailBundle);
+            } else if (messageType == 10 || messageType == 11) {
+                Bundle data = new Bundle();
+                int type = messageType == 11 ? IncomeSpendActivity.TYPE_INCOME : IncomeSpendActivity.TYPE_SPEND;
+                if ((!UserHelper.isOwner(mContext, UserHelper.getMemberId(mContext)) && (type == IncomeSpendActivity.TYPE_INCOME))) {
+                    data.putBoolean(IncomeSpendActivity.IS_MEMBER, true);
+                }
+                data.putInt(IncomeSpendActivity.TYPE, type);
+                Constants.toActivity(this, IncomeSpendActivity.class, data);
             } else {
                 if (!TextUtils.isEmpty(url)) {
                     MobclickAgent.onEvent(this, MobEvent.TIME_MESSAGE_DETAIL);
@@ -207,7 +216,7 @@ public class ViewMessageActivity extends BaseAutoLayoutActivity<ViewMessagePrese
 
     @Override
     public void onLoadMore() {
-        AppLog.print("loadMore_____toalSize__"+toalPageSize+", curNo__"+pageNo);
+        AppLog.print("loadMore_____toalSize__" + toalPageSize + ", curNo__" + pageNo);
         if (toalPageSize != -1) {
             if (pageNo < toalPageSize) {
                 ++pageNo;

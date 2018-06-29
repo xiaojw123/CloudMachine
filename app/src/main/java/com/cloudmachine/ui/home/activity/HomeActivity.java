@@ -41,7 +41,6 @@ import android.widget.Toast;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
-import com.autonavi.rtbt.IFrameForRTBT;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -87,8 +86,6 @@ import com.cloudmachine.widget.MenuTextView;
 import com.cloudmachine.widget.NotfyImgView;
 import com.cloudmachine.zxing.activity.CaptureActivity;
 import com.umeng.analytics.MobclickAgent;
-
-import org.litepal.crud.DataSupport;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -198,7 +195,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 
     Fragment deviceFragment, maintenaceFragment, h5Fragment;
     int mustUpdate;
-    double walletAmount, depositAmount;
     int leftMargin;
     PermissionsChecker mChecker;
 
@@ -225,6 +221,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             initLocation();
         }
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -522,6 +520,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 
     }
 
+
     public class MessageReceiver extends BroadcastReceiver {
 
         @Override
@@ -588,8 +587,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             homeNicknameTv.setText(member.getNickName());
             mPresenter.getCountByStatus(memberId, 0);
             mPresenter.updateUnReadMessage(memberId);
-            mPresenter.getWalletAmount(memberId);
-
         } else {
             homeHeadImg.setImageResource(R.drawable.ic_default_head);
             homeNicknameTv.setText("登录");
@@ -603,7 +600,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         }
         mPresenter.getHomeBannerInfo();
     }
-
 
 
     public void updateDeviceMessage() {
@@ -622,12 +618,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 guideContainer.setVisibility(View.GONE);
                 break;
             case R.id.home_san_img://扫描车牌二维码
-                if (mChecker.lacksPermissions(Manifest.permission.CAMERA)) {
-                    PermissionsActivity.startActivityForResult(this, PEM_REQCODE_CAMERA,
-                            Manifest.permission.CAMERA);
-                } else {
-                    scanQRCode();
-                }
+                gotoScanCode();
                 break;
             case R.id.item_my_order:
                 MobclickAgent.onEvent(this, MobEvent.TIME_H5_MY_ORDER_PAGE);
@@ -671,19 +662,10 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
                 break;
-            case R.id.item_purse://钱包
+            case R.id.item_purse://钱包-因贷款需求开放
                 // TODO: 2018/1/25 Purse_WX_test
                 if (UserHelper.isLogin(this)) {
-                    String purseValue = purseTv.getText().toString();
-                    if (getResources().getString(R.string.purse).equals(purseValue)) {
-                        Bundle pb = new Bundle();
-                        pb.putDouble(PurseActivity.KEY_WALLETAMOUNT, walletAmount);
-                        pb.putDouble(PurseActivity.KEY_DEPOSITAMOUNT, depositAmount);
-                        Constants.toActivity(this, PurseActivity.class, pb, false);
-                    } else {
-                        Constants.toActivity(this, ViewCouponActivityNew.class, null, false);
-                    }
-
+                    Constants.toActivity(this, PurseActivity.class, null);
                 } else {
                     Constants.toActivity(this, LoginActivity.class, null);
                 }
@@ -713,6 +695,15 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         }
     }
 
+    public void gotoScanCode() {
+        if (mChecker.lacksPermissions(Manifest.permission.CAMERA)) {
+            PermissionsActivity.startActivityForResult(this, PEM_REQCODE_CAMERA,
+                    Manifest.permission.CAMERA);
+        } else {
+            scanQRCode();
+        }
+    }
+
 
     private void dismissPop() {
         ++curAdPos;
@@ -726,18 +717,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         }
     }
 
-
-    @Override
-    public void updateWalletAmountView(double walletAmount, double depositAmount) {
-        if (walletAmount > 0 || depositAmount > 0) {
-            this.walletAmount = walletAmount;
-            this.depositAmount = depositAmount;
-            setPurseTv(R.string.purse, R.drawable.icon_purse);
-        } else {
-            setPurseTv(R.string.card_coupon, R.drawable.icon_card_coupon_1);
-        }
-
-    }
 
     private void setPurseTv(int resTextId, int resDrawableId) {
         purseTv.setText(getResources().getString(resTextId));
@@ -781,7 +760,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             meAlert.setVisibility(View.GONE);
         }
     }
-
 
 
     @Override
@@ -938,11 +916,11 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             } else {
 //                clearCache();
                 this.finish();
-                try{
+                try {
                     MobclickAgent.onKillProcess(this);
                     System.exit(0);
-                }catch (Exception e){
-                 AppLog.print("Finish Error__"+e);
+                } catch (Exception e) {
+                    AppLog.print("Finish Error__" + e);
                 }
 
             }
@@ -992,24 +970,33 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 if (data != null) {
                     Bundle bundle = data.getExtras();
                     String resultStr = bundle.getString("qr_scan_result");
-                    if (resultStr != null && !resultStr.contains("qrfrom")) {
-                        if (resultStr.contains("?")) {
-                            resultStr += "&";
-                        } else {
-                            resultStr += "?";
-                        }
-                        resultStr += "qrfrom=cloudmApp";
-                    }
-                    if (UserHelper.isLogin(this)) {
-                        resultStr += ("&" + QuestionCommunityActivity.PARAMS_KEY_MEMBERID + "=" + UserHelper.getMemberId(this));
-                    }
+                    AppLog.print("scan__result__" + resultStr);
                     String resultEncodeStr = null;
-                    try {
-                        resultEncodeStr = URLEncoder.encode(resultStr, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                    if (resultStr != null) {
+                        if (!resultStr.contains("qrfrom")) {
+
+                            if (resultStr.contains("?")) {
+                                resultStr += "&";
+                            } else {
+                                if (resultStr.startsWith("http")) {
+                                    resultStr += "?";
+                                } else {
+                                    resultStr += "&";
+                                }
+                            }
+                            resultStr += "qrfrom=cloudmApp";
+                        }
+                        if (UserHelper.isLogin(this)) {
+                            resultStr += ("&" + QuestionCommunityActivity.PARAMS_KEY_MEMBERID + "=" + UserHelper.getMemberId(this));
+                        }
+                        try {
+                            resultEncodeStr = URLEncoder.encode(resultStr, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    String qrUrl = "http://www.cloudm.com/static/qr.html?content=" + resultEncodeStr;
+//                    String qrUrl = "http://www.cloudm.com/static/qr.html?content=" + resultEncodeStr;
+                    String qrUrl = ApiConstants.AppQR + "?content=" + resultEncodeStr;
                     Bundle qBundle = new Bundle();
                     qBundle.putBoolean(QuestionCommunityActivity.QR_CODE, true);
                     qBundle.putString(QuestionCommunityActivity.H5_URL, qrUrl);

@@ -27,6 +27,7 @@ import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.activity.HomeActivity;
+import com.cloudmachine.ui.home.activity.IncomeSpendActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;

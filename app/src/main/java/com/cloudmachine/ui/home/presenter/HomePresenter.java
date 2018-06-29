@@ -26,25 +26,7 @@ import rx.Observer;
 public class HomePresenter extends HomeContract.Presenter {
 
 
-    @Override
-    public void getWalletAmount(long memberId) {
-        mRxManage.add(mModel.getWalletAmount(memberId).subscribe(new RxSubscriber<JsonObject>(mContext) {
-            @Override
-            protected void _onNext(JsonObject jsonObject) {
-                if (jsonObject != null) {
-                    double walletAmount = jsonObject.get("walletAmount").getAsDouble();
-                    double depositAmount = jsonObject.get("depositAmount").getAsDouble();
-                    mView.updateWalletAmountView(walletAmount, depositAmount);
-                }
 
-            }
-
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
-    }
 
     @Override
     public void updateUnReadMessage(long memberId) {
@@ -141,6 +123,16 @@ public class HomePresenter extends HomeContract.Presenter {
                         if (j11 != null) {
                             ApiConstants.AppFeedback = j11.getAsString();
                         }
+                        JsonElement j12=reslutJob.get("AppWagesLoan");
+                        if (j12!=null){
+                            ApiConstants.AppWagesLoan=j12.getAsString();
+                        }
+                        JsonElement j13=reslutJob.get("AppQR");
+                        if (j13!=null){
+                            ApiConstants.AppQR=j13.getAsString();
+                        }
+
+
 //                        JsonElement j12 = reslutJob.get("AppWorkReport");
 //                        if (j12 != null) {
 //                            ApiConstants.AppWorkReport = j12.getAsString();

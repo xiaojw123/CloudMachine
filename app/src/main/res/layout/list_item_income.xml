@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_size_68"
+    android:background="@color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    >
+
+
+        <LinearLayout
+            android:id="@+id/item_income_layout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/dimen_size_16"
+            >
+
+            <TextView
+                android:id="@+id/item_income_payee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cor8"
+                android:textSize="@dimen/text_size_14_sp" />
+
+            <TextView
+                android:id="@+id/item_income_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_12"
+                android:textColor="@color/cor11"
+                android:textSize="@dimen/text_size_12_sp" />
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/itme_income_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/item_income_layout1"
+            android:textColor="@color/cor8"
+            android:textSize="@dimen/text_size_17_sp"
+            android:layout_marginRight="@dimen/dimen_size_16"
+            />
+
+    <View
+        android:id="@+id/itme_income_line"
+        style="@style/CommonLandscapeLine"
+        android:layout_alignParentBottom="true"
+/>
+    </RelativeLayout>
+

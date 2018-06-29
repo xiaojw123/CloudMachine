@@ -17,6 +17,7 @@
 package com.cloudmachine.utils.widgets.wheelview.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -106,6 +107,7 @@ public class NumericWheelAdapter extends AbstractWheelTextAdapter {
                     configureTextView(textView);
                 }
             }
+            convertView.setBackgroundColor(Color.WHITE);
             return convertView;
         }
     	return null;

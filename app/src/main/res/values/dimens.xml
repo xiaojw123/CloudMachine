@@ -1,5 +1,5 @@
 <resources>
-    <dimen name="dimen_size_1">0.33dp</dimen>
+    <dimen name="dimen_size_1">1px</dimen>
     <dimen name="dimen_size_2">2dp</dimen>
     <dimen name="dimen_size_3">3dp</dimen>
     <dimen name="dimen_size_4">4dp</dimen>
@@ -354,6 +354,20 @@
     <dimen name="dimen_size_253">253dp</dimen>
     <dimen name="dimen_size_88">88dp</dimen>
     <dimen name="dimen_size_155">155dp</dimen>
+    <dimen name="dimen_size_35">35dp</dimen>
+    <dimen name="dimen_size_118">118dp</dimen>
+    <dimen name="dimen_size_152">152dp</dimen>
+    <dimen name="dimen_size_186">186dp</dimen>
+    <dimen name="dimen_size_187">187dp</dimen>
+    <dimen name="dimen_size_156">156dp</dimen>
+    <dimen name="dimen_size_98">98dp</dimen>
+    <dimen name="dimen_size_72">72dp</dimen>
+    <dimen name="dimen_size_190">190dp</dimen>
+    <dimen name="dimen_size_46">46dp</dimen>
+    <dimen name="dimen_size_208">208dp</dimen>
+    <dimen name="dimen_size_127">127dp</dimen>
+    <dimen name="dimen_size_128">128dp</dimen>
+    <dimen name="dimen_size_62">62dp</dimen>
 
 
     <!--xhdpi 1280*720-->

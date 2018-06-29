@@ -202,14 +202,10 @@ public class RepairPayDetailsActivity extends BaseAutoLayoutActivity<ViewRepairP
                 if (TextUtils.equals(resultStatus, "9000")) {
                     // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
                     Toast.makeText(RepairPayDetailsActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
-                    Bundle b = new Bundle();
-                    b.putString("paymentResult", "支付成功");
                     finish();
                 } else {
                     // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                     Toast.makeText(RepairPayDetailsActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
-                    Bundle b = new Bundle();
-                    b.putString("paymentResult", "支付失败");
                     finish();
                 }
                 break;

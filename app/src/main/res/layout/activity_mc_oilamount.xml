@@ -102,14 +102,15 @@
                     style="@style/TextView.oilamount_big_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dimen_size_15"
-                    android:layout_marginLeft="@dimen/pad2"
+                    android:layout_marginBottom="@dimen/oil_chat_title_bottom"
+                    android:layout_marginLeft="@dimen/oil_chat_title_left"
                     android:layout_marginTop="@dimen/dimen_size_25"
+                    android:textSize="@dimen/oil_chat_title_size"
                     android:text="油位剩余百分比分布" />
 
                 <TextView
                     style="@style/TextView.oilamount_small_text"
-                    android:layout_marginLeft="@dimen/pad2"
+                    android:layout_marginLeft="@dimen/oil_chat_title_left"
                     android:text="单位：%" />
 
 

@@ -51,6 +51,7 @@ public class CustomDialog extends Dialog {
         private boolean isRotateAmim;
         RotateAnimation anim;
         CustomDialog dialog;
+        private int postiveButtonColor=-1;
 
         public Builder(Context context) {
             this.context = context;
@@ -60,6 +61,7 @@ public class CustomDialog extends Dialog {
             this.message = message;
             return this;
         }
+
 
         public void setGravityLeft(boolean isLeft) {
             this.isLeft = isLeft;
@@ -124,7 +126,11 @@ public class CustomDialog extends Dialog {
             if (positiveButtonText != null) {
                 mNetrualBtn.setVisibility(View.GONE);
                 mChooseBtnLayout.setVisibility(View.VISIBLE);
+                if (postiveButtonColor!=-1){
+                    mPositvieBtn.setTextColor(postiveButtonColor);
+                }
                 mPositvieBtn.setText(positiveButtonText);
+
                 if (positiveButtonClickListener != null) {
                     mPositvieBtn.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
@@ -230,6 +236,14 @@ public class CustomDialog extends Dialog {
             this.positiveButtonClickListener = listener;
             return this;
         }
+        public Builder setPositiveButton(int postiveButtonColor,String positiveButtonText,
+                                         OnClickListener listener) {
+            this.postiveButtonColor=postiveButtonColor;
+            this.positiveButtonText = positiveButtonText;
+            this.positiveButtonClickListener = listener;
+            return this;
+        }
+
 
         public Builder setNegativeButton(int negativeButtonText,
                                          OnClickListener listener) {

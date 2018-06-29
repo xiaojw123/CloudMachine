@@ -351,6 +351,13 @@
     <color name="c_20108ee9">#20108ee9</color>
     <color name="c_ff8903">#ff8903</color>
     <color name="c_e6f4fd">#e6f4fd</color>
+    <color name="c_ff8901">#ff8901</color>
+    <color name="c_afb0bb">#afb0bb</color>
+    <color name="c_efeff4">#efeff4</color>
+    <color name="c_70f">#70ffffff</color>
+    <color name="c_64baa4">#64baa4</color>
+    <color name="c_350">#35000000</color>
+    
     
     
 </resources>

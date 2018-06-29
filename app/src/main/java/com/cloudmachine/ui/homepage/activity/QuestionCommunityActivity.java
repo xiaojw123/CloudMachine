@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,7 +33,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationListener;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.alipay.PayResult;
@@ -41,6 +46,7 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.LocationManager;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.QiniuManager;
 import com.cloudmachine.helper.UserHelper;
@@ -64,20 +70,25 @@ import com.cloudmachine.utils.ShareDialog;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.UploadPhotoUtils;
+import com.cloudmachine.utils.VersionU;
 import com.cloudmachine.widget.CommonTitleView;
 import com.cloudmachine.widget.ItemLongClickedPopWindow;
+import com.cloudmachine.zxing.activity.CaptureActivity;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.umeng.analytics.MobclickAgent;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.UUID;
 
@@ -109,6 +120,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private static final int FLUSH_PAGE = 0x1330;
     private static final String PARAMS_KEY_MYID = "myid";
     public static final String PARAMS_KEY_MEMBERID = "memberId";
+    public static final String PARAMS_KEY_VERSION = "appVersion";
     private static final String JS_INTERFACE_NAME = "webkit";
     private static final String SHARE = "分享";
     private static final String SHAREDESC = "内容源自云机械APP";
@@ -133,7 +145,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private boolean isClickCamera;
     String mAlertType;
     boolean isQrCode;
-
+    String locMethod;
+    AMapLocationClient locationClient = null;
 
 
     @Override
@@ -154,7 +167,43 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 }
             }
         }
+        initLocation();
     }
+
+    private void initLocation() {
+
+        locationClient = LocationManager.getInstence().getLocationClient(this.getApplicationContext());
+        // 设置定位监听
+        locationClient.setLocationListener(locationListener);
+
+    }
+
+    AMapLocationListener locationListener = new AMapLocationListener() {
+        @Override
+        public void onLocationChanged(AMapLocation loc) {
+            if (!TextUtils.isEmpty(locMethod)) {
+                if (null != loc) {
+                    JSONObject locBackJobj = new JSONObject();
+                    try {
+                        locBackJobj.put("district", loc.getDistrict());
+                        locBackJobj.put("province", loc.getProvince());
+                        locBackJobj.put("city", loc.getCity());
+                        locBackJobj.put("address", loc.getAddress());
+                        JSONObject locJobj = new JSONObject();
+                        locJobj.put("longitude", loc.getLongitude());
+                        locJobj.put("latitude", loc.getLatitude());
+                        locBackJobj.put("location", locJobj);
+                        Constants.callJsMethod(mWebView, locMethod + "('" + locBackJobj.toString() + "')");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+            locationClient.stopLocation();
+        }
+    };
+
 
     private void initRxManager() {
         mRxManager.on(GO_TO_MY_ORDER, new Action1<Object>() {
@@ -202,12 +251,16 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         mWebView.setWebViewClient(new H5WebClient());
         mWebView.addJavascriptInterface(new JsInteface(this, mHandler), JS_INTERFACE_NAME);
         if (isQrCode) {
-            mWebView.loadUrl(mUrl);
+            loadWebUrl(mUrl);
         } else {
             loadUrl();
         }
         homeUrl = mUrl;
         AppLog.print("Common H5 URL__" + mUrl);
+    }
+
+    private void loadWebUrl(String url){
+            mWebView.loadUrl(CommonUtils.fillParams(url,PARAMS_KEY_VERSION,VersionU.getVersionName()));
     }
 
     private View.OnLongClickListener lcl = new View.OnLongClickListener() {
@@ -240,8 +293,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 case WebView.HitTestResult.IMAGE_TYPE: // 处理长按图片的菜单项
                     String url = result.getExtra();
                     if (!TextUtils.isEmpty(url)) {
-                        View parent = ((ViewGroup)findViewById(android.R.id.content)).getChildAt(0);
-                        ItemLongClickedPopWindow pop=new ItemLongClickedPopWindow(QuestionCommunityActivity.this);
+                        View parent = ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
+                        ItemLongClickedPopWindow pop = new ItemLongClickedPopWindow(QuestionCommunityActivity.this);
                         pop.setImgUrl(url);
                         pop.showAtLocation(parent, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                     }
@@ -302,7 +355,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private String backUrl;
 
     public void shoWAlertDialog(boolean isConfirm, String message, final String alertEvent) {
-        if (isFinishing()){
+        if (isFinishing()) {
             return;
         }
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
@@ -443,6 +496,49 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case HomeActivity.REQ_CODE_SCAN_QRCODE:
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    String resultStr = bundle.getString("qr_scan_result");
+                    AppLog.print("scan__result__" + resultStr);
+                    String resultEncodeStr = null;
+                    if (resultStr != null) {
+                        if (!resultStr.contains("qrfrom")) {
+
+                            if (resultStr.contains("?")) {
+                                resultStr += "&";
+                            } else {
+                                if (resultStr.startsWith("http")) {
+                                    resultStr += "?";
+                                } else {
+                                    resultStr += "&";
+                                }
+                            }
+                            resultStr += "qrfrom=cloudmApp";
+                        }
+                        if (UserHelper.isLogin(this)) {
+                            resultStr += ("&" + QuestionCommunityActivity.PARAMS_KEY_MEMBERID + "=" + UserHelper.getMemberId(this));
+                        }
+                        try {
+                            resultEncodeStr = URLEncoder.encode(resultStr, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    String qrUrl = ApiConstants.AppQR + "?content=" + resultEncodeStr;
+                    loadWebUrl(qrUrl);
+                }
+                break;
+
+            case HomeActivity.PEM_REQCODE_CAMERA:
+                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                    ToastUtils.showToast(this, "摄像头打开失败！！");
+                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.CAMERA);
+                } else {
+                    scanQRCode();
+                }
+                break;
+
             case HomeActivity.PEM_REQCODE_WRITESD:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
                     CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
@@ -540,7 +636,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 fillParams(PARAMS_KEY_MEMBERID, member.getId());
             }
         }
-        mWebView.loadUrl(mUrl);
+        loadWebUrl(mUrl);
     }
 
     //补充URL参数
@@ -554,6 +650,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             mUrl += key + "=" + value;
         }
     }
+
 
     private void compressPicture(String imString) {
         File file = new File(imString);
@@ -730,6 +827,18 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case Constants.HANDLER_BACk_LOCATION:
+                    locMethod = (String) msg.obj;
+                    AppLog.print("locMethod_0_" + locMethod);
+                    if (locMethod.contains("()")) {
+                        locMethod = locMethod.replace("()", "");
+                    }
+                    AppLog.print("locMethod_1_" + locMethod);
+                    if (locationClient != null) {
+                        locationClient.startLocation();
+                    }
+                    break;
+
                 case Constants.HANDLER_ALIPAY_RESULT:
                     PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     String resultStatus = payResult.getResultStatus();
@@ -933,7 +1042,6 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         if (appCacheDir.exists()) {
             deleteFile(appCacheDir);
         }
-
     }
 
     /**
@@ -955,5 +1063,41 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         }
     }
 
+    public void gotoScanCode() {
+        if (mPermissionsCheck.lacksPermissions(Manifest.permission.CAMERA)) {
+            PermissionsActivity.startActivityForResult(this, HomeActivity.PEM_REQCODE_CAMERA,
+                    Manifest.permission.CAMERA);
+        } else {
+            scanQRCode();
+        }
 
+    }
+
+    public void scanQRCode() {
+        if (isCameraCanUse()) {
+            Constants.toActivityForR(this, CaptureActivity.class, null, HomeActivity.REQ_CODE_SCAN_QRCODE);
+        } else {
+            Toast.makeText(this, "请打开此应用的摄像头权限！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean isCameraCanUse() {
+        boolean canUse = true;
+        Camera mCamera = null;
+        try {
+
+            mCamera = Camera.open();
+        } catch (Exception e) {
+            canUse = false;
+        }
+        if (canUse) {
+            if (mCamera != null)
+                mCamera.release();
+        }
+        return canUse;
+    }
+
+    public void clearWebViewCache(){
+        mWebView.clearHistory();
+    }
 }

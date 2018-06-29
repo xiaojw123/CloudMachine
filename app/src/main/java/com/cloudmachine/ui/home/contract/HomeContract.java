@@ -20,7 +20,6 @@ import rx.Observable;
 
 public interface HomeContract {
     interface View extends BaseView {
-        void updateWalletAmountView(double walletAmount,double depositAmount);
         void updateMessageCount(int count);
 
 
@@ -33,7 +32,7 @@ public interface HomeContract {
     }
 
     interface Model extends BaseModel {
-        Observable<JsonObject> getWalletAmount(long memberId);
+
 
         Observable<ForceVBean> forceUpdate();
 
@@ -51,7 +50,7 @@ public interface HomeContract {
     }
 
     abstract class Presenter extends BasePresenter<HomeContract.View, HomeContract.Model> {
-        public abstract void getWalletAmount(long memberId);
+
 
         public abstract void updateUnReadMessage(long memberId);
 

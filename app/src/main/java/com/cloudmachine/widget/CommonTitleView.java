@@ -111,6 +111,9 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
             rightTv.setOnClickListener(listener);
         }
     }
+    public void setRightTextEnable(boolean enable){
+        rightTv.setEnabled(enable);
+    }
     public String getRightText(){
         return rightTv.getText().toString();
     }

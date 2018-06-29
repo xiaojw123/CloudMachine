@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/oliveapp_activity_horizontal_margin"
+    android:paddingRight="@dimen/oliveapp_activity_horizontal_margin"
+    android:paddingTop="@dimen/oliveapp_activity_vertical_margin"
+    android:paddingBottom="@dimen/oliveapp_activity_vertical_margin"
+    android:background="#91D2DA"
+    tools:context="cn.tongdun.android.liveness.SampleStartActivity">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:layout_marginTop="50dp"
+        android:text="请正对手机，确保光线充足"
+        android:textSize="20sp"
+        android:textColor="#000000"/>
+
+    <Button
+        android:layout_width="210dp"
+        android:layout_height="48dp"
+        android:text="开始拍摄"
+        android:textColor="#FFFFFF"
+        android:id="@+id/oliveappStartLivenessButton"
+        android:background="@drawable/oliveapp_startcamera_button_bg"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp" />
+
+    <ImageView
+        android:layout_width="225dp"
+        android:layout_height="215dp"
+        android:id="@+id/imageView"
+        android:src="@drawable/oliveapp_normative_gestures"
+        android:layout_centerInParent="true"
+        android:scaleType="fitCenter" />
+</RelativeLayout>

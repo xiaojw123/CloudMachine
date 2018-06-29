@@ -1,6 +1,7 @@
 package com.cloudmachine.net.api;
 
 
+import com.cloudmachine.base.Operator;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.AdBean;
 import com.cloudmachine.bean.AllianceDetail;
@@ -22,6 +23,8 @@ import com.cloudmachine.bean.PickItemBean;
 import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.bean.RepairListInfo;
 import com.cloudmachine.bean.ResonItem;
+import com.cloudmachine.bean.SalaryHistoryItem;
+import com.cloudmachine.bean.SalaryPayInfo;
 import com.cloudmachine.bean.ScanningOilLevelInfoArray;
 import com.cloudmachine.bean.TelBean;
 import com.cloudmachine.bean.UserInfo;
@@ -42,6 +45,8 @@ import okhttp3.ResponseBody;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -61,34 +66,62 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
+    @GET("salary/salaryHistoryRecords")
+    Observable<BaseRespose<List<SalaryHistoryItem>>> getSalaryHistoryRecords(@Query("memberId") long memberId,@Query("type") int type,@Query("year") String year,@Query("month") String month,@Query("page") int page,@Query("size") int size);
+
+    //工资支付
+    @GET("salary/confirmPay")
+    Observable<BaseRespose<SalaryPayInfo>> confirmPay(@Query("memberId") long memberId, @Query("salaryCount") int salaryCount,
+                                                      @Query("salaryTotalAmount") String salaryTotalAmount, @Query("payoffType") int payoffType
+
+            , @Query("salaryInfoDetailJsonStr") String salaryInfoDetailJsonStr);
+
+    @GET("salary/confirmPay")
+    Observable<BaseRespose<SalaryPayInfo>> confirmPay(@Query("salaryPayInfo") String salaryPayInfo);
+
+
+    //获取机主成员
+    @GET("member/get_machine_operator")
+    Observable<BaseRespose<List<Operator>>> getMchineOperators(@Query("ownerId") long ownerId);
+
+    //实名认证
+    @GET("member/realNameAuthentic")
+    Observable<BaseRespose<String>> realNameAuth(@Query("memberId") long memberId, @Query("realName") String realName, @Query("idCard") String idCard);
+
+
     //复位-油位定制
     @GET("device/oil/reset")
-    Observable<BaseRespose<String>>   resetOilLevel(@Query("deviceId") long deviceId);
+    Observable<BaseRespose<String>> resetOilLevel(@Query("deviceId") long deviceId);
+
     //开启状态-油位定制
     @GET("device/oil/isWork")
-    Observable<BaseRespose<JsonObject>> queryWorkStatus(@Query("deviceId")long deviceId);
+    Observable<BaseRespose<JsonObject>> queryWorkStatus(@Query("deviceId") long deviceId);
+
     //油位列表-油位定制
     @GET("device/oil/oilSynList")
-    Observable<BaseRespose<List<OilSynBean>>>   getOilSynList(@Query("deviceId") long deviceId);
+    Observable<BaseRespose<List<OilSynBean>>> getOilSynList(@Query("deviceId") long deviceId);
+
     //油位同步-油位定制
     @GET("device/oil/synSubmit")
-    Observable<BaseRespose<String>>  syncOil(@Query("deviceId") long deviceId,@Query("oilPosition") int oilPosition, @Query("memberId")long memberId);
+    Observable<BaseRespose<String>> syncOil(@Query("deviceId") long deviceId, @Query("oilPosition") int oilPosition, @Query("memberId") long memberId);
+
     @GET("device/getConfigKV")
     Observable<BaseRespose<List<TelBean>>> getServiceTel(@Query("keys") String keys);
 
 
     //视频地址下发接口
     @GET("deviceVideo/videoUpload")
-    Observable<BaseRespose<String>> videoUpload(@Query("memberId") long memberId, @Query("deviceId") String deviceId,@Query("id") String id);
+    Observable<BaseRespose<String>> videoUpload(@Query("memberId") long memberId, @Query("deviceId") String deviceId, @Query("id") String id);
+
     //获取视频列表(直播流地址+点播列表)
     @GET("deviceVideo/getVideoList")
-    Observable<BaseRespose<VideoBean>> getVideoList(@Query("memberId") long memberId,@Query("deviceId") String deviceId,@Query("startTime") String startTime,@Query("endTime") String endTime);
+    Observable<BaseRespose<VideoBean>> getVideoList(@Query("memberId") long memberId, @Query("deviceId") String deviceId, @Query("startTime") String startTime, @Query("endTime") String endTime);
 
     @GET("device/oilLevelList")
-    Observable<BaseRespose<ScanningOilLevelInfoArray>> getTodayOil(@Query("memberId") String memberId,@Query("deviceId") long deviceId);
+    Observable<BaseRespose<ScanningOilLevelInfoArray>> getTodayOil(@Query("memberId") String memberId, @Query("deviceId") long deviceId);
 
     @GET("device/oilLevelListWeekly")
-    Observable<JsonObject>  getWeeklyOil(@Query("memberId") String memberId, @Query("deviceId") long deviceId);
+    Observable<JsonObject> getWeeklyOil(@Query("memberId") String memberId, @Query("deviceId") long deviceId);
 
 
     @GET("message/getMessageByid")
@@ -97,47 +130,50 @@ public interface ApiService {
     //获取首页菜单
     @GET("system/headMenu")
     Observable<BaseRespose<List<MenuBean>>> getHeadMenu();
+
     //获取APP广告
     @GET("system/startAd")
     Observable<BaseRespose<List<AdBean>>> getStartAd();
-/**
- * status 订单状态 0：待支付 1：已支付 2：退款审核 3：已退款
- */
+
+    /**
+     * status 订单状态 0：待支付 1：已支付 2：退款审核 3：已退款
+     */
     @GET("app/pay/getCountByStatus")
-    Observable<BaseRespose<Integer>> getCountByStatus(@Query("memberId") long memberId,@Query("status") int status);
+    Observable<BaseRespose<Integer>> getCountByStatus(@Query("memberId") long memberId, @Query("status") int status);
 
     @GET("app/pay/cashOut")
-    Observable<BaseRespose> cashOut(@Query("memberId") long memberId,@Query("type") int type);
+    Observable<BaseRespose> cashOut(@Query("memberId") long memberId, @Query("type") int type, @Query("money") String money);
 
     @GET("app/pay/walletAmount")
     Observable<BaseRespose<JsonObject>> getWalletAmount(@Query("memberId") long memberId);
 
     @GET("app/pay/getIdentifyCode")
-    Observable<BaseRespose> getIdentifyCode(@Query("mobile") String mobile,@Query("code") String code);
+    Observable<BaseRespose> getIdentifyCode(@Query("mobile") String mobile, @Query("code") String code);
+
     /**
      * @param memberId 用户id
-     * @param type 类型  10:微信 11：支付宝
+     * @param type     类型  10:微信 11：支付宝
      */
     @GET("app/pay/Unbundled")
-    Observable<BaseRespose>  unbundled(@Query("memberId") long memberId,@Query("type") int type);
+    Observable<BaseRespose> unbundled(@Query("memberId") long memberId, @Query("type") int type);
 
     @GET("app/pay/weiXinUserInfo")
-    Observable<BaseRespose> weiXinUserInfo(@QueryMap Map<String,String> parmasMap);
+    Observable<BaseRespose> weiXinUserInfo(@QueryMap Map<String, String> parmasMap);
 
     @GET("app/pay/aliPayOpenAuth")
     Observable<BaseRespose<String>> aliPayOpenAuth(@Query("memberId") long memberId);
-    @GET("app/pay/aliPayUserInfo")
-    Observable<BaseRespose<JsonObject>> aliPayUserInfo(@Query("memberId") long memberId,@Query("authCode")   String authCode);
 
+    @GET("app/pay/aliPayUserInfo")
+    Observable<BaseRespose<JsonObject>> aliPayUserInfo(@Query("memberId") long memberId, @Query("authCode") String authCode);
 
 
     //申请押金退款
     @GET("app/pay/updateStatusByOrder")
-    Observable<BaseRespose>  rebundDesosit(@QueryMap Map<String,String> parmasMap);
+    Observable<BaseRespose> rebundDesosit(@QueryMap Map<String, String> parmasMap);
 
 
     @GET("app/reason/getRefundReason")
-    Observable<BaseRespose<List<ResonItem>>>  getRefundReasonItems(@Query("memberId") long memberId);
+    Observable<BaseRespose<List<ResonItem>>> getRefundReasonItems(@Query("memberId") long memberId);
 
     @GET("app/pay/depositList")
     Observable<BaseRespose<List<DepositItem>>> getDepositList(@Query("memberId") long memberId);
@@ -211,7 +247,7 @@ public interface ApiService {
 
     //获取消息列表
     @GET("device/getAllMessages")
-    Observable<BaseRespose<List<MessageBO>>> getAllMsg(@Query("memberId") long memberId,@Query("pageNo") int pageNo,@Query("pageSize") int pageSize);
+    Observable<BaseRespose<List<MessageBO>>> getAllMsg(@Query("memberId") long memberId, @Query("pageNo") int pageNo, @Query("pageSize") int pageSize);
 
     //问卷调查
     @GET("question/need")
@@ -235,7 +271,7 @@ public interface ApiService {
     Observable<BaseRespose<CWInfo>> getCWInfo(@QueryMap Map<String, String> map);
 
     @GET("device/getAllianceOrderDetails")
-    Observable<BaseRespose<AllianceDetail>>    getAllianceOrderDetail(@Query("memberId") long memberId, @Query("orderNo") String orderNo);
+    Observable<BaseRespose<AllianceDetail>> getAllianceOrderDetail(@Query("memberId") long memberId, @Query("orderNo") String orderNo);
 
 
     @GET("repairStation/updateMemberRemark")
@@ -255,10 +291,11 @@ public interface ApiService {
 
     //获取加盟站工单列表
     @GET("device/getAllianceListByMember")
-    Observable<BaseRespose<List<AllianceItem>>>  getAllianceListByMember(@Query("memberId") long memberId);
+    Observable<BaseRespose<List<AllianceItem>>> getAllianceListByMember(@Query("memberId") long memberId);
+
     //获取加盟站工单列表
     @GET("device/getAllianceListByMember")
-    Observable<BaseRespose<List<AllianceItem>>>  getAllianceListByMember(@Query("memberId") long memberId,@Query("page") int page);
+    Observable<BaseRespose<List<AllianceItem>>> getAllianceListByMember(@Query("memberId") long memberId, @Query("page") int page);
 
     @GET("device/getRepairList")
     Observable<BaseRespose<RepairListInfo>> getRepairList(@Query("osPlatform") String osPlatform, @Query("osVersion") String osVersion, @Query("memberId") long memberId, @Query("deviceId") long deviceId);
@@ -348,7 +385,7 @@ public interface ApiService {
      * 微信绑定手机号
      *
      * @param mobile
-     * @param type
+     * @param type 1:注册、 2:忘记密码、  3:登陆微信绑定 4：钱包支付 11：支付宝绑定 10：微信支付绑定
      * @return
      */
     @GET("member/getCode")

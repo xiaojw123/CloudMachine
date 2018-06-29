@@ -7,6 +7,7 @@ import com.cloudmachine.bean.Member;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.PurseContract;
+import com.google.gson.JsonObject;
 
 import java.util.Map;
 
@@ -19,33 +20,15 @@ import rx.Observable;
 public class PurseModel implements PurseContract.Model{
 
     @Override
-    public Observable<BaseRespose> getVerfyCode(String  mobile) {
-        return Api.getDefault(HostType.HOST_CLOUDM).wxBindMobile(Long.parseLong(mobile), 2).compose(RxSchedulers.<BaseRespose>io_main());
+    public Observable<JsonObject> getWalletAmount(long memberId) {
+        return Api.getDefault(HostType.HOST_CLOUDM).getWalletAmount(memberId).compose(RxHelper.<JsonObject>handleResult());
     }
 
-    @Override
-    public Observable<BaseRespose> identifyCode(String mobile, String code) {
-        return Api.getDefault(HostType.HOST_CLOUDM).getIdentifyCode(mobile, code).compose(RxSchedulers.<BaseRespose>io_main());
-    }
-
-    @Override
-    public Observable<BaseRespose> unBind(long memberId, int type) {
-        return Api.getDefault(HostType.HOST_CLOUDM).unbundled(memberId, type).compose(RxSchedulers.<BaseRespose>io_main());
-    }
-
-    @Override
-    public Observable<BaseRespose> bindWxUser(Map<String, String> pm) {
-        return Api.getDefault(HostType.HOST_CLOUDM).weiXinUserInfo(pm).compose(RxSchedulers.<BaseRespose>io_main());
-    }
     @Override
     public Observable<CouponBean> getAvaildCouponList(long memberid) {
         return Api.getDefault(HostType.HOST_CLOUDM).getAvalidCouponList(memberid).compose(RxHelper.<CouponBean>handleResult());
     }
 
-    @Override
-    public Observable<Member> getMemberInfo(long memberId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getMemberInfoById(memberId).compose(RxHelper.<Member>handleResult());
-    }
 
 
 }

@@ -47,10 +47,9 @@
             android:layout_gravity="right"
             android:gravity="center_vertical"
             android:paddingRight="@dimen/public_layout_padding_left"
-            android:textColor="@color/cor9"
             android:textSize="@dimen/text_size_14_sp"
             />
-
+        <!--android:textColor="@color/cor9"-->
         <ImageView
             android:id="@+id/common_titleview_right_img"
             android:layout_width="wrap_content"

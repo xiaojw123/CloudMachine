@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical"
+    tools:context="com.cloudmachine.ui.home.activity.OperateActivity">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="运营商授权" />
+
+    <LinearLayout style="@style/Layout_Item_Style">
+
+        <TextView
+            style="@style/layout_key_style"
+            android:text="手机号码" />
+
+        <TextView
+            android:id="@+id/operator_mobile_tv"
+            style="@style/layout_value_style"
+            android:gravity="center_vertical"
+            />
+    </LinearLayout>
+
+    <View style="@style/CommonLandscapeLine" />
+
+    <LinearLayout style="@style/Layout_Item_Style">
+
+        <TextView
+            style="@style/layout_key_style"
+            android:text="服务密码" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.cloudmachine.utils.widgets.ClearEditTextView
+                style="@style/layout_value_style"
+                android:layout_toLeftOf="@+id/opeartor_switch_img"
+                android:hint="手机运营商密码" />
+
+            <ImageView
+                android:id="@+id/opeartor_switch_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pad1"
+                android:src="@drawable/icon_login_psw_right" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/opeator_foraget_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dimen_size_30"
+        android:layout_gravity="right"
+        android:layout_marginRight="@dimen/pad1"
+        android:gravity="center_vertical"
+        android:text="忘记密码?"
+        android:textColor="@color/cor10"
+        android:textSize="@dimen/text_size_13_sp" />
+
+
+    <com.cloudmachine.autolayout.widgets.RadiusButtonView
+        android:id="@+id/operator_submit_btn"
+        style="@style/RadiusButtonStyle"
+        app:rbtn_fillColor_dw="@color/cor5"
+        app:rbtn_fillColor_nm="@color/cor5"
+        app:rbtn_strokeColor="@color/cor5"
+        app:rbtn_text="@string/submit"
+        app:rbtn_textColor="@color/cor2015"
+        app:rbtn_textSize="@dimen/siz3" />
+
+</LinearLayout>

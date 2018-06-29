@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never"
+    android:background="@color/public_bg"
+    android:scrollbars="none"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.cloudmachine.widget.CommonTitleView
+            android:id="@+id/salary_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:common_title_name="@string/salary"
+            app:common_right_text="@string/income_spend_detail"
+            />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_30"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/pad2"
+            android:text="填写以下信息发工资"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/text_size_13_sp" />
+
+
+
+
+        <LinearLayout
+            android:id="@+id/salary_collection_container"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <include
+                layout="@layout/item_salary_collection"
+                />
+
+        </LinearLayout>
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_50"
+            android:layout_marginTop="@dimen/pad1"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/pad2"
+            android:paddingRight="@dimen/pad2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/summation"
+                android:textColor="@color/cor9"
+                android:textSize="@dimen/text_size_14_sp" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                >
+
+            <TextView
+                android:id="@+id/salary_person_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_ff8901"
+                android:textSize="@dimen/text_size_20_sp"
+                android:text="0"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cor10"
+                android:textSize="@dimen/text_size_12_sp"
+                android:text="@string/people"
+                />
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/salary_toal_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:text="0"
+                android:textColor="@color/c_ff8901"
+                android:textSize="@dimen/text_size_20_sp" />
+
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_30"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/pad2"
+            android:text="支付方式"
+            android:textColor="@color/cor10"
+            android:textSize="@dimen/text_size_13_sp" />
+
+
+        <FrameLayout
+            android:id="@+id/salary_wxpay_flt"
+            style="@style/Layout_Item_Style"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/cor9"
+                android:textSize="@dimen/text_size_14_sp"
+                android:drawableLeft="@drawable/ic_salary_wechat"
+                android:drawablePadding="@dimen/dimen_size_16"
+                android:gravity="center_vertical"
+                android:text="@string/wxPay" />
+
+
+
+
+            <CheckBox
+                android:id="@+id/salary_wxpay_cb"
+                style="@style/PayCheckBox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:clickable="false" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/salary_alipay_flt"
+            style="@style/Layout_Item_Style"
+            >
+
+
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cor9"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_salary_alipay"
+                android:drawablePadding="@dimen/dimen_size_16"
+                android:gravity="center_vertical"
+                android:text="@string/alipay" />
+
+
+            <CheckBox
+                android:id="@+id/salary_alipay_cb"
+                style="@style/PayCheckBox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:clickable="false" />
+
+            <View style="@style/CommonLandscapeLine" />
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/salary_purse_rlt"
+            style="@style/Layout_Item_Style">
+
+            <TextView
+                android:id="@+id/purse_pay_tile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:drawableLeft="@drawable/ic_salary_cloudm"
+                android:drawablePadding="@dimen/dimen_size_16"
+                android:gravity="center_vertical"
+                android:text="@string/purse_pay"
+                android:textColor="@color/cor9"
+                android:textSize="@dimen/text_size_14_sp" />
+
+            <TextView
+                android:id="@+id/salary_balance_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pad1"
+                android:layout_toRightOf="@+id/purse_pay_tile"
+                android:textColor="@color/cor10"
+                android:textSize="@dimen/text_size_12_sp" />
+
+
+            <CheckBox
+                android:id="@+id/salary_purse_cb"
+                style="@style/PayCheckBox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false" />
+
+            <View style="@style/CommonLandscapeLine" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/salary_pool_rlt"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_68"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/pad1"
+            android:paddingLeft="@dimen/pad2">
+
+
+            <ImageView
+                android:id="@+id/salary_pool_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_salary_cloudm"
+                android:layout_centerVertical="true"
+                />
+
+
+
+            <LinearLayout
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:layout_toRightOf="@+id/salary_pool_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_16"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/cor9"
+                    android:textSize="@dimen/text_size_16_sp"
+                    android:text="工资宝"
+                    />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_12_sp"
+                    android:textColor="@color/cor10"
+                    android:layout_marginTop="@dimen/dimen_size_6"
+                    android:text="最高50万额度"
+                    />
+
+
+
+            </LinearLayout>
+
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="立即查看"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dimen_size_16"
+                android:drawableRight="@drawable/arrow_right"
+                android:drawablePadding="@dimen/dimen_size_7"
+                android:textSize="@dimen/text_size_12_sp"
+                android:textColor="@color/cor10"
+                android:layout_centerInParent="true"
+                />
+
+        </RelativeLayout>
+
+
+
+        <com.cloudmachine.autolayout.widgets.RadiusButtonView
+            android:id="@+id/salary_pay_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spa3"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/pad1"
+            android:layout_marginRight="@dimen/pad1"
+            android:layout_marginTop="@dimen/dimen_size_20"
+            app:rbtn_fillColor_dw="@color/cor5"
+            app:rbtn_fillColor_nm="@color/cor5"
+            app:rbtn_strokeColor="@color/cor5"
+            app:rbtn_text="@string/pay"
+            app:rbtn_textColor="@color/cor2015"
+            app:rbtn_textSize="@dimen/siz3" />
+
+
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>
+

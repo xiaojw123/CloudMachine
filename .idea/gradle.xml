@@ -8,8 +8,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/FaceIdentify" />
             <option value="$PROJECT_DIR$/PhotoPicker" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/stickheader" />
             <option value="$PROJECT_DIR$/toasty" />
             <option value="$PROJECT_DIR$/xrecyclerview" />
           </set>

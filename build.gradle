@@ -6,10 +6,10 @@ ext {
             compileVersion   : 25,
             minSdk           : 16,
             targetSdk        : 25,
-            version_code     : 280,
-            version_name     : "4.8.0",
-            isRmote           : "true",//Debug remote/local
-            isOnline          : "true"//Debug formal/test
+            version_code     : 290,
+            version_name     : "4.9.0",
+            isRmote           : "false",//Debug remote/local
+            isOnline          : "false"//Debug formal/test
     ]
     libraries = [
             support: "25.2.0",
