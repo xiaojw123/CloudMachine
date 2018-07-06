@@ -39,7 +39,6 @@
                 android:id="@+id/contact_emergency_item"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
                 <TextView
                     android:id="@+id/contact_name_tv"
                     style="@style/layout_value_style"

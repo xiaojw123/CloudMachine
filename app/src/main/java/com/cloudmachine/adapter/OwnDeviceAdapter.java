@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.R;
+import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.utils.Constants;

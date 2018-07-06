@@ -25,9 +25,10 @@ import com.cloudmachine.utils.PhotosGallery;
  */
 
 public class PicPop extends PopupWindow implements View.OnClickListener{
-    public static final int REQUEST_PICK_IMAGE=0x16;
+    public static final int TYPE_CAMERA=0x11;
+    public static final int TYPE_PICK=0x12;
     private Context mContext;
-    private String mType;
+    private OnPopUpdateListener mListener;
     public PicPop(Context context){
         super(context);
         mContext=context;
@@ -48,8 +49,8 @@ public class PicPop extends PopupWindow implements View.OnClickListener{
         pickBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
     }
-    public void setPicType(String type){
-        mType=type;
+    public void setOnPopUpdateListener(OnPopUpdateListener listener){
+        mListener=listener;
     }
 
     @Override
@@ -61,17 +62,26 @@ public class PicPop extends PopupWindow implements View.OnClickListener{
                 break;
             case  R.id.pop_shoot_btn:
                 dismiss();
-                Bundle bundle = new Bundle();
-                bundle.putString(CameraActivity.PIC_TYPE, mType);
-                Constants.toActivityForR((Activity) mContext, CameraActivity.class, bundle, CameraActivity.REQUEST_CODE);
+                if (mListener!=null){
+                    mListener.updateGuideView(TYPE_CAMERA);
+                }
+
                 break;
             case R.id.pop_pick_btn:
-                ((Activity)mContext).startActivityForResult(PhotosGallery.gotoPhotosGallery(),
-                        REQUEST_PICK_IMAGE);
                 dismiss();
+                if (mListener!=null){
+                    mListener.updateGuideView(TYPE_PICK);
+                }
                 break;
         }
 
+
+
+    }
+
+    public interface OnPopUpdateListener{
+
+        void updateGuideView(int actionType);
 
 
     }

@@ -26,7 +26,6 @@
             app:tipTextColor="@color/c_ff8901"
             app:tipTextSize="16dp"
             android:layout_gravity="center"
-            android:paddingLeft="20dp"
             />
 
         <ImageView

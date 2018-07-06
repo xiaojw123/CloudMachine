@@ -552,7 +552,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     if (bundle != null) {
                         ResidentAddressInfo info = (ResidentAddressInfo) bundle.getSerializable(Constants.P_SEARCHINFO);
                         if (info != null) {
-                            String locJson = "callbackSelectAddress('{ \"province\": \"" + info.getProvince() + "\",\"location\":{\"longitude\":\"" + info.getLat() + "\",\"latitude\":\"" + info.getLng() + "\"},\"city\": \"" + info.getCity() + "\",\"district\": \"" + info.getDistrict() + "\",\"name\": \"" + info.getPosition() + "\"}')";
+                            String locJson = "callbackSelectAddress('{ \"province\": \"" + info.getProvince() + "\",\"location\":{\"longitude\":\"" + info.getLng() + "\",\"latitude\":\"" + info.getLat() + "\"},\"city\": \"" + info.getCity() + "\",\"district\": \"" + info.getDistrict() + "\",\"name\": \"" + info.getPosition() + "\"}')";
                             Constants.callJsMethod(mWebView, locJson);
                         }
                     }

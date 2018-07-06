@@ -19,7 +19,7 @@ public class PayInfoPresenter extends PayInfoContract.Presenter {
 
             @Override
             protected void _onError(String message) {
-
+                ToastUtils.showToast(mContext,message);
             }
         }));
 

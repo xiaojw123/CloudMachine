@@ -42,7 +42,9 @@
         android:paddingTop="@dimen/dimen_size_5"
         android:text="@string/all"
         android:textColor="@color/cor9"
-        android:textSize="@dimen/siz8" />
+        android:textSize="@dimen/siz8"
+        android:visibility="gone"
+        />
 
     <!--<TextView-->
         <!--android:id="@+id/device_ques_ans_tv"-->
@@ -90,7 +92,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/dimen_size_8"
         android:layout_marginLeft="@dimen/dimen_size_8"
-        android:layout_marginRight="@dimen/dimen_size_8" />
+        android:layout_marginRight="@dimen/dimen_size_8"
+        />
 
 
 

@@ -51,6 +51,7 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.ViewCouponActivityNew;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.LocationBean;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
@@ -204,6 +205,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        printMaxMemory();
         mHandler = new Handler(this);
         mChecker = new PermissionsChecker(this);
         initView();
@@ -220,6 +222,13 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         } else {
             initLocation();
         }
+
+    }
+    public void printMaxMemory(){
+        Runtime rt=Runtime.getRuntime();
+        long maxMemory=rt.maxMemory();
+        AppLog.print("APP最大可申请内存："+Long.toString(maxMemory/(1024*1024)));
+
     }
 
 
@@ -1034,13 +1043,13 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         return canUse;
     }
 
-    public void updateGuide(List<McDeviceInfo> deviceList) {
+    public void updateGuide(List<DeviceItem> deviceList) {
         if (UserHelper.isLogin(this)) {
             if (deviceList != null) {
                 int len = deviceList.size();
                 if (len > 0) {
                     if (len == 1) {
-                        McDeviceInfo info = deviceList.get(0);
+                        DeviceItem info = deviceList.get(0);
                         if (info != null) {
                             if (info.getId() != 0) {
                                 guideExpImg.setVisibility(View.GONE);

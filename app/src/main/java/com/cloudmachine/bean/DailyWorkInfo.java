@@ -1,5 +1,7 @@
 package com.cloudmachine.bean;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 
@@ -27,12 +29,18 @@ public class DailyWorkInfo  implements Serializable{
 		this.workTime = workTime;
 	}
 	public String getEndTime() {
+		if (!TextUtils.isEmpty(endTime)){
+			endTime=endTime.trim();
+		}
 		return endTime;
 	}
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 	public String getStartTime() {
+		if (!TextUtils.isEmpty(startTime)){
+			startTime=startTime.trim();
+		}
 		return startTime;
 	}
 	public void setStartTime(String startTime) {

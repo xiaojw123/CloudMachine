@@ -11,9 +11,12 @@
     <com.cloudmachine.widget.CommonTitleView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:common_title_name="运营商授权" />
+        app:common_title_name="运营商授权"
+        android:layout_marginBottom="@dimen/dimen_size_6"
+        />
 
-    <LinearLayout style="@style/Layout_Item_Style">
+    <LinearLayout style="@style/Layout_Item_Style"
+        >
 
         <TextView
             style="@style/layout_key_style"
@@ -39,7 +42,9 @@
             android:layout_height="match_parent">
 
             <com.cloudmachine.utils.widgets.ClearEditTextView
+                android:id="@+id/operator_psw_edt"
                 style="@style/layout_value_style"
+                android:inputType="textPassword"
                 android:layout_toLeftOf="@+id/opeartor_switch_img"
                 android:hint="手机运营商密码" />
 

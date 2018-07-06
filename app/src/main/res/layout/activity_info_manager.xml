@@ -85,7 +85,7 @@
             <TextView
                 android:id="@+id/person_status_tv"
                 style="@style/manager_item_status_style"
-                android:textColor="@color/c_ff8901"
+                android:textColor="@color/textcolor_auth_status1"
                 android:text="@string/no_complete" />
 
         </RelativeLayout>
@@ -108,7 +108,7 @@
             <TextView
                 android:id="@+id/bank_status_tv"
                 style="@style/manager_item_status_style"
-                android:textColor="@color/c_64baa4"
+                android:textColor="@color/textcolor_auth_status2"
                 android:text="@string/no_verify" />
 
         </RelativeLayout>
@@ -132,7 +132,7 @@
             <TextView
                 android:id="@+id/face_status_tv"
                 style="@style/manager_item_status_style"
-                android:textColor="@color/c_64baa4"
+                android:textColor="@color/textcolor_auth_status2"
                 android:text="@string/no_verify" />
 
         </RelativeLayout>
@@ -159,7 +159,7 @@
             <TextView
                 android:id="@+id/contact_status_tv"
                 style="@style/manager_item_status_style"
-                android:textColor="@color/c_64baa4"
+                android:textColor="@color/textcolor_auth_status2"
                 android:text="@string/no_complete" />
 
         </RelativeLayout>
@@ -184,7 +184,7 @@
             <TextView
                 android:id="@+id/operator_status_tv"
                 style="@style/manager_item_status_style"
-                android:textColor="@color/c_64baa4"
+                android:textColor="@color/textcolor_auth_status2"
                 android:text="@string/no_authorization" />
 
         </RelativeLayout>

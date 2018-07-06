@@ -15,6 +15,7 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -92,6 +93,11 @@ public class SalaryActivity extends BaseAutoLayoutActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_salary);
         ButterKnife.bind(this);
+        if (TextUtils.isEmpty(ApiConstants.AppWagesLoan)) {
+            poolRlt.setVisibility(View.GONE);
+        } else {
+            poolRlt.setVisibility(View.VISIBLE);
+        }
         titleTv.setRightClickListener(this);
         payBtn.setOnClickListener(this);
         payBtn.setButtonEnable(false);
@@ -132,7 +138,7 @@ public class SalaryActivity extends BaseAutoLayoutActivity implements View.OnCli
                         data.putInt(Constants.P_PAYTYPE, payType);
                         data.putString(Constants.P_PAYAMOUNT, amountText);
                         data.putParcelableArrayList(Constants.P_RECEIVERLIST, receiverList);
-                        Constants.toActivity(this, PayInfoActivity.class, data);
+                        Constants.toActivityForR(this, PayInfoActivity.class, data);
                     } else {
                         ToastUtils.showToast(mContext, "金额大于0才可支付！");
                     }
@@ -228,6 +234,23 @@ public class SalaryActivity extends BaseAutoLayoutActivity implements View.OnCli
         if (resultCode == PersonChooseActivity.SEL_OPERATOR_COMPLETE) {
             mOperatorItems = data.getParcelableArrayListExtra(Constants.OPERATOR_LIST);
             updateCollItemView();
+        } else if (resultCode == PayInfoActivity.SUCCESS_SALARY_PAY) {
+            int len;
+            if (mOperatorItems != null) {
+                len = mOperatorItems.size();
+                if (len > 0) {
+                    mOperatorItems.clear();
+                    receiverList.clear();
+                    collectionContainer.removeAllViews();
+                    View view= LayoutInflater.from(this).inflate(R.layout.item_salary_collection,null);
+                    FrameLayout perLayout= (FrameLayout) view.findViewById(R.id.item_collection_per);
+                    perLayout.setOnClickListener(this);
+                    collectionContainer.addView(view);
+                    numTv.setText(String.valueOf(mOperatorItems.size()));
+                    toalAmountTv.setText(String.valueOf(0));
+                }
+            }
+
         }
 
     }

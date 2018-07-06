@@ -27,6 +27,7 @@ public class AddressBookAdapter extends BaseRecyclerAdapter<AddressBookItem> imp
 
     public AddressBookAdapter(Context context, List<AddressBookItem> items) {
         super(context, items);
+        setHasStableIds(true);
     }
 
     @Override
@@ -37,10 +38,12 @@ public class AddressBookAdapter extends BaseRecyclerAdapter<AddressBookItem> imp
 
     @Override
     public long getHeaderId(int position) {
+        AppLog.print("getHeaderID___pos___"+position);
         if (mItems.size() > position) {
             AddressBookItem item = mItems.get(position);
             String letter = item.getFirstLetter();
-            return letter.charAt(0);
+            AppLog.print("headerpos__"+position+"___leter__"+letter+"_id__"+(int)letter.charAt(0));
+            return (int)letter.charAt(0);
         }
         return -1;
     }
@@ -53,7 +56,7 @@ public class AddressBookAdapter extends BaseRecyclerAdapter<AddressBookItem> imp
 
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
-        AppLog.print("onBindHeaderViewHolder___pos__" + position + "__size__" + mItems.size());
+        AppLog.print("onBindHeaderViewHolder___pos__" + position);
         if (position < 0) {
             return;
         }

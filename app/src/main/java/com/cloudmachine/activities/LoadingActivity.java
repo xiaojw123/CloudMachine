@@ -54,10 +54,8 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
     TextView screenAdtimerTv;
     @BindView(R.id.screen_ad_layout)
     FrameLayout screenAdLayout;
-    @BindView(R.id.mnbv)
-    ImageView mnbv;
-    @BindView(R.id.loading_splash_layout)
-    RelativeLayout loadingSplashLayout;
+    @BindView(R.id.loading_splash_img)
+    ImageView splashImg;
     private Handler mHandler;
     Timer mTimer;
     int timeCount;
@@ -147,7 +145,7 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
                 }
                 timeCount = item.getAdTime();
                 screenAdLayout.setVisibility(View.VISIBLE);
-                loadingSplashLayout.setVisibility(View.GONE);
+                splashImg.setVisibility(View.GONE);
                 Glide.with(mContext).load(item.getAdLink()).into(screenAdimg);
                 screenAdimg.setTag(item.getOpenLink());
                 screenAdtimerTv.setOnClickListener(new View.OnClickListener() {

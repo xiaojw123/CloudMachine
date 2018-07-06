@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:common_title_name="@string/small_ticket"
+        android:layout_marginBottom="@dimen/dimen_size_6"
         />
 
     <ImageView

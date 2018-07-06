@@ -265,6 +265,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
         int index = dataSetIndex / 2;
         if ((dailyWorkList != null) && dailyWorkList.size() > index) {
             DailyWorkInfo info = dailyWorkList.get(index);
+
             startTimeTv.setText("开机：" + info.getStartTime());
             endTimeTv.setText("关机：" + info.getEndTime());
         }

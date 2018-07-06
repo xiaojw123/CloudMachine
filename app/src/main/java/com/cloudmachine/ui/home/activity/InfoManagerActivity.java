@@ -8,23 +8,32 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.amap.api.maps.model.Text;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.LoanAuthInfo;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.ToastUtils;
+import com.cloudmachine.utils.URLs;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.tongdun.android.liveness.LivenessDetectActivity;
+import retrofit2.http.Field;
 
 /**
  * 身份认证管理
  */
 public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
-    public static final String KEY_COMPLETED="key_completed";
+    public static final String KEY_COMPLETED = "key_completed";
     @BindView(R.id.mamager_personalinfo_rl)
     RelativeLayout personalInfoRl;
     @BindView(R.id.mamager_face_rl)
@@ -39,11 +48,17 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
     RadiusButtonView ticketBtn;
     @BindView(R.id.person_status_tv)
     TextView personStatusTv;
+    @BindView(R.id.bank_status_tv)
+    TextView bankStausTv;
     @BindView(R.id.face_status_tv)
     TextView faceStatusTv;
+    @BindView(R.id.contact_status_tv)
+    TextView contactStatusTv;
+    @BindView(R.id.operator_status_tv)
+    TextView operatortatusTv;
     @BindView(R.id.ticket_question_tv)
     TextView questionTv;
-    boolean isPerCompleted;
+    boolean isIdCardAuth;//身份证验证
 
 
     @Override
@@ -58,13 +73,51 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
     private void initView() {
         ticketBtn.setButtonEnable(false);
         ticketBtn.setOnClickListener(this);
-        if (isPerCompleted) {
-            personStatusTv.setTextColor(getResources().getColor(R.color.cor20));
-            personStatusTv.setText(getResources().getString(R.string.completed));
-        } else {
-            personStatusTv.setTextColor(getResources().getColor(R.color.c_ff8901));
-            personStatusTv.setText(getResources().getString(R.string.no_complete));
-        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        updateAuthStatus();
+    }
+
+    private void updateAuthStatus() {
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getAuthStatus(UserHelper.getMemberId(this)).compose(RxHelper.<LoanAuthInfo>handleResult()).subscribe(new RxSubscriber<LoanAuthInfo>(mContext) {
+            @Override
+            protected void _onNext(LoanAuthInfo info) {
+                if (info != null) {
+                    isIdCardAuth = info.isIdCardAuth();
+                    String text1 = isIdCardAuth ? getString(R.string.completed) : getString(R.string.no_complete);
+                    String text2 = info.isBankCardAuth() ? getString(R.string.verified) : getString(R.string.no_verify);
+                    String text3 = info.isFigureAuth() ? getString(R.string.verified) : getString(R.string.no_verify);
+                    String text4 = info.isRelationAuth() ? getString(R.string.completed) : getString(R.string.no_complete);
+                    String text5 = info.isOpeatoryAuth() ? getString(R.string.authorizationed) : getString(R.string.no_authorization);
+                    personStatusTv.setActivated(isIdCardAuth);
+                    personStatusTv.setText(text1);
+                    bankStausTv.setActivated(info.isBankCardAuth());
+                    bankStausTv.setText(text2);
+                    faceStatusTv.setActivated(info.isFigureAuth());
+                    faceStatusTv.setText(text3);
+                    if (info.isFigureAuth()){
+                        faceStatusTv.setCompoundDrawables(null,null,null,null);
+                    }
+                    contactStatusTv.setActivated(info.isRelationAuth());
+                    contactStatusTv.setText(text4);
+                    if (info.isRelationAuth()){
+                        contactStatusTv.setCompoundDrawables(null,null,null,null);
+                    }
+                    operatortatusTv.setActivated(info.isOpeatoryAuth());
+                    operatortatusTv.setText(text5);
+                    if (info.isOpeatoryAuth()){
+                        operatortatusTv.setCompoundDrawables(null,null,null,null);
+                    }
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+            }
+        }));
     }
 
     @Override
@@ -72,44 +125,45 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
 
     }
 
-    @OnClick({R.id.ticket_question_tv,R.id.mamager_personalinfo_rl, R.id.mamager_face_rl, R.id.mamager_bank_rl, R.id.mamager_contact_rl, R.id.mamager_operator_rl})
+    @OnClick({R.id.ticket_question_tv, R.id.mamager_personalinfo_rl, R.id.mamager_face_rl, R.id.mamager_bank_rl, R.id.mamager_contact_rl, R.id.mamager_operator_rl})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ticket_question_tv:
-                Constants.toActivity(this,TicketActivity.class,null);
+                Constants.toActivity(this, TicketActivity.class, null);
                 break;
             case R.id.mamager_personalinfo_rl://个人信息
-                isPerCompleted=true;
-                personStatusTv.setTextColor(getResources().getColor(R.color.cor20));
-                personStatusTv.setText("已完善");
+                isIdCardAuth=true;
                 Constants.toActivity(this, AuthPersonalInfoActivity.class, null);
                 break;
             case R.id.mamager_bank_rl://银行卡信息
-                if (isPerCompleted){
+                if (isIdCardAuth) {
                     Constants.toActivity(this, BankVerifyctivity.class, null);
-                }else{
+                } else {
                     showDialog("验证");
                 }
                 break;
             case R.id.mamager_face_rl://刷脸信息
-                if (isPerCompleted){
-                    Constants.toActivityForR(this, LivenessDetectActivity.class,null);
-                }else{
+                if (isIdCardAuth) {
+                    Bundle faceData=new Bundle();
+                    faceData.putString(LivenessDetectActivity.URL_CONTRASTFACE, URLs.FACE_URL);
+                    faceData.putLong(LivenessDetectActivity.MEMBER_ID,UserHelper.getMemberId(this));
+                    Constants.toActivity(this, LivenessDetectActivity.class, faceData);
+                } else {
                     showDialog("验证");
                 }
 
                 break;
             case R.id.mamager_contact_rl://联系人信息
-                if (isPerCompleted){
-                    Constants.toActivity(this,ContactActivity.class,null);
-                }else{
+                if (isIdCardAuth) {
+                    Constants.toActivity(this, ContactActivity.class, null);
+                } else {
                     showDialog("完善");
                 }
                 break;
             case R.id.mamager_operator_rl://运营商信息
-                if(isPerCompleted){
-                    Constants.toActivity(this,OperateActivity.class,null);
-                }else{
+                if (isIdCardAuth) {
+                    Constants.toActivity(this, OperateActivity.class, null);
+                } else {
                     showDialog("授权");
                 }
                 break;
@@ -131,20 +185,18 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
         builder.create().show();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode){
-            case LivenessDetectActivity.REST_FACE_IDENTIFY:
-                faceStatusTv.setTextColor(getResources().getColor(R.color.cor20));
-                faceStatusTv.setText(getResources().getString(R.string.completed));
-                faceStatusTv.setCompoundDrawables(null,null,null,null);
-                break;
-
-        }
-
-
-
-
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        switch (resultCode) {
+//            case LivenessDetectActivity.REST_FACE_IDENTIFY:
+//                faceStatusTv.setTextColor(getResources().getColor(R.color.cor20));
+//                faceStatusTv.setText(getResources().getString(R.string.completed));
+//                faceStatusTv.setCompoundDrawables(null, null, null, null);
+//                break;
+//
+//        }
+//
+//
+//    }
 }

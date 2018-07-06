@@ -16,6 +16,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.bean.ScreenInfo;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.utils.DensityUtil;
 
 
@@ -27,6 +29,7 @@ import com.cloudmachine.utils.DensityUtil;
 public class PreviewBorderView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
     private int mScreenH;
     private int mScreenW;
+    private int mSWidth;
     private Canvas mCanvas;
     private Paint mPaint;
     private Paint mPaintLine;
@@ -104,33 +107,37 @@ public class PreviewBorderView extends SurfaceView implements SurfaceHolder.Call
         try {
             this.mCanvas = this.mHolder.lockCanvas();
             this.mCanvas.drawARGB(100, 0, 0, 0);
-            this.mScreenW = (this.mScreenH * 4 / 3);
-            Log.e("TAG","mScreenW:"+mScreenW+" mScreenH:"+mScreenH);
-            this.mCanvas.drawRect(new RectF(this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6, this.mScreenH * 1 / 6, this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6, this.mScreenH - this.mScreenH * 1 / 6), this.mPaint);
-            this.mCanvas.drawLine(this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6, this.mScreenH * 1 / 6, this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6, this.mScreenH * 1 / 6 + 50, this.mPaintLine);
-            this.mCanvas.drawLine(this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6, this.mScreenH * 1 / 6, this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6 + 50, this.mScreenH * 1 / 6, this.mPaintLine);
-            this.mCanvas.drawLine(this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6, this.mScreenH * 1 / 6, this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6, this.mScreenH * 1 / 6 + 50, this.mPaintLine);
-            this.mCanvas.drawLine(this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6, this.mScreenH * 1 / 6, this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6 - 50, this.mScreenH * 1 / 6, this.mPaintLine);
-            this.mCanvas.drawLine(this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6, this.mScreenH - this.mScreenH * 1 / 6, this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6, this.mScreenH - this.mScreenH * 1 / 6 - 50, this.mPaintLine);
-            this.mCanvas.drawLine(this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6, this.mScreenH - this.mScreenH * 1 / 6, this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6 + 50, this.mScreenH - this.mScreenH * 1 / 6, this.mPaintLine);
-            this.mCanvas.drawLine(this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6, this.mScreenH - this.mScreenH * 1 / 6, this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6, this.mScreenH - this.mScreenH * 1 / 6 - 50, this.mPaintLine);
-            this.mCanvas.drawLine(this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6, this.mScreenH - this.mScreenH * 1 / 6, this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6 - 50, this.mScreenH - this.mScreenH * 1 / 6, this.mPaintLine);
-
+            this.mScreenW = mScreenH * 4 / 3;
+            int left = mScreenW / 2 - mScreenH * 2 / 3 + mScreenH / 6;
+            int top = mScreenH / 6;
+            int right = mScreenW / 2 + mScreenH * 2 / 3 - mScreenH / 6;
+            int bottom = mScreenH * 5 / 6;
+            int width = right - left;
+            int height = bottom - top;
+            int mLeft = (mSWidth - width) / 2;
+            int mRight = mLeft + width;
+            mPaintLine.setColor(getResources().getColor(R.color.c_ff8901));
+            mCanvas.drawRect(new RectF(mLeft, top, mRight, bottom), mPaint);
+            mCanvas.drawLine(mLeft, top, mLeft, top + 50, mPaintLine);
+            mCanvas.drawLine(mLeft, top, mLeft + 50, top, mPaintLine);
+            mCanvas.drawLine(mRight, top, mRight, top + 50, mPaintLine);
+            mCanvas.drawLine(mRight, top, mRight - 50, top, mPaintLine);
+            mCanvas.drawLine(mLeft, bottom, mLeft, bottom - 50, mPaintLine);
+            mCanvas.drawLine(mLeft, bottom, mLeft + 50, bottom, mPaintLine);
+            mCanvas.drawLine(mRight, bottom, mRight, bottom - 50, mPaintLine);
+            mCanvas.drawLine(mRight, bottom, mRight - 50, bottom, this.mPaintLine);
             mPaintLine.setColor(Color.WHITE);
             mPaintLine.setTextSize(tipTextSize);
             mPaintLine.setAntiAlias(true);
             mPaintLine.setDither(true);
             float length = mPaintLine.measureText(tipText);
-            this.mCanvas.drawText(tipText, this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6 + this.mScreenH / 2 - length / 2, (this.mScreenH - this.mScreenH * 1 / 6)+DensityUtil.dip2px(getContext(),10), mPaintLine);
-            Log.e("TAG", "left:" + (this.mScreenW / 2 - this.mScreenH * 2 / 3 + this.mScreenH * 1 / 6));
-            Log.e("TAG", "top:" + (this.mScreenH * 1 / 6));
-            Log.e("TAG", "right:" + (this.mScreenW / 2 + this.mScreenH * 2 / 3 - this.mScreenH * 1 / 6));
-            Log.e("TAG", "bottom:" + (this.mScreenH - this.mScreenH * 1 / 6));
+            float bound = (ScreenInfo.screen_width - bottom- tipTextSize)/ 2;
+            mCanvas.drawText(tipText, mLeft + width / 2 - length / 2, bottom + bound, mPaintLine);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (this.mCanvas != null) {
-                this.mHolder.unlockCanvasAndPost(this.mCanvas);
+            if (mCanvas != null) {
+                mHolder.unlockCanvasAndPost(mCanvas);
             }
         }
     }
@@ -139,10 +146,12 @@ public class PreviewBorderView extends SurfaceView implements SurfaceHolder.Call
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         //获得宽高，开启子线程绘图
-        this.mScreenW = getWidth();
-        this.mScreenH = getHeight();
-        this.mThread = new Thread(this);
-        this.mThread.start();
+        mScreenW = getWidth();
+        mScreenH = getHeight();
+        mSWidth = mScreenW;
+        mThread = new Thread(this);
+        mThread.start();
+        AppLog.print("surfaceCreated___w__" + mScreenW + "___h_" + mScreenH);
     }
 
     @Override

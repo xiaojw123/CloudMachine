@@ -6,6 +6,7 @@ import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.util.ArraySet;
 
 import com.autonavi.rtbt.IFrameForRTBT;
+import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.utils.MemeberKeeper;

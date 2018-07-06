@@ -14,17 +14,17 @@ public class ApiConstants {
     public static String REMOTE_HOST5 = BuildConfig.IS_ONLINE ? "http://camera.cloudm.com:18089/" : "http://183.129.196.42:18089/";//云黑子-高配-拍照
     //
 //    /*测试环境-179/218*/
-//    private static final String T_HOST1 =BuildConfig.IS_REMOTE? REMOTE_HOST1:"http://192.168.1.179:18080/cloudm3/";
-//    private static final String T_HOST2 =BuildConfig.IS_REMOTE?REMOTE_HOST2: "http://192.168.1.179:18080/cloudm3/yjx/";
-//    private static final String T_HOST3 =BuildConfig.IS_REMOTE?REMOTE_HOST3: "http://ask.test.cloudm.com/";
-//    private static final String T_HOST4 =BuildConfig.IS_REMOTE?REMOTE_HOST4: "http://192.168.1.109:7718/";
-//    private static final String T_HOST5=BuildConfig.IS_REMOTE?REMOTE_HOST5:"http://192.168.1.176:18089/";//云黑子-高配-拍照
+    private static final String T_HOST1 =BuildConfig.IS_REMOTE? REMOTE_HOST1:"http://192.168.1.179:18080/cloudm3/";
+    private static final String T_HOST2 =BuildConfig.IS_REMOTE?REMOTE_HOST2: "http://192.168.1.179:18080/cloudm3/yjx/";
+    private static final String T_HOST3 =BuildConfig.IS_REMOTE?REMOTE_HOST3: "http://ask.test.cloudm.com/";
+    private static final String T_HOST4 =BuildConfig.IS_REMOTE?REMOTE_HOST4: "http://192.168.1.109:7718/";
+    private static final String T_HOST5=BuildConfig.IS_REMOTE?REMOTE_HOST5:"http://192.168.1.176:18089/";//云黑子-高配-拍照
         /*测试环境-109/218*/
-    private static final String T_HOST1 = BuildConfig.IS_REMOTE ? REMOTE_HOST1 : "http://192.168.1.109:18088/cloudm3/";
-    private static final String T_HOST2 = BuildConfig.IS_REMOTE ? REMOTE_HOST2 : "http://192.168.1.109:18088/cloudm3/yjx/";
-    private static final String T_HOST3 = BuildConfig.IS_REMOTE ? REMOTE_HOST3 : "http://ask.test.cloudm.com/";
-    private static final String T_HOST4 = BuildConfig.IS_REMOTE ? REMOTE_HOST4 : "http://192.168.1.109:7718/";
-    private static final String T_HOST5 = BuildConfig.IS_REMOTE ? REMOTE_HOST5 : "http://192.168.1.176:18089/";//云黑子-高
+//    private static final String T_HOST1 = BuildConfig.IS_REMOTE ? REMOTE_HOST1 : "http://192.168.1.109:18088/cloudm3/";
+//    private static final String T_HOST2 = BuildConfig.IS_REMOTE ? REMOTE_HOST2 : "http://192.168.1.109:18088/cloudm3/yjx/";
+//    private static final String T_HOST3 = BuildConfig.IS_REMOTE ? REMOTE_HOST3 : "http://ask.test.cloudm.com/";
+//    private static final String T_HOST4 = BuildConfig.IS_REMOTE ? REMOTE_HOST4 : "http://192.168.1.109:7718/";
+//    private static final String T_HOST5 = BuildConfig.IS_REMOTE ? REMOTE_HOST5 : "http://192.168.1.176:18089/";//云黑子-高
 
 
     /*线上环境*/

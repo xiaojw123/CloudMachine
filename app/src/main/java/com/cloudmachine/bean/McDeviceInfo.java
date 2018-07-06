@@ -86,7 +86,7 @@ public class McDeviceInfo implements Serializable {
     }
 
     public int getModelId() {
-        return modelId;
+            return modelId;
     }
 
     public void setModelId(int modelId) {

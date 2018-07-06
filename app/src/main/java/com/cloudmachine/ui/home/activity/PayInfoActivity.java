@@ -78,6 +78,7 @@ import rx.functions.Action1;
 
 public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, PayInfoModel> implements PayInfoContract.View, View.OnClickListener {
     public static final String FINISH_PAY_SALALARY = "finish_pay_salary";
+    public static final int SUCCESS_SALARY_PAY = 0x01;
     public static final int TYPE_PURSE_PAY = 4;
     public static final int SALARY_ALIPAYPAY = 1;
     public static final int SALARY_WXPAY = 2;
@@ -126,7 +127,10 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
             @Override
             public void call(String o) {
                 Constants.ToastAction(o);
-                finish();
+                if ("支付成功".equals(o)) {
+                    setResult(SUCCESS_SALARY_PAY);
+                    finish();
+                }
             }
         });
     }
@@ -306,8 +310,8 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
             list.add(new BasicNameValuePair("salaryTotalAmount", amountText));
             list.add(new BasicNameValuePair("payoffType", String.valueOf(payType)));
             list.add(new BasicNameValuePair("salaryInfoDetailJsonStr", receiverInfoArray.toString()));
-            if (params!=null&&params.length>0){
-                list.add(new BasicNameValuePair("verifyCode",params[0]));
+            if (params != null && params.length > 0) {
+                list.add(new BasicNameValuePair("verifyCode", params[0]));
             }
             try {
                 return httpRequest.get(URLs.CONFIRMPAY_URL, list);
@@ -328,6 +332,7 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
                     }.getType());
                     if (bo.success()) {
                         ToastUtils.showToast(mContext, bo.getResult());
+                        setResult(SUCCESS_SALARY_PAY);
                         finish();
                     } else {
                         ToastUtils.showToast(mContext, bo.getMessage());
@@ -403,11 +408,12 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
                 if (TextUtils.equals(resultStatus, "9000")) {
                     // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
                     Toast.makeText(PayInfoActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                    setResult(SUCCESS_SALARY_PAY);
                     finish();
                 } else {
                     // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                     Toast.makeText(PayInfoActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
-                    finish();
+//                    finish();
                 }
             }
         }

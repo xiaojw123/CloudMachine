@@ -40,4 +40,7 @@ public class URLs {
     public static String GET_EVALUATE_INFO_ALLIANCE=ApiConstants.CLOUDM_YJX_HOST+"device/getEvaluateInfoFromAlliance";
     public static String CONFIRMPAY_URL=ApiConstants.CLOUDM_HOST+"salary/confirmPay";
 
+    public static String FACE_URL=ApiConstants.CLOUDM_YJX_HOST+"loan/verification/contrastFace";
+
+
 }

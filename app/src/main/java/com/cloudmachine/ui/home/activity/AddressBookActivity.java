@@ -69,8 +69,8 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
             emtyTv.setVisibility(View.GONE);
             letterView.setOnWordChangeListener(this);
             addressBookRlv.setLayoutManager(new LinearLayoutManager(mContext));
-            addressBookRlv.setPullRefreshEnabled(false);
-            addressBookRlv.setLoadingMoreEnabled(false);
+            addressBookRlv.setPullRefreshEnabled(true);
+            addressBookRlv.setLoadingMoreEnabled(true);
             AddressBookAdapter adapter = new AddressBookAdapter(mContext, mItems);
             adapter.setOnItemClickListener(this);
             addressBookRlv.setAdapter(adapter);
@@ -114,6 +114,7 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
                 item.setName(name);
                 item.setMobile(mobileList);
                 item.setFirstLetter(getLetterStr(name));
+                AppLog.print("name___"+name+"__firstLetter__"+item.getFirstLetter());
                 itemList.add(item);
             } while (cursor.moveToNext());
             cursor.close();

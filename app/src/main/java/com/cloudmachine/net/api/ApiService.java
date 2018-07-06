@@ -11,8 +11,10 @@ import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.CheckNumBean;
 import com.cloudmachine.bean.DepositItem;
+import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.ForceVBean;
 import com.cloudmachine.bean.HomeBannerBean;
+import com.cloudmachine.bean.LoanAuthInfo;
 import com.cloudmachine.bean.McDeviceBasicsInfo;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
@@ -35,6 +37,7 @@ import com.cloudmachine.ui.home.model.PopItem;
 import com.cloudmachine.ui.home.model.RoleBean;
 import com.cloudmachine.ui.home.model.SiteBean;
 import com.google.gson.JsonObject;
+import com.umeng.socialize.media.Base;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +69,50 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
+    /**
+     * 工资贷接口
+     */
+    //获取验证状态
+    @GET("loan/verification/getAuthenticationStatus")
+    Observable<BaseRespose<LoanAuthInfo>> getAuthStatus(@Query("memberId") long memberId);
+
+    //身份证照片识别
+    @POST("loan/verification/OCR")
+    Observable<BaseRespose<JsonObject>> verifyOcr(@Field("memberId") long memberId, @Query("imgUrl") String imgUrl);
+
+    //身份证信息提交
+    @POST("loan/verification/userInfoSubmit")
+    Observable<BaseRespose<String>> submitIdUserInfo(@Field("memberId") long memberId, @Field("redisUserId") String redisUserId);
+
+    //银行卡验证
+    @POST("loan/verification/authenticateBankCard")
+    Observable<BaseRespose<String>> authBankCard(@Field("memberId") long memberId, @Field("bankCardNo") String bankCardNo, @Field("reserveMobile") String reserveMobile,@Query("realName") String realName);
+
+    //保存通讯录
+    @POST("loan/verification/saveContacts")
+    Observable<BaseRespose<String>> saveContacts(@Field("memberId") long memberId,@Field("contactsJsonStr") String contactsJsonStr);
+    //人脸对比
+    @POST("loan/verification/contrastFace")
+    Observable<BaseRespose<String>> contrastFace(@Field("memberId") long memberId,@Field("image") String image);
+    //运营商相关
+    @POST("loan/verification/operatorAuth")
+    Observable<BaseRespose<JsonObject>>  authOperator(@Field("memberId") long memberId,@Field("servicePwd") String servicePwd);
+    @POST("loan/verification/operatorCodeValidRetry")
+    Observable<BaseRespose<String>> retryOperatorCode(@Field("memberId") long memberId,@Field("taskId") String taskId);
+    @POST("loan/verification/operatorCodeValid")
+    Observable<BaseRespose<String>> checkOperatorCode(@Field("memberId") long memberId,@Field("taskId") String taskId,@Field("smsCode") String smsCode);
+    /**
+     *设备接口
+     */
+    @GET("device/getDeviceAndOilInfoList")
+    Observable<BaseRespose<List<McDeviceInfo>>> getAllDeviceList(@Query("memberId") long memberId, @Query("page") int page, @Query("key") String key);
+
+    @GET("device/getDeviceList")
+    Observable<BaseRespose<List<DeviceItem>>> getDeviceList(@Query("memberId") String memberId, @Query("page") int page, @Query("type") int type);
+
+
     @GET("salary/salaryHistoryRecords")
-    Observable<BaseRespose<List<SalaryHistoryItem>>> getSalaryHistoryRecords(@Query("memberId") long memberId,@Query("type") int type,@Query("year") String year,@Query("month") String month,@Query("page") int page,@Query("size") int size);
+    Observable<BaseRespose<List<SalaryHistoryItem>>> getSalaryHistoryRecords(@Query("memberId") long memberId, @Query("type") int type, @Query("year") String year, @Query("month") String month, @Query("page") int page, @Query("size") int size);
 
     //工资支付
     @GET("salary/confirmPay")
@@ -385,7 +430,7 @@ public interface ApiService {
      * 微信绑定手机号
      *
      * @param mobile
-     * @param type 1:注册、 2:忘记密码、  3:登陆微信绑定 4：钱包支付 11：支付宝绑定 10：微信支付绑定
+     * @param type   1:注册、 2:忘记密码、  3:登陆微信绑定 4：钱包支付 11：支付宝绑定 10：微信支付绑定
      * @return
      */
     @GET("member/getCode")

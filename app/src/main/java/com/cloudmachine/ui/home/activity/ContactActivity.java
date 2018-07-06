@@ -12,10 +12,19 @@ import com.cloudmachine.R;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +47,6 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
     TextView relationTv;
     @BindView(R.id.contact_submit_btn)
     RadiusButtonView submitBtn;
-
 
 
     PermissionsChecker mChecker;
@@ -65,7 +73,7 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.radius_button_text:
-                ToastUtils.showToast(mContext,"提交信息");
+                saveContact();
                 break;
 
             case R.id.contact_emergency_item:
@@ -82,11 +90,41 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
                     Bundle data = new Bundle();
                     data.putInt(Constants.RELATION_POSITION, selectPos);
                     Constants.toActivityForR(this, RelationActivity.class, data, SELECT_RELATION);
-                }else{
-                    ToastUtils.showToast(mContext,"紧急联系人不能为空!");
+                } else {
+                    ToastUtils.showToast(mContext, "紧急联系人不能为空!");
                 }
                 break;
         }
+    }
+
+    private void saveContact() {
+        String contactName = nameTv.getText().toString();
+        String contactMobile=mobileTv.getText().toString();
+        JSONArray contactJarray=new JSONArray();
+        JSONObject contactJobj=new JSONObject();
+        try {
+            contactJobj.put("contactName",contactName);
+            contactJobj.put("contactMobile",contactMobile);
+            contactJobj.put("isEmergency",1);
+            contactJobj.put("relationType",selectPos);
+            contactJarray.put(contactJobj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).saveContacts(UserHelper.getMemberId(this), contactJarray.toString()).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+            @Override
+            protected void _onNext(String s) {
+                ToastUtils.showToast(mContext,s);
+                finish();
+            }
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(mContext,message);
+
+            }
+        }));
+
     }
 
     @Override
