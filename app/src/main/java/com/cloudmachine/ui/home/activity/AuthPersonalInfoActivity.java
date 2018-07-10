@@ -163,9 +163,8 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity implements 
             case R.id.pi_guide_container:
                 guideCotainer.setVisibility(View.GONE);
 
-                if (mChecker.lacksPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    PermissionsActivity.startActivityForResult(this, HomeActivity.PEM_REQCODE_CAMERA,
-                            Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+                if (mChecker.lacksPermissions(Constants.PERMISSIONS_CAMER_SD)) {
+                    PermissionsActivity.startActivityForResult(this, HomeActivity.PEM_REQCODE_CAMERA, Constants.PERMISSIONS_CAMER_SD);
                 } else {
                     gotoPickPage();
                 }
@@ -216,8 +215,7 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity implements 
         switch (requestCode) {
             case HomeActivity.PEM_REQCODE_CAMERA:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    ToastUtils.showToast(this, "需要开启相机和SD卡读写权限！！");
-                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.CAMERA);
+                    CommonUtils.showCameraSDPermissionDialog(this);
                 } else {
                     gotoPickPage();
                 }

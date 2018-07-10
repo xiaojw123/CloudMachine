@@ -286,6 +286,19 @@ public class CommonUtils {
         builder.create().show();
     }
 
+    public static void showCameraSDPermissionDialog(final Context context) {
+        CustomDialog.Builder builder = new CustomDialog.Builder(context);
+        builder.setMessage("需要开启相机服务和存储权限，请到设置->权限管理，打开相机服务和存储权限");
+        builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ((Activity) context).finish();
+            }
+        });
+        builder.create().show();
+    }
+
     public static Animation getTraslateAnim() {
         TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1, Animation.RELATIVE_TO_SELF, 0);
         animation.setDuration(500);

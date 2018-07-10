@@ -114,7 +114,7 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
         mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).saveContacts(UserHelper.getMemberId(this), contactJarray.toString()).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
-                ToastUtils.showToast(mContext,s);
+                ToastUtils.showToast(mContext,"提交成功");
                 finish();
             }
 

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -52,6 +53,7 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
     @BindView(R.id.address_book_empty)
     TextView emtyTv;
     List<AddressBookItem> mItems;
+    LinearLayoutManager lm;
 
 
     @Override
@@ -68,9 +70,10 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
             addressBookCotainer.setVisibility(View.VISIBLE);
             emtyTv.setVisibility(View.GONE);
             letterView.setOnWordChangeListener(this);
-            addressBookRlv.setLayoutManager(new LinearLayoutManager(mContext));
-            addressBookRlv.setPullRefreshEnabled(true);
-            addressBookRlv.setLoadingMoreEnabled(true);
+            lm = new LinearLayoutManager(mContext);
+            addressBookRlv.setLayoutManager(lm);
+            addressBookRlv.setPullRefreshEnabled(false);
+            addressBookRlv.setLoadingMoreEnabled(false);
             AddressBookAdapter adapter = new AddressBookAdapter(mContext, mItems);
             adapter.setOnItemClickListener(this);
             addressBookRlv.setAdapter(adapter);
@@ -114,7 +117,7 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
                 item.setName(name);
                 item.setMobile(mobileList);
                 item.setFirstLetter(getLetterStr(name));
-                AppLog.print("name___"+name+"__firstLetter__"+item.getFirstLetter());
+                AppLog.print("name___" + name + "__firstLetter__" + item.getFirstLetter());
                 itemList.add(item);
             } while (cursor.moveToNext());
             cursor.close();
@@ -147,8 +150,9 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
             for (int i = 0; i < mItems.size(); i++) {
                 AddressBookItem item = mItems.get(i);
                 if (word.equals(item.getFirstLetter())) {
-                    addressBookRlv.smoothScrollToPosition(i);
-                    addressBookRlv.scrollBy(0, DensityUtil.dip2px(mContext,87));
+                    if (lm != null) {
+                        lm.scrollToPosition(i);
+                    }
                     break;
                 }
 

@@ -69,9 +69,9 @@ public class LetterIndexView extends View {
         for (int i = 0; i < letterArray.length; i++) {
             String word = letterArray[i];
             Rect rect = new Rect();
-            int wordWidth = rect.width();
 //            int wordHeight=rect.height();
             paint.getTextBounds(word, 0, 1, rect);
+            int wordWidth = rect.width();
 //            if (touchIndex == i) {
 //                canvas.drawCircle(itemWidth / 2, i * itemHeight+itemWidth/2+wordHeight/2-itemWidth/5, itemWidth / 5, bgPaint);
 //                paint.setColor(Color.WHITE);

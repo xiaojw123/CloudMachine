@@ -11,6 +11,7 @@ import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
@@ -54,10 +55,12 @@ public class BankVerifyctivity extends BaseAutoLayoutActivity implements View.On
         String cardNo = cardNoEdt.getText().toString();
         String mobile = mobileEdt.getText().toString();
         String name = nameEdt.getText().toString();
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).authBankCard(UserHelper.getMemberId(this), cardNo, mobile, name).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+        long memberId=UserHelper.getMemberId(this);
+        memberId=15501;
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).authBankCard(memberId, cardNo, mobile, name).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
-                ToastUtils.showToast(mContext, s);
+                ToastUtils.showToast(mContext, "验证成功");
                 finish();
             }
 

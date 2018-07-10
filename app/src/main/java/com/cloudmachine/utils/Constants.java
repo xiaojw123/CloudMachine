@@ -1,5 +1,6 @@
 package com.cloudmachine.utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
@@ -1465,8 +1466,9 @@ public class Constants {
     public static final String CURRENT_LOC = "当前位置";
     public static final String APK_NAME = "cloudm.apk";
 
-    public static interface IPageType {
-        public static final String PAGE_DEVICE_INFO = "p_device_info";//设备基本信息
+    public  interface IPageType {
+        String PAGE_DEVICE_INFO = "p_device_info";//设备基本信息
+        String PAGE_INFO_MANAGER="p_info_manger";
 
     }
 
@@ -1475,6 +1477,7 @@ public class Constants {
         int STORAGE = 2;
         int LOCATION = 3;
     }
+    public static final String[] PERMISSIONS_CAMER_SD={Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
 
 }

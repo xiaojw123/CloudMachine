@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
@@ -19,7 +21,9 @@ import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.URLs;
 
@@ -59,6 +63,8 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
     @BindView(R.id.ticket_question_tv)
     TextView questionTv;
     boolean isIdCardAuth;//身份证验证
+    PermissionsChecker mChecker;
+    long memberId;
 
 
     @Override
@@ -71,18 +77,21 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
     }
 
     private void initView() {
-        ticketBtn.setButtonEnable(false);
-        ticketBtn.setOnClickListener(this);
+        memberId = UserHelper.getMemberId(this);
+        mChecker = new PermissionsChecker(this);
+        ticketBtn.setButtonClickEnable(false);
+        ticketBtn.setButtonClickListener(this);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        updateAuthStatus();
+        updateAuthStatus();
     }
 
     private void updateAuthStatus() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getAuthStatus(UserHelper.getMemberId(this)).compose(RxHelper.<LoanAuthInfo>handleResult()).subscribe(new RxSubscriber<LoanAuthInfo>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getAuthStatus(memberId).compose(RxHelper.<LoanAuthInfo>handleResult()).subscribe(new RxSubscriber<LoanAuthInfo>(mContext) {
             @Override
             protected void _onNext(LoanAuthInfo info) {
                 if (info != null) {
@@ -98,19 +107,34 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
                     bankStausTv.setText(text2);
                     faceStatusTv.setActivated(info.isFigureAuth());
                     faceStatusTv.setText(text3);
-                    if (info.isFigureAuth()){
-                        faceStatusTv.setCompoundDrawables(null,null,null,null);
-                    }
                     contactStatusTv.setActivated(info.isRelationAuth());
                     contactStatusTv.setText(text4);
-                    if (info.isRelationAuth()){
-                        contactStatusTv.setCompoundDrawables(null,null,null,null);
+                    if (info.isFigureAuth()) {
+                        faceInfoRl.setEnabled(false);
+                        faceStatusTv.setCompoundDrawables(null, null, null, null);
+                    } else {
+                        faceInfoRl.setEnabled(true);
+                    }
+                    if (info.isRelationAuth()) {
+                        contactInfoRl.setEnabled(false);
+                        contactStatusTv.setCompoundDrawables(null, null, null, null);
+                    } else {
+                        contactInfoRl.setEnabled(true);
                     }
                     operatortatusTv.setActivated(info.isOpeatoryAuth());
                     operatortatusTv.setText(text5);
-                    if (info.isOpeatoryAuth()){
-                        operatortatusTv.setCompoundDrawables(null,null,null,null);
+                    if (info.isOpeatoryAuth()) {
+                        operatorInfoRl.setEnabled(false);
+                        operatortatusTv.setCompoundDrawables(null, null, null, null);
+                    } else {
+                        operatorInfoRl.setEnabled(true);
                     }
+                    if (isIdCardAuth && info.isBankCardAuth() && info.isFigureAuth() && info.isRelationAuth() && info.isOpeatoryAuth()) {
+                        ticketBtn.setButtonClickEnable(true);
+                    } else {
+                        ticketBtn.setButtonClickEnable(false);
+                    }
+
                 }
             }
 
@@ -129,10 +153,12 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ticket_question_tv:
-                Constants.toActivity(this, TicketActivity.class, null);
+            case R.id.radius_button_text://开通小票，满足以上五个条件，进行下一步
+                Bundle ticketData = new Bundle();
+                ticketData.putString(Constants.PAGET_TYPE, Constants.IPageType.PAGE_INFO_MANAGER);
+                Constants.toActivity(this, TicketActivity.class, ticketData);
                 break;
             case R.id.mamager_personalinfo_rl://个人信息
-                isIdCardAuth=true;
                 Constants.toActivity(this, AuthPersonalInfoActivity.class, null);
                 break;
             case R.id.mamager_bank_rl://银行卡信息
@@ -144,10 +170,11 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
                 break;
             case R.id.mamager_face_rl://刷脸信息
                 if (isIdCardAuth) {
-                    Bundle faceData=new Bundle();
-                    faceData.putString(LivenessDetectActivity.URL_CONTRASTFACE, URLs.FACE_URL);
-                    faceData.putLong(LivenessDetectActivity.MEMBER_ID,UserHelper.getMemberId(this));
-                    Constants.toActivity(this, LivenessDetectActivity.class, faceData);
+                    if (mChecker.lacksPermissions(Constants.PERMISSIONS_CAMER_SD)) {
+                        PermissionsActivity.startActivityForResult(this, HomeActivity.PEM_REQCODE_CAMERA, Constants.PERMISSIONS_CAMER_SD);
+                    } else {
+                        gotoLiveness();
+                    }
                 } else {
                     showDialog("验证");
                 }
@@ -161,15 +188,20 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
                 }
                 break;
             case R.id.mamager_operator_rl://运营商信息
-                if (isIdCardAuth) {
+                if (isIdCardAuth) {//
                     Constants.toActivity(this, OperateActivity.class, null);
                 } else {
                     showDialog("授权");
                 }
                 break;
-            case R.id.radius_button_text://开通小票，满足以上五个条件，进行下一步
-                break;
         }
+    }
+
+    private void gotoLiveness() {
+        Bundle faceData = new Bundle();
+        faceData.putString(LivenessDetectActivity.URL_CONTRASTFACE, URLs.FACE_URL);
+        faceData.putLong(LivenessDetectActivity.MEMBER_ID, memberId);
+        Constants.toActivity(this, LivenessDetectActivity.class, faceData);
     }
 
     public void showDialog(String action) {
@@ -185,18 +217,17 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
         builder.create().show();
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        switch (resultCode) {
-//            case LivenessDetectActivity.REST_FACE_IDENTIFY:
-//                faceStatusTv.setTextColor(getResources().getColor(R.color.cor20));
-//                faceStatusTv.setText(getResources().getString(R.string.completed));
-//                faceStatusTv.setCompoundDrawables(null, null, null, null);
-//                break;
-//
-//        }
-//
-//
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == HomeActivity.PEM_REQCODE_CAMERA) {
+            if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                CommonUtils.showCameraSDPermissionDialog(this);
+            } else {
+                gotoLiveness();
+            }
+        }
+
+
+    }
 }

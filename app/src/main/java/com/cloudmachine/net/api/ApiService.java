@@ -47,6 +47,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -72,37 +73,55 @@ public interface ApiService {
     /**
      * 工资贷接口
      */
+    //开通小票
+    @FormUrlEncoded
+    @POST("loan/verification/immediatelyOpen")
+    Observable<BaseRespose<String>> openTicket(@Field("memberId") long memberId);
+
     //获取验证状态
     @GET("loan/verification/getAuthenticationStatus")
     Observable<BaseRespose<LoanAuthInfo>> getAuthStatus(@Query("memberId") long memberId);
 
     //身份证照片识别
+    @FormUrlEncoded
     @POST("loan/verification/OCR")
     Observable<BaseRespose<JsonObject>> verifyOcr(@Field("memberId") long memberId, @Query("imgUrl") String imgUrl);
 
     //身份证信息提交
+    @FormUrlEncoded
     @POST("loan/verification/userInfoSubmit")
     Observable<BaseRespose<String>> submitIdUserInfo(@Field("memberId") long memberId, @Field("redisUserId") String redisUserId);
 
     //银行卡验证
+    @FormUrlEncoded
     @POST("loan/verification/authenticateBankCard")
-    Observable<BaseRespose<String>> authBankCard(@Field("memberId") long memberId, @Field("bankCardNo") String bankCardNo, @Field("reserveMobile") String reserveMobile,@Query("realName") String realName);
+    Observable<BaseRespose<String>> authBankCard(@Field("memberId") long memberId, @Field("bankCardNo") String bankCardNo, @Field("reserveMobile") String reserveMobile, @Field("realName") String realName);
 
-    //保存通讯录
+    //保存通讯录4
+    @FormUrlEncoded
     @POST("loan/verification/saveContacts")
-    Observable<BaseRespose<String>> saveContacts(@Field("memberId") long memberId,@Field("contactsJsonStr") String contactsJsonStr);
+    Observable<BaseRespose<String>> saveContacts(@Field("memberId") long memberId, @Field("contactsJsonStr") String contactsJsonStr);
+
     //人脸对比
+    @FormUrlEncoded
     @POST("loan/verification/contrastFace")
-    Observable<BaseRespose<String>> contrastFace(@Field("memberId") long memberId,@Field("image") String image);
+    Observable<BaseRespose<String>> contrastFace(@Field("memberId") long memberId, @Field("image") String image);
+
     //运营商相关
+    @FormUrlEncoded
     @POST("loan/verification/operatorAuth")
-    Observable<BaseRespose<JsonObject>>  authOperator(@Field("memberId") long memberId,@Field("servicePwd") String servicePwd);
+    Observable<BaseRespose<JsonObject>> authOperator(@Field("memberId") long memberId, @Field("servicePwd") String servicePwd);
+
+    @FormUrlEncoded
     @POST("loan/verification/operatorCodeValidRetry")
-    Observable<BaseRespose<String>> retryOperatorCode(@Field("memberId") long memberId,@Field("taskId") String taskId);
+    Observable<BaseRespose<String>> retryOperatorCode(@Field("memberId") long memberId, @Field("taskId") String taskId);
+
+    @FormUrlEncoded
     @POST("loan/verification/operatorCodeValid")
-    Observable<BaseRespose<String>> checkOperatorCode(@Field("memberId") long memberId,@Field("taskId") String taskId,@Field("smsCode") String smsCode);
+    Observable<BaseRespose<String>> checkOperatorCode(@Field("memberId") long memberId, @Field("taskId") String taskId, @Field("smsCode") String smsCode);
+
     /**
-     *设备接口
+     * 设备接口
      */
     @GET("device/getDeviceAndOilInfoList")
     Observable<BaseRespose<List<McDeviceInfo>>> getAllDeviceList(@Query("memberId") long memberId, @Query("page") int page, @Query("key") String key);

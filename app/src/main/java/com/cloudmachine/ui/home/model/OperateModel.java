@@ -15,6 +15,7 @@ import rx.Observable;
 public class OperateModel implements OperateContact.Model {
     @Override
     public Observable<String> getVerifyCode(long memberId, String taskId) {
+
         return Api.getDefault(HostType.HOST_CLOUDM_YJX).retryOperatorCode(memberId,taskId).compose(RxHelper.<String>handleResult());
     }
 
@@ -25,6 +26,7 @@ public class OperateModel implements OperateContact.Model {
 
     @Override
     public Observable<JsonObject> authOperator(long memberId, String servicePwd) {
+
         return Api.getDefault(HostType.HOST_CLOUDM_YJX).authOperator(memberId,servicePwd).compose(RxHelper.<JsonObject>handleResult());
     }
 }

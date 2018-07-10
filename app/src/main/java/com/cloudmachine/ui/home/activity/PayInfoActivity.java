@@ -278,7 +278,6 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        AppLog.print("runOnUiThread___");
                         timeOut--;
                         String text;
                         if (timeOut <= 0) {

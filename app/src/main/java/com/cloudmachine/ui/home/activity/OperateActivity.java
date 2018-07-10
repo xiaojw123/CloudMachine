@@ -16,6 +16,7 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.net.api.Api;
 import com.cloudmachine.ui.home.contract.OperateContact;
 import com.cloudmachine.ui.home.model.OperateModel;
 import com.cloudmachine.ui.home.presenter.OperatePresenter;
@@ -172,7 +173,6 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        AppLog.print("runOnUiThread___");
                         timeOut--;
                         String text;
                         if (timeOut <= 0) {
@@ -206,7 +206,7 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
             finish();
         } else {
             mTaskId = taskId;
-            mPresenter.getVerifyCode(memberId, taskId);
+            returnVerfiyCode();
         }
 
     }

@@ -205,7 +205,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        printMaxMemory();
         mHandler = new Handler(this);
         mChecker = new PermissionsChecker(this);
         initView();
@@ -222,12 +221,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         } else {
             initLocation();
         }
-
-    }
-    public void printMaxMemory(){
-        Runtime rt=Runtime.getRuntime();
-        long maxMemory=rt.maxMemory();
-        AppLog.print("APP最大可申请内存："+Long.toString(maxMemory/(1024*1024)));
 
     }
 

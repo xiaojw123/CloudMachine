@@ -38,13 +38,10 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.addItemDecoration(new LineItemDecoration(this));
         List<String> items = new ArrayList<>();
-        items.add("家人");
+        items.add("父子(父女)");
+        items.add("母子(母女)");
+        items.add("配偶");
         items.add("朋友");
-        items.add("同事");
-//        items.add("父子(父女)");
-//        items.add("母子(母女)");
-//        items.add("配偶");
-//        items.add("朋友");
         RelationAdapter adapter = new RelationAdapter(mContext, items);
         adapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(adapter);
