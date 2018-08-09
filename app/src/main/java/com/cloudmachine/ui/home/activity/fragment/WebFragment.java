@@ -50,7 +50,7 @@ import java.util.Map;
  */
 
 public class WebFragment extends BaseFragment {
-    String mUrl;
+    String mUrl, baseUrl;
     boolean isClickCamera;
     WebView mWebView;
     ProgressBar mProgressBar;
@@ -68,6 +68,7 @@ public class WebFragment extends BaseFragment {
 
     public WebFragment(String url) {
         mUrl = url;
+        baseUrl = url;
     }
 
     @Override
@@ -94,32 +95,58 @@ public class WebFragment extends BaseFragment {
         mWebView.addJavascriptInterface(new JsInteface(getActivity(), mHandler), JS_INTERFACE_NAME);
         loadUrl();
     }
+
     private class H5WebClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            AppLog.print("H5 shouldLoadUrl___" + url);
+            if (url.startsWith("http")) {
+                mUrl = url;
+            }
             return false;
         }
     }
 
-
-    public void loadUrl(String loadUrl) {
-        mUrl = loadUrl;
-        if (UserHelper.isLogin(getActivity())) {
-            fillParams(PARAMS_KEY_MEMBERID, UserHelper.getMemberId(getActivity()));
-        }
-        loadWebUrl();
-    }
+//
+//    public void loadUrl(String loadUrl) {
+//        mUrl = loadUrl;
+//        if (UserHelper.isLogin(getActivity())) {
+//            fillParams(PARAMS_KEY_MEMBERID, UserHelper.getMemberId(getActivity()));
+//        }
+//        loadWebUrl();
+//    }
 
     private void loadWebUrl() {
         mWebView.loadUrl(CommonUtils.fillParams(mUrl, QuestionCommunityActivity.PARAMS_KEY_VERSION, VersionU.getVersionName()));
     }
 
     public void loadUrl() {
-        if (UserHelper.isLogin(getActivity())) {
-            fillParams(PARAMS_KEY_MEMBERID, UserHelper.getMemberId(getActivity()));
+        if (!TextUtils.isEmpty(mUrl)) {
+            if (UserHelper.isLogin(getActivity())) {
+                fillParams(PARAMS_KEY_MEMBERID, UserHelper.getMemberId(getActivity()));
+            } else {//http:xxx/xx?memberid=110   http:xx/xx?page=1&memberId=110
+                if (mUrl.contains(PARAMS_KEY_MEMBERID)) {
+                    int index = mUrl.indexOf(PARAMS_KEY_MEMBERID);
+                    char c = mUrl.charAt(index - 1);
+                    int nextIndex = mUrl.indexOf("&", index);
+                    int startIndex, endIndex;
+                    if (c == '&') {
+                        startIndex = index - 1;
+                    } else {
+                        startIndex=index;
+                    }
+                    if (nextIndex == -1) {
+                        endIndex = mUrl.length();
+                    } else {
+                        endIndex = c == '?' ? nextIndex + 1 : nextIndex;
+                    }
+                    mUrl = mUrl.replaceAll(mUrl.substring(startIndex, endIndex), "");
+                }
+            }
+            loadWebUrl();
         }
-        loadWebUrl();
     }
+
 
 
     //需要申请的权限数组
@@ -284,9 +311,9 @@ public class WebFragment extends BaseFragment {
                 case Constants.HANDLER_JS_JUMP:
                     String methodStr = (String) msg.obj;
                     if (JsInteface.Go_Login_Page.equals(methodStr)) {
-                        Intent loginIntent=new Intent(getActivity(),LoginActivity.class);
+                        Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
                         loginIntent.putExtra("flag", 4);
-                        startActivityForResult(loginIntent,FLUSH_PAGE);
+                        startActivityForResult(loginIntent, FLUSH_PAGE);
                     }
                     break;
             }
@@ -365,7 +392,7 @@ public class WebFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case FLUSH_PAGE:
                 loadUrl();
                 break;

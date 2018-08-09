@@ -3,5 +3,5 @@
     
     <dimen name="worktime_guide1_img1_top">250dp</dimen>
     <dimen name="worktime_guide1_img2_top">230dp</dimen>
-    <dimen name="worktime_guide2_img1_right">68dp</dimen>
+    <dimen name="worktime_guide2_img1_right">59dp</dimen>
 </resources>

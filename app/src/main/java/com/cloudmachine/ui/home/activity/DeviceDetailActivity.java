@@ -3,6 +3,7 @@ package com.cloudmachine.ui.home.activity;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.CircleOptions;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
@@ -47,6 +49,7 @@ import com.cloudmachine.navigation.other.Location;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.DeviceDetailContract;
+import com.cloudmachine.ui.home.contract.ExtrContract;
 import com.cloudmachine.ui.home.model.DeviceDetailModel;
 import com.cloudmachine.ui.home.presenter.DeviceDetailPresenter;
 import com.cloudmachine.utils.CommonUtils;
@@ -361,13 +364,26 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         workStatusTv.setText(statusText);
         aMap.clear();
 //        Marker marker = aMap.addMarker(getMarkerOptions(this, latLng, mResId));
-        CommonUtils.updateReomteMarkerOpt(this,CommonUtils.getMarkerIconUrl(info.getTypePicUrl(),workStatus),latLng,this);
+        CommonUtils.updateReomteMarkerOpt(this, CommonUtils.getMarkerIconUrl(info.getTypePicUrl(), workStatus), latLng, this);
         if (CommonUtils.isHConfig(snId)) {
             updateHCView();
         } else {
             workVideoTv.setVisibility(View.GONE);
         }
+//        initCircle(latLng, info.getPositAccu());
         showCustomGuide();
+    }
+
+    private void initCircle(LatLng latLng, double radius) {
+        if (radius > 0) {
+            CircleOptions options = new CircleOptions();
+            options.center(latLng);
+            options.radius(radius);
+            options.strokeWidth(getResources().getDimension(R.dimen.dimen_size_1));
+            options.strokeColor(getResources().getColor(R.color.cor1));
+            options.fillColor(Color.parseColor("#15fbb233"));
+            aMap.addCircle(options);
+        }
     }
 
     @Override
@@ -375,7 +391,6 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         Marker marker = aMap.addMarker(options);
         marker.showInfoWindow();
     }
-
 
 
     private void showCustomGuide() {
@@ -474,7 +489,6 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
         mlocClient.stopLocation();
 
     }
-
 
 
 }

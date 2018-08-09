@@ -35,7 +35,6 @@
             android:paddingRight="@dimen/dimen_size_10"
             android:paddingBottom="@dimen/dimen_size_20"
             android:paddingTop="@dimen/dimen_size_20"
-            android:visibility="gone"
             android:clickable="true"
             >
 
@@ -43,8 +42,8 @@
                 android:id="@+id/track_process_skb"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_size_13"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
                 android:max="100"
                 android:thumb="@null"
                 android:progress="0"

@@ -13,6 +13,7 @@ public interface OrderStatus {
     String CANCEL="已取消";
     String DROP="已丢单";
     String REPAIRING="维修中";
+    String CLOSED="已关闭";
 
 
 

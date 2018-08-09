@@ -3,6 +3,7 @@ package com.cloudmachine.chart.listener;
 
 import android.annotation.SuppressLint;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -148,7 +149,6 @@ public class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
         }
 
         float distance = mChart.distanceToCenter(e.getX(), e.getY());
-
         // check if a slice was touched
         if (distance > mChart.getRadius()) {
 
@@ -157,7 +157,7 @@ public class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
             if (mLastHighlighted == null)
                 mChart.highlightValues(null); // no listener callback
             else
-                mChart.highlightTouch(null); // listener callback
+                mChart.highlightTouch(null,e); // listener callback
 
             mLastHighlighted = null;
 
@@ -200,11 +200,11 @@ public class PieRadarChartTouchListener extends ChartTouchListener<PieRadarChart
 
                     if (h.equalTo(mLastHighlighted)) {
 
-                        mChart.highlightTouch(null);
+                        mChart.highlightTouch(null,e);
                         mLastHighlighted = null;
                     } else {
 
-                        mChart.highlightTouch(h);
+                        mChart.highlightTouch(h,e);
                         mLastHighlighted = h;
                     }
                 }

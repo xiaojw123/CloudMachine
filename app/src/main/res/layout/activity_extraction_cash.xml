@@ -91,7 +91,9 @@
     </RelativeLayout>
 
 
-    <View style="@style/CommonLandscapeLine" />
+    <View style="@style/CommonLandscapeLine"
+        android:visibility="gone"
+        />
 
 
 
@@ -102,6 +104,7 @@
         android:background="@color/white"
         android:paddingLeft="@dimen/public_left_margin_42"
         android:paddingRight="@dimen/public_left_margin_42"
+        android:visibility="gone"
         >
 
 

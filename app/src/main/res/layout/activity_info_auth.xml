@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/public_bg"
+    android:orientation="vertical"
+    tools:context="com.cloudmachine.ui.home.activity.InfoAuthActivity">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/info_auth_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="@string/info_auth" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_8"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dimen_size_40"
+                    android:layout_marginLeft="@dimen/dimen_size_15"
+                    android:drawableLeft="@drawable/indicator_title"
+                    android:drawablePadding="@dimen/dimen_size_15"
+                    android:gravity="center_vertical"
+                    android:text="个人信息"
+                    android:textColor="@color/cor8"
+                    android:textSize="@dimen/text_size_13_sp" />
+
+                <View
+                    style="@style/CommonLandscapeLine"
+                    android:layout_marginLeft="@dimen/dimen_size_15" />
+
+                <LinearLayout style="@style/Layout_Item_Style">
+
+                    <TextView
+                        style="@style/layout_key_style"
+                        android:text="姓名" />
+
+                    <TextView
+                        android:id="@+id/info_auth_name_tv"
+                        style="@style/layout_value_style"
+                        android:gravity="right|center_vertical" />
+
+                </LinearLayout>
+
+                <View style="@style/CommonLandscapeLine" />
+
+                <LinearLayout style="@style/Layout_Item_Style">
+
+                    <TextView
+                        style="@style/layout_key_style"
+                        android:text="身份证" />
+
+                    <TextView
+                        android:id="@+id/info_auth_idcard_tv"
+                        style="@style/layout_value_style"
+                        android:gravity="right|center_vertical" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:background="@color/white"
+                android:divider="@drawable/divider_line_horztial"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dimen_size_15"
+                android:showDividers="middle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dimen_size_40"
+                    android:drawableLeft="@drawable/indicator_title"
+                    android:drawablePadding="@dimen/dimen_size_15"
+                    android:gravity="center_vertical"
+                    android:text="信息完善"
+                    android:textColor="@color/cor8"
+                    android:textSize="@dimen/text_size_13_sp" />
+
+
+                <FrameLayout
+                    android:id="@+id/info_auth_idcard_container"
+                    style="@style/info_auth_container_style"
+                    >
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic1"
+                        android:text="手持身份证" />
+
+                    <TextView
+                        android:id="@+id/info_auth_idcard_status"
+                        style="@style/info_auth_value_style" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/info_auth_relation_container"
+                    style="@style/info_auth_container_style"
+                    >
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic8"
+                        android:text="联系人信息" />
+
+                    <TextView
+                        android:id="@+id/info_auth_relation_status"
+                        style="@style/info_auth_value_style" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/info_auth_operator_container"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic2"
+                        android:text="运营商授权" />
+
+                    <TextView
+                        android:id="@+id/info_auth_operator_status"
+                        style="@style/info_auth_value_style" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/info_auth_bank_cotainer"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic3"
+                        android:text="银行卡验证" />
+
+                    <TextView
+                        android:id="@+id/info_auth_bank_status"
+                        style="@style/info_auth_value_style" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/info_auth_engineer_contract"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic4"
+                        android:text="工程合同" />
+
+                    <TextView
+                        android:id="@+id/engineer_contract_status"
+                        style="@style/info_auth_value_style" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/info_auth_personal_income"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic5"
+                        android:text="个人收入证明" />
+
+                    <TextView
+                        android:id="@+id/personal_income_status"
+                        style="@style/info_auth_value_style" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/info_auth_device_owner"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic6"
+                        android:text="机器所有权证明" />
+
+                    <TextView
+                        android:id="@+id/device_owner_status"
+                        style="@style/info_auth_value_style" />
+                </FrameLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/bankaccount_model_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:background="@color/white"
+                android:divider="@drawable/divider_line_horztial"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dimen_size_15"
+                android:showDividers="middle"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dimen_size_40"
+                    android:drawableLeft="@drawable/indicator_title"
+                    android:drawablePadding="@dimen/dimen_size_15"
+                    android:gravity="center_vertical"
+                    android:text="资金安全账户"
+                    android:textColor="@color/cor8"
+                    android:textSize="@dimen/text_size_13_sp" />
+
+
+                <FrameLayout
+                    android:id="@+id/bankaccount_container"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic7"
+                        android:text="银行安全账户" />
+
+                    <TextView
+                        android:id="@+id/bankaccount_status_tv"
+                        style="@style/info_auth_value_style"
+                        android:drawablePadding="@dimen/pad1"
+                        android:drawableRight="@drawable/arrow_right"
+                        android:text="已开通"
+                        android:textColor="@color/cor20" />
+                </FrameLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

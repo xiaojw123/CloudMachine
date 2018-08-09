@@ -1,14 +1,17 @@
 package com.cloudmachine.activities;
 
 
+import android.app.ActivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.support.v4.view.NestedScrollingParent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.AdBean;
 import com.cloudmachine.bean.MenuBean;
 import com.cloudmachine.cache.MySharedPreferences;
+import com.cloudmachine.chart.highlight.HorizontalBarHighlighter;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.DataSupportManager;
 import com.cloudmachine.helper.MobEvent;
@@ -90,6 +94,7 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
             JPushInterface.setAliasAndTags(getApplicationContext(), MemeberKeeper.getOauth(this).getId().toString(), null, null);
         }
         initHomeMenu();
+
     }
 
     private void initHomeMenu() {

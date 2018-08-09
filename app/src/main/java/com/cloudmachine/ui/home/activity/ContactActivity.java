@@ -14,6 +14,7 @@ import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.TypeItem;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
@@ -51,7 +52,7 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
 
     PermissionsChecker mChecker;
     int selectPos = -1;
-    String relationText;
+    TypeItem typeItem;
 
 
     @Override
@@ -106,7 +107,7 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
             contactJobj.put("contactName",contactName);
             contactJobj.put("contactMobile",contactMobile);
             contactJobj.put("isEmergency",1);
-            contactJobj.put("relationType",selectPos);
+            contactJobj.put("relationType",typeItem.getCode());
             contactJarray.put(contactJobj);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -149,9 +150,9 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
                 break;
             case SELECT_RELATION:
                 if (data != null) {
-                    relationText = data.getStringExtra(Constants.RELATION);
+                    typeItem = data.getParcelableExtra(Constants.TYPE_ITEM);
                     selectPos = data.getIntExtra(Constants.RELATION_POSITION, -1);
-                    relationTv.setText(relationText);
+                    relationTv.setText(typeItem.getValue());
                     submitBtn.setButtonClickEnable(true);
                 }
                 break;

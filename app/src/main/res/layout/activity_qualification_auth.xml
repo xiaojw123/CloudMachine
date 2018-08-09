@@ -18,6 +18,7 @@
             app:common_title_name="个人信息" />
 
         <TextView
+            android:id="@+id/pi_describe_tv"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dimen_size_30"
             android:layout_marginLeft="@dimen/pad2"
@@ -57,6 +58,7 @@
                 android:layout_width="@dimen/dimen_size_156"
                 android:layout_height="@dimen/dimen_size_98"
                 android:background="@drawable/bg_person_item"
+                android:padding="1dp"
                 android:visibility="gone"
                 >
                 <ImageView
@@ -66,7 +68,9 @@
                     android:layout_gravity="right"
                     android:layout_marginRight="@dimen/pad1"
                     android:layout_marginTop="@dimen/pad1"
-                    android:src="@drawable/ic_person_delete" />
+                    android:src="@drawable/ic_person_delete"
+                    android:visibility="gone"
+                    />
 
 
                 <ImageView
@@ -75,6 +79,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_shooted"
                     android:layout_gravity="center"
+                    android:visibility="gone"
                     />
 
                 <TextView
@@ -98,7 +103,7 @@
                 android:layout_height="@dimen/dimen_size_98"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/bg_person_item"
-                android:visibility="gone"
+                android:padding="1dp"
                 >
 
 
@@ -109,7 +114,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/pad1"
                     android:layout_marginTop="@dimen/pad1"
-                    android:src="@drawable/ic_person_delete" />
+                    android:src="@drawable/ic_person_delete"
+                    android:visibility="gone"
+                    />
 
                 <ImageView
                     android:id="@+id/emblem_success_img"
@@ -117,6 +124,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_shooted"
                     android:layout_gravity="center"
+                    android:visibility="gone"
                     />
 
                 <TextView
@@ -154,6 +162,7 @@
         </LinearLayout>
 
         <View style="@style/CommonLandscapeLine" />
+
 
         <LinearLayout
             style="@style/Layout_Item_Style"
@@ -197,6 +206,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/pop_bg_color"
+        android:animateLayoutChanges="true"
         android:visibility="gone">
 
         <ImageView

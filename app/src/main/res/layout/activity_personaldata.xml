@@ -150,6 +150,7 @@
         android:id="@+id/my_certification"
         style="@style/layout_item"
         android:layout_marginTop="@dimen/pad1"
+        android:visibility="gone"
         >
 
         <TextView
@@ -159,12 +160,14 @@
 
 
         <TextView
+            android:id="@+id/my_identy_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/no_certificate"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:drawablePadding="@dimen/pad1"
+            android:textColor="@color/c_ff8901"
             android:drawableRight="@drawable/arrow_right"
             />
     </RelativeLayout>

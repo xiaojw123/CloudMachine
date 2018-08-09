@@ -181,7 +181,7 @@ public class Api {
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         if (BuildConfig.DEBUG) {
             //设置拦截日志，拦截请求体
-            logInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+            logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         }
         builder.addInterceptor(logInterceptor);
         okHttpClient = builder.build();

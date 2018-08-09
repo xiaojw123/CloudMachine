@@ -38,6 +38,7 @@ import retrofit2.http.Field;
  */
 public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
     public static final String KEY_COMPLETED = "key_completed";
+    public static final String KEY_TICKET_ABLE = "key_ticket_able";
     @BindView(R.id.mamager_personalinfo_rl)
     RelativeLayout personalInfoRl;
     @BindView(R.id.mamager_face_rl)
@@ -62,7 +63,7 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
     TextView operatortatusTv;
     @BindView(R.id.ticket_question_tv)
     TextView questionTv;
-    boolean isIdCardAuth;//身份证验证
+    boolean isIdCardAuth, isBankCardAuth;//身份证验证
     PermissionsChecker mChecker;
     long memberId;
 
@@ -77,6 +78,12 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
     }
 
     private void initView() {
+        boolean isTicketAble = getIntent().getBooleanExtra(KEY_TICKET_ABLE, false);
+        if (isTicketAble) {
+            questionTv.setTextColor(getResources().getColor(R.color.cor10));
+            questionTv.setCompoundDrawables(null, null, null, null);
+            ticketBtn.setVisibility(View.GONE);
+        }
         memberId = UserHelper.getMemberId(this);
         mChecker = new PermissionsChecker(this);
         ticketBtn.setButtonClickEnable(false);
@@ -96,14 +103,15 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
             protected void _onNext(LoanAuthInfo info) {
                 if (info != null) {
                     isIdCardAuth = info.isIdCardAuth();
+                    isBankCardAuth = info.isBankCardAuth();
                     String text1 = isIdCardAuth ? getString(R.string.completed) : getString(R.string.no_complete);
-                    String text2 = info.isBankCardAuth() ? getString(R.string.verified) : getString(R.string.no_verify);
+                    String text2 = isBankCardAuth ? getString(R.string.verified) : getString(R.string.no_verify);
                     String text3 = info.isFigureAuth() ? getString(R.string.verified) : getString(R.string.no_verify);
                     String text4 = info.isRelationAuth() ? getString(R.string.completed) : getString(R.string.no_complete);
                     String text5 = info.isOpeatoryAuth() ? getString(R.string.authorizationed) : getString(R.string.no_authorization);
                     personStatusTv.setActivated(isIdCardAuth);
                     personStatusTv.setText(text1);
-                    bankStausTv.setActivated(info.isBankCardAuth());
+                    bankStausTv.setActivated(isBankCardAuth);
                     bankStausTv.setText(text2);
                     faceStatusTv.setActivated(info.isFigureAuth());
                     faceStatusTv.setText(text3);
@@ -129,7 +137,7 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
                     } else {
                         operatorInfoRl.setEnabled(true);
                     }
-                    if (isIdCardAuth && info.isBankCardAuth() && info.isFigureAuth() && info.isRelationAuth() && info.isOpeatoryAuth()) {
+                    if (isIdCardAuth && isBankCardAuth && info.isFigureAuth() && info.isRelationAuth() && info.isOpeatoryAuth()) {
                         ticketBtn.setButtonClickEnable(true);
                     } else {
                         ticketBtn.setButtonClickEnable(false);
@@ -159,11 +167,15 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
                 Constants.toActivity(this, TicketActivity.class, ticketData);
                 break;
             case R.id.mamager_personalinfo_rl://个人信息
-                Constants.toActivity(this, AuthPersonalInfoActivity.class, null);
+                Bundle perData = new Bundle();
+                perData.putBoolean(KEY_COMPLETED, isIdCardAuth);
+                Constants.toActivity(this, AuthPersonalInfoActivity.class, perData);
                 break;
             case R.id.mamager_bank_rl://银行卡信息
                 if (isIdCardAuth) {
-                    Constants.toActivity(this, BankVerifyctivity.class, null);
+                    Bundle bankData = new Bundle();
+                    bankData.putBoolean(KEY_COMPLETED, isBankCardAuth);
+                    Constants.toActivity(this, BankVerifyctivity.class, bankData);
                 } else {
                     showDialog("验证");
                 }
@@ -181,11 +193,11 @@ public class InfoManagerActivity extends BaseAutoLayoutActivity implements View.
 
                 break;
             case R.id.mamager_contact_rl://联系人信息
-                if (isIdCardAuth) {
-                    Constants.toActivity(this, ContactActivity.class, null);
-                } else {
-                    showDialog("完善");
-                }
+//                if (isIdCardAuth) {
+                Constants.toActivity(this, ContactActivity.class, null);
+//                } else {
+//                    showDialog("完善");
+//                }
                 break;
             case R.id.mamager_operator_rl://运营商信息
                 if (isIdCardAuth) {//

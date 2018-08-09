@@ -19,7 +19,7 @@ import rx.Observable;
 public interface PurseContract {
 
     interface View extends BaseView {
-        void updateWalletAmountView(double walletAmount,double depositAmount);
+        void updateWalletAmountView(double walletAmount,double depositAmount,String jumpUrl);
         void updateAvaildCouponSumNum(int sumNum);
     }
 

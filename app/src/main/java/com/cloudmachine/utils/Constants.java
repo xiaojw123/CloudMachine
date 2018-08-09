@@ -252,7 +252,8 @@ public class Constants {
     public static final int HANDLER_CHANGE_BOX_ACT = HANDLER_H5_JUMP + 1;
     public static final int HANDLER_RESULT_APLIPAY = HANDLER_CHANGE_BOX_ACT + 1;
     public static final int HANDLER_UPDATE_PROGRESS = HANDLER_RESULT_APLIPAY + 1;
-    public static final int HANDLER_BACk_LOCATION=HANDLER_UPDATE_PROGRESS+1;
+    public static final int HANDLER_BACk_LOCATION = HANDLER_UPDATE_PROGRESS + 1;
+    public static final int HANDLER_FACE_RECOGNITION=HANDLER_BACk_LOCATION+1;
 
     public static final String URL_H5_ARGUMENT = "http://www.cloudm.com/agreement";
     public static final String URL_LOGOCLOUDM = "https://f1.cloudm.com/logocloudm.png";
@@ -293,7 +294,7 @@ public class Constants {
             "device/saveVbusiness";
     public static final String URL_SAVEEVALUATE = ApiConstants.CLOUDM_YJX_HOST
             + "device/saveEvaluate";
-    public static final String URL_SAVEEVALUATE_ALLIANCE=ApiConstants.CLOUDM_YJX_HOST+"device/saveAllianceEvaluate";
+    public static final String URL_SAVEEVALUATE_ALLIANCE = ApiConstants.CLOUDM_YJX_HOST + "device/saveAllianceEvaluate";
     public static final String URL_ADDCIRCLEFENCH = ApiConstants.CLOUDM_YJX_HOST
             + "device/addCricleFence";
     public static final String URL_CWPAY = ApiConstants.CLOUDM_YJX_HOST + "pay/getPaySign";
@@ -311,9 +312,9 @@ public class Constants {
     public static final String P_TYPEID = "typeid";
     public static final String P_BRANDID = "brandid";
     public static final String P_MODELID = "modelid";
-    public static final String P_PAYTYPE="payType";
-    public static final String P_PAYAMOUNT="payAmount";
-    public static final String P_RECEIVERLIST="receiverList";
+    public static final String P_PAYTYPE = "payType";
+    public static final String P_PAYAMOUNT = "payAmount";
+    public static final String P_RECEIVERLIST = "receiverList";
     public static final String P_EDITRESULTSTRING = "editResultString";
     public static final String P_EDITRESULTITEM = "editResultItem";
     public static final String P_IMAGEBROWERDELETE = "imageBrowerDelete";
@@ -522,8 +523,8 @@ public class Constants {
             + File.separator
             + "cloudmachine" + File.separator + "images" + File.separator;
 
-    public static final String SYS_IMG_PATH=Environment
-            .getExternalStorageDirectory().toString()+File.separator+"DCIM"+File.separator;
+    public static final String SYS_IMG_PATH = Environment
+            .getExternalStorageDirectory().toString() + File.separator + "DCIM" + File.separator;
 
     public static void ToastAction(String msg) {
         if (!TextUtils.isEmpty(msg))
@@ -1169,7 +1170,10 @@ public class Constants {
 		alertDialog.show();*/
     }
 
-    public final static void versionDownload(Context context, String link) {
+    public  static void versionDownload(Context context, String link) {
+        if (TextUtils.isEmpty(link)) {
+            return;
+        }
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
                 Intent intent = new Intent();
@@ -1447,29 +1451,31 @@ public class Constants {
     public static final String DEVICE_DETAIL_NOW = "DEVICE_DETAIL_NOW";
     public static final String PAGET_TYPE = "page_type";
     public static final String SN_ID = "snid";
-    public static final String VIDEO_ID="video_id";
-    public static final String IS_ONLINE ="is_online";
-    public static final String IS_VIDEO ="is_video";
-    public static final String IMEI="imei";
-    public static final String ERROR_MESSAGE="error_message";
-    public static final String OPERATOR_LIST="operator_list";
-    public static final String NAME="name";
-    public static final String MOBILE="mobie";
-    public static final String RELATION="relation";
-    public static final String RELATION_POSITION="relation_position";
+    public static final String VIDEO_ID = "video_id";
+    public static final String IS_ONLINE = "is_online";
+    public static final String IS_VIDEO = "is_video";
+    public static final String IMEI = "imei";
+    public static final String ERROR_MESSAGE = "error_message";
+    public static final String OPERATOR_LIST = "operator_list";
+    public static final String NAME = "name";
+    public static final String MOBILE = "mobie";
+    public static final String TYPE_ITEM = "type_item";
+    public static final String RELATION_POSITION = "relation_position";
+    public static final String DEVICE_NAME="device_name";
+    public static final String UNIQUEID="uniqueId";
+    public static final String REAL_NAME="real_name";
 
     public static void callJsMethod(WebView webView, String jsParams) {
-        AppLog.print("call jsMethod__"+jsParams);
+        AppLog.print("call jsMethod__" + jsParams);
         webView.loadUrl("javascript:" + jsParams);
     }
 
     public static final String CURRENT_LOC = "当前位置";
     public static final String APK_NAME = "cloudm.apk";
 
-    public  interface IPageType {
+    public interface IPageType {
         String PAGE_DEVICE_INFO = "p_device_info";//设备基本信息
-        String PAGE_INFO_MANAGER="p_info_manger";
-
+        String PAGE_INFO_MANAGER = "p_info_manger";
     }
 
     public interface PermissionType {
@@ -1477,7 +1483,8 @@ public class Constants {
         int STORAGE = 2;
         int LOCATION = 3;
     }
-    public static final String[] PERMISSIONS_CAMER_SD={Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
+    public static final String[] PERMISSIONS_CAMER_SD = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
 
 }

@@ -37,6 +37,7 @@ android {
         release {
             buildConfigField("boolean", "IS_REMOTE", "true")
             buildConfigField("boolean", "IS_ONLINE", "true")
+            buildConfigField("boolean", "IS_INTERFACE", "false")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
@@ -45,6 +46,7 @@ android {
         debug {
             buildConfigField("boolean", "IS_REMOTE", cfg.isRmote)
             buildConfigField("boolean", "IS_ONLINE", cfg.isOnline)
+            buildConfigField("boolean", "IS_INTERFACE", cfg.isInterface)
             signingConfig signingConfigs.release
             manifestPlaceholders = [UMENG_KEY_VALUE: "57bd696d67e58e71d3000d02", JPUSH_KEY_VALUE: "6072cf5e23d793c5004a4b78"]
         }
@@ -59,7 +61,7 @@ android {
                 if (variant.buildType.name.equals('release')) {
                     fileName = "cloudm_release_${defaultConfig.versionName}_${getTime()}.apk"
                 } else if (variant.buildType.name.equals('debug')) {
-                    fileName = "cloudm_debug_${defaultConfig.versionName}_${getTime()}.apk"
+                    fileName = "cloudm_debug.apk"
                 }
                 output.outputFile = new File(outputFile.parent, fileName)
             }

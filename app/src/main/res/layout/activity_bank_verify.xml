@@ -18,6 +18,7 @@
 
 
         <TextView
+            android:id="@+id/bank_describe_tv"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dimen_size_30"
             android:layout_marginLeft="@dimen/pad2"

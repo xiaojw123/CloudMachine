@@ -6,7 +6,9 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.amap.api.maps.model.Text;
@@ -47,6 +49,11 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
     ImageView switchImg;
     @BindView(R.id.operator_psw_edt)
     ClearEditTextView pswEdt;
+    @BindView(R.id.operate_service_terms)
+    TextView termsTv;
+    @BindView(R.id.operator_select_cb)
+    CheckBox selectRb;
+
 
     long memberId;
     Timer mTimer;
@@ -76,17 +83,25 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
 
     }
 
-    @OnClick({R.id.opeator_foraget_tv, R.id.opeartor_switch_img})
+    @OnClick({R.id.opeator_foraget_tv, R.id.opeartor_switch_img, R.id.operate_service_terms})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.opeator_foraget_tv:
+                ToastUtils.showToast(mContext, "暂未开放");
                 break;
             case R.id.opeartor_switch_img:
                 onDrawableRightClickListener(view);
                 break;
             case R.id.radius_button_text:
-                String psw = pswEdt.getText().toString();
-                mPresenter.authOperator(memberId, psw);
+                if (selectRb.isChecked()) {
+                    String psw = pswEdt.getText().toString();
+                    mPresenter.authOperator(memberId, psw);
+                } else {
+                    ToastUtils.showToast(mContext, "需同意服务条款后，才能提交！");
+                }
+                break;
+            case R.id.operate_service_terms:
+                ToastUtils.showToast(mContext, "暂未开放");
                 break;
 
         }
@@ -214,9 +229,9 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
     @Override
     public void textChanged(Editable s) {
         String mobileStr = mobieTv.getText().toString();
-        if (s.length() > 0&&mobileStr.length()>0) {
+        if (s.length() > 0 && mobileStr.length() > 0) {
             submitBtn.setButtonClickEnable(true);
-        }else{
+        } else {
             submitBtn.setButtonClickEnable(false);
         }
 

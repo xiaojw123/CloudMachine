@@ -13,14 +13,19 @@ import android.webkit.JavascriptInterface;
 import com.alipay.sdk.app.PayTask;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.SearchPoiActivity;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.ui.home.activity.AuthPersonalInfoActivity;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
+import com.cloudmachine.ui.home.activity.InfoAuthActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
+import com.cloudmachine.utils.URLs;
 import com.cloudmachine.utils.VersionU;
 import com.google.gson.Gson;
 import com.tencent.mm.sdk.modelpay.PayReq;
@@ -32,6 +37,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
+
+import cn.tongdun.android.liveness.LivenessDetectActivity;
 
 /**
  * Created by xiaojw on 2017/7/24.
@@ -45,6 +52,7 @@ public class JsInteface {
     public static final String LOCATION_EVENT = "location_event";
     private static final String CLICK_REPAIR = "click_repair()";
     private static final String Go_Scan_Code = "goScan()";
+    private static final String FACERECOGNITION_EVENT = "faceRecognition_event";
     public static final String ALERT_TYPE = "alert_type";
     public static final String ALERT_TIPS = "alert_tips";
     public static final String ALERT_EVENT = "alert_event";
@@ -74,16 +82,16 @@ public class JsInteface {
 
     @JavascriptInterface
     public void clearWebViewCache() {
+        AppLog.print("clearWebViewCache____");
         PermissionsChecker checker = new PermissionsChecker(mContext);
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                PermissionsActivity.startActivityForResult((Activity) mContext, HomeActivity.PEM_REQCODE_WRITESD,
+                PermissionsActivity.startActivityForResult((Activity) mContext, BaseAutoLayoutActivity.REQ_CLEAR_WEBCACHE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
             } else {
-                if (mContext instanceof QuestionCommunityActivity) {
-                    ((QuestionCommunityActivity) mContext).clearWebCahe();
+                if (mContext instanceof BaseAutoLayoutActivity) {
+                    ((BaseAutoLayoutActivity) mContext).clearWebCahe();
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,6 +115,16 @@ public class JsInteface {
         bundle.putBoolean(Constants.DEVICE_DETAIL_NOW, true);
         Constants.toActivity((Activity) mContext, DeviceDetailActivity.class, bundle);
         ((Activity) mContext).finish();
+    }
+
+    @JavascriptInterface
+    public void gotoInfoAuth(int status) {
+        AppLog.print("gotoInfoAuth___" + status);
+        if (status == 5) {
+            Constants.toActivityForR((Activity) mContext, AuthPersonalInfoActivity.class, null);
+        } else {
+            Constants.toActivityForR((Activity) mContext, InfoAuthActivity.class, null);
+        }
     }
 
     @JavascriptInterface
@@ -198,7 +216,12 @@ public class JsInteface {
             return;
         }
         JSONObject jobj = new JSONObject(jsonStr);
-        if (jobj.has(ALERT_TYPE)) {
+        if (jobj.has(FACERECOGNITION_EVENT)) {
+            Message msg=mHandler.obtainMessage();
+            msg.obj=jobj.optString(FACERECOGNITION_EVENT);
+            msg.what=Constants.HANDLER_FACE_RECOGNITION;
+            mHandler.sendMessage(msg);
+        } else if (jobj.has(ALERT_TYPE)) {
             Message msg = mHandler.obtainMessage();
             msg.obj = jobj;
             msg.what = Constants.HANDLER_JS_ALERT;

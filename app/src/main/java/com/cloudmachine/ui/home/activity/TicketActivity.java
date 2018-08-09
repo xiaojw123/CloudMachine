@@ -66,7 +66,7 @@ public class TicketActivity extends BaseAutoLayoutActivity {
                     if (isAuth) {
                         openTicket();
                     } else {
-                        CustomDialog.Builder builder = new CustomDialog.Builder(mContext);
+                        final CustomDialog.Builder builder = new CustomDialog.Builder(mContext);
                         builder.setMessage("开通前，请先完成身份认证");
                         builder.setNeutralButton("去认证", new DialogInterface.OnClickListener() {
                             @Override
@@ -74,7 +74,9 @@ public class TicketActivity extends BaseAutoLayoutActivity {
                                 if (Constants.IPageType.PAGE_INFO_MANAGER.equals(mPageType)){
                                     finish();
                                 }else{
-                                    Constants.toActivity(TicketActivity.this, InfoManagerActivity.class, null);
+                                    Bundle bundle=new Bundle();
+                                    bundle.putBoolean(InfoManagerActivity.KEY_TICKET_ABLE,true);
+                                    Constants.toActivity(TicketActivity.this, InfoManagerActivity.class, bundle);
                                 }
                             }
                         });

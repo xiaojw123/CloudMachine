@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Build;
@@ -22,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -51,7 +51,6 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.ViewCouponActivityNew;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.LocationBean;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
@@ -156,6 +155,9 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     TextView deviceTv;
     @BindView(R.id.home_title_maintenance)
     TextView maintenanceTv;
+    @BindView(R.id.home_title_clock)
+    TextView clockTv;
+
     @BindView(R.id.home_me_img_alert)
     View meAlert;
     @BindView(R.id.item_my_order)
@@ -198,7 +200,8 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     int mustUpdate;
     int leftMargin;
     PermissionsChecker mChecker;
-
+    boolean isLastLogin;
+    SparseArray<WebFragment> webFmtArray = new SparseArray<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,9 +224,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         } else {
             initLocation();
         }
-
     }
-
 
 
     @Override
@@ -369,45 +370,91 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 
 
     private void showFragment(View titleView) {
+        if (titleView.isSelected()) {
+            return;
+        }
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (titleView == deviceTv) {
-            deviceTv.setTextColor(Color.BLACK);
-            maintenanceTv.setTextColor(Color.GRAY);
+            deviceTv.setSelected(true);
+            maintenanceTv.setSelected(false);
+            clockTv.setSelected(false);
             if (deviceFragment == null) {
                 deviceFragment = new DeviceFragment();
                 if (maintenaceFragment != null) {
                     ft.hide(maintenaceFragment);
+                }
+                if (h5Fragment != null) {
+                    ft.hide(h5Fragment);
                 }
                 ft.add(R.id.home_fragment_cotainer, deviceFragment);
             } else {
                 if (deviceFragment.isVisible()) {
                     return;
                 }
-                ft.hide(maintenaceFragment);
+                if (maintenaceFragment != null) {
+                    ft.hide(maintenaceFragment);
+                }
+                if (h5Fragment != null) {
+                    ft.hide(h5Fragment);
+                }
                 ft.show(deviceFragment);
             }
         }
         if (titleView == maintenanceTv) {
-            deviceTv.setTextColor(Color.GRAY);
-            maintenanceTv.setTextColor(Color.BLACK);
+            deviceTv.setSelected(false);
+            maintenanceTv.setSelected(true);
+            clockTv.setSelected(false);
             if (maintenaceFragment == null) {
                 maintenaceFragment = new MaintenanceFragment();
                 if (deviceFragment != null) {
                     ft.hide(deviceFragment);
+                }
+                if (h5Fragment != null) {
+                    ft.hide(h5Fragment);
                 }
                 ft.add(R.id.home_fragment_cotainer, maintenaceFragment);
             } else {
                 if (maintenaceFragment.isVisible()) {
                     return;
                 }
-                ft.hide(deviceFragment);
+                if (deviceFragment != null) {
+                    ft.hide(deviceFragment);
+                }
+                if (h5Fragment != null) {
+                    ft.hide(h5Fragment);
+                }
                 ft.show(maintenaceFragment);
             }
         }
+        if (titleView == clockTv) {
+            deviceTv.setSelected(false);
+            maintenanceTv.setSelected(false);
+            clockTv.setSelected(true);
+            if (h5Fragment == null) {
+                h5Fragment = new WebFragment(ApiConstants.CLOCK);
+                if (deviceFragment != null) {
+                    ft.hide(deviceFragment);
+                }
+                if (maintenaceFragment != null) {
+                    ft.hide(maintenaceFragment);
+                }
+                ft.add(R.id.home_fragment_cotainer, h5Fragment);
+            } else {
+                if (h5Fragment.isVisible()) {
+                    return;
+                }
+                if (deviceFragment != null) {
+                    ft.hide(deviceFragment);
+                }
+                if (maintenaceFragment != null) {
+                    ft.hide(maintenaceFragment);
+                }
+                ((WebFragment) h5Fragment).loadUrl();
+                ft.show(h5Fragment);
+            }
+        }
         ft.commit();
-
-
     }
 
 
@@ -438,7 +485,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         menuTv.setTag(menuBean);
         menuTv.setOnClickListener(onMenuClickListener);
         menuTv.setGravity(Gravity.CENTER);
-        menuTv.setTextColor(getResources().getColor(R.color.cor8));
+        menuTv.setTextColor(getResources().getColorStateList(R.color.coupon_title_textcolor));
         menuTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.siz3));
         menuTv.setText(menuBean.getMenuTitle());
         return menuTv;
@@ -452,15 +499,18 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     };
 
     private void showFragmentNew(TextView titleView) {
+        if (titleView.isSelected()) {
+            return;
+        }
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         MenuBean menuBean = (MenuBean) titleView.getTag();
         for (int i = 0; i < homeMenuCotainer.getChildCount(); i++) {
             TextView view = (TextView) homeMenuCotainer.getChildAt(i);
             if (titleView == view) {
-                titleView.setTextColor(Color.BLACK);
+                titleView.setSelected(true);
             } else {
-                view.setTextColor(Color.GRAY);
+                view.setSelected(false);
             }
 
         }
@@ -478,17 +528,19 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 if (maintenaceFragment != null) {
                     ft.hide(maintenaceFragment);
                 }
-                if (h5Fragment != null) {
-                    ft.hide(h5Fragment);
-                }
+//                if (h5Fragment != null) {
+//                    ft.hide(h5Fragment);
+//                }
+                hidenWebFragment(ft, null);
                 break;
             case 2://维修
                 if (deviceFragment != null && deviceFragment.isVisible()) {
                     ft.hide(deviceFragment);
                 }
-                if (h5Fragment != null && h5Fragment.isVisible()) {
-                    ft.hide(h5Fragment);
-                }
+//                if (h5Fragment != null && h5Fragment.isVisible()) {
+//                    ft.hide(h5Fragment);
+//                }
+                hidenWebFragment(ft, null);
                 if (maintenaceFragment == null) {
                     maintenaceFragment = new MaintenanceFragment();
                     ft.add(R.id.home_fragment_cotainer, maintenaceFragment);
@@ -506,13 +558,26 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 if (maintenaceFragment != null && maintenaceFragment.isVisible()) {
                     ft.hide(maintenaceFragment);
                 }
-                if (h5Fragment == null) {
-                    h5Fragment = new WebFragment(menuBean.getMenuLink());
-                    ft.add(R.id.home_fragment_cotainer, h5Fragment);
+//                if (h5Fragment == null) {
+//                    h5Fragment = new WebFragment(menuBean.getMenuLink());
+//                    ft.add(R.id.home_fragment_cotainer, h5Fragment);
+//                } else {
+//                    ((WebFragment) h5Fragment).loadUrl(menuBean.getMenuLink());
+//                    ft.show(h5Fragment);
+//                }
+                int id = menuBean.getId();
+                String menuLink = menuBean.getMenuLink();
+                WebFragment fmt = webFmtArray.get(id);
+                hidenWebFragment(ft, fmt);
+                if (fmt == null) {
+                    fmt = new WebFragment(menuLink);
+                    ft.add(R.id.home_fragment_cotainer, fmt);
+                    webFmtArray.put(id, fmt);
                 } else {
-                    ((WebFragment) h5Fragment).loadUrl(menuBean.getMenuLink());
-                    ft.show(h5Fragment);
+                    fmt.loadUrl();
+                    ft.show(fmt);
                 }
+
                 break;
 
 
@@ -522,6 +587,14 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 
     }
 
+    private void hidenWebFragment(FragmentTransaction ft, WebFragment fmt) {
+        for (int i = 0; i < webFmtArray.size(); i++) {
+            WebFragment childFm = webFmtArray.valueAt(i);
+            if (childFm != fmt && childFm.isVisible()) {
+                ft.hide(childFm);
+            }
+        }
+    }
 
     public class MessageReceiver extends BroadcastReceiver {
 
@@ -538,6 +611,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 Constants.MyToast(showMsg.toString());
             }
         }
+
     }
 
 
@@ -587,6 +661,10 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     .error(R.drawable.ic_default_head)
                     .into(homeHeadImg);
             homeNicknameTv.setText(member.getNickName());
+            if (isLastLogin) {
+                isLastLogin = false;
+                reloadUrl();
+            }
             mPresenter.getCountByStatus(memberId, 0);
             mPresenter.updateUnReadMessage(memberId);
         } else {
@@ -599,8 +677,27 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             }
             itmeMessageNimg.setNotifyPointVisible(false);
             itemOrderNimg.setNotifyPointVisible(false);
+            if (!isLastLogin) {
+                isLastLogin = true;
+                reloadUrl();
+            }
+
         }
         mPresenter.getHomeBannerInfo();
+
+    }
+
+
+    private void reloadUrl() {
+        if (h5Fragment != null && h5Fragment.isVisible()) {
+            ((WebFragment) h5Fragment).loadUrl();
+        }
+        for (int i = 0; i < webFmtArray.size(); i++) {
+            WebFragment childFmt = webFmtArray.valueAt(i);
+            if (childFmt.isVisible()) {
+                childFmt.loadUrl();
+            }
+        }
     }
 
 
@@ -612,7 +709,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
 
-    @OnClick({R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_repair_history, R.id.item_purse, R.id.item_machine_knowledge, R.id.item_about, R.id.home_me_img, R.id.home_actvite_img})
+    @OnClick({R.id.home_title_clock, R.id.home_guide_sure_btn, R.id.home_san_img, R.id.item_my_order, R.id.home_title_device, R.id.home_title_maintenance, R.id.home_head_layout, R.id.item_message, R.id.item_repair_history, R.id.item_purse, R.id.item_machine_knowledge, R.id.item_about, R.id.home_me_img, R.id.home_actvite_img})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.home_guide_sure_btn:
@@ -631,6 +728,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
 
             case R.id.home_title_device:
             case R.id.home_title_maintenance:
+            case R.id.home_title_clock:
                 showFragment(view);
                 break;
 
@@ -1036,13 +1134,13 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         return canUse;
     }
 
-    public void updateGuide(List<DeviceItem> deviceList) {
+    public void updateGuide(List<McDeviceInfo> deviceList) {
         if (UserHelper.isLogin(this)) {
             if (deviceList != null) {
                 int len = deviceList.size();
                 if (len > 0) {
                     if (len == 1) {
-                        DeviceItem info = deviceList.get(0);
+                        McDeviceInfo info = deviceList.get(0);
                         if (info != null) {
                             if (info.getId() != 0) {
                                 guideExpImg.setVisibility(View.GONE);

@@ -18,6 +18,11 @@ import com.cloudmachine.adapter.decoration.LineItemDecoration;
 import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
 import com.cloudmachine.adapter.holder.BaseHolder;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.TypeItem;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.ExtrContract;
 import com.cloudmachine.utils.Constants;
 
@@ -37,14 +42,25 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
         mRecyclerView = (RecyclerView) findViewById(R.id.relation_rlv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.addItemDecoration(new LineItemDecoration(this));
-        List<String> items = new ArrayList<>();
-        items.add("父子(父女)");
-        items.add("母子(母女)");
-        items.add("配偶");
-        items.add("朋友");
-        RelationAdapter adapter = new RelationAdapter(mContext, items);
-        adapter.setOnItemClickListener(this);
-        mRecyclerView.setAdapter(adapter);
+        updateView();
+    }
+
+    public void updateView(){
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getRelationType(0).compose(RxHelper.<List<TypeItem>>handleResult()).subscribe(new RxSubscriber<List<TypeItem>>(mContext) {
+            @Override
+            protected void _onNext(List<TypeItem> typeItems) {
+                RelationAdapter adapter = new RelationAdapter(mContext, typeItems);
+                adapter.setOnItemClickListener(RelationActivity.this);
+                mRecyclerView.setAdapter(adapter);
+
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+
 
     }
 
@@ -58,17 +74,17 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
         Object obj = view.getTag();
         if (obj!=null){
             Intent intent=new Intent();
-            intent.putExtra(Constants.RELATION,(String) obj);
+            intent.putExtra(Constants.TYPE_ITEM,(TypeItem) obj);
             intent.putExtra(Constants.RELATION_POSITION,position);
             setResult(RESULT_OK,intent);
             finish();
         }
     }
 
-    private class RelationAdapter extends BaseRecyclerAdapter<String> {
+    private class RelationAdapter extends BaseRecyclerAdapter<TypeItem> {
 
 
-        public RelationAdapter(Context context, List<String> items) {
+        public RelationAdapter(Context context, List<TypeItem> items) {
             super(context, items);
         }
 
@@ -81,7 +97,7 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
 
     }
 
-    private class RelationHolder extends BaseHolder<String> {
+    private class RelationHolder extends BaseHolder<TypeItem> {
 
         TextView nameTv;
         ImageView statusImg;
@@ -93,13 +109,13 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
         }
 
         @Override
-        public void initViewHolder(String item) {
+        public void initViewHolder(TypeItem item) {
 
         }
 
         @Override
-        public void initViewHolder(String item, int position) {
-            nameTv.setText(item);
+        public void initViewHolder(TypeItem item, int position) {
+            nameTv.setText(item.getValue());
             if (selectPos>=0&&selectPos==position){
                 statusImg.setVisibility(View.VISIBLE);
             }else{

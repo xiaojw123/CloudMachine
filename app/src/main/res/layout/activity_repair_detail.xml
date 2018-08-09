@@ -141,7 +141,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_size_60"
                 android:layout_marginTop="@dimen/dimen_size_6"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:visibility="gone"
+                >
 
                 <ImageView
                     android:id="@+id/iv_alipay"
@@ -209,6 +211,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/public_left_margin_42"
+                    android:checked="true"
                     android:clickable="false" />
 
             </RelativeLayout>

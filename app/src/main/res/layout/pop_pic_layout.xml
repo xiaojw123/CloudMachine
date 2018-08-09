@@ -22,6 +22,7 @@
         style="?android:attr/borderlessButtonStyle"
         />
     <View
+        android:id="@+id/pop_pick_line"
         style="@style/CommonLandscapeLine"
         />
     <Button

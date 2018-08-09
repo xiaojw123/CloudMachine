@@ -92,7 +92,7 @@ public class BarChartRenderer extends DataRenderer {
                         hBarChart.isUpdate = false;
                         if (hBarChart.mSelectionListener != null) {
                             AppLog.print("drawData____");
-                            hBarChart.mSelectionListener.onValueSelected(entry, 1, null);
+                            hBarChart.mSelectionListener.onValueSelected(entry, 1, null,null);
                         }
                     }
                 }

@@ -15,7 +15,20 @@ public class Member implements Serializable{
 	private static final long serialVersionUID = 263723165474245016L;
 
 	private Long num = 1L;
+
+	public int getIdentifyStatus() {
+		return identifyStatus;
+	}
+
+	public void setIdentifyStatus(int identifyStatus) {
+		this.identifyStatus = identifyStatus;
+	}
+	public boolean isIdentify(){
+		return  identifyStatus==1;
+	}
+
 	private int isAuth;//1:已认证 0：未认证
+	private int identifyStatus;//资质认证1:true 0:false
 
 	public int getIsAuth() {
 		return isAuth;

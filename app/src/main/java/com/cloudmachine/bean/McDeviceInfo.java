@@ -20,7 +20,17 @@ public class McDeviceInfo implements Serializable {
 
     private int oilLave;
     private float workTime;
+
+    public double getPositAccu() {
+        return positAccu;
+    }
+
+    public void setPositAccu(double positAccu) {
+        this.positAccu = positAccu;
+    }
+
     private String snId;
+    private double positAccu;
 
     public int getOilLave() {
         return oilLave;

@@ -3,7 +3,10 @@ package com.cloudmachine.camera;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.util.Log;
+import android.util.Size;
 import android.view.SurfaceHolder;
+
+import com.cloudmachine.chart.utils.AppLog;
 
 import java.io.IOException;
 import java.util.List;
@@ -88,25 +91,44 @@ public class CameraManager {
             initialized = true;
             parameters = camera.getParameters();
             List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
-
-            int w = 800;
-            int h = 600;
+            List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes();
+            int prewWidth = 0;
+            int prewHeight = 0;
+            int picWidth=0;
+            int picHight=0;
             for (Camera.Size size : previewSizes) {
-                Log.e("TAG", "previewSizes width:" + size.width);
-                Log.e("TAG", "previewSizes height:" + size.height);
-                if (size.width - w <= 100) {
-                    w = size.width;
-                    h = size.height;
+                if (size.width> 0&&size.height>0) {
+                    prewWidth = size.width;
+                    prewHeight = size.height;
                     break;
                 }
             }
-
-            parameters.setPreviewSize(w, h);
+            for (Camera.Size size : pictureSizes) {
+                if (size.width>0&&size.height>0){
+                    picWidth=size.width;
+                    picHight=size.height;
+                    break;
+                }
+            }
+//            for (Camera.Size size : previewSizes) {
+//                Log.e("TAG", "previewSizes width:" + size.width);
+//                Log.e("TAG", "previewSizes height:" + size.height);
+//                if (size.width - w <= 100) {
+//                    w = size.width;
+//                    h = size.height;
+//                    break;
+//                }
+//            }
+//            parameters.setPictureSize(800, 600);
+            parameters.setPreviewSize(prewWidth, prewHeight);
             parameters.setPictureFormat(ImageFormat.JPEG);
             parameters.setJpegQuality(100);
-            parameters.setPictureSize(800, 600);
+            parameters.setPictureSize(picWidth, picHight);
+//            parameters.setPictureSize(800, 600);
             theCamera.setParameters(parameters);
+
         }
+
     }
 
     /**

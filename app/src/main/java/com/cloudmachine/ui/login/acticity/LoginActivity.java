@@ -66,7 +66,7 @@ import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import rx.functions.Action1;
 
-public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginModel> implements OnClickListener, Callback, LoginContract.View,  TextWatcher {
+public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginModel> implements OnClickListener, Callback, LoginContract.View, TextWatcher {
     public static final String RX_LOGIN = "rx_login";
     private static final int MSG_SET_ALIAS = 1001;
     private Context mContext;
@@ -95,7 +95,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         this.mContext = this;
         getIntentData();
         initView();
-        MobclickAgent.onEvent(this,MobEvent.TIME_LOGIN);
+        MobclickAgent.onEvent(this, MobEvent.TIME_LOGIN);
 //        initRxManager();
     }
 
@@ -145,7 +145,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     }
 
     private void disMiss() {
-        if (progressDialog != null&&progressDialog.isShowing()) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
             progressDialog = null;
         }
@@ -185,7 +185,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
         username_ed = (ClearEditTextView) findViewById(R.id.username_ed);
         password_ed = (ClearEditTextView) findViewById(R.id.password_ed);
-        password_switch_img= (ImageView) findViewById(R.id.password_switch_img);
+        password_switch_img = (ImageView) findViewById(R.id.password_switch_img);
         password_switch_img.setOnClickListener(this);
         username_ed.setICoallBack(new ICoallBack() {
 
@@ -207,7 +207,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
             @Override
             public void onClick(View v) {
-                if (login_btn.isButtonEanble()){
+                if (login_btn.isButtonEanble()) {
                     MobclickAgent.onEvent(mContext, MobEvent.COUNT_LOGIN);
                     doCheck();
                 }
@@ -318,12 +318,12 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
         @Override
         public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
-            ToastUtils.showToast(mContext,"授权失败！！"+throwable.getMessage());
+            ToastUtils.showToast(mContext, "授权失败！！" + throwable.getMessage());
         }
 
         @Override
         public void onCancel(SHARE_MEDIA share_media, int i) {
-            ToastUtils.showToast(mContext,"取消授权！！");
+            ToastUtils.showToast(mContext, "取消授权！！");
         }
     };
 
@@ -346,7 +346,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
             final String openId = map.get("openid");
             final String nickname = map.get("name");
             final String headimgurl = map.get("iconurl");
-            final int sex="男".equals(map.get("gender"))?1:0;
+            final int sex = "男".equals(map.get("gender")) ? 1 : 0;
             mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM)
                     .wxLogin(unionid, openId, nickname, headimgurl)
                     .compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext, false) {
@@ -399,15 +399,14 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
         @Override
         public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
-            ToastUtils.showToast(mContext,"授权失败！！"+throwable.getMessage());
+            ToastUtils.showToast(mContext, "授权失败！！" + throwable.getMessage());
         }
 
         @Override
         public void onCancel(SHARE_MEDIA share_media, int i) {
-            ToastUtils.showToast(mContext,"授权失败！！");
+            ToastUtils.showToast(mContext, "授权失败！！");
         }
     };
-
 
 
     private void loginToWeiXin() {
@@ -582,7 +581,11 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
             String logoUrl = UserHelper.getLogo(this, usernameStr);
             if (!TextUtils.isEmpty(logoUrl)) {
                 Glide.with(this).load(logoUrl).into(userImage);
+            } else {
+                userImage.setImageResource(R.drawable.ic_logo);
             }
+        } else {
+            userImage.setImageResource(R.drawable.ic_logo);
         }
         if (pswStr.length() > 0 && usernameStr.length() > 0) {
             login_btn.setTextColor(getResources().getColor(R.color.cor15));

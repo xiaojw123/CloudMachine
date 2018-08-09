@@ -4,7 +4,9 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.cloudmachine.R;
 import com.cloudmachine.adapter.holder.BaseHolder;
+import com.cloudmachine.chart.utils.AppLog;
 
 import java.util.List;
 
@@ -50,10 +52,12 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        AppLog.print("onBindViewHolder____position:"+position);
         this.position=position;
         if (mItems != null && mItems.size() > 0) {
             T item = mItems.get(position);
             if (item != null) {
+                holder.itemView.setTag(R.id.item_position,position);
                 holder.itemView.setTag(item);
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

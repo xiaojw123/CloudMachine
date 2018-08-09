@@ -8,6 +8,7 @@ import com.cloudmachine.bean.Member;
 import com.cloudmachine.ui.home.contract.PurseContract;
 import com.cloudmachine.ui.home.model.CouponBean;
 import com.cloudmachine.utils.ToastUtils;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.Map;
@@ -26,7 +27,12 @@ public class PursePresenter extends PurseContract.Presenter {
                 if (jsonObject != null) {
                     double walletAmount = jsonObject.get("walletAmount").getAsDouble();
                     double depositAmount = jsonObject.get("depositAmount").getAsDouble();
-                    mView.updateWalletAmountView(walletAmount, depositAmount);
+                    JsonElement jrlJe=jsonObject.get("jumpUrl");
+                    String jumpUrl=null;
+                    if (jrlJe!=null&&!jrlJe.isJsonNull()){
+                        jumpUrl=jrlJe.getAsString();
+                    }
+                    mView.updateWalletAmountView(walletAmount, depositAmount,jumpUrl);
                 }
 
             }

@@ -13,10 +13,11 @@ import rx.Observable;
  */
 
 public class OperateModel implements OperateContact.Model {
+    //internalTimeMinutes参数为1表示1分钟
     @Override
     public Observable<String> getVerifyCode(long memberId, String taskId) {
 
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).retryOperatorCode(memberId,taskId).compose(RxHelper.<String>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).retryOperatorCode(memberId,taskId,1).compose(RxHelper.<String>handleResult());
     }
 
     @Override

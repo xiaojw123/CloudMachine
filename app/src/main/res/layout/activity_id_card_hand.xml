@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/public_bg"
+    tools:context="com.cloudmachine.ui.home.activity.IdCardHandActivity">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="个人信息"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/pad1"
+        android:paddingTop="@dimen/pad1">
+
+        <TextView
+            android:id="@+id/hand_shoot_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/text_size_13_sp"
+            />
+
+
+        <FrameLayout
+            android:layout_width="247dp"
+            android:layout_height="247dp"
+            android:layout_marginTop="@dimen/dimen_size_20"
+            android:background="@drawable/bg_hand_border">
+
+            <FrameLayout
+                android:id="@+id/hand_shoot_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dimen_size_8"
+                android:background="@drawable/bg_hand_content">
+
+
+                <TextView
+                    android:id="@+id/hand_shoot_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="拍摄手持身份证"
+                    android:drawableTop="@drawable/ic_hand_camera"
+                    android:drawablePadding="@dimen/pad1"
+                    android:textSize="@dimen/text_size_16_sp"
+                    />
+
+
+                <ImageView
+                    android:id="@+id/hand_idcard_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    />
+
+                <ImageView
+                    android:id="@+id/hand_delete_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="@dimen/pad1"
+                    android:layout_marginTop="@dimen/pad1"
+                    android:src="@drawable/ic_person_delete"
+                    android:visibility="gone"
+                    />
+
+
+                <ImageView
+                    android:id="@+id/hand_shooted_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_shooted"
+                    android:visibility="gone"
+                    />
+
+
+            </FrameLayout>
+
+
+        </FrameLayout>
+
+        <com.cloudmachine.autolayout.widgets.RadiusButtonView
+            android:id="@+id/bank_verify_submit_btn"
+            style="@style/RadiusButtonStyle"
+            android:layout_below="@+id/item_layout_container"
+            android:layout_marginTop="@dimen/pad2"
+            app:rbtn_fillColor_dw="@color/cor5"
+            app:rbtn_fillColor_nm="@color/cor5"
+            app:rbtn_strokeColor="@color/cor5"
+            app:rbtn_text="@string/submit"
+            app:rbtn_textColor="@color/cor2015"
+            app:rbtn_textSize="@dimen/siz3" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/pad1"
+        android:paddingTop="@dimen/pad1"
+        android:paddingLeft="@dimen/dimen_size_25"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/hand_shoot_sample"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_2"
+            android:textSize="@dimen/text_size_13_sp"
+            />
+
+        <TextView
+            android:id="@+id/hand_sample_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pad1"
+            android:textColor="@color/c_ff8901"
+            android:drawableTop="@drawable/ic_hand_small"
+            android:drawablePadding="@dimen/pad1"
+            android:text="预览"
+            android:gravity="center_horizontal"
+            />
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

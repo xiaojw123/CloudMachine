@@ -307,7 +307,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
         playUrl = liveUrl;
         workVideoXrlv.refreshComplete();
         if (videoList != null && videoList.size() > 0) {
-            Collections.reverse(videoList);
+//            Collections.reverse(videoList);
             emptyListTv.setVisibility(View.GONE);
             workVideoXrlv.setVisibility(View.VISIBLE);
             if (mVideoListAdapter == null) {

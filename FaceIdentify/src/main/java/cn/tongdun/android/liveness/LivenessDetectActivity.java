@@ -28,7 +28,7 @@ import cn.tongdun.android.liveness.view_controller.LivenessDetectionMainActivity
  * 样例活体检测Activity
  */
 public class LivenessDetectActivity extends LivenessDetectionMainActivity {
-    public static final int REST_FACE_IDENTIFY = 0x10;
+    public static final int RESULT_FACE_SUCCESS=0x006;
     public static final String URL_CONTRASTFACE = "url_contrastface";
     public static final String MEMBER_ID = "memberId";
     public static final String TAG = LivenessDetectActivity.class.getSimpleName();
@@ -42,7 +42,6 @@ public class LivenessDetectActivity extends LivenessDetectionMainActivity {
         super.onCreate(savedInstanceState);
         faceContrastUrl = getIntent().getStringExtra(URL_CONTRASTFACE);
         memberId = getIntent().getLongExtra(MEMBER_ID, -1);
-        memberId = 15500;
     }
 
     ////////////// INITIALIZATION //////////////
@@ -128,9 +127,9 @@ public class LivenessDetectActivity extends LivenessDetectionMainActivity {
                     boolean isSucess = resJobj.optBoolean("success");
                     String message = resJobj.optString("message");
                     if (isSucess) {
+                        setResult(RESULT_FACE_SUCCESS);
                         String result = resJobj.optString("result");
                         Toast.makeText(LivenessDetectActivity.this, result, Toast.LENGTH_LONG).show();
-//                        setResult(REST_FACE_IDENTIFY);
                         finish();
                     } else {
                         Toast.makeText(LivenessDetectActivity.this, message, Toast.LENGTH_LONG).show();

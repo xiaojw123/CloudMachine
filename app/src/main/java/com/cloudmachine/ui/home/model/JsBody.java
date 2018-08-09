@@ -68,6 +68,8 @@ public class JsBody {
     }
 
     private String login_event;
+
+
     private String click_event;
 
     public String getShare_title() {

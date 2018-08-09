@@ -34,5 +34,5 @@
   <item name="id_tag_autolayout_size" type="id"/>
   <item type="id" name="coll_add_tv"/>
   <item type="id" name="operator_item"/>
-
+  <item type="id" name="item_position"/>
 </resources>

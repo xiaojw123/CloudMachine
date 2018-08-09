@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -54,13 +55,19 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
     TextView emtyTv;
     List<AddressBookItem> mItems;
     LinearLayoutManager lm;
-
+    RecyclerView.SmoothScroller smoothScroller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address_book);
         ButterKnife.bind(this);
+        smoothScroller=new LinearSmoothScroller(this){
+            @Override
+            protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+        };
         initView();
     }
 
@@ -151,7 +158,9 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
                 AddressBookItem item = mItems.get(i);
                 if (word.equals(item.getFirstLetter())) {
                     if (lm != null) {
-                        lm.scrollToPosition(i);
+//                        lm.scrollToPosition(i);
+                        smoothScroller.setTargetPosition(i);
+                        lm.startSmoothScroll(smoothScroller);
                     }
                     break;
                 }
@@ -203,4 +212,5 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
         }
 
     }
+
 }

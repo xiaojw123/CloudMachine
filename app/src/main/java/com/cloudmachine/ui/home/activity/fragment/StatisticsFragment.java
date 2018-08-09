@@ -23,6 +23,7 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.bean.StatisticsInfo;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.StatisticsAsync;
 import com.cloudmachine.utils.Constants;
@@ -32,7 +33,6 @@ import com.umeng.analytics.MobclickAgent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * 项目名称：CloudMachine
@@ -50,7 +50,7 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
     private long mDeviceId;
     private CommonTitleView title_layout;
     private ImageView mIvCalendar;
-    private ArrayList<String> calendarList;
+    private ArrayList<String> calendarList = new ArrayList<>();
     private ListView lvCalendar;
     private View mView;
     private PopupWindow mPopupWindow;
@@ -61,8 +61,7 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
     private TextView mTvAveHoursValue;
     private TextView mTvWorkRateValue;
     private String mCurrentString;
-    private SimpleDateFormat mDateFormat;
-    private Date mDate;
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy年MM月");
     private String mReplace;
     private TextView mEmptyTv;
     private LinearLayout daysItemCotainer;
@@ -74,19 +73,6 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
         MobclickAgent.onEvent(getActivity(), MobEvent.TIME_MACHINE_WORKTIME_STATISTICS);
     }
 
-    public void getPreMonth(Calendar calendar, ArrayList<String> list) {
-        for (int i = 1; i <= 5; i++) {
-            calendar.setTime(mDate); // 设置为当前时间
-            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - i);
-            calendarList.add(mDateFormat.format(calendar.getTime()));
-        }
-
-    }
-
-
-    private void initTitleLayout() {
-
-    }
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -151,22 +137,8 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
 //                Constants.toActivity(getActivity(), QuestionCommunityActivity.class, vB);
 //                break;
             case R.id.iv_calendar:
-                mView = getActivity().getLayoutInflater().inflate(R.layout.check_calendar_view, null);
-                lvCalendar = (ListView) mView.findViewById(R.id.lv_calendar);
-                lvCalendar.setAdapter(new CheckCalendarAdapter());
-
-                mPopupWindow = new PopupWindow(mView, dpToPx(140), LinearLayout.LayoutParams.WRAP_CONTENT);
                 // mPopupWindow = new PopupWindow(mView, getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
-                showPopupWindow(mIvCalendar);//展示popupwindow
-
-                lvCalendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        TextView tvDate = (TextView) view.findViewById(R.id.tv_date);
-                        splitString(tvDate);//切分好字符串并发送网络请求
-                        closePopupWindow();
-                    }
-                });
+                showPopupWindow();//展示popupwindow
                 break;
             default:
                 break;
@@ -177,8 +149,6 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
         String str1 = tv.getText().toString();
         String str2 = getString(str1, "年");
         mCurrentString = getString(str2, "月");
-
-
         String part1 = mCurrentString.substring(0, 4);//生成日历左侧的时间格式
         String part2 = mCurrentString.substring(4);
         sb.setLength(0);
@@ -200,39 +170,53 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
     }
 
 
-    private void showPopupWindow(View v) {
+    private void showPopupWindow() {
+        if (mPopupWindow == null) {
+            mView = getActivity().getLayoutInflater().inflate(R.layout.check_calendar_view, null);
+            lvCalendar = (ListView) mView.findViewById(R.id.lv_calendar);
+            lvCalendar.setAdapter(new CheckCalendarAdapter());
+            lvCalendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    TextView tvDate = (TextView) view.findViewById(R.id.tv_date);
+                    splitString(tvDate);//切分好字符串并发送网络请求
+                    closePopupWindow();
+                }
+            });
 
-        //修改系统页面的透明度
-        WindowManager.LayoutParams params = getActivity().getWindow().getAttributes();
-        params.alpha = 0.7f;
-        getActivity().getWindow().setAttributes(params);
+            mPopupWindow = new PopupWindow(mView, dpToPx(140), LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        //mView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        //  int popupWidth = mView.getMeasuredWidth();    //  获取测量后的宽度
-        //  int popupHeight = mView.getMeasuredHeight();  //获取测量后的高度
-        //ﬁ  int[] location = new int[2];
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-        mPopupWindow.setOutsideTouchable(true);   //设置外部点击关闭ppw窗口
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                WindowManager.LayoutParams params = getActivity().getWindow().getAttributes();
-                params.alpha = 1f;
-                getActivity().getWindow().setAttributes(params);
-            }
-        });
+            //mView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            //  int popupWidth = mView.getMeasuredWidth();    //  获取测量后的宽度
+            //  int popupHeight = mView.getMeasuredHeight();  //获取测量后的高度
+            //ﬁ  int[] location = new int[2];
+            mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+            mPopupWindow.setOutsideTouchable(true);   //设置外部点击关闭ppw窗口
+            mPopupWindow.setFocusable(true);
+            mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    WindowManager.LayoutParams params = getActivity().getWindow().getAttributes();
+                    params.alpha = 1f;
+                    getActivity().getWindow().setAttributes(params);
+                }
+            });
 
-        //v.getLocationOnScreen(location);
-        //mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,location[0]+v.getWidth(),location[1]);
-        mPopupWindow.showAsDropDown(v, -dpToPx(134), 0);
+        }
+        if (!mPopupWindow.isShowing()) {
+            //修改系统页面的透明度
+            WindowManager.LayoutParams params = getActivity().getWindow().getAttributes();
+            params.alpha = 0.7f;
+            getActivity().getWindow().setAttributes(params);
+            mPopupWindow.showAsDropDown(mIvCalendar, -dpToPx(134), 0);
+        }
     }
 
 
     /**
      * popupwindow弹出框的listview适配器
      */
-    class CheckCalendarAdapter extends BaseAdapter {
+  private   class CheckCalendarAdapter extends BaseAdapter {
         @Override
         public int getCount() {
             return 6;
@@ -299,24 +283,11 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
     protected void initView() {
         mHandler = new Handler(this);
         mDeviceId = getActivity().getIntent().getLongExtra(Constants.P_DEVICEID, -1);
-        calendarList = new ArrayList<>();//初始化集合
-        //当月
-        mDateFormat = new SimpleDateFormat("yyyy年MM月");
-        mDate = new Date();
-        calendarList.add(mDateFormat.format(mDate));
-        mReplace = mDateFormat.format(mDate).replace("年", "").replace("月", "");
-        new StatisticsAsync(getActivity(), mHandler, mDeviceId, mReplace).execute();
-        //前几月
-        Calendar calendar = Calendar.getInstance();
-        getPreMonth(calendar, calendarList);
-
-        initTitleLayout();
         mEmptyTv = (TextView) viewParent.findViewById(R.id.work_days_empty_tv);
         daysItemCotainer = (LinearLayout) viewParent.findViewById(R.id.work_days_container);
         mIvCalendar = (ImageView) viewParent.findViewById(R.id.iv_calendar);
         mIvCalendar.setOnClickListener(this);
         mSelectMonth = (TextView) viewParent.findViewById(R.id.f11);//对应日历的月份(默认展示最近一个月)
-        mSelectMonth.setText(splitString2(mDateFormat.format(mDate)));
         mTvWorkDaysValue = (TextView) viewParent.findViewById(R.id.tv_work_days_value);//工作天数
         mTvTotalHoursValue = (TextView) viewParent.findViewById(R.id.tv_total_hours_value);
         mTvAveHoursValue = (TextView) viewParent.findViewById(R.id.tv_ave_hours_value);
@@ -328,7 +299,24 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
 //            String deviceName = getActivity().getIntent().getStringExtra(Constants.P_DEVICENAME);
 //            mViewReportBtn.setText("查看"+deviceName+"月度工作报表");
 //        }
+        initCalendarData();
+        new StatisticsAsync(getActivity(), mHandler, mDeviceId, mReplace).execute();
 
+    }
+
+    private void initCalendarData() {
+        Calendar c = Calendar.getInstance();
+        for (int i = 0; i <= 5; i++) {
+            String dateStr = mDateFormat.format(c.getTime());
+            calendarList.add(dateStr);
+            if (i == 0) {
+                mSelectMonth.setText(splitString2(dateStr));
+                mReplace = dateStr.replace("年", "").replace("月", "");
+            }
+            if (i < 5) {
+                c.add(Calendar.MONTH, -1);
+            }
+        }
     }
 
     @Override

@@ -8,6 +8,8 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -25,6 +27,7 @@ import com.cloudmachine.activities.WorkTimeActivity;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.bean.DailyWorkInfo;
 import com.cloudmachine.bean.ScanningWTInfo;
+import com.cloudmachine.bean.ScreenInfo;
 import com.cloudmachine.chart.charts.BarChart;
 import com.cloudmachine.chart.charts.HorizontalBarChart;
 import com.cloudmachine.chart.components.XAxis;
@@ -60,6 +63,7 @@ import java.util.List;
 
 public class WorkTimeFragment extends BaseFragment implements View.OnClickListener, Handler.Callback, SeekBar.OnSeekBarChangeListener,
         OnChartValueSelectedListener {
+    private static final String TAG = "WorkTimeFragment";
     private Handler mHandler;
     private long deviceId;
     protected HorizontalBarChart dailyChart;
@@ -92,6 +96,8 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
     private TextView startTimeTv, endTimeTv;
     private View dailyLayout;
     private int leftOffset, topOffset;
+    private int switchWidth, switchHeight;
+    private int mLastIndex;
 
     @Override
     protected void initView() {
@@ -179,20 +185,36 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
 
     private OnChartValueSelectedListener valueSelectedListener = new OnChartValueSelectedListener() {
         @Override
-        public void onValueSelected(Entry e, final int dataSetIndex, Highlight h) {
+        public void onValueSelected(Entry e, final int dataSetIndex, Highlight h, MotionEvent event) {
+            Log.d(TAG, "onValueSelected___Entry__" + e + "__dataSetIndex___" + dataSetIndex + "___hightlight__" + h);
             if (dataSetIndex % 2 > 0) {
                 List<RectF> rectFs = dailyChart.getRectList();
                 if (rectFs.size() > dataSetIndex) {
-                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) switchLayout.getLayoutParams();
+                    if (switchWidth == 0 && switchHeight == 0) {
+                        switchWidth = switchLayout.getMeasuredWidth();
+                        switchHeight = switchLayout.getMeasuredHeight();
+                    }
                     RectF rectF = rectFs.get(dataSetIndex);
-                    float tox = leftOffset + rectF.left + rectF.width() / 2 - params.width / 2;
-                    float toY = topOffset + rectF.top - params.height;
+                    if (event != null) {
+                        Log.d(TAG, "valueselected___rectF__" + rectF + "___event__x:" + event.getX() + " y:" + event.getY());
+                        float touchX = event.getX();
+                        if (touchX < rectF.left || touchX > rectF.right) {
+                            switchLayout.setVisibility(View.INVISIBLE);
+                            return;
+                        }
+                    }
+                    if (switchLayout.getVisibility() == View.VISIBLE && mLastIndex == dataSetIndex) {
+                        return;
+                    }
+                    mLastIndex = dataSetIndex;
+                    float tox = rectF.left + rectF.width() / 2 - switchWidth * 5.1f / 24;
+                    float toY = topOffset + rectF.top - switchHeight;
                     tox = Math.max(tox, 0);
                     toY = Math.max(toY, 0);
-//                    ObjectAnimator oaX = ObjectAnimator.ofFloat(switchLayout, "translationX", switchLayout.getTranslationX(), tox);
-//                    ObjectAnimator oaY = ObjectAnimator.ofFloat(switchLayout, "translationY", switchLayout.getTranslationY(), toY);
-                    AppLog.print("rectf__" + rectF);
-                    AppLog.print("x:" + tox + ",  y:" + toY);
+                    float right = tox + switchWidth;
+                    if (right > ScreenInfo.screen_width) {
+                        tox = ScreenInfo.screen_width - switchWidth;
+                    }
                     if (switchLayout.getVisibility() != View.VISIBLE) {
                         switchLayout.setX(tox);
                         switchLayout.setY(toY);
@@ -203,7 +225,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
                         ObjectAnimator oaY = ObjectAnimator.ofFloat(switchLayout, "y", switchLayout.getY(), toY);
                         AnimatorSet set = new AnimatorSet();
                         set.setInterpolator(new AccelerateInterpolator());
-                        set.setDuration(10);
+                        set.setDuration(200);
                         set.addListener(new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animation) {
@@ -238,8 +260,8 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
 
         @Override
         public void onNothingSelected() {
-//                ToastUtils.showToast(getActivity(), "chart value No selected___");
-            switchLayout.setVisibility(View.INVISIBLE);
+            Log.d(TAG, "onNothingSelected____");
+//            switchLayout.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -265,9 +287,16 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
         int index = dataSetIndex / 2;
         if ((dailyWorkList != null) && dailyWorkList.size() > index) {
             DailyWorkInfo info = dailyWorkList.get(index);
-
-            startTimeTv.setText("开机：" + info.getStartTime());
-            endTimeTv.setText("关机：" + info.getEndTime());
+            String startTime = info.getStartTime();
+            String endTime = info.getEndTime();
+            if (startTime.length() > 5) {
+                startTime = startTime.substring(0, 5);
+            }
+            if (endTime.length() > 5) {
+                endTime = endTime.substring(0, 5);
+            }
+            startTimeTv.setText("开机：" + startTime);
+            endTimeTv.setText("关机：" + endTime);
         }
     }
 
@@ -418,10 +447,10 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
                     setData();
                     initDailyChart();
                     // TODO: 2018/4/11 bug240
-                if (!UserHelper.getWorkTimeGuideTag(getActivity())) {
-                    UserHelper.insertWorkTimeGuideTag(getActivity(), true);
-                    ((WorkTimeActivity) getActivity()).showGuideView();
-                }
+                    if (!UserHelper.getWorkTimeGuideTag(getActivity())) {
+                        UserHelper.insertWorkTimeGuideTag(getActivity(), true);
+                        ((WorkTimeActivity) getActivity()).showGuideView();
+                    }
                 }
                 break;
             case Constants.HANDLE_GETWORKTIMELIST_FAILD:
@@ -511,7 +540,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
         } else {
             set1.setColor(getResources().getColor(R.color.cor6));
         }
-        set1.setBarSpacePercent(30f);
+        set1.setBarSpacePercent(50f);
         set1.setValueFormatter(new DailyWorkYAxisValueFormatter(""));
         set1.setRound(5, 5);
         ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
@@ -519,7 +548,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
 
         BarData data = new BarData(xVals, dataSets);
         data.setValueTypeface(tf);
-        data.setValueTextSize(12f);
+        data.setValueTextSize(11f);
 //        data.setValueTextColor(getResources().getColor(R.color.cor5));
 //	        mChart.setVisibleXRangeMaximum(7);  //一个界面显示多少个点，其他点可以通过滑动看到
         mChart.setData(data);
@@ -754,8 +783,10 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
 
 
     @Override
-    public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-        // TODO Auto-generated method stub
+    public void onValueSelected(Entry e, int dataSetIndex, Highlight h, MotionEvent event) {
+        if (dailyLayout.getVisibility() == View.VISIBLE) {
+            return;
+        }
         if (e == null)
             return;
         if (e.getVal() <= 0) {
@@ -771,7 +802,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
         }
         int size = len - e.getXIndex() - 1;
         String date = showWTInof[page][size].getCollectionDate();
-        daily_title.setText(date + ResV.getString(R.string.work_time_text1));
+        daily_title.setText(date + " " + ResV.getString(R.string.work_time_text1));
         new DailyWorkDitailsListAsync(deviceId, date, getActivity(), mHandler).execute();
     }
 

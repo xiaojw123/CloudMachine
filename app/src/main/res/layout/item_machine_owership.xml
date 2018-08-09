@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_size_50"
+    android:background="@color/white">
+
+
+    <TextView
+        android:id="@+id/owership_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dimen_size_12"
+        android:textColor="@color/cor8"
+        android:textSize="@dimen/text_size_13_sp" />
+
+    <TextView
+        android:id="@+id/owership_status_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginRight="@dimen/dimen_size_15"
+        android:drawablePadding="@dimen/pad1"
+        android:drawableRight="@drawable/arrow_right"
+        android:textColor="@color/cor20"
+        android:textSize="@dimen/text_size_13_sp" />
+</FrameLayout>

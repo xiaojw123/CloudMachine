@@ -23,21 +23,29 @@ import com.cloudmachine.chart.utils.ViewPortHandler;
 /**
  * TouchListener for Bar-, Line-, Scatter- and CandleStickChart with handles all
  * touch interaction. Longpress == Zoom out. Double-Tap == Zoom in.
- * 
+ *
  * @author Philipp Jahoda
  */
 public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBase<? extends BarLineScatterCandleBubbleData<? extends BarLineScatterCandleBubbleDataSet<? extends Entry>>>> {
 
-    /** the original touch-matrix from the chart */
+    /**
+     * the original touch-matrix from the chart
+     */
     private Matrix mMatrix = new Matrix();
 
-    /** matrix for saving the original matrix state */
+    /**
+     * matrix for saving the original matrix state
+     */
     private Matrix mSavedMatrix = new Matrix();
 
-    /** point where the touch action started */
+    /**
+     * point where the touch action started
+     */
     private PointF mTouchStartPoint = new PointF();
 
-    /** center between two pointers (fingers on the display) */
+    /**
+     * center between two pointers (fingers on the display)
+     */
     private PointF mTouchPointCenter = new PointF();
 
     private float mSavedXDist = 1f;
@@ -46,7 +54,9 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
     private DataSet<?> mClosestDataSetToTouch;
 
-    /** used for tracking velocity of dragging */
+    /**
+     * used for tracking velocity of dragging
+     */
     private VelocityTracker mVelocityTracker;
 
     private long mDecelerationLastTime = 0;
@@ -142,7 +152,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
                 } else if (mTouchMode == NONE
                         && Math.abs(distance(event.getX(), mTouchStartPoint.x, event.getY(),
-                                mTouchStartPoint.y)) > 5f) {
+                        mTouchStartPoint.y)) > 5f) {
 
 
                     if (mChart.hasNoDragOffset()) {
@@ -237,7 +247,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
     /**
      * Saves the current Matrix state and the touch-start point.
-     * 
+     *
      * @param event
      */
     private void saveTouchStart(MotionEvent event) {
@@ -250,7 +260,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
     /**
      * Performs all necessary operations needed for dragging.
-     * 
+     *
      * @param event
      */
     private void performDrag(MotionEvent event) {
@@ -275,8 +285,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 dX = event.getX() - mTouchStartPoint.x;
                 dY = -(event.getY() - mTouchStartPoint.y);
             }
-        }
-        else {
+        } else {
             dX = event.getX() - mTouchStartPoint.x;
             dY = event.getY() - mTouchStartPoint.y;
         }
@@ -289,7 +298,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
     /**
      * Performs the all operations necessary for pinch and axis zoom.
-     * 
+     *
      * @param event
      */
     private void performZoom(MotionEvent event) {
@@ -374,25 +383,22 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
     /**
      * Perform a highlight operation.
-     * 
+     *
      * @param e
      */
     private void performHighlight(MotionEvent e) {
-
         Highlight h = mChart.getHighlightByTouchPoint(e.getX(), e.getY());
-
         if (h == null || h.equalTo(mLastHighlighted)) {
-            mChart.highlightTouch(null);
             mLastHighlighted = null;
         } else {
             mLastHighlighted = h;
-            mChart.highlightTouch(h);
         }
+        mChart.highlightTouch(h, e);
     }
 
     /**
      * Highlights upon dragging, generates callbacks for the selection-listener.
-     * 
+     *
      * @param e
      */
     private void performHighlightDrag(MotionEvent e) {
@@ -401,7 +407,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
         if (h != null && !h.equalTo(mLastHighlighted)) {
             mLastHighlighted = h;
-            mChart.highlightTouch(h);
+            mChart.highlightTouch(h, e);
         }
     }
 
@@ -413,7 +419,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
     /**
      * Determines the center point between two pointer touch points.
-     * 
+     *
      * @param point
      * @param event
      */
@@ -425,7 +431,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
     /**
      * returns the distance between two pointer touch points
-     * 
+     *
      * @param event
      * @return
      */
@@ -438,7 +444,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     /**
      * calculates the distance on the x-axis between two pointers (fingers on
      * the display)
-     * 
+     *
      * @param e
      * @return
      */
@@ -450,7 +456,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     /**
      * calculates the distance on the y-axis between two pointers (fingers on
      * the display)
-     * 
+     *
      * @param e
      * @return
      */
@@ -462,7 +468,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     /**
      * returns the correct translation depending on the provided x and y touch
      * points
-     * 
+     *
      * @param x
      * @param y
      * @return
@@ -492,7 +498,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
     /**
      * returns the matrix object the listener holds
-     * 
+     *
      * @return
      */
     public Matrix getMatrix() {
@@ -598,7 +604,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         mDecelerationVelocity.x *= mChart.getDragDecelerationFrictionCoef();
         mDecelerationVelocity.y *= mChart.getDragDecelerationFrictionCoef();
 
-        final float timeInterval = (float)(currentTime - mDecelerationLastTime) / 1000.f;
+        final float timeInterval = (float) (currentTime - mDecelerationLastTime) / 1000.f;
 
         float distanceX = mDecelerationVelocity.x * timeInterval;
         float distanceY = mDecelerationVelocity.y * timeInterval;

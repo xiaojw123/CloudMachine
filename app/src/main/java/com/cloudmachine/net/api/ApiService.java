@@ -7,10 +7,12 @@ import com.cloudmachine.bean.AdBean;
 import com.cloudmachine.bean.AllianceDetail;
 import com.cloudmachine.bean.AllianceItem;
 import com.cloudmachine.bean.ArticleInfo;
+import com.cloudmachine.bean.AuthBean;
 import com.cloudmachine.bean.BOInfo;
 import com.cloudmachine.bean.CWInfo;
 import com.cloudmachine.bean.CheckNumBean;
 import com.cloudmachine.bean.DepositItem;
+import com.cloudmachine.bean.DeviceAuthItem;
 import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.ForceVBean;
 import com.cloudmachine.bean.HomeBannerBean;
@@ -29,6 +31,7 @@ import com.cloudmachine.bean.SalaryHistoryItem;
 import com.cloudmachine.bean.SalaryPayInfo;
 import com.cloudmachine.bean.ScanningOilLevelInfoArray;
 import com.cloudmachine.bean.TelBean;
+import com.cloudmachine.bean.TypeItem;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.bean.VideoBean;
 import com.cloudmachine.ui.home.model.CouponBean;
@@ -70,9 +73,40 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
-    /**
-     * 工资贷接口
+
+    /**机器图片上传
+     *@param uniqueId 用户id
+     *@param pictureUrls 图片路径集合 以逗号隔开
+     *@param deviceId 机器id
      */
+    @FormUrlEncoded
+    @POST("picture/machineImageUpload")
+    Observable<BaseRespose<String>> machineImgUpload(@Field("uniqueId") String uniqueId,@Field("pictureUrls") String pictureUrls,@Field("deviceId") int deviceId);
+    /**个人信息图片上传
+     *@param bnsType 业务类型：0:手持身份证 1:工程合同 2:收入证明
+     */
+    @FormUrlEncoded
+    @POST("picture/personalImageUpload")
+    Observable<BaseRespose<String>> perImgUpload(@Field("uniqueId") String uniqueId,@Field("pictureUrls") String pictureUrls,@Field("bnsType") int bnsType);
+
+    @GET("ticket/memberAuthInfo")
+    Observable<BaseRespose<AuthBean>>  getAuthInfo(@Query("memberId") long memberId);
+    //机器所有权审核列表
+    @GET("ticket/deviceAuthInfoList")
+    Observable<BaseRespose<List<DeviceAuthItem>>>  getDeviceAuthList(@Query("memberId") long memberId);
+
+    //获取通讯录关系列表
+    @GET("loan/verification/getType")
+    Observable<BaseRespose<List<TypeItem>>> getRelationType(@Query("tag") int tag);
+
+    //银行卡信息
+    @GET("loan/verification/getBankCardQualificationInfo")
+    Observable<BaseRespose<JsonObject>> getBankCardInfo(@Query("memberId") long memberId);
+
+    //个人信息详情
+    @GET("loan/verification/memberAuthInfo")
+    Observable<BaseRespose<JsonObject>>  getMemberAuthInfo(@Query("memberId") long memberId);
+
     //开通小票
     @FormUrlEncoded
     @POST("loan/verification/immediatelyOpen")
@@ -85,7 +119,7 @@ public interface ApiService {
     //身份证照片识别
     @FormUrlEncoded
     @POST("loan/verification/OCR")
-    Observable<BaseRespose<JsonObject>> verifyOcr(@Field("memberId") long memberId, @Query("imgUrl") String imgUrl);
+    Observable<JsonObject> verifyOcr(@Field("memberId") long memberId, @Field("imgUrl") String imgUrl,@Field("redisUserId") String redisUserId);
 
     //身份证信息提交
     @FormUrlEncoded
@@ -114,11 +148,10 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("loan/verification/operatorCodeValidRetry")
-    Observable<BaseRespose<String>> retryOperatorCode(@Field("memberId") long memberId, @Field("taskId") String taskId);
+    Observable<BaseRespose<String>> retryOperatorCode(@Field("memberId") long memberId, @Field("taskId") String taskId,@Field("internalTimeMinutes") int internalTimeMinutes);
 
-    @FormUrlEncoded
-    @POST("loan/verification/operatorCodeValid")
-    Observable<BaseRespose<String>> checkOperatorCode(@Field("memberId") long memberId, @Field("taskId") String taskId, @Field("smsCode") String smsCode);
+    @GET("loan/verification/operatorCodeValid")
+    Observable<BaseRespose<String>> checkOperatorCode(@Query("memberId") long memberId, @Query("taskId") String taskId, @Query("smsCode") String smsCode);
 
     /**
      * 设备接口

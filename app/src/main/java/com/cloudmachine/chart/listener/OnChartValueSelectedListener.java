@@ -1,5 +1,6 @@
 package com.cloudmachine.chart.listener;
 
+import android.view.MotionEvent;
 import android.widget.SeekBar;
 
 import com.cloudmachine.chart.data.Entry;
@@ -22,7 +23,7 @@ public interface OnChartValueSelectedListener {
      * @param h the corresponding highlight object that contains information
      *            about the highlighted position
      */
-    void onValueSelected(Entry e, int dataSetIndex, Highlight h);
+    void onValueSelected(Entry e, int dataSetIndex, Highlight h,MotionEvent event);
 
     /**
      * Called when nothing has been selected or an "un-select" has been made.

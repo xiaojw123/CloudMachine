@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -98,7 +99,6 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mc_oilamount);
         this.mContext = this;
@@ -578,7 +578,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
     }
 
     @Override
-    public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+    public void onValueSelected(Entry e, int dataSetIndex, Highlight h, MotionEvent event) {
         // TODO Auto-generated method stub
         AppLog.print("onValuseSelected__Entry_" + e);
         if (todayTv.isSelected()) {

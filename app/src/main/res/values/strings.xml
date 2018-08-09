@@ -226,6 +226,8 @@
     <string name="verified">已验证</string>
     <string name="authorizationed">已授权</string>
     <string name="contact_info">联系人信息</string>
+    <string name="info_auth">信息认证</string>
+    <string name="income_proof">收入证明</string>
 
 
 </resources>

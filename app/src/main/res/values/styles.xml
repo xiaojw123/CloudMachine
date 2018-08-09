@@ -783,4 +783,41 @@
         <item name="android:drawableRight">@drawable/arrow_right</item>
     </style>
 
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="right|center_vertical"-->
+        <!--android:text="去拍摄"-->
+        <!--android:textColor="@color/c_ff8901"-->
+        <!--android:drawablePadding="@dimen/pad1"-->
+        <!--android:drawableRight="@drawable/arrow_right"-->
+
+
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/dimen_size_50"-->
+    <!--android:paddingRight="@dimen/dimen_size_15"-->
+        <!--/>-->
+
+    <style name="info_auth_container_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_size_50</item>
+        <item name="android:paddingRight">@dimen/dimen_size_15</item>
+    </style>
+
+    <style name="info_auth_key_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_13_sp</item>
+        <item name="android:drawablePadding">@dimen/dimen_size_13</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="info_auth_value_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">right|center_vertical</item>
+        <item name="android:textColor">@color/c_ff8901</item>
+        <item name="android:textSize">@dimen/text_size_13_sp</item>
+    </style>
+
 </resources>

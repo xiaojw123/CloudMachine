@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.cloudmachine.BuildConfig;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
@@ -22,6 +23,7 @@ import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.GetVersionAsync;
 import com.cloudmachine.ui.home.activity.HomeActivity;
+import com.cloudmachine.ui.home.contract.ExtrContract;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
@@ -31,6 +33,9 @@ import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.VersionU;
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.Date;
+import java.util.TimeZone;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -42,13 +47,7 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
 
     private Context mContext;
     private Handler mHandler;
-    private RadiusButtonView button1;
-    private TextView textView;
-    // private ImageView backImg;
     private boolean isAuto = false;
-    private FrameLayout mFeedback;
-    private boolean updateVersion = false;
-    private FrameLayout mUseHelp, mShareApp;
     private String downLoadLink;
 //    private Button envirBtn;
 
@@ -59,8 +58,27 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
         getIntentData();
         mContext = this;
         mHandler = new Handler(this);
-        textView = (TextView) findViewById(R.id.version);
-        textView.setText("V" + VersionU.getVersionName()+"("+VersionU.getVersionCode()+")");
+        TextView textView = (TextView) findViewById(R.id.version);
+
+        String reVersion = "";
+
+        if (BuildConfig.IS_REMOTE) {
+            if (BuildConfig.IS_ONLINE) {
+                reVersion = CommonUtils.getDateStamp();
+                if (reVersion != null && reVersion.length() > 2) {
+                    reVersion = reVersion.substring(2);
+                }
+            } else {
+                reVersion = "218";
+            }
+        } else {
+            if (BuildConfig.IS_INTERFACE) {
+                reVersion = "179";
+            } else {
+                reVersion = "109";
+            }
+        }
+        textView.setText("V" + VersionU.getVersionName() + "." + reVersion);
         initView();
         new GetVersionAsync(mContext, mHandler).execute();
     }
@@ -73,11 +91,11 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
 
     private void initView() {
 
-        mFeedback = (FrameLayout) findViewById(R.id.feedback_fl);
+        FrameLayout mFeedback = (FrameLayout) findViewById(R.id.feedback_fl);
         mFeedback.setOnClickListener(this);
-        mUseHelp = (FrameLayout) findViewById(R.id.use_help_fl);
+        FrameLayout mUseHelp = (FrameLayout) findViewById(R.id.use_help_fl);
         mUseHelp.setOnClickListener(this);
-        mShareApp = (FrameLayout) findViewById(R.id.shareapp_fl);
+        FrameLayout mShareApp = (FrameLayout) findViewById(R.id.shareapp_fl);
         mShareApp.setOnClickListener(this);
 
     }
@@ -93,7 +111,7 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
                     boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), vInfo.getVersion());
                     if (isUpdate) {
                         Constants.updateVersion(this, mHandler,
-                                vInfo.getMustUpdate(),vInfo.getMessage(),vInfo.getLink());
+                                vInfo.getMustUpdate(), vInfo.getMessage(), vInfo.getLink());
                     }
 
                 }
@@ -103,7 +121,7 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
                         getResources().getString(R.string.get_version_error));
                 break;
             case Constants.HANDLER_VERSIONDOWNLOAD:
-                downLoadLink=(String) msg.obj;
+                downLoadLink = (String) msg.obj;
                 PermissionsChecker checker = new PermissionsChecker(this);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     PermissionsActivity.startActivityForResult(this, HomeActivity.PEM_REQCODE_WRITESD,
@@ -149,14 +167,14 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.feedback_fl:
-                Bundle fBundle=new Bundle();
-                fBundle.putString(QuestionCommunityActivity.H5_URL,ApiConstants.AppFeedback);
+                Bundle fBundle = new Bundle();
+                fBundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppFeedback);
                 Constants.toActivity(AboutCloudActivity.this, QuestionCommunityActivity.class, fBundle);
                 break;
             case R.id.use_help_fl:
 //                Constants.toActivity(AboutCloudActivity.this, UseHelpActivity.class, null);
-                MobclickAgent.onEvent(this,MobEvent.TIME_H5_USE_HELP_PAGE);
-                Bundle bundle=new Bundle();
+                MobclickAgent.onEvent(this, MobEvent.TIME_H5_USE_HELP_PAGE);
+                Bundle bundle = new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppUseHelper);
                 Constants.toActivity(AboutCloudActivity.this, QuestionCommunityActivity.class, bundle);
                 break;
@@ -168,14 +186,18 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
 
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode==PermissionsActivity.PERMISSIONS_DENIED){
-            ToastUtils.showToast(this,"更新失败！！");
-            CommonUtils.showPermissionDialog(this,Constants.PermissionType.STORAGE);
-        }else{
-            Constants.versionDownload(this, downLoadLink);
+        if (requestCode == HomeActivity.PEM_REQCODE_WRITESD) {
+            if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                ToastUtils.showToast(this, "更新失败！！");
+                CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
+            } else {
+                Constants.versionDownload(this, downLoadLink);
+            }
+
         }
 
     }

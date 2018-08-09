@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
@@ -110,7 +111,9 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
         mapView.onCreate(savedInstanceState);// 此方法必须重写
         mAmap = mapView.getMap();
         mAmap.setOnMapLoadedListener(this);
-        mAmap.getUiSettings().setMyLocationButtonEnabled(false);
+        UiSettings us=mAmap.getUiSettings();
+        us.setMyLocationButtonEnabled(false);
+        us.setZoomControlsEnabled(false);
         getIntentData();
         initView();
         MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_HISTORYLOCUS);

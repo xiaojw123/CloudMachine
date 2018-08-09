@@ -17,6 +17,7 @@ import android.widget.PopupWindow;
 
 import com.cloudmachine.R;
 import com.cloudmachine.camera.CameraActivity;
+import com.cloudmachine.ui.home.contract.ExtrContract;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.PhotosGallery;
 
@@ -27,11 +28,11 @@ import com.cloudmachine.utils.PhotosGallery;
 public class PicPop extends PopupWindow implements View.OnClickListener{
     public static final int TYPE_CAMERA=0x11;
     public static final int TYPE_PICK=0x12;
-    private Context mContext;
     private OnPopUpdateListener mListener;
+    Button pickBtn;
+    View lineView;
     public PicPop(Context context){
         super(context);
-        mContext=context;
         View contentView= LayoutInflater.from(context).inflate(R.layout.pop_pic_layout,null);
         setContentView(contentView);
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -42,7 +43,8 @@ public class PicPop extends PopupWindow implements View.OnClickListener{
         setTouchable(true);
         setBackgroundDrawable(new ColorDrawable());
         Button shootBtn= (Button) contentView.findViewById(R.id.pop_shoot_btn);
-        Button pickBtn= (Button) contentView.findViewById(R.id.pop_pick_btn);
+        pickBtn= (Button) contentView.findViewById(R.id.pop_pick_btn);
+        lineView=contentView.findViewById(R.id.pop_pick_line);
         Button cancelBtn= (Button) contentView.findViewById(R.id.pop_cancel_btn);
         contentView.setOnClickListener(this);
         shootBtn.setOnClickListener(this);
@@ -51,6 +53,16 @@ public class PicPop extends PopupWindow implements View.OnClickListener{
     }
     public void setOnPopUpdateListener(OnPopUpdateListener listener){
         mListener=listener;
+    }
+
+    public void setPickEnable(boolean enable){
+        if (enable){
+            lineView.setVisibility(View.VISIBLE);
+            pickBtn.setVisibility(View.VISIBLE);
+        }else{
+            lineView.setVisibility(View.GONE);
+            pickBtn.setVisibility(View.GONE);
+        }
     }
 
     @Override

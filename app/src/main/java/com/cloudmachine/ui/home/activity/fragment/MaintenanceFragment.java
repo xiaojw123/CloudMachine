@@ -44,6 +44,7 @@ import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.ui.repair.activity.RepairFinishDetailActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.ToastUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -92,9 +93,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
         super.initView(savedInstanceState);
         setinfoWIndowHiden(false);
         initGeocoder();
-//        if (UserHelper.isLogin(getActivity())) {
-//            mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
-//        }
+        startlocaction(this);
     }
 
     @Override
@@ -117,7 +116,6 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     }
 
     private void loadData() {
-        startlocaction(this);
         if (UserHelper.isLogin(getActivity())) {
 //            mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
             mPresenter.getAllianceItemView(UserHelper.getMemberId(getActivity()));
@@ -290,6 +288,10 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
                 }
                 String flag = unfinishedBean.getFlag();
                 String status = statusTv.getText().toString();
+                if (OrderStatus.CLOSED.equals(status)) {
+                    ToastUtils.showToast(getActivity(), "工单已关闭");
+                    return;
+                }
                 if (unfinishedBean.isAlliance()) {
                     switch (unfinishedBean.getNstatus()) {
                         case "3"://待付款
@@ -308,7 +310,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
                     }
                 }
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("isAlliance",unfinishedBean.isAlliance());
+                bundle.putBoolean("isAlliance", unfinishedBean.isAlliance());
                 if (OrderStatus.EVALUATION.equals(status)) {
                     bundle.putString("orderNum", unfinishedBean.getOrderNum());
                     bundle.putString("tel", unfinishedBean.getVmacoptel());

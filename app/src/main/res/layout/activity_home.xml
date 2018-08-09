@@ -76,7 +76,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="设备"
-                    android:textColor="@color/cor8"
+                    android:textColor="@color/coupon_title_textcolor"
                     android:textSize="@dimen/siz3" />
 
 
@@ -84,11 +84,23 @@
                     android:id="@+id/home_title_maintenance"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/dimen_size_37"
+                    android:layout_marginLeft="@dimen/dimen_size_23"
                     android:gravity="center"
                     android:text="维修"
-                    android:textColor="@color/cor10"
-                    android:textSize="@dimen/siz3" />
+                    android:textColor="@color/coupon_title_textcolor"
+                    android:textSize="@dimen/siz3"
+                    />
+
+                <TextView
+                    android:id="@+id/home_title_clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dimen_size_23"
+                    android:gravity="center"
+                    android:text="机手"
+                    android:textColor="@color/coupon_title_textcolor"
+                    android:textSize="@dimen/siz3"
+                    />
 
             </LinearLayout>
 

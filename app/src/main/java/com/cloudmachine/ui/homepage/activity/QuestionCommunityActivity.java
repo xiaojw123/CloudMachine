@@ -51,6 +51,7 @@ import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.QiniuManager;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.ui.home.activity.AuthPersonalInfoActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.model.JsBody;
 import com.cloudmachine.ui.home.model.JsInteface;
@@ -69,6 +70,7 @@ import com.cloudmachine.utils.PhotosGallery;
 import com.cloudmachine.utils.ShareDialog;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
+import com.cloudmachine.utils.URLs;
 import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.utils.VersionU;
 import com.cloudmachine.widget.CommonTitleView;
@@ -94,6 +96,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.tongdun.android.liveness.LivenessDetectActivity;
 import id.zelory.compressor.Compressor;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -117,7 +120,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private static final int REQUEST_PICTURE_CUT = 0x003;  //剪裁图片
     private static final int REQUEST_PERMISSION = 0x004;  //权限请求
     private static final int REQUEST_PERMISSION_PICK = 0x005;  //权限请求
-    private static final int FLUSH_PAGE = 0x1330;
+    public static final int FLUSH_PAGE = 0x1330;
+    public static final int UPDATE_TIKCET = 0x110;
     private static final String PARAMS_KEY_MYID = "myid";
     public static final String PARAMS_KEY_MEMBERID = "memberId";
     public static final String PARAMS_KEY_VERSION = "appVersion";
@@ -259,8 +263,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         AppLog.print("Common H5 URL__" + mUrl);
     }
 
-    private void loadWebUrl(String url){
-            mWebView.loadUrl(CommonUtils.fillParams(url,PARAMS_KEY_VERSION,VersionU.getVersionName()));
+    private void loadWebUrl(String url) {
+        mWebView.loadUrl(CommonUtils.fillParams(url, PARAMS_KEY_VERSION, VersionU.getVersionName()));
     }
 
     private View.OnLongClickListener lcl = new View.OnLongClickListener() {
@@ -538,14 +542,6 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     scanQRCode();
                 }
                 break;
-
-            case HomeActivity.PEM_REQCODE_WRITESD:
-                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
-                } else {
-                    clearWebCahe();
-                }
-                break;
             case Constants.REQUEST_ToSearchActivity:
                 if (data != null) {
                     Bundle bundle = data.getExtras();
@@ -603,6 +599,27 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                             REQUEST_PICK_IMAGE);
                 }
                 break;
+            default:
+                switch (resultCode) {
+                    case UPDATE_TIKCET:
+                        loadUrl();
+                        break;
+                    case LivenessDetectActivity.RESULT_FACE_SUCCESS:
+                        if (!TextUtils.isEmpty(faceCallBack)){
+//                          String jsMethod;
+//                            if (faceCallBack.contains("()")){
+//                                int index=faceCallBack.indexOf("()");
+//                                StringBuffer sb=new StringBuffer(faceCallBack);
+//                                sb.insert(index+1,"1");
+//                                jsMethod=sb.toString();
+//                            }else{
+//                                jsMethod=faceCallBack+"(1)";
+//                            }
+                            Constants.callJsMethod(mWebView, faceCallBack);
+                        }
+                        break;
+                }
+                break;
 
         }
 
@@ -641,13 +658,15 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
     //补充URL参数
     public void fillParams(String key, Long value) {
-        if (!mUrl.contains(key)) {
-            if (mUrl.contains("?")) {
-                mUrl += "&";
-            } else {
-                mUrl += "?";
+        if (value != null) {
+            if (!mUrl.contains(key)) {
+                if (mUrl.contains("?")) {
+                    mUrl += "&";
+                } else {
+                    mUrl += "?";
+                }
+                mUrl += key + "=" + value;
             }
-            mUrl += key + "=" + value;
         }
     }
 
@@ -987,6 +1006,17 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                         }
                     }
                     break;
+                case Constants.HANDLER_FACE_RECOGNITION:
+                    faceCallBack= (String) msg.obj;
+                    if (mPermissionsCheck.lacksPermissions(Constants.PERMISSIONS_CAMER_SD)) {
+                        PermissionsActivity.startActivityForResult(QuestionCommunityActivity.this, REQ_GO_FACE, Constants.PERMISSIONS_CAMER_SD);
+                    } else {
+                        Bundle faceData = new Bundle();
+                        faceData.putString(LivenessDetectActivity.URL_CONTRASTFACE, URLs.FACE_URL);
+                        faceData.putLong(LivenessDetectActivity.MEMBER_ID, UserHelper.getMemberId(mContext));
+                        Constants.toActivityForR(QuestionCommunityActivity.this, LivenessDetectActivity.class, faceData);
+                    }
+                    break;
             }
         }
 
@@ -1031,37 +1061,8 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private String rightEvent;
     private int isImg;
     private String shareImgUrl;
+    private String faceCallBack;
 
-    public void clearWebCahe() {
-        // 清除cookie即可彻底清除缓存
-        CookieSyncManager.createInstance(mContext);
-        CookieManager.getInstance().removeAllCookie();
-        // WebView 缓存文件
-        File appCacheDir = new File(mContext.getCacheDir().getAbsolutePath() + "/webviewCache");
-
-        if (appCacheDir.exists()) {
-            deleteFile(appCacheDir);
-        }
-    }
-
-    /**
-     * 递归删除 文件/文件夹
-     *
-     * @param file
-     */
-    public void deleteFile(File file) {
-        if (file.exists()) {
-            if (file.isFile()) {
-                file.delete();
-            } else if (file.isDirectory()) {
-                File files[] = file.listFiles();
-                for (int i = 0; i < files.length; i++) {
-                    deleteFile(files[i]);
-                }
-            }
-            file.delete();
-        }
-    }
 
     public void gotoScanCode() {
         if (mPermissionsCheck.lacksPermissions(Manifest.permission.CAMERA)) {
@@ -1097,7 +1098,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
         return canUse;
     }
 
-    public void clearWebViewCache(){
+    public void clearWebViewCache() {
         mWebView.clearHistory();
     }
 }

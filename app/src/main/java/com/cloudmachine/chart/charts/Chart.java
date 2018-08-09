@@ -21,6 +21,7 @@ import android.provider.MediaStore.Images;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -43,6 +44,7 @@ import com.cloudmachine.chart.listener.OnChartGestureListener;
 import com.cloudmachine.chart.listener.OnChartValueSelectedListener;
 import com.cloudmachine.chart.renderer.DataRenderer;
 import com.cloudmachine.chart.renderer.LegendRenderer;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.chart.utils.Utils;
 import com.cloudmachine.chart.utils.ViewPortHandler;
 
@@ -152,7 +154,8 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
     /**
      * text that is displayed when the chart is empty
      */
-    private String mNoDataText = "未获取到油耗历史数据";
+//    private String mNoDataText = "未获取到油耗历史数据";
+    private String mNoDataText = "";
 
     /**
      * Gesture listener for custom callbacks when making gestures on the chart.
@@ -562,8 +565,7 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
      *
      * @param high
      */
-    public void highlightTouch(Highlight high) {
-
+    public void highlightTouch(Highlight high, MotionEvent event) {
         Entry e = null;
 
         if (high == null)
@@ -585,13 +587,15 @@ public abstract class Chart<T extends ChartData<? extends DataSet<? extends Entr
             }
         }
 
+
         if (mSelectionListener != null) {
+
 
             if (!valuesToHighlight())
                 mSelectionListener.onNothingSelected();
             else {
                 // notify the listener
-                mSelectionListener.onValueSelected(e, high.getDataSetIndex(), high);
+                mSelectionListener.onValueSelected(e, high.getDataSetIndex(), high,event);
             }
         }
         // redraw the chart

@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 public class OperatePresenter extends OperateContact.Presenter {
     @Override
     public void getVerifyCode(long memberId, String taskId) {
-        mRxManage.add(mModel.getVerifyCode(memberId,taskId).subscribe(new RxSubscriber<String>(mContext) {
+        mRxManage.add(mModel.getVerifyCode(memberId, taskId).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
                 mView.returnVerfiyCode();
@@ -24,7 +24,7 @@ public class OperatePresenter extends OperateContact.Presenter {
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.showToast(mContext,message);
+                ToastUtils.showToast(mContext, message);
 
             }
         }));
@@ -32,7 +32,7 @@ public class OperatePresenter extends OperateContact.Presenter {
 
     @Override
     public void checkVerifyCode(long memberId, String taskId, String smsCode) {
-        mRxManage.add(mModel.checkVerifyCode(memberId,taskId,smsCode).subscribe(new RxSubscriber<String>(mContext) {
+        mRxManage.add(mModel.checkVerifyCode(memberId, taskId, smsCode).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
                 mView.checkVertifyCodeSuccess(s);
@@ -40,7 +40,7 @@ public class OperatePresenter extends OperateContact.Presenter {
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.showToast(mContext,message);
+                ToastUtils.showToast(mContext, message);
             }
         }));
 
@@ -48,18 +48,20 @@ public class OperatePresenter extends OperateContact.Presenter {
 
     @Override
     public void authOperator(long memberId, String servicePwd) {
-        mRxManage.add(mModel.authOperator(memberId,servicePwd).subscribe(new RxSubscriber<JsonObject>(mContext) {
+        mRxManage.add(mModel.authOperator(memberId, servicePwd).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
             protected void _onNext(JsonObject jsonObject) {
-                AppLog.print("authResult___result:"+jsonObject.toString());
-                String taskId=jsonObject.get("taskId").getAsString();
-                int authStatus=jsonObject.get("authStatus").getAsInt();
-                mView.returnAuthOperator(taskId,authStatus==1);
+                if (!jsonObject.isJsonNull()) {
+                    AppLog.print("authResult___result:" + jsonObject.toString());
+                    String taskId = jsonObject.get("taskId").getAsString();
+                    int authStatus = jsonObject.get("authStatus").getAsInt();
+                    mView.returnAuthOperator(taskId, authStatus == 1);
+                }
             }
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.showToast(mContext,message);
+                ToastUtils.showToast(mContext, message);
 
             }
         }));

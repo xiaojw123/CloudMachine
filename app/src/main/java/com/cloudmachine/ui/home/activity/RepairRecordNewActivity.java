@@ -26,6 +26,7 @@ import com.cloudmachine.ui.home.presenter.RepairHistoryPresenter;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.ui.repair.activity.RepairFinishDetailActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.XListView;
 import com.umeng.analytics.MobclickAgent;
 
@@ -134,6 +135,10 @@ public class RepairRecordNewActivity extends BaseAutoLayoutActivity<RepairHistor
         String orderStatus = (String) view.getTag(R.id.order_status);
         RepairHistoryInfo info = (RepairHistoryInfo) view.getTag(R.id.order_item);
         if (info == null) {
+            return;
+        }
+        if (OrderStatus.CLOSED.equals(orderStatus)){
+            ToastUtils.showToast(this,"工单已关闭");
             return;
         }
         String orderNum = info.getOrderNum();

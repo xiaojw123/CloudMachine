@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.cloudmachine.ui.home.activity.IncomeProofActivity">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/income_proof_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/public_bg"
+        />
+
+    <TextView
+        android:id="@+id/income_proof_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/public_bg"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/dimen_size_8"
+        android:paddingLeft="@dimen/pad2"
+        android:paddingTop="@dimen/dimen_size_8"
+        android:textColor="@color/cor10"
+        android:textSize="@dimen/text_size_13_sp" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/income_proof_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/pad1"
+        android:layout_marginRight="@dimen/pad1"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:overScrollMode="never" />
+
+    <com.cloudmachine.autolayout.widgets.RadiusButtonView
+        android:id="@+id/income_proof_submit"
+        style="@style/RadiusButtonStyle"
+        android:layout_below="@+id/item_layout_container"
+        android:layout_marginTop="@dimen/dimen_size_8"
+        app:rbtn_fillColor_dw="@color/cor5"
+        app:rbtn_fillColor_nm="@color/cor5"
+        app:rbtn_strokeColor="@color/cor5"
+        app:rbtn_text="@string/submit"
+        app:rbtn_textColor="@color/cor2015"
+        app:rbtn_textSize="@dimen/siz3" />
+
+
+</LinearLayout>

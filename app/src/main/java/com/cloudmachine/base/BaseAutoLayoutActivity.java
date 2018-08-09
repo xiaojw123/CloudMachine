@@ -14,12 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
+import com.cloudmachine.activities.PermissionsActivity;
+import com.cloudmachine.adapter.PhotoAdapter;
 import com.cloudmachine.autolayout.AutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxManager;
@@ -43,11 +47,19 @@ import com.umeng.socialize.UMShareAPI;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import me.iwf.photopicker.PhotoPicker;
+import rx.functions.Action1;
+
 public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends BaseModel> extends AutoLayoutActivity {
+    public static final int REQ_CLEAR_WEBCACHE = 0x91;
+    public static final int REQ_PIC_CAMERA = 0x92;
+    public static final int REQ_GO_FACE = 0x93;
     PopupWindow depositPayPop, mAdPop;
     public RxManager mRxManager;
     public T mPresenter;
@@ -81,6 +93,20 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         this.initPresenter();
         AppManager.getAppManager().addActivity(this);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    protected  void registerObserverEvent(String eventName) {
+        mRxManager.on(eventName, new Action1<Object>() {
+            @Override
+            public void call(Object result) {
+                resultCallBack(result);
+            }
+        });
+
+    }
+
+    protected  void resultCallBack(Object result) {
+
     }
 
     protected String getPageType() {
@@ -309,12 +335,12 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     @Override
     protected void onStop() {
         super.onStop();
-        AppLog.print("BaseAct onStop__"+isForbidenAd);
+        AppLog.print("BaseAct onStop__" + isForbidenAd);
         if (!isForbidenAd) {
             topAct = CustomActivityManager.getInstance().getTopActivity();
-        }else{
-            isForbidenAd=false;
-            topAct=null;
+        } else {
+            isForbidenAd = false;
+            topAct = null;
         }
 
     }
@@ -374,7 +400,20 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQ_CLEAR_WEBCACHE://清理H5缓存
+                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
+                } else {
+                    clearWebCahe();
+                }
+                break;
+
+
+        }
+
     }
+
 
     // TODO: 2017/12/18 全屏广告页
     public void showAdPop(String adLink, final String openLink) {
@@ -472,6 +511,43 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     public void closeAdPop() {
         if (mAdPop != null && mAdPop.isShowing()) {
             mAdPop.dismiss();
+        }
+    }
+
+
+    public void clearWebCahe() {
+        AppLog.print("clear webview cache data__");
+        try {
+            // 清除cookie即可彻底清除缓存
+            CookieSyncManager.createInstance(mContext);
+            CookieManager.getInstance().removeAllCookie();
+            // WebView 缓存文件
+            File appCacheDir = new File(mContext.getCacheDir().getAbsolutePath() + "/webviewCache");
+
+            if (appCacheDir.exists()) {
+                deleteFile(appCacheDir);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 递归删除 文件/文件夹
+     *
+     * @param file
+     */
+    public void deleteFile(File file) {
+        if (file.exists()) {
+            if (file.isFile()) {
+                file.delete();
+            } else if (file.isDirectory()) {
+                File files[] = file.listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    deleteFile(files[i]);
+                }
+            }
+            file.delete();
         }
     }
 

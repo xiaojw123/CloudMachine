@@ -592,7 +592,12 @@
         <activity android:name=".ui.home.activity.ContactActivity" />
         <activity android:name=".ui.home.activity.OperateActivity" />
         <activity android:name=".ui.home.activity.AddressBookActivity" />
-        <activity android:name=".ui.home.activity.RelationActivity"></activity>
+        <activity android:name=".ui.home.activity.RelationActivity" />
+        <activity android:name=".ui.home.activity.InfoAuthActivity" />
+        <activity android:name=".ui.home.activity.IdCardHandActivity" />
+        <activity android:name=".ui.home.activity.PicPreviewActivity" />
+        <activity android:name=".ui.home.activity.IncomeProofActivity" />
+        <activity android:name=".ui.home.activity.MachineOwnershipActivity"></activity>
     </application>
 
 </manifest>
