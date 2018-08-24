@@ -6,6 +6,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.BaseRecyclerAdapter;
@@ -19,6 +20,7 @@ import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class MachineOwnershipActivity extends BaseAutoLayoutActivity implements 
 
     RecyclerView mRecyclerView;
     MachineListAdapter mAdapter;
+    TextView mEmptyTv;
     String uniqueNo;
 
     @Override
@@ -38,8 +41,9 @@ public class MachineOwnershipActivity extends BaseAutoLayoutActivity implements 
     }
 
     private void initView() {
-        uniqueNo=getIntent().getStringExtra(Constants.UNIQUEID);
+        uniqueNo = getIntent().getStringExtra(Constants.UNIQUEID);
         mRecyclerView = (RecyclerView) findViewById(R.id.machine_owership_rlv);
+        mEmptyTv = (TextView) findViewById(R.id.machine_owership_empty);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new LineItemDecoration(this));
     }
@@ -54,18 +58,26 @@ public class MachineOwnershipActivity extends BaseAutoLayoutActivity implements 
         mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getDeviceAuthList(UserHelper.getMemberId(this)).compose(RxHelper.<List<DeviceAuthItem>>handleResult()).subscribe(new RxSubscriber<List<DeviceAuthItem>>(mContext) {
             @Override
             protected void _onNext(List<DeviceAuthItem> deviceAuthItems) {
-                if (mAdapter == null) {
-                    mAdapter = new MachineListAdapter(mContext, deviceAuthItems);
-                    mAdapter.setOnItemClickListener(MachineOwnershipActivity.this);
-                    mRecyclerView.setAdapter(mAdapter);
+                if (deviceAuthItems != null && deviceAuthItems.size() > 0) {
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mEmptyTv.setVisibility(View.GONE);
+                    if (mAdapter == null) {
+                        mAdapter = new MachineListAdapter(mContext, deviceAuthItems);
+                        mAdapter.setOnItemClickListener(MachineOwnershipActivity.this);
+                        mRecyclerView.setAdapter(mAdapter);
+                    } else {
+                        mAdapter.updateItems(deviceAuthItems);
+                    }
                 } else {
-                    mAdapter.updateItems(deviceAuthItems);
+                    mRecyclerView.setVisibility(View.GONE);
+                    mEmptyTv.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             protected void _onError(String message) {
-
+                mRecyclerView.setVisibility(View.GONE);
+                mEmptyTv.setVisibility(View.VISIBLE);
             }
         }));
     }
@@ -82,7 +94,7 @@ public class MachineOwnershipActivity extends BaseAutoLayoutActivity implements 
             DeviceAuthItem bean = (DeviceAuthItem) obj;
             if (bean.getAuditStatus() == 0) {
                 Bundle bundle = new Bundle();
-                bundle.putString(Constants.UNIQUEID,uniqueNo);
+                bundle.putString(Constants.UNIQUEID, uniqueNo);
                 bundle.putInt(Constants.DEVICE_ID, bean.getDeviceId());
                 bundle.putString(Constants.DEVICE_NAME, bean.getBrand());
                 bundle.putString(Constants.PAGET_TYPE, IncomeProofActivity.MACHINE_OWERSHIP);

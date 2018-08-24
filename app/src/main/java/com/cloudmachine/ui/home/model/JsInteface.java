@@ -14,6 +14,7 @@ import com.alipay.sdk.app.PayTask;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.SearchPoiActivity;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.Member;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
@@ -23,6 +24,7 @@ import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.activity.InfoAuthActivity;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.URLs;
@@ -40,6 +42,8 @@ import java.util.Map;
 
 import cn.tongdun.android.liveness.LivenessDetectActivity;
 
+import static com.cloudmachine.MyApplication.mContext;
+
 /**
  * Created by xiaojw on 2017/7/24.
  */
@@ -53,6 +57,7 @@ public class JsInteface {
     private static final String CLICK_REPAIR = "click_repair()";
     private static final String Go_Scan_Code = "goScan()";
     private static final String FACERECOGNITION_EVENT = "faceRecognition_event";
+    private static final String PUSH_NEW_WEB = "push_new_web";
     public static final String ALERT_TYPE = "alert_type";
     public static final String ALERT_TIPS = "alert_tips";
     public static final String ALERT_EVENT = "alert_event";
@@ -120,10 +125,11 @@ public class JsInteface {
     @JavascriptInterface
     public void gotoInfoAuth(int status) {
         AppLog.print("gotoInfoAuth___" + status);
-        if (status == 5) {
-            Constants.toActivityForR((Activity) mContext, AuthPersonalInfoActivity.class, null);
-        } else {
+        Member member = MemeberKeeper.getOauth(mContext);
+        if (member != null && member.isAuth()) {
             Constants.toActivityForR((Activity) mContext, InfoAuthActivity.class, null);
+        } else {
+            Constants.toActivityForR((Activity) mContext, AuthPersonalInfoActivity.class, null);
         }
     }
 
@@ -216,10 +222,17 @@ public class JsInteface {
             return;
         }
         JSONObject jobj = new JSONObject(jsonStr);
-        if (jobj.has(FACERECOGNITION_EVENT)) {
-            Message msg=mHandler.obtainMessage();
-            msg.obj=jobj.optString(FACERECOGNITION_EVENT);
-            msg.what=Constants.HANDLER_FACE_RECOGNITION;
+        if (jobj.has(PUSH_NEW_WEB)) {
+            String url = jobj.optString(PUSH_NEW_WEB);
+            if (!TextUtils.isEmpty(url)) {
+                Bundle newWebData = new Bundle();
+                newWebData.putString(QuestionCommunityActivity.H5_URL, url);
+                Constants.toActivityForR((Activity) mContext, QuestionCommunityActivity.class, newWebData);
+            }
+        } else if (jobj.has(FACERECOGNITION_EVENT)) {
+            Message msg = mHandler.obtainMessage();
+            msg.obj = jobj.optString(FACERECOGNITION_EVENT);
+            msg.what = Constants.HANDLER_FACE_RECOGNITION;
             mHandler.sendMessage(msg);
         } else if (jobj.has(ALERT_TYPE)) {
             Message msg = mHandler.obtainMessage();

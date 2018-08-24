@@ -29,6 +29,10 @@ public class PurseModel implements PurseContract.Model{
         return Api.getDefault(HostType.HOST_CLOUDM).getAvalidCouponList(memberid).compose(RxHelper.<CouponBean>handleResult());
     }
 
+    @Override
+    public Observable<Member> getMemberInfo(long memberid) {
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getMemberInfoById(memberid).compose(RxHelper.<Member>handleResult());
+    }
 
 
 }

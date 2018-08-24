@@ -2,6 +2,7 @@ package com.cloudmachine.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * Created by xiaojw on 2017/12/19.
@@ -28,6 +29,9 @@ public class MenuBean implements Parcelable {
     private int id;
 
     public String getMenuLink() {
+        if (!TextUtils.isEmpty(menuLink)) {
+            return menuLink.trim();
+        }
         return menuLink;
     }
 

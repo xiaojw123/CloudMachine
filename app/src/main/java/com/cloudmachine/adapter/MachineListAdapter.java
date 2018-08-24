@@ -55,6 +55,7 @@ public class MachineListAdapter extends BaseRecyclerAdapter<DeviceAuthItem> {
                 Drawable rightDrawable = mContext.getResources().getDrawable(R.drawable.arrow_right);
                 rightDrawable.setBounds(0, 0, rightDrawable.getIntrinsicWidth(), rightDrawable.getIntrinsicHeight());
                 statusTv.setCompoundDrawables(null, null, rightDrawable, null);
+                statusTv.setCompoundDrawablePadding((int) mContext.getResources().getDimension(R.dimen.pad1));
             } else {
                 if (authStatus == 1) {
                     statusTv.setTextColor(mContext.getResources().getColor(R.color.c_ff8901));
@@ -62,6 +63,7 @@ public class MachineListAdapter extends BaseRecyclerAdapter<DeviceAuthItem> {
                     statusTv.setTextColor(mContext.getResources().getColor(R.color.cor20));
                 }
                 statusTv.setCompoundDrawables(null, null, null, null);
+                statusTv.setCompoundDrawablePadding(0);
             }
             statusTv.setText(item.getAuditStatusTxt());
 

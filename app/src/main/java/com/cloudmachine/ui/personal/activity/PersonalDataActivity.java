@@ -115,10 +115,6 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     ImageView mArrowTip1;
     @BindView(R.id.my_qrcode)
     RelativeLayout myQrCodeRl;
-    @BindView(R.id.my_certification)
-    RelativeLayout certificateRl;
-    @BindView(R.id.my_identy_tv)
-    TextView identyTv;
 
 
 
@@ -152,7 +148,6 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     private String mUrl;
     private boolean syncWx = false;
     private Member memberInfo;
-    private boolean isIdentify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +173,6 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
             mNickName = memberInfo.getNickname();
             mWecharNickname = memberInfo.getWecharNickname();
             mWecharLogo = memberInfo.getWecharLogo();
-            isIdentify=memberInfo.isIdentify();
         }
     }
 
@@ -219,8 +213,6 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         if (!TextUtils.isEmpty(mNickName)) {
             mNicknameTv.setText(mNickName);
         }
-        String text=isIdentify?"已认证":"未认证";
-        identyTv.setText(text);
     }
 
     private void initPermissionChecker() {
@@ -234,7 +226,6 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         mNickLayout.setOnClickListener(this);
         mMyPwd.setOnClickListener(this);
         myQrCodeRl.setOnClickListener(this);
-        certificateRl.setOnClickListener(this);
     }
 
     @Override
@@ -245,9 +236,6 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.my_certification://身份认证
-                Constants.toActivity(this, InfoManagerActivity.class,null);
-                break;
             case R.id.my_qrcode:
                 Constants.toActivity(this, MyQRCodeActivity.class, null);
                 break;

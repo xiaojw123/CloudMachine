@@ -1,6 +1,7 @@
 package com.cloudmachine.ui.home.activity.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,10 +13,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -25,6 +28,7 @@ import android.widget.Toast;
 import com.cloudmachine.R;
 import com.cloudmachine.alipay.PayResult;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
+import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
@@ -45,6 +49,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.Map;
 
+import static com.cloudmachine.MyApplication.mContext;
+
 /**
  * Created by xiaojw on 2017/12/19.
  */
@@ -55,7 +61,6 @@ public class WebFragment extends BaseFragment {
     WebView mWebView;
     ProgressBar mProgressBar;
     String mAlertType;
-    private static final int FLUSH_PAGE = 0x1330;
     private static final int REQUEST_PERMISSION = 0x004;  //权限请求
     private static final int REQUEST_PERMISSION_PICK = 0x005;  //权限请求
     private static final int REQUEST_PICK_IMAGE = 0x001; //相册选取
@@ -65,6 +70,7 @@ public class WebFragment extends BaseFragment {
     private PermissionsChecker mPermissionsCheck;
     private Uri imageUri;
     public static final String PARAMS_KEY_MEMBERID = "memberId";
+    private long lastMemberId = -1;
 
     public WebFragment(String url) {
         mUrl = url;
@@ -97,6 +103,7 @@ public class WebFragment extends BaseFragment {
     }
 
     private class H5WebClient extends WebViewClient {
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             AppLog.print("H5 shouldLoadUrl___" + url);
@@ -105,6 +112,7 @@ public class WebFragment extends BaseFragment {
             }
             return false;
         }
+
     }
 
 //
@@ -117,36 +125,46 @@ public class WebFragment extends BaseFragment {
 //    }
 
     private void loadWebUrl() {
-        mWebView.loadUrl(CommonUtils.fillParams(mUrl, QuestionCommunityActivity.PARAMS_KEY_VERSION, VersionU.getVersionName()));
+        String webUrl=CommonUtils.fillParams(mUrl, QuestionCommunityActivity.PARAMS_KEY_VERSION, VersionU.getVersionName());
+        mWebView.loadUrl(webUrl);
+        AppLog.print("loadWebUrl____"+webUrl);
     }
 
     public void loadUrl() {
         if (!TextUtils.isEmpty(mUrl)) {
             if (UserHelper.isLogin(getActivity())) {
-                fillParams(PARAMS_KEY_MEMBERID, UserHelper.getMemberId(getActivity()));
-            } else {//http:xxx/xx?memberid=110   http:xx/xx?page=1&memberId=110
-                if (mUrl.contains(PARAMS_KEY_MEMBERID)) {
-                    int index = mUrl.indexOf(PARAMS_KEY_MEMBERID);
-                    char c = mUrl.charAt(index - 1);
-                    int nextIndex = mUrl.indexOf("&", index);
-                    int startIndex, endIndex;
-                    if (c == '&') {
-                        startIndex = index - 1;
-                    } else {
-                        startIndex=index;
-                    }
-                    if (nextIndex == -1) {
-                        endIndex = mUrl.length();
-                    } else {
-                        endIndex = c == '?' ? nextIndex + 1 : nextIndex;
-                    }
-                    mUrl = mUrl.replaceAll(mUrl.substring(startIndex, endIndex), "");
+                long memeberId = UserHelper.getMemberId(getActivity());
+                if (lastMemberId != -1 && lastMemberId != memeberId) {
+                    resetUrl();
                 }
+                fillParams(PARAMS_KEY_MEMBERID, memeberId);
+                lastMemberId = memeberId;
+            } else {//http:xxx/xx?memberid=110   http:xx/xx?page=1&memberId=110
+                resetUrl();
             }
             loadWebUrl();
         }
     }
 
+    private void resetUrl() {
+        if (mUrl.contains(PARAMS_KEY_MEMBERID)) {
+            int index = mUrl.indexOf(PARAMS_KEY_MEMBERID);
+            char c = mUrl.charAt(index - 1);
+            int nextIndex = mUrl.indexOf("&", index);
+            int startIndex, endIndex;
+            if (c == '&') {
+                startIndex = index - 1;
+            } else {
+                startIndex = index;
+            }
+            if (nextIndex == -1) {
+                endIndex = mUrl.length();
+            } else {
+                endIndex = c == '?' ? nextIndex + 1 : nextIndex;
+            }
+            mUrl = mUrl.replaceAll(mUrl.substring(startIndex, endIndex), "");
+        }
+    }
 
 
     //需要申请的权限数组
@@ -313,7 +331,7 @@ public class WebFragment extends BaseFragment {
                     if (JsInteface.Go_Login_Page.equals(methodStr)) {
                         Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
                         loginIntent.putExtra("flag", 4);
-                        startActivityForResult(loginIntent, FLUSH_PAGE);
+                        startActivity(loginIntent);
                     }
                     break;
             }
@@ -389,15 +407,15 @@ public class WebFragment extends BaseFragment {
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case FLUSH_PAGE:
-                loadUrl();
-                break;
-        }
-
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        switch (requestCode) {
+//            case FLUSH_PAGE:
+//                loadUrl();
+//                break;
+//        }
+//
+//    }
 }
 

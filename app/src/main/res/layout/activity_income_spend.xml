@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_40"
         android:layout_below="@+id/inspend_title_tv"
+        android:layout_marginTop="-4dp"
         >
         <TextView
             android:id="@+id/inspend_income_tv"

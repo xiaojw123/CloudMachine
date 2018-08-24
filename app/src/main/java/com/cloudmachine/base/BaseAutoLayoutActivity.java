@@ -6,9 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +52,11 @@ import com.umeng.socialize.UMShareAPI;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,6 +67,9 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     public static final int REQ_CLEAR_WEBCACHE = 0x91;
     public static final int REQ_PIC_CAMERA = 0x92;
     public static final int REQ_GO_FACE = 0x93;
+    public static final int REQ_CAMERA_PROOF = 0X94;
+    public static final int RES_UPDATE_TIKCET = 0x110;
+    public static final int RES_LOGIN_SUCCESS=0x96;
     PopupWindow depositPayPop, mAdPop;
     public RxManager mRxManager;
     public T mPresenter;
@@ -70,6 +80,8 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     private TextView mTimerTv;
     private int timeCount;
     public boolean isForbidenAd;
+    protected String cmFilePath;
+    protected int mActionType;
 
 
     private Activity topAct;
@@ -95,7 +107,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    protected  void registerObserverEvent(String eventName) {
+    protected void registerObserverEvent(String eventName) {
         mRxManager.on(eventName, new Action1<Object>() {
             @Override
             public void call(Object result) {
@@ -105,7 +117,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 
     }
 
-    protected  void resultCallBack(Object result) {
+    protected void resultCallBack(Object result) {
 
     }
 
@@ -349,6 +361,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     protected void onDestroy() {
         // TODO Auto-generated method stub
         closeAdPop();
+        mContext=null;
         super.onDestroy();
         AppLog.print("BaseAct onDestroy__");
         if (mPresenter != null)
@@ -552,6 +565,45 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     }
 
 
+    protected void startCamera() {
+        Intent tpIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (tpIntent.resolveActivity(mContext.getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File file = createImageFile();
+            if (file != null) {
+                cmFilePath = file.getAbsolutePath();
+                Uri photoFile;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    String authority = mContext.getApplicationInfo().packageName + ".fileprovider";
+                    photoFile = FileProvider.getUriForFile(this.mContext.getApplicationContext(), authority, file);
+                } else {
+                    photoFile = Uri.fromFile(file);
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    tpIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoFile);
+                }
+            } else {
+                cmFilePath = null;
+            }
+        }
+        startActivityForResult(tpIntent, REQ_CAMERA_PROOF);
+    }
+
+    private File createImageFile() {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdir()) {
+                return null;
+            }
+        }
+        return new File(storageDir, imageFileName);
+    }
+
 }
 
 
@@ -581,36 +633,3 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 
 
 
-
-/*Set<Map.Entry<String, String>> stru1Entry = UMListUtil.stru1Map.entrySet();
-        Set<Map.Entry<String, String>> stru2Entry = UMListUtil.stru2Map.entrySet();*//*
-
-for (int i = 0 ;i < mActivityStack.size();i++) {
-		for (Map.Entry<String, String> stru1entry : stru1Entry) {
-		if (mActivityStack.get(i).getClass().getSimpleName().equals(stru1entry.getKey())) {
-		UMListUtil.stru1.add(stru1entry.getValue());
-		}
-		}
-		for (Map.Entry<String, String> stru2entry : stru2Entry
-		) {
-		if (mActivityStack.get(i).getClass().getSimpleName().equals(stru2entry.getKey())) {
-		UMListUtil.stru2.add(stru2entry.getValue());
-		}
-		}
-		}
-		MobclickAgent.onEvent(this,UMListUtil.stru1,1,"");
-		MobclickAgent.onEvent(this,UMListUtil.stru2,1,"");*/
-
-
-/*
-
-Constants.MyLog(getClass().getSimpleName());
-		Constants.MyLog("获取到信息");
-		mCustomMap = UMListUtil.customMap;
-		Set<Map.Entry<String, String>> entrySet = mCustomMap.entrySet();
-		for (Map.Entry<String,String> entry: entrySet
-		) {
-		if (entry.getKey().equals(getClass().getSimpleName())) {
-		MobclickAgent.onPageStart(entry.getValue());
-		}
-		}*/

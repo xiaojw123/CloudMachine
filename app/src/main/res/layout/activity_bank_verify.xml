@@ -21,6 +21,7 @@
             android:id="@+id/bank_describe_tv"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dimen_size_30"
+            android:layout_marginTop="-4dp"
             android:layout_marginLeft="@dimen/pad2"
             android:gravity="center_vertical"
             android:text="请输入持卡人信息"
@@ -98,5 +99,4 @@
 
     </LinearLayout>
 
-    <include layout="@layout/security_info_state" />
 </merge>

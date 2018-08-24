@@ -14,12 +14,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.zip.GZIPOutputStream;
 
 import cn.tongdun.android.liveness.view_controller.LivenessDetectionMainActivity;
 
@@ -28,13 +32,14 @@ import cn.tongdun.android.liveness.view_controller.LivenessDetectionMainActivity
  * 样例活体检测Activity
  */
 public class LivenessDetectActivity extends LivenessDetectionMainActivity {
-    public static final int RESULT_FACE_SUCCESS=0x006;
+    public static final int RESULT_FACE_SUCCESS = 0x006;
     public static final String URL_CONTRASTFACE = "url_contrastface";
     public static final String MEMBER_ID = "memberId";
     public static final String TAG = LivenessDetectActivity.class.getSimpleName();
     private String faceContrastUrl;
     private long memberId;
     String base64Data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // 如果有设置全局包名的需要, 在这里进行设置
@@ -54,7 +59,7 @@ public class LivenessDetectActivity extends LivenessDetectionMainActivity {
     @Override
     public void onInitializeFail(Throwable e) {
         super.onInitializeFail(e);
-        Log.d("face","init failed____error:"+e);
+        Log.d("face", "init failed____error:" + e);
         Toast.makeText(this, "无法初始化活体检测", Toast.LENGTH_LONG).show();
     }
 
@@ -74,28 +79,30 @@ public class LivenessDetectActivity extends LivenessDetectionMainActivity {
 //                handleLivenessFinish(true);
 //            }
 //        }, 2000);
-        base64Data = Base64.encodeToString(livenessDetectionFrames.verificationPackageWithFanpaiFull, Base64.NO_WRAP);
+        base64Data = Base64.encodeToString(livenessDetectionFrames.verificationPackageFull, Base64.NO_WRAP);
         new FaceAsyn().execute();
 
 
     }
 
 
-  private   class FaceAsyn extends AsyncTask<String, Void, String> {
+    private class FaceAsyn extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
             try {
                 URL url = new URL(faceContrastUrl);
                 HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-                urlConn.setConnectTimeout(3000);
+                urlConn.setConnectTimeout(70000);
+                urlConn.setReadTimeout(70000);
                 urlConn.setDoOutput(true);
                 urlConn.setDoInput(true);
                 urlConn.setUseCaches(false);
                 urlConn.setRequestMethod("POST");
-                urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                String parmas = "memberId=" + memberId + "&image=" + base64Data;
-                Log.d("face",faceContrastUrl+", parmas:"+parmas);
+                urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+                urlConn.setRequestProperty("Connection", "keep-alive");
+                String parmas = "memberId=" + memberId + "&image=" + URLEncoder.encode(base64Data, "UTF-8");
+                Log.d("OkHttp", "Request: " + faceContrastUrl + ", parmas:" + parmas);
                 DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
                 out.writeBytes(parmas);
                 out.flush();
@@ -120,6 +127,7 @@ public class LivenessDetectActivity extends LivenessDetectionMainActivity {
 
         @Override
         protected void onPostExecute(String s) {
+            Log.d("OkHttp", "Response: " + s);
             if (!TextUtils.isEmpty(s)) {
                 JSONObject resJobj = null;
                 try {

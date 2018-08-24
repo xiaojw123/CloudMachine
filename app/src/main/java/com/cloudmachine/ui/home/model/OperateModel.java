@@ -1,6 +1,9 @@
 package com.cloudmachine.ui.home.model;
 
 import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSchedulers;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.OperateContact;
@@ -28,6 +31,6 @@ public class OperateModel implements OperateContact.Model {
     @Override
     public Observable<JsonObject> authOperator(long memberId, String servicePwd) {
 
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).authOperator(memberId,servicePwd).compose(RxHelper.<JsonObject>handleResult());
+        return Api.getDefault(HostType.HOST_CLOUDM_YJX).authOperator(memberId,servicePwd);
     }
 }

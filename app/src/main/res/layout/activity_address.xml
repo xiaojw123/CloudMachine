@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/public_bg"
+    tools:context="com.cloudmachine.ui.home.activity.AddressActivity">
+
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/address_title_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="居住地址"
+        />
+
+
+    <LinearLayout
+        style="@style/Layout_Item_Style"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        android:orientation="horizontal">
+
+
+        <TextView
+            style="@style/layout_key_style"
+            android:text="居住地址" />
+
+        <com.cloudmachine.utils.widgets.ClearEditTextView
+            android:id="@+id/address_edt"
+            style="@style/layout_value_style"
+            android:hint="请输入详细地址包含省市区街道门牌号等" />
+
+    </LinearLayout>
+
+
+
+
+
+
+</LinearLayout>

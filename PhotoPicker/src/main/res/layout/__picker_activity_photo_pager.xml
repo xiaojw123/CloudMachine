@@ -4,9 +4,46 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="${relativePackage}.${activityClass}"
+    android:background="@android:color/black"
     >
 
-  <include layout="@layout/__picker_toolbar"/>
+  <!--<include layout="@layout/__picker_toolbar"/>-->
+
+
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="45dp"
+      >
+
+    <ImageView
+        android:id="@+id/back_img"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:src="@drawable/ic_back_normal_white" />
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        android:text="预览" />
+
+
+    <ImageView
+        android:id="@+id/delte_img"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/__picker_delete"
+        android:layout_gravity="right|center_vertical"
+        android:paddingRight="16dp"
+        />
+
+  </FrameLayout>
+
 
   <FrameLayout
       android:id="@+id/container"

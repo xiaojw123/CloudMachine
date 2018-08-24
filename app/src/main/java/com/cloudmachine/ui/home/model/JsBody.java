@@ -45,6 +45,16 @@ public class JsBody {
     }
 
     private String center_title;
+    private String right_img;
+
+    public String getRight_img() {
+        return right_img;
+    }
+
+    public void setRight_img(String right_img) {
+        this.right_img = right_img;
+    }
+
     private String right_title;
     private String right_event;
     private String share_title;

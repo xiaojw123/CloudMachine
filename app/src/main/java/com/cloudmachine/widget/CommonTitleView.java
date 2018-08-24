@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.ui.home.contract.ExtrContract;
 
 /**
  * Created by xiaojw on 2017/6/1.
@@ -41,15 +44,15 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CommonTitleView);
         String titleName = a.getString(R.styleable.CommonTitleView_common_title_name);
         String rightText = a.getString(R.styleable.CommonTitleView_common_right_text);
-        boolean showVisble=a.getBoolean(R.styleable.CommonTitleView_common_shodow_visible,true);
-        boolean rightTextEanlbe = a.getBoolean(R.styleable.CommonTitleView_common_right_text_enable,true);
+        boolean showVisble = a.getBoolean(R.styleable.CommonTitleView_common_shodow_visible, true);
+        boolean rightTextEanlbe = a.getBoolean(R.styleable.CommonTitleView_common_right_text_enable, true);
         int color = a.getColor(R.styleable.CommonTitleView_common_right_textcolor, getResources().getColor(R.color.cor8));
         View view = LayoutInflater.from(context).inflate(R.layout.common_title_view, null);
         int height;
-        if (showVisble){
-            height=(int) getResources().getDimension(R.dimen.dimen_size_49);
-        }else{
-            height= (int) getResources().getDimension(R.dimen.dimen_size_45);
+        if (showVisble) {
+            height = (int) getResources().getDimension(R.dimen.dimen_size_49);
+        } else {
+            height = (int) getResources().getDimension(R.dimen.dimen_size_45);
             view.setBackground(getResources().getDrawable(R.drawable.bg_home_title));
         }
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
@@ -62,7 +65,12 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
         rightTv.setEnabled(rightTextEanlbe);
         rightTv.setTextColor(color);
         titleTv.setText(titleName);
-        rightTv.setText(rightText);
+        if (!TextUtils.isEmpty(rightText)) {
+            rightTv.setVisibility(VISIBLE);
+            rightTv.setText(rightText);
+        } else {
+            rightTv.setVisibility(GONE);
+        }
         closeImg.setOnClickListener(this);
         backImg.setOnClickListener(this);
         a.recycle();
@@ -88,7 +96,23 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
 
 
     }
-    public void setRightImg(int resId){
+
+    public void setRightImg(String imgUrl, OnClickListener listener) {
+        if (TextUtils.isEmpty(imgUrl)) {
+            rightImg.setVisibility(GONE);
+            rightImg.setOnClickListener(null);
+            return;
+        }
+        rightImg.setVisibility(VISIBLE);
+        Glide.with(getContext()).load(imgUrl).into(rightImg);
+        if (listener != null) {
+            rightImg.setOnClickListener(listener);
+        }
+
+
+    }
+
+    public void setRightImg(int resId) {
         rightImg.setVisibility(VISIBLE);
         rightImg.setImageResource(resId);
     }
@@ -96,7 +120,8 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
     public void setRightTextColor(int color) {
         rightTv.setTextColor(color);
     }
-    public void setRighteTextEnalbe(boolean flag){
+
+    public void setRighteTextEnalbe(boolean flag) {
         rightTv.setEnabled(flag);
     }
 
@@ -106,15 +131,22 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
 
 
     public void setRightText(String text, OnClickListener listener) {
-        rightTv.setText(text);
-        if (listener != null) {
-            rightTv.setOnClickListener(listener);
+        if (!TextUtils.isEmpty(text)) {
+            rightTv.setVisibility(VISIBLE);
+            rightTv.setText(text);
+            if (listener != null) {
+                rightTv.setOnClickListener(listener);
+            }
+        } else {
+            rightTv.setVisibility(GONE);
         }
     }
-    public void setRightTextEnable(boolean enable){
+
+    public void setRightTextEnable(boolean enable) {
         rightTv.setEnabled(enable);
     }
-    public String getRightText(){
+
+    public String getRightText() {
         return rightTv.getText().toString();
     }
 
@@ -127,7 +159,12 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
 
 
     public void setRightText(String text) {
-        rightTv.setText(text);
+        if (!TextUtils.isEmpty(text)){
+            rightTv.setVisibility(VISIBLE);
+            rightTv.setText(text);
+        }else{
+            rightTv.setVisibility(GONE);
+        }
     }
 
 

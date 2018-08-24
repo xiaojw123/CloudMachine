@@ -41,6 +41,7 @@ public class URLs {
     public static String CONFIRMPAY_URL=ApiConstants.CLOUDM_HOST+"salary/confirmPay";
 
     public static String FACE_URL=ApiConstants.CLOUDM_YJX_HOST+"loan/verification/contrastFace";
+//    public static String FACE_URL="http://192.168.10.16:8090/cloudm3/yjx/loan/verification/contrastFace";
 
 
 }

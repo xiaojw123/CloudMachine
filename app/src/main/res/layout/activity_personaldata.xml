@@ -125,16 +125,17 @@
     </RelativeLayout>
 
 
-    <!--dd-->
     <LinearLayout
         style="@style/line_layout"
         android:layout_marginLeft="@dimen/common_left_gap"
+        android:visibility="gone"
         />
 
 
     <RelativeLayout
         android:id="@+id/my_qrcode"
         style="@style/layout_item"
+        android:visibility="gone"
         >
 
         <TextView
@@ -146,31 +147,6 @@
             style="@style/personal_arrow_image"/>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/my_certification"
-        style="@style/layout_item"
-        android:layout_marginTop="@dimen/pad1"
-        android:visibility="gone"
-        >
-
-        <TextView
-            style="@style/personal_left_text"
-            android:text="身份认证"
-            />
-
-
-        <TextView
-            android:id="@+id/my_identy_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/no_certificate"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:drawablePadding="@dimen/pad1"
-            android:textColor="@color/c_ff8901"
-            android:drawableRight="@drawable/arrow_right"
-            />
-    </RelativeLayout>
 
 
 

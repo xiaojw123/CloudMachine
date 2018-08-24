@@ -63,9 +63,21 @@ public class PursePresenter extends PurseContract.Presenter {
         }));
     }
 
+    @Override
+    public void getMemberInfo(long memberid) {
+        mRxManage.add(mModel.getMemberInfo(memberid).subscribe(new RxSubscriber<Member>(mContext) {
+            @Override
+            protected void _onNext(Member member) {
+                mView.updateMemberInfo(member);
+            }
 
+            @Override
+            protected void _onError(String message) {
 
+            }
+        }));
 
+    }
 
 
 }

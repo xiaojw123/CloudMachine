@@ -256,6 +256,20 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
+
+
+            <FrameLayout
+                android:id="@+id/item_purse"
+                style="@style/HomeMenuContainerStyle">
+
+                <TextView
+                    android:id="@+id/item_purse_tv"
+                    style="@style/HomeMenuTvStyle"
+                    android:drawableLeft="@drawable/icon_purse"
+                    android:text="我的钱包" />
+            </FrameLayout>
+
+
             <FrameLayout
                 android:id="@+id/item_repair_history"
                 style="@style/HomeMenuContainerStyle">
@@ -293,6 +307,18 @@
                 </LinearLayout>
             </FrameLayout>
 
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_29"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
             <FrameLayout
                 android:id="@+id/item_message"
                 style="@style/HomeMenuContainerStyle">
@@ -324,29 +350,7 @@
 
 
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_29"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-
-            <FrameLayout
-                android:id="@+id/item_purse"
-                style="@style/HomeMenuContainerStyle">
-
-                <TextView
-                    android:id="@+id/item_purse_tv"
-                    style="@style/HomeMenuTvStyle"
-                    android:drawableLeft="@drawable/icon_purse"
-                    android:text="@string/purse" />
-            </FrameLayout>
-
-
-                <!--android:id="@+id/item_qr_code"-->
+            <!--android:id="@+id/item_qr_code"-->
             <FrameLayout
                 android:id="@+id/item_machine_knowledge"
                 style="@style/HomeMenuContainerStyle"

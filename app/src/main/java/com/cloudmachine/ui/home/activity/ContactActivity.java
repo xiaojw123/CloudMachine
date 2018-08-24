@@ -18,6 +18,7 @@ import com.cloudmachine.bean.TypeItem;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
@@ -134,9 +135,9 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
         switch (requestCode) {
             case REQ_READ_CONTACT:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    ToastUtils.showToast(mContext, "需要开启联系人读写权限!");
+                    CommonUtils.showPermissionDialog(mContext,Constants.PermissionType.ADDRESS_BOOK);
                 } else {
-                    Constants.toActivityForR(this, AddressBookActivity.class, null);
+                    Constants.toActivityForR(this, AddressBookActivity.class, null, SELECT_CONTACT);
                 }
                 break;
             case SELECT_CONTACT:

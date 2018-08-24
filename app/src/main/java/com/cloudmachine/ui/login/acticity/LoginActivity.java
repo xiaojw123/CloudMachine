@@ -487,6 +487,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
             mContext.startActivity(intent);
             finish();
         } else {
+            setResult(RES_LOGIN_SUCCESS);
             finish();
         }
     }
@@ -580,7 +581,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         if (usernameStr.length() > 0) {
             String logoUrl = UserHelper.getLogo(this, usernameStr);
             if (!TextUtils.isEmpty(logoUrl)) {
-                Glide.with(this).load(logoUrl).into(userImage);
+                Glide.with(this).load(logoUrl).placeholder(R.drawable.ic_logo).error(R.drawable.ic_logo).into(userImage);
             } else {
                 userImage.setImageResource(R.drawable.ic_logo);
             }

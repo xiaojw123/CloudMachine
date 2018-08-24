@@ -41,7 +41,6 @@ public class BankVerifyctivity extends BaseAutoLayoutActivity implements View.On
     @BindView(R.id.bank_describe_tv)
     TextView describeTv;
     long memberId;
-    CustomDialog submitDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,43 +103,23 @@ public class BankVerifyctivity extends BaseAutoLayoutActivity implements View.On
 
     @Override
     public void onClick(View v) {
-        if (submitDialog == null) {
-            CustomDialog.Builder builder = new CustomDialog.Builder(this);
-            builder.setMessage("这张银行卡将作为您提现、借款、还款的资金账号, 只能绑定一张，请认真填写。");
-            builder.setNegativeButton("返回修改", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.setPositiveButton("提交", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
+        String cardNo = cardNoEdt.getText().toString();
+        String mobile = mobileEdt.getText().toString();
+        String name = nameEdt.getText().toString();
 
-                    String cardNo = cardNoEdt.getText().toString();
-                    String mobile = mobileEdt.getText().toString();
-                    String name = nameEdt.getText().toString();
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).authBankCard(memberId, cardNo, mobile, name).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+            @Override
+            protected void _onNext(String s) {
+                ToastUtils.showToast(mContext, "验证成功");
+                finish();
+            }
 
-                    mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).authBankCard(memberId, cardNo, mobile, name).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
-                        @Override
-                        protected void _onNext(String s) {
-                            ToastUtils.showToast(mContext, "验证成功");
-                            finish();
-                        }
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(mContext, message);
 
-                        @Override
-                        protected void _onError(String message) {
-                            ToastUtils.showToast(mContext, message);
-
-                        }
-                    }));
-
-                }
-            });
-            submitDialog=builder.create();
-        }
-        submitDialog.show();
+            }
+        }));
     }
 
     @Override

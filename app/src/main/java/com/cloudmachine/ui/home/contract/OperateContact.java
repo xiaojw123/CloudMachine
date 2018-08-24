@@ -1,8 +1,13 @@
 package com.cloudmachine.ui.home.contract;
 
+import android.view.View;
+import android.widget.FrameLayout;
+
+import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
+import com.cloudmachine.base.bean.BaseRespose;
 import com.google.gson.JsonObject;
 
 import rx.Observable;
@@ -17,7 +22,7 @@ public interface OperateContact {
 
         Observable<String> getVerifyCode(long memberId,String taskId);
         Observable<String>  checkVerifyCode(long memberId,String taskId,String smsCode);
-        Observable<JsonObject> authOperator(long memberId,String servicePwd);
+        Observable<JsonObject> authOperator(long memberId, String servicePwd);
 
     }
 
@@ -31,7 +36,7 @@ public interface OperateContact {
         public abstract void getVerifyCode(long memberId,String taskId);
         public abstract void checkVerifyCode(long memberId,String taskId,String smsCode);
 
-        public abstract void authOperator(long memberId,String servicePwd);
+        public abstract void authOperator(long memberId, String servicePwd, RadiusButtonView button, FrameLayout loadingView);
 
     }
 

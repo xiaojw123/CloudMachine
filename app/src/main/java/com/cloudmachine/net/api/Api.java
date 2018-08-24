@@ -50,10 +50,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Api {
 
-    public static final int READ_TIME_OUT = 57676;
+    public static final int READ_TIME_OUT = 60000;
     //连接时长，单位：毫秒
 //    public static final int CONNECT_TIME_OUT = 7676;
-    public static final int CONNECT_TIME_OUT = 57676;
+    public static final int CONNECT_TIME_OUT = 60000;
     public Retrofit retrofit;
     public ApiService movieService;
 

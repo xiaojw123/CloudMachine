@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class HttpURLConnectionImp implements IHttp {
 
-    private static final int TIMEOUT = 20000;
+    private static final int TIMEOUT = 60000;
 
 
 
@@ -112,6 +112,7 @@ public class HttpURLConnectionImp implements IHttp {
             in.close();
         }
         httpURLConnection.disconnect();
+        AppLog.printURl(resultString);
         return resultString;
     }
 
@@ -162,6 +163,7 @@ public class HttpURLConnectionImp implements IHttp {
             resultString = IOUtil.inputStreamToString(in);
             in.close();
         }
+        AppLog.printURl(resultString);
         return resultString;
     }
 

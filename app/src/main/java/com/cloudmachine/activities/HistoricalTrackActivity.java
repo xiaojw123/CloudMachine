@@ -290,7 +290,7 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
     }
 
     private void initHour() {
-        NumericWheelAdapter numericWheelAdapter3 = new NumericWheelAdapter(this, 1, 23, "%02d");
+        NumericWheelAdapter numericWheelAdapter3 = new NumericWheelAdapter(this, 0, 23, "%02d");
         numericWheelAdapter3.setLabel(hour_unit);
         hour_wheelview.setViewAdapter(numericWheelAdapter3);
         hour_wheelview.setCyclic(true);
@@ -299,7 +299,7 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
     }
 
     private void initMinute() {
-        NumericWheelAdapter numericWheelAdapter4 = new NumericWheelAdapter(this, 1, 59, "%02d");
+        NumericWheelAdapter numericWheelAdapter4 = new NumericWheelAdapter(this, 0, 59, "%02d");
         numericWheelAdapter4.setLabel(minute_unit);
         minute_wheelview.setViewAdapter(numericWheelAdapter4);
         minute_wheelview.setCyclic(true);
@@ -333,11 +333,11 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
                     Constants.DateFormat1) == 0) {//今天
 //				Constants.MyLog("hour: "+ hour + " minute :"+minute
 //						+" hh:"+(hour_wheelview.getCurrentItem()+1)+" mm："+(minute_wheelview.getCurrentItem()+1));
-                if ((hour_wheelview.getCurrentItem() + 1) > hour) {
-                    hour_wheelview.setCurrentItem(hour - 1);
-                } else if ((hour_wheelview.getCurrentItem() + 1) == hour) {
-                    if ((minute_wheelview.getCurrentItem() + 1) > minute) {
-                        minute_wheelview.setCurrentItem(minute - 1);
+                if (hour_wheelview.getCurrentItem() > hour) {
+                    hour_wheelview.setCurrentItem(hour);
+                } else if ((hour_wheelview.getCurrentItem()) == hour) {
+                    if ((minute_wheelview.getCurrentItem()) > minute) {
+                        minute_wheelview.setCurrentItem(minute);
                     }
                 }
 
@@ -362,7 +362,6 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
                         for (int i = 0; i < mVirtureRoad.getPoints().size() - 1; i++) {
                             LatLng startPoint = mVirtureRoad.getPoints().get(i);
                             LatLng endPoint = mVirtureRoad.getPoints().get(i + 1);
-                            AppLog.print("startPoit:" + startPoint + ", endPoint:" + endPoint + "i=" + i);
 
                             mMoveMarker.setPosition(startPoint);
 
@@ -408,7 +407,6 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
                             mHandler.sendMessage(msg);
                             if (i < mVirtureRoad.getPoints().size() - 2) {
                                 try {
-                                    AppLog.print("sleep____millls__i+" + i);
                                     Thread.sleep(curTimeInterval);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
@@ -660,10 +658,10 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
             case R.id.wheelview_determine:
                 if (timeType == 0) {
                     start_time.setText(dayArray[year_month_day_week_wheelview.getCurrentItem()] +
-                            " " + (hour_wheelview.getCurrentItem() + 1) + hour_unit +
-                            " " + (minute_wheelview.getCurrentItem() + 1) + minute_unit);
+                            " " + hour_wheelview.getCurrentItem() + hour_unit +
+                            " " + minute_wheelview.getCurrentItem() + minute_unit);
                     startTime = Constants.getDatetolong(dayArray2[year_month_day_week_wheelview.getCurrentItem()] +
-                                    " " + (hour_wheelview.getCurrentItem() + 1) + ":" + (minute_wheelview.getCurrentItem() + 1),
+                                    " " + hour_wheelview.getCurrentItem() + ":" + minute_wheelview.getCurrentItem(),
                             "yyyy-MM-dd HH:mm");
                     wheelview_title.setText(getResources().getString(R.string.historical_track_wheelview_time_end));
                     timeType = 1;
@@ -673,10 +671,10 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
                     initMinute();
                 } else {
                     end_time.setText(dayArray[year_month_day_week_wheelview.getCurrentItem()] +
-                            " " + (hour_wheelview.getCurrentItem() + 1) + hour_unit +
-                            " " + (minute_wheelview.getCurrentItem() + 1) + minute_unit);
+                            " " + hour_wheelview.getCurrentItem() + hour_unit +
+                            " " + minute_wheelview.getCurrentItem() + minute_unit);
                     endTime = Constants.getDatetolong(dayArray2[year_month_day_week_wheelview.getCurrentItem()] +
-                                    " " + (hour_wheelview.getCurrentItem() + 1) + ":" + (minute_wheelview.getCurrentItem() + 1),
+                                    " " + hour_wheelview.getCurrentItem() + ":" + minute_wheelview.getCurrentItem(),
                             "yyyy-MM-dd HH:mm");
                     hideWheelView();
 
@@ -686,6 +684,7 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
                             showPromptDialog(getResources().getString(R.string.start_end_time_error));
                             return;
                         }
+                        AppLog.print("startTime___"+startTime+", endTIME__"+endTime);
                         new LocusListAsync(mcDeviceBasicsInfo.getId(), startTime, endTime, mContext, mHandler).execute();
                     } else {
                         showPromptDialog(getResources().getString(R.string.start_end_time_null));

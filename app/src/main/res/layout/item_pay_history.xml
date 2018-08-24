@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_size_72"
+    android:layout_marginLeft="@dimen/dimen_size_8"
+    android:layout_marginRight="@dimen/dimen_size_8"
+    android:layout_marginTop="@dimen/dimen_size_8"
+    android:background="@drawable/bg_card"
+    >
+
+
+    <TextView
+        android:id="@+id/history_order_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="A288790"
+        android:layout_marginLeft="@dimen/dimen_size_16"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:textColor="@color/cor8"
+        android:textSize="@dimen/text_size_16_sp" />
+
+    <TextView
+        android:id="@+id/history_order_attr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dimen_size_14"
+        android:layout_alignLeft="@+id/history_order_no"
+        android:drawableLeft="@drawable/ic_online_pay"
+        android:drawablePadding="@dimen/dimen_size_8"
+        android:text="在线购买"
+        android:textColor="@color/cor20"
+        android:textSize="@dimen/text_size_13_sp" />
+
+
+    <ImageView
+        android:id="@+id/history_config_img"
+        android:layout_width="@dimen/dimen_size_37"
+        android:layout_height="@dimen/dimen_size_16"
+        android:layout_alignBottom="@+id/history_order_attr"
+        android:layout_marginLeft="@dimen/pad1"
+        android:layout_toRightOf="@+id/history_order_attr"
+        android:src="@drawable/bg_config" />
+
+
+    <TextView
+        android:id="@+id/history_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/history_order_no"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dimen_size_12"
+        android:text="2018-07-25"
+        android:textColor="@color/cor11"
+        android:textSize="@dimen/text_size_12_sp" />
+
+    <ImageView
+        android:id="@+id/history_status_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_pay_invaild" />
+
+
+</RelativeLayout>

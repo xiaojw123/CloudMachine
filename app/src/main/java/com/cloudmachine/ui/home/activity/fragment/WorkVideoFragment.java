@@ -1,6 +1,8 @@
 package com.cloudmachine.ui.home.activity.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
@@ -124,7 +126,8 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     boolean isOnLine;
     boolean isFirst = true;
     String sn;
-
+    int selectedId = -1;
+    boolean isVolumeAble=true;
 
     @Override
     protected void initView() {
@@ -133,6 +136,14 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
         initWheelView();
         initRecyclerView();
         initVideoView();
+    }
+
+    private void setMuteVolume() {
+        if (isVolumeAble) {
+            isVolumeAble=false;
+            AudioManager am = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+        }
     }
 
 
@@ -144,19 +155,19 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     }
 
     private void initWheelView() {
-        NumericWheelAdapter hAdpater = new NumericWheelAdapter(getActivity(), 1, 23, "%02d");
+        NumericWheelAdapter hAdpater = new NumericWheelAdapter(getActivity(), 0, 23, "%02d");
         hAdpater.setLabel(hour_unit);
         mWvHour.setViewAdapter(hAdpater);
         mWvHour.setCyclic(true);
         mWvHour.setVisibleItems(7);
         mWvHour.addScrollingListener(scrollListener);
-        NumericWheelAdapter mAdapter = new NumericWheelAdapter(getActivity(), 1, 59, "%02d");
+        NumericWheelAdapter mAdapter = new NumericWheelAdapter(getActivity(), 0, 59, "%02d");
         mAdapter.setLabel(minute_unit);
         mWvMinute.setViewAdapter(mAdapter);
         mWvMinute.setCyclic(true);
         mWvMinute.setVisibleItems(7);
         mWvMinute.addScrollingListener(scrollListener);
-        NumericWheelAdapter sAdapter = new NumericWheelAdapter(getActivity(), 1, 59, "%02d");
+        NumericWheelAdapter sAdapter = new NumericWheelAdapter(getActivity(), 0, 59, "%02d");
         sAdapter.setLabel(second_unit);
         mWvSecond.setViewAdapter(sAdapter);
         mWvSecond.setCyclic(true);
@@ -186,7 +197,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 //        workLiveVideoview.setOnInfoListener(mOnInfoListener);
         workLiveVideoview.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
         workLiveVideoview.setOnCompletionListener(mOnCompletionListener);
-
     }
 
     private void initRecyclerView() {
@@ -307,6 +317,15 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
         playUrl = liveUrl;
         workVideoXrlv.refreshComplete();
         if (videoList != null && videoList.size() > 0) {
+            if (selectedId != -1) {
+                for (VideoBean.VideoListBean item : videoList) {
+                    if (item.getId() == selectedId) {
+                        item.setSelected(true);
+                    } else {
+                        item.setSelected(false);
+                    }
+                }
+            }
 //            Collections.reverse(videoList);
             emptyListTv.setVisibility(View.GONE);
             workVideoXrlv.setVisibility(View.VISIBLE);
@@ -358,15 +377,17 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                 if (timeType == 0) {
                     timeType = 1;
 //                    startTimeL=mWvHour.getCurrentItem()
-                    time1 = ((mWvHour.getCurrentItem() + 1) + ":" + (mWvMinute.getCurrentItem() + 1) + ":" + (mWvSecond.getCurrentItem() + 1));
+                    time1 = mWvHour.getCurrentItem() + ":" + mWvMinute.getCurrentItem() + ":" + mWvSecond.getCurrentItem();
                     startTimeL = Constants.getDatetolong(time1,
                             "HH:mm:ss");
                     mWvTitleTv.setText(getResources().getString(R.string.historical_track_wheelview_time_end));
+                    AppLog.print("time1:" + time1);
                 } else {
                     hidenWheel();
-                    time2 = ((mWvHour.getCurrentItem() + 1) + ":" + (mWvMinute.getCurrentItem() + 1) + ":" + (mWvSecond.getCurrentItem() + 1));
+                    time2 = mWvHour.getCurrentItem() + ":" + mWvMinute.getCurrentItem() + ":" + mWvSecond.getCurrentItem();
                     endTimeL = Constants.getDatetolong(time2,
                             "HH:mm:ss");
+                    AppLog.print("time2：" + time2);
                     if (startTimeL > endTimeL) {
                         time1 = null;
                         time2 = null;
@@ -378,6 +399,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                         } else if (workVideoTabYesterday.isSelected()) {
                             initDateTime(1, time1, time2);
                         }
+                        AppLog.print("time1___" + time1 + ", time2__" + time2);
                         mPresenter.getVideoList(memberId, deviceId, startTime, endTime);
                     }
                 }
@@ -435,11 +457,13 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     }
 
     private void setVideoSelectedItem(VideoBean.VideoListBean item) {
+        selectedId = -1;
         if (mVideoListAdapter != null) {
             List<VideoBean.VideoListBean> videoItems = mVideoListAdapter.getItems();
             if (videoItems != null && videoItems.size() > 0) {
                 for (VideoBean.VideoListBean bean : videoItems) {
                     if (item == bean) {
+                        selectedId = bean.getId();
                         bean.setSelected(true);
                     } else {
                         bean.setSelected(false);
@@ -488,6 +512,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
             workLiveStatus.setEnabled(false);
             workLiveStatus.setBackground(getResources().getDrawable(R.drawable.ic_work_vieo_live_2));
         }
+        setMuteVolume();
     }
 
     private void playComptete() {
@@ -534,14 +559,14 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                 int minute = date.getMinutes();
                 int second = date.getSeconds();
                 AppLog.print("hour_" + hour + "__min__" + minute + ", second__" + second);
-                if ((mWvHour.getCurrentItem() + 1) > hour) {
-                    mWvHour.setCurrentItem(hour - 1);
-                } else if ((mWvHour.getCurrentItem() + 1) == hour) {
-                    if ((mWvMinute.getCurrentItem() + 1) > minute) {
-                        mWvMinute.setCurrentItem(minute - 1);
-                    } else if ((mWvMinute.getCurrentItem() + 1) == minute) {
-                        if ((mWvSecond.getCurrentItem() + 1) > second) {
-                            mWvSecond.setCurrentItem(second - 1);
+                if ((mWvHour.getCurrentItem()) > hour) {
+                    mWvHour.setCurrentItem(hour);
+                } else if (mWvHour.getCurrentItem() == hour) {
+                    if (mWvMinute.getCurrentItem() > minute) {
+                        mWvMinute.setCurrentItem(minute);
+                    } else if (mWvMinute.getCurrentItem() == minute) {
+                        if (mWvSecond.getCurrentItem() > second) {
+                            mWvSecond.setCurrentItem(second);
                         }
                     }
                 }

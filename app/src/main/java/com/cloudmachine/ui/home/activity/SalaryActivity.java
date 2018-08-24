@@ -32,6 +32,7 @@ import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.Operator;
+import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.contract.ExtrContract;
@@ -99,6 +100,7 @@ public class SalaryActivity extends BaseAutoLayoutActivity implements View.OnCli
             poolRlt.setVisibility(View.VISIBLE);
         }
         titleTv.setRightClickListener(this);
+        titleTv.setLeftClickListener(this);
         payBtn.setOnClickListener(this);
         payBtn.setButtonEnable(false);
         String walletAmount = getIntent().getStringExtra(PurseActivity.KEY_WALLETAMOUNT);
@@ -117,6 +119,29 @@ public class SalaryActivity extends BaseAutoLayoutActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.common_titleview_back_img:
+                if (mOperatorItems != null && mOperatorItems.size() > 0) {
+                    CustomDialog.Builder builder = new CustomDialog.Builder(this);
+                    builder.setMessage("确定放弃本次工资的发放吗?");
+                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+                    builder.create().show();
+                } else {
+                    finish();
+                }
+                break;
+
             case R.id.common_titleview_right_tv:
                 Constants.toActivity(this, IncomeSpendActivity.class, null);
                 break;
@@ -242,8 +267,8 @@ public class SalaryActivity extends BaseAutoLayoutActivity implements View.OnCli
                     mOperatorItems.clear();
                     receiverList.clear();
                     collectionContainer.removeAllViews();
-                    View view= LayoutInflater.from(this).inflate(R.layout.item_salary_collection,null);
-                    FrameLayout perLayout= (FrameLayout) view.findViewById(R.id.item_collection_per);
+                    View view = LayoutInflater.from(this).inflate(R.layout.item_salary_collection, null);
+                    FrameLayout perLayout = (FrameLayout) view.findViewById(R.id.item_collection_per);
                     perLayout.setOnClickListener(this);
                     collectionContainer.addView(view);
                     numTv.setText(String.valueOf(mOperatorItems.size()));

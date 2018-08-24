@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.PersonItemAdapter;
+import com.cloudmachine.adapter.decoration.LineItemDecoration;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.Operator;
 import com.cloudmachine.base.baserx.RxHelper;
@@ -52,7 +53,8 @@ public class PersonChooseActivity extends BaseAutoLayoutActivity implements View
     private void initView() {
         mTitleView.setRightClickListener(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        long meberId=UserHelper.getMemberId(this);
+        mRecyclerView.addItemDecoration(new LineItemDecoration(this));
+        long meberId = UserHelper.getMemberId(this);
         mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getMchineOperators(meberId).compose(RxHelper.<List<Operator>>handleResult()).subscribe(new RxSubscriber<List<Operator>>(mContext) {
             @Override
             protected void _onNext(List<Operator> operators) {
@@ -60,10 +62,10 @@ public class PersonChooseActivity extends BaseAutoLayoutActivity implements View
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mEmptyTv.setVisibility(View.GONE);
                     mAdapter = new PersonItemAdapter(mContext, operators);
-                    List<Operator> operatorItems=getIntent().getParcelableArrayListExtra(Constants.OPERATOR_LIST);
+                    List<Operator> operatorItems = getIntent().getParcelableArrayListExtra(Constants.OPERATOR_LIST);
                     mAdapter.setSelOperators(operatorItems);
                     mRecyclerView.setAdapter(mAdapter);
-                }else{
+                } else {
                     mRecyclerView.setVisibility(View.GONE);
                     mEmptyTv.setVisibility(View.VISIBLE);
                 }
@@ -71,7 +73,7 @@ public class PersonChooseActivity extends BaseAutoLayoutActivity implements View
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.showToast(mContext,message);
+                ToastUtils.showToast(mContext, message);
 
             }
         }));
@@ -94,12 +96,12 @@ public class PersonChooseActivity extends BaseAutoLayoutActivity implements View
     }
 
 
-    public void updateRightTitleText(int len){
-        if (len>0){
+    public void updateRightTitleText(int len) {
+        if (len > 0) {
             mTitleView.setRightTextColor(getResources().getColor(R.color.cor8));
             mTitleView.setRightTextEnable(true);
-            mTitleView.setRightText(getResources().getString(R.string.finish)+"("+len+")");
-        }else{
+            mTitleView.setRightText(getResources().getString(R.string.finish) + "(" + len + ")");
+        } else {
             mTitleView.setRightTextColor(getResources().getColor(R.color.cor12));
             mTitleView.setRightTextEnable(false);
             mTitleView.setRightText(getResources().getString(R.string.finish));

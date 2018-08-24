@@ -597,7 +597,9 @@
         <activity android:name=".ui.home.activity.IdCardHandActivity" />
         <activity android:name=".ui.home.activity.PicPreviewActivity" />
         <activity android:name=".ui.home.activity.IncomeProofActivity" />
-        <activity android:name=".ui.home.activity.MachineOwnershipActivity"></activity>
+        <activity android:name=".ui.home.activity.MachineOwnershipActivity" />
+        <activity android:name=".ui.home.activity.PayCodeActivity" />
+        <activity android:name=".ui.home.activity.AddressActivity"></activity>
     </application>
 
 </manifest>

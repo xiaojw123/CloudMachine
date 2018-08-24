@@ -255,6 +255,7 @@ public class Constants {
     public static final int HANDLER_BACk_LOCATION = HANDLER_UPDATE_PROGRESS + 1;
     public static final int HANDLER_FACE_RECOGNITION=HANDLER_BACk_LOCATION+1;
 
+
     public static final String URL_H5_ARGUMENT = "http://www.cloudm.com/agreement";
     public static final String URL_LOGOCLOUDM = "https://f1.cloudm.com/logocloudm.png";
     //修改全局ip地址
@@ -298,6 +299,7 @@ public class Constants {
     public static final String URL_ADDCIRCLEFENCH = ApiConstants.CLOUDM_YJX_HOST
             + "device/addCricleFence";
     public static final String URL_CWPAY = ApiConstants.CLOUDM_YJX_HOST + "pay/getPaySign";
+    public static final String URL_OPERATOR_CODE=ApiConstants.CLOUDM_YJX_HOST+"loan/verification/operatorCodeValid";
     public static final String P_DEVICEID = "DeviceId";
     public static final String P_DEVICETYPE = "DeviceType";
     public static final String P_DEVICENAME = "DeviceName";
@@ -1482,6 +1484,8 @@ public class Constants {
         int CAMERA = 1;
         int STORAGE = 2;
         int LOCATION = 3;
+        int STORAGE_CAMERA=4;
+        int ADDRESS_BOOK=5;
     }
 
     public static final String[] PERMISSIONS_CAMER_SD = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};

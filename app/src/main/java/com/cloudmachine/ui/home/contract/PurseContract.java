@@ -21,18 +21,19 @@ public interface PurseContract {
     interface View extends BaseView {
         void updateWalletAmountView(double walletAmount,double depositAmount,String jumpUrl);
         void updateAvaildCouponSumNum(int sumNum);
+        void updateMemberInfo(Member member);
     }
 
     interface Model extends BaseModel {
         Observable<JsonObject> getWalletAmount(long memberId);
         Observable<CouponBean> getAvaildCouponList(long memberid);
+        Observable<Member> getMemberInfo(long memberid);
     }
 
     public abstract class Presenter extends BasePresenter<PurseContract.View, PurseContract.Model> {
         public abstract void getWalletAmount(long memberId);
         public  abstract void getAvaildCouponList(long memberid);
-
-
+        public abstract void getMemberInfo(long memberid);
     }
 
 

@@ -124,5 +124,4 @@
 
     </LinearLayout>
 
-    <include layout="@layout/security_info_state" />
 </merge>

@@ -13,6 +13,7 @@
         tools:context="com.cloudmachine.ui.home.activity.AuthPersonalInfoActivity">
 
         <com.cloudmachine.widget.CommonTitleView
+            android:id="@+id/pi_title_ctv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:common_title_name="个人信息" />
@@ -23,7 +24,7 @@
             android:layout_height="@dimen/dimen_size_30"
             android:layout_marginLeft="@dimen/pad2"
             android:gravity="center_vertical"
-            android:text="请拍摄/上传您的身份证正反面照片"
+            android:text="实名认证提交成功后无法修改，请仔细核对"
             android:textColor="@color/cor10"
             android:textSize="@dimen/text_size_13_sp"
             />
@@ -41,7 +42,7 @@
                 android:id="@+id/pi_portrait_img"
                 android:layout_width="@dimen/dimen_size_156"
                 android:layout_height="@dimen/dimen_size_98"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:src="@drawable/pi_portrait_bg" />
 
             <ImageView
@@ -49,7 +50,7 @@
                 android:layout_width="@dimen/dimen_size_156"
                 android:layout_height="@dimen/dimen_size_98"
                 android:layout_alignParentRight="true"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:src="@drawable/pi_emblem_bg" />
 
 
@@ -181,6 +182,9 @@
         </LinearLayout>
 
 
+
+
+
         <com.cloudmachine.autolayout.widgets.RadiusButtonView
             android:id="@+id/pi_submit_btn"
             style="@style/RadiusButtonStyle"
@@ -197,6 +201,42 @@
         <!--android:layout_marginLeft="@dimen/pad1"-->
         <!--android:layout_marginRight="@dimen/pad1"-->
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_size_8"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/pi_select_cb"
+                android:layout_width="@dimen/dimen_size_22"
+                android:layout_height="@dimen/dimen_size_27"
+                android:paddingRight="@dimen/dimen_size_5"
+                android:paddingTop="@dimen/dimen_size_5"
+                android:paddingBottom="@dimen/dimen_size_5"
+                android:button="@drawable/bg_ticket_raidobutton1"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="本人已阅读并同意签署"
+                android:textColor="@color/cor20"
+                android:textSize="@dimen/text_size_13_sp" />
+
+            <TextView
+                android:id="@+id/pi_service_terms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_4"
+                android:text="《保密与授权协议》"
+                android:textColor="@color/c_ff8901"
+                android:textSize="@dimen/text_size_13_sp" />
+
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
@@ -207,7 +247,8 @@
         android:layout_height="match_parent"
         android:background="@color/pop_bg_color"
         android:animateLayoutChanges="true"
-        android:visibility="gone">
+        android:visibility="gone"
+        >
 
         <ImageView
             android:id="@+id/pi_guide_img"
@@ -219,9 +260,8 @@
     </FrameLayout>
 
 
-    <include
-        layout="@layout/security_info_state"
-        />
+
+
 
 
 </merge>

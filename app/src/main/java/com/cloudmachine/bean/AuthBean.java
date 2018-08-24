@@ -37,21 +37,51 @@ public class AuthBean {
     private int idCardAuthStatus;
     private int cardFourElementAuthStatus;
     private int operatorAuthorizedStatus;
+
+    public String getResideAddressCheckStatusTxt() {
+        return resideAddressCheckStatusTxt;
+    }
+
+    public void setResideAddressCheckStatusTxt(String resideAddressCheckStatusTxt) {
+        this.resideAddressCheckStatusTxt = resideAddressCheckStatusTxt;
+    }
+
     private int relationAuthStatus;
+    private int resideAddressCheckStatus;
+    private String resideAddressCheckStatusTxt;
     private String cardFourElementAuthStatusTxt;
     private String operatorAuthorizedStatusTxt;
+
+    public int getResideAddressCheckStatus() {
+        return resideAddressCheckStatus;
+    }
+
+    public void setResideAddressCheckStatus(int resideAddressCheckStatus) {
+        this.resideAddressCheckStatus = resideAddressCheckStatus;
+    }
+
     private String relationAuthStatusTxt;
     private int auditStatus;
     private int identityCheckStatus;// 0:待审核 1：审核中 2:审核通过 3:审核不通过
     private int licenceCheckStatus;
     private int incomeCheckStatus;
     private int machineCheckStatus;
+    private int platformStatus;
     private String auditStatusTxt;
     private String identityCheckStatusTxt;
+
+    public int getPlatformStatus() {
+        return platformStatus;
+    }
+
+    public void setPlatformStatus(int platformStatus) {
+        this.platformStatus = platformStatus;
+    }
+
     private String licenceCheckStatusTxt;
     private String incomeCheckStatusTxt;
     private String machineCheckStatusTxt;
-    private Object bankStatusTxt;
+    private String bankStatusTxt;
 
     public String getUserUniqueNo() {
         return userUniqueNo;
@@ -213,11 +243,11 @@ public class AuthBean {
         this.machineCheckStatusTxt = machineCheckStatusTxt;
     }
 
-    public Object getBankStatusTxt() {
+    public String getBankStatusTxt() {
         return bankStatusTxt;
     }
 
-    public void setBankStatusTxt(Object bankStatusTxt) {
+    public void setBankStatusTxt(String bankStatusTxt) {
         this.bankStatusTxt = bankStatusTxt;
     }
 }

@@ -23,6 +23,7 @@ import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.ScreenInfo;
 import com.cloudmachine.ui.home.activity.IncomeProofActivity;
 import com.cloudmachine.ui.home.contract.ExtrContract;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.DensityUtil;
 
 import java.util.List;
@@ -86,7 +87,7 @@ public class PicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             FrameLayout picLayout = new FrameLayout(mContext);
             picLayout.setLayoutParams(cr);
             ImageView img = new ImageView(mContext);
-            img.setScaleType(ImageView.ScaleType.FIT_XY);
+            img.setScaleType(ImageView.ScaleType.CENTER_CROP);
             img.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             ImageView deleteImg = new ImageView(mContext);
             deleteImg.setImageResource(R.drawable.ic_person_delete);
@@ -163,19 +164,10 @@ public class PicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         @Override
         public void onClick(final View v) {
-            CustomDialog.Builder builder = new CustomDialog.Builder(mContext);
-            builder.setMessage("确认要删除这张照片吗");
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+            CommonUtils.showDeletePicDialog(mContext, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    ;
-                }
-            });
-            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
                     ViewGroup parent = (ViewGroup) v.getParent();
                     String tag = (String) parent.getTag();
                     mItems.remove(tag);
@@ -185,7 +177,6 @@ public class PicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     notifyDataSetChanged();
                 }
             });
-            builder.create().show();
         }
     }
 

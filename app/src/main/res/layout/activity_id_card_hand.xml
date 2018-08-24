@@ -9,6 +9,7 @@
     tools:context="com.cloudmachine.ui.home.activity.IdCardHandActivity">
 
     <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/hand_title_ctv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:common_title_name="个人信息"
@@ -63,7 +64,7 @@
                     android:id="@+id/hand_idcard_img"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:visibility="gone"
                     />
 

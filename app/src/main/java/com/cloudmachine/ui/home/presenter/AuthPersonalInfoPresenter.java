@@ -30,16 +30,21 @@ import rx.schedulers.Schedulers;
 /**
  * Created by xiaojw on 2018/7/10.
  */
-
 public class AuthPersonalInfoPresenter extends AuthPersonalInfoContract.Presenter {
+
+
     @Override
     public void getMemberAuthInfo(long memberId) {
         mRxManage.add(mModel.getMemberAuthInfo(memberId).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
             protected void _onNext(JsonObject jsonObject) {
-                JsonElement j1 = jsonObject.get("realName");
-                JsonElement j2 = jsonObject.get("idCardNo");
-                mView.updateMemberAuthInfo(j1.getAsString(), j2.getAsString());
+                if (jsonObject != null && !jsonObject.isJsonNull()) {
+                    JsonElement j1 = jsonObject.get("realName");
+                    JsonElement j2 = jsonObject.get("idCardNo");
+                    if (j1 != null && !j1.isJsonNull() && j2 != null && !j2.isJsonNull()) {
+                        mView.updateMemberAuthInfo(j1.getAsString(), j2.getAsString());
+                    }
+                }
             }
 
             @Override
@@ -67,12 +72,11 @@ public class AuthPersonalInfoPresenter extends AuthPersonalInfoContract.Presente
     }
 
     @Override
-    public void verifyOcr(final long memberId, String imgUrl,String redisUserId) {
+    public void verifyOcr(final long memberId, String imgUrl, String redisUserId) {
         AppLog.print("memberId___" + memberId + " ,imgUrl___" + imgUrl);
-        mRxManage.add(mModel.verifyOcr(memberId, imgUrl,redisUserId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
+        mRxManage.add(mModel.verifyOcr(memberId, imgUrl, redisUserId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
             protected void _onNext(JsonObject resposeJson) {
-                AppLog.print("onNext__result_" + resposeJson.toString());
                 if (resposeJson != null) {
                     JsonElement messageJe = resposeJson.get("message");
                     JsonElement resutJe = resposeJson.get("result");

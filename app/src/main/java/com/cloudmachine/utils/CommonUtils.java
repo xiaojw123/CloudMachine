@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -56,6 +57,72 @@ import java.util.Map;
  */
 
 public class CommonUtils {
+
+    public static boolean isActivityDestoryed(Context context) {
+        if (context == null || ((Activity) (context)).isFinishing()) {
+            return true;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (((Activity) (context)).isDestroyed()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    public static void showDialog(Context context, String message, String negativeText, String positiveText, final DialogInterface.OnClickListener positiveListener) {
+
+        CustomDialog.Builder builder = new CustomDialog.Builder(context);
+        builder.setMessage(message);
+        builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if (positiveListener != null) {
+                    positiveListener.onClick(dialog, which);
+                }
+
+            }
+        });
+        builder.create().show();
+    }
+
+    public static void showBackDialog(final Context context){
+        showDialog(context, "确定放弃提交吗？返回后页面数据将不会保存", "取消", "确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ((Activity)context).finish();
+            }
+        });
+    }
+    public static void showDeletePicDialog(Context context, final DialogInterface.OnClickListener listener) {
+        CustomDialog.Builder builder = new CustomDialog.Builder(context);
+        builder.setMessage("确定要删除这张照片吗？");
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if (listener != null) {
+                    listener.onClick(dialog, which);
+                }
+            }
+        });
+        builder.create().show();
+    }
 
     public static ImageView getMarkerView(Context context, float width, float height, int resId) {
         ImageView img = new ImageView(context);
@@ -258,6 +325,12 @@ public class CommonUtils {
                 break;
             case Constants.PermissionType.LOCATION:
                 msg = "需要开启定位服务，请到设置->找到位置权限，打开定位服务";
+                break;
+            case Constants.PermissionType.STORAGE_CAMERA:
+                msg = "需要开启读写存储权限和相机服务，请到设置->权限管理打开";
+                break;
+            case Constants.PermissionType.ADDRESS_BOOK:
+                msg = "需要开启通讯录，请到设置->找到云机械->通讯录，打开通讯录";
                 break;
         }
         builder.setMessage(msg);

@@ -20,4 +20,18 @@
         android:layout_marginTop="@dimen/dimen_size_6"
         />
 
+    <TextView
+        android:id="@+id/machine_owership_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_120"
+        android:layout_gravity="center_horizontal"
+        android:drawablePadding="@dimen/pad1"
+        android:textColor="@color/cor5"
+        android:drawableTop="@drawable/ic_no_device"
+        android:text="暂无可用设备"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        />
+
 </LinearLayout>

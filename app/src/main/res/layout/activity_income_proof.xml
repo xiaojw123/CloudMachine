@@ -2,28 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/income_proof_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/public_bg"
     android:orientation="vertical"
     tools:context="com.cloudmachine.ui.home.activity.IncomeProofActivity">
 
     <com.cloudmachine.widget.CommonTitleView
         android:id="@+id/income_proof_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/public_bg"
-        />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/income_proof_prompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/public_bg"
+        android:layout_marginTop="-4dp"
         android:gravity="center_vertical"
-        android:paddingBottom="@dimen/dimen_size_8"
+        android:paddingBottom="@dimen/dimen_size_7"
         android:paddingLeft="@dimen/pad2"
-        android:paddingTop="@dimen/dimen_size_8"
+        android:paddingTop="@dimen/dimen_size_7"
         android:textColor="@color/cor10"
         android:textSize="@dimen/text_size_13_sp" />
 
@@ -32,22 +31,65 @@
         android:id="@+id/income_proof_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/pad1"
-        android:layout_marginRight="@dimen/pad1"
-        android:layout_marginTop="@dimen/dimen_size_5"
-        android:overScrollMode="never" />
+        android:background="@color/white"
+        android:overScrollMode="never"
+        android:paddingLeft="@dimen/pad1"
+        android:paddingRight="@dimen/pad1"
+        android:paddingTop="@dimen/dimen_size_5"
+        android:paddingBottom="@dimen/dimen_size_5"
+        />
+
+    <View
+        android:id="@+id/income_container_line"
+        style="@style/CommonLandscapeLine"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/income_container"
+        style="@style/Layout_Item_Style"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/layout_key_style"
+            android:text="年均收入(元)" />
+
+        <com.cloudmachine.utils.widgets.ClearEditTextView
+            android:id="@+id/income_edt"
+            style="@style/layout_value_style"
+            android:hint="请输入年均收入"
+            android:inputType="numberDecimal"
+
+            />
+
+    </LinearLayout>
+
 
     <com.cloudmachine.autolayout.widgets.RadiusButtonView
         android:id="@+id/income_proof_submit"
         style="@style/RadiusButtonStyle"
         android:layout_below="@+id/item_layout_container"
-        android:layout_marginTop="@dimen/dimen_size_8"
+        android:layout_marginTop="@dimen/dimen_size_20"
         app:rbtn_fillColor_dw="@color/cor5"
         app:rbtn_fillColor_nm="@color/cor5"
         app:rbtn_strokeColor="@color/cor5"
         app:rbtn_text="@string/submit"
         app:rbtn_textColor="@color/cor2015"
         app:rbtn_textSize="@dimen/siz3" />
+
+
+    <TextView
+        android:id="@+id/income_prove_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/pad1"
+        android:layout_marginRight="@dimen/pad1"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        android:lineSpacingExtra="@dimen/dimen_size_8"
+        android:textColor="@color/cor9"
+        android:textSize="@dimen/text_size_13_sp" />
 
 
 </LinearLayout>

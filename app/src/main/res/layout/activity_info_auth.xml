@@ -114,6 +114,7 @@
 
                     <TextView
                         android:id="@+id/info_auth_idcard_status"
+                        android:text="待上传"
                         style="@style/info_auth_value_style" />
                 </FrameLayout>
 
@@ -129,7 +130,9 @@
 
                     <TextView
                         android:id="@+id/info_auth_relation_status"
-                        style="@style/info_auth_value_style" />
+                        style="@style/info_auth_value_style"
+                        android:text="待完善"
+                        />
                 </FrameLayout>
 
                 <FrameLayout
@@ -143,7 +146,9 @@
 
                     <TextView
                         android:id="@+id/info_auth_operator_status"
-                        style="@style/info_auth_value_style" />
+                        style="@style/info_auth_value_style"
+                        android:text="待授权"
+                        />
                 </FrameLayout>
 
                 <FrameLayout
@@ -157,7 +162,9 @@
 
                     <TextView
                         android:id="@+id/info_auth_bank_status"
-                        style="@style/info_auth_value_style" />
+                        style="@style/info_auth_value_style"
+                        android:text="待验证"
+                        />
                 </FrameLayout>
 
                 <FrameLayout
@@ -171,7 +178,9 @@
 
                     <TextView
                         android:id="@+id/engineer_contract_status"
-                        style="@style/info_auth_value_style" />
+                        style="@style/info_auth_value_style"
+                        android:text="待上传"
+                        />
                 </FrameLayout>
 
                 <FrameLayout
@@ -185,7 +194,9 @@
 
                     <TextView
                         android:id="@+id/personal_income_status"
-                        style="@style/info_auth_value_style" />
+                        style="@style/info_auth_value_style"
+                        android:text="待上传"
+                        />
                 </FrameLayout>
 
                 <FrameLayout
@@ -199,7 +210,25 @@
 
                     <TextView
                         android:id="@+id/device_owner_status"
-                        style="@style/info_auth_value_style" />
+                        style="@style/info_auth_value_style"
+                        android:text="待上传"
+                        />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/info_auth_address"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_home"
+                        android:text="居住地址" />
+
+                    <TextView
+                        android:id="@+id/address_status"
+                        style="@style/info_auth_value_style"
+                        android:text="待完善"
+                        />
                 </FrameLayout>
             </LinearLayout>
 

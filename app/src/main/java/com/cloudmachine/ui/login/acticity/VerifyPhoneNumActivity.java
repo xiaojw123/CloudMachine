@@ -73,16 +73,12 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
     ClearEditTextView mValidateCode;
     @BindView(R.id.code_layout)
     RelativeLayout mCodeLayout;
-    @BindView(R.id.invitation_code)
-    ClearEditTextView mInvitationCode;
     @BindView(R.id.pwd_string)
     ClearEditTextView mPwdString;
     @BindView(R.id.agreement_text)
     TextView mAgreementText;
     @BindView(R.id.agreement_layout)
     LinearLayout mAgreementLayout;
-    @BindView(R.id.ll_invitation)
-    LinearLayout mLlInvitation;
     @BindView(R.id.ll_password)
     LinearLayout mLlPassword;
     private int mobileType = 2;
@@ -91,7 +87,6 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
     private String mOpenid;
     private int mSex;
     private String mAccount;
-    private String mInvitationValue;
     private String mPwd;
     private String mHeadimgurl;
     private RadiusButtonView mFindBtn;
@@ -160,15 +155,10 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
                 } else {
                     mPwd = null;
                 }
-                if (TextUtils.isEmpty(mInvitationCode.getText().toString().trim())) {
-                    mInvitationValue = null;
-                } else {
-                    mInvitationValue = mInvitationCode.getText().toString().trim();
-                }
               /*  mPresenter.bindWx(mUnionid,mOpenid,mAccount
                 ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);*/
                 mPresenter.wxBind(mUnionid, mOpenid, mAccount
-                        , mCode, mInvitationValue, mPwd, mNickname, mHeadimgurl, mobileType);
+                        , mCode, null, mPwd, mNickname, mHeadimgurl, mobileType);
 
                /* mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
                 .wxBind(mUnionid,mOpenid,mAccount
@@ -203,9 +193,7 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
         if (mobileType == 1) {
             mLlPassword.setVisibility(View.VISIBLE);
-            mLlInvitation.setVisibility(View.VISIBLE);
         } else {
-            mLlInvitation.setVisibility(View.GONE);
             mLlPassword.setVisibility(View.GONE);
         }
     }

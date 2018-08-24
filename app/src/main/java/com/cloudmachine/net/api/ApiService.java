@@ -23,6 +23,7 @@ import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.MenuBean;
 import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.bean.OilSynBean;
+import com.cloudmachine.bean.PayCodeItem;
 import com.cloudmachine.bean.PickItemBean;
 import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.bean.RepairListInfo;
@@ -73,6 +74,16 @@ import rx.Observable;
  * 修改备注：
  */
 public interface ApiService {
+    @FormUrlEncoded
+    @POST("picture/applyResideAddress")
+    Observable<BaseRespose<String>>  submitHomeAddress(@Field("uniqueId") String uniqueId,@Field("resideAddress") String resideAddress);
+
+    @GET("boxCode/listBoxCodeHistory")
+    Observable<BaseRespose<List<PayCodeItem>>> getCodeHistoryList(@Query("accountId") int accountId,@Query("page") int page,@Query("size") int size);
+
+    @GET("boxCode/listBoxCodesCanUse")
+    Observable<BaseRespose<List<PayCodeItem>>>  getBoxCodeList(@Query("accountId") int accountId,@Query("boxSn") String boxSn,@Query("page") int page,@Query("size") int size);
+
 
     /**机器图片上传
      *@param uniqueId 用户id
@@ -87,7 +98,7 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("picture/personalImageUpload")
-    Observable<BaseRespose<String>> perImgUpload(@Field("uniqueId") String uniqueId,@Field("pictureUrls") String pictureUrls,@Field("bnsType") int bnsType);
+    Observable<BaseRespose<String>> perImgUpload(@Field("uniqueId") String uniqueId,@Field("pictureUrls") String pictureUrls,@Field("bnsType") int bnsType,@Field("annualIncome") String annualIncome);
 
     @GET("ticket/memberAuthInfo")
     Observable<BaseRespose<AuthBean>>  getAuthInfo(@Query("memberId") long memberId);
@@ -144,7 +155,7 @@ public interface ApiService {
     //运营商相关
     @FormUrlEncoded
     @POST("loan/verification/operatorAuth")
-    Observable<BaseRespose<JsonObject>> authOperator(@Field("memberId") long memberId, @Field("servicePwd") String servicePwd);
+    Observable<JsonObject> authOperator(@Field("memberId") long memberId, @Field("servicePwd") String servicePwd);
 
     @FormUrlEncoded
     @POST("loan/verification/operatorCodeValidRetry")

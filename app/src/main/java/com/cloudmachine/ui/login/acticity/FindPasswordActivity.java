@@ -69,10 +69,6 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 
     private View left_layout,
             pwd_layout, agreement_layout;
-    private ClearEditTextView cet_invitationCode;
-    private String inviteCode = "-1";
-    LinearLayout invaiteCodeContainer;
-    boolean hasInvatiteCode;
     private String phone;
     private String pwdStr;
     String phoneNum;
@@ -85,9 +81,6 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
         this.mContext = this;
         mHandler = new Handler(this);
         type = getIntent().getIntExtra("type", 1);
-        hasInvatiteCode = getIntent().getBooleanExtra(HASINVITATIONCODE, false);
-
-
         initView();
 
     }
@@ -104,8 +97,6 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
     }
 
     private void initView() {
-        invaiteCodeContainer = (LinearLayout) findViewById(R.id.invitation_code_cotainer);
-        cet_invitationCode = (ClearEditTextView) findViewById(R.id.invitation_code);
         agreement_layout = findViewById(R.id.agreement_layout);
         left_layout = findViewById(R.id.left_layout);
         left_layout.setOnClickListener(this);
@@ -123,16 +114,13 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
         phone_string.addTextChangedListener(this);
         validate_code.addTextChangedListener(this);
         pwd_string.addTextChangedListener(this);
-        if (hasInvatiteCode) {
-            invaiteCodeContainer.setVisibility(View.GONE);
-        }
         find_btn = (RadiusButtonView) findViewById(R.id.find_btn);
         find_btn.setButtonEnable(false);
         find_btn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (find_btn.isButtonEanble()){
+                if (find_btn.isButtonEanble()) {
                     savePwd();
                 }
 
@@ -145,13 +133,11 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 find_btn.setText("提交");
                 pwd_layout.setVisibility(View.VISIBLE);
                 agreement_layout.setVisibility(View.GONE);
-                cet_invitationCode.setVisibility(View.GONE);
                 break;
             case 2:
                 title_text.setText("修改密码");
                 pwd_layout.setVisibility(View.VISIBLE);
                 agreement_layout.setVisibility(View.GONE);
-                cet_invitationCode.setVisibility(View.GONE);
                 break;
             case 3:
                 MobclickAgent.onPageStart(UMengKey.time_register);
@@ -159,7 +145,6 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 find_btn.setText("注册");
                 pwd_layout.setVisibility(View.VISIBLE);
                 agreement_layout.setVisibility(View.VISIBLE);
-                cet_invitationCode.setVisibility(View.VISIBLE);
                 break;
             default:
                 find_btn.setText("注册");
@@ -200,7 +185,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
             case R.id.validate_text:
                 if (null == myTimer) {
                     phoneNum = phone_string.getText().toString().trim();
-                    if (phoneNum.length() == 11&&phoneNum.charAt(0) == '1') {
+                    if (phoneNum.length() == 11 && phoneNum.charAt(0) == '1') {
                         if (validate_num == 0) {
                             show();
                             String codeType = "1";
@@ -244,18 +229,13 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 Constants.ToastAction("新密码长度必须大于6位");
             } else {
                 //在这里判断是否有邀请码
-                if (!TextUtils.isEmpty(cet_invitationCode.getText().toString().trim())) {
-                    inviteCode = cet_invitationCode.getText().toString().trim();
-                } else {
-                    inviteCode = "-1";
-                }
                 MobclickAgent.onEvent(this, MobEvent.COUNT_LOGIN);
-                new RegisterNewAsync(phone, Utils.getPwdStr(pwdStr), code, mContext, mHandler, inviteCode).execute();
+                new RegisterNewAsync(phone, Utils.getPwdStr(pwdStr), code, mContext, mHandler).execute();
             }
         } else {
             if (TextUtils.isEmpty(phone)) {
                 Constants.ToastAction("请输入手机号码");
-            }else if (phone.length() != 11 || phone.charAt(0) != '1') {
+            } else if (phone.length() != 11 || phone.charAt(0) != '1') {
                 Constants.ToastAction("手机号必须为11位且首位数字为1");
             } else if (TextUtils.isEmpty(code)) {
                 Constants.ToastAction("请输入验证码");

@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -37,7 +38,6 @@ import butterknife.OnClick;
 
 public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseModel> implements PurseContract.View {
     public static final String KEY_WALLETAMOUNT = "key_walletamout";
-    public static final String UPDATE_AUTH_STATUS="update_auth_status";
     @BindView(R.id.purse_back_img)
     ImageView purseBackImg;
     @BindView(R.id.purse_balance_tv)
@@ -54,18 +54,19 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
     FrameLayout salaryFl;
     @BindView(R.id.purse_detail_fl)
     FrameLayout detailFl;
-    @BindView(R.id.purse_money_fl)
-    FrameLayout moneyFl;
     @BindView(R.id.purse_salary_auth)
     TextView salaryAuthTv;
     @BindView(R.id.purse_ticket_fl)
     FrameLayout ticketFl;
-    @BindView(R.id.purse_ticket_identify)
-    TextView tiketIdentifyTv;
+    @BindView(R.id.ticket_line)
+    View ticketLine;
+    @BindView(R.id.purse_paycode_fl)
+    FrameLayout paycodeFl;
     Member mMember;
     String walletAmountStr;
     double mDespoitAmout;
     String mJumpUrl;
+    long memberId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,29 +74,16 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
         setContentView(R.layout.activity_purse);
         ButterKnife.bind(this);
         mMember = MemeberKeeper.getOauth(mContext);
-        if (mMember.isAuth()) {
-            salaryAuthTv.setText(getResources().getString(R.string.has_auth));
-        }
-        if (mMember.isIdentify()) {
-            tiketIdentifyTv.setText(getResources().getString(R.string.has_auth));
-        }
-        // TODO: 2018/8/9 版本回退
-//       registerObserverEvent(UPDATE_AUTH_STATUS);
+        memberId = mMember.getId();
     }
 
-    @Override
-    protected void resultCallBack(Object result) {
-        salaryAuthTv.setText(getResources().getString(R.string.has_auth));
-        mMember.setIsAuth(1);
-        MemeberKeeper.saveOAuth(mMember, mContext);
-
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.getWalletAmount(mMember.getId());
-        mPresenter.getAvaildCouponList(mMember.getId());
+        mPresenter.getMemberInfo(memberId);
+        mPresenter.getWalletAmount(memberId);
+        mPresenter.getAvaildCouponList(memberId);
 
     }
 
@@ -110,12 +98,13 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
         } else {
             purseExtractionCashBtn.setEnabled(false);
         }
-        // TODO: 2018/8/9 版本回退
-//        if (!TextUtils.isEmpty(mJumpUrl)) {
-//            ticketFl.setVisibility(View.VISIBLE);
-//        } else {
-//            ticketFl.setVisibility(View.GONE);
-//        }
+        if (!TextUtils.isEmpty(mJumpUrl)) {
+            ticketFl.setVisibility(View.VISIBLE);
+            ticketLine.setVisibility(View.VISIBLE);
+        } else {
+            ticketFl.setVisibility(View.GONE);
+            ticketLine.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -123,18 +112,16 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
         mPresenter.setVM(this, mModel);
     }
 
-    @OnClick({R.id.purse_ticket_fl, R.id.purse_money_fl, R.id.purse_detail_fl, R.id.purse_salary_fl, R.id.purse_instruction_img, R.id.purse_back_img, R.id.purse_coupon_fl, R.id.purse_extraction_cash_btn})
+    @OnClick({R.id.purse_paycode_fl,R.id.purse_ticket_fl, R.id.purse_detail_fl, R.id.purse_salary_fl, R.id.purse_instruction_img, R.id.purse_back_img, R.id.purse_coupon_fl, R.id.purse_extraction_cash_btn})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.purse_money_fl:
-                ToastUtils.showToast(this, "尚未开放，敬请期待");
-
-
+            case R.id.purse_paycode_fl:
+                Constants.toActivity(this,PayCodeActivity.class,null);
                 break;
             case R.id.purse_ticket_fl:
-                Bundle qcBundle=new Bundle();
-                qcBundle.putString(QuestionCommunityActivity.H5_URL,mJumpUrl);
-                Constants.toActivity(this,QuestionCommunityActivity.class,qcBundle);
+                Bundle qcBundle = new Bundle();
+                qcBundle.putString(QuestionCommunityActivity.H5_URL, mJumpUrl);
+                Constants.toActivity(this, QuestionCommunityActivity.class, qcBundle);
                 break;
 
             case R.id.purse_salary_fl:
@@ -150,9 +137,7 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
                         Constants.toActivity(this, IncomeSpendActivity.class, b);
                     }
                 } else {
-                    // TODO: 2018/8/9 版本回退
-//                    Constants.toActivity(this,AuthPersonalInfoActivity.class,null);
-                    Constants.toActivityForR(this,AuthNameActivity.class,null);
+                    Constants.toActivity(this, AuthPersonalInfoActivity.class, null);
                 }
                 break;
 
@@ -184,9 +169,7 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
                     eb.putSerializable(Constants.MC_MEMBER, mMember);
                     Constants.toActivity(this, ExtractionCashActivity.class, eb, false);
                 } else {
-                    // TODO: 2018/8/9 版本回退
-//                    Constants.toActivity(this,AuthPersonalInfoActivity.class,null);
-                    Constants.toActivityForR(this,AuthNameActivity.class,null);
+                    Constants.toActivity(this, AuthPersonalInfoActivity.class, null);
                 }
                 break;
         }
@@ -199,15 +182,13 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
         purseCouponNumTv.setText(sumNum + "张");
 
     }
-    // TODO: 2018/8/9c版本回退
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == AuthNameActivity.AUTH_SUCCESS) {
-            salaryAuthTv.setText(getResources().getString(R.string.has_auth));
-            mMember.setIsAuth(1);
-            MemeberKeeper.saveOAuth(mMember, mContext);
-        }
 
+    @Override
+    public void updateMemberInfo(Member member) {
+        mMember = member;
+        if (mMember.isAuth()) {
+            salaryAuthTv.setText(getResources().getString(R.string.has_auth));
+        }
+        MemeberKeeper.saveOAuth(mMember, mContext);
     }
 }

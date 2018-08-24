@@ -1,11 +1,13 @@
 package com.cloudmachine.ui.home.activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,19 +15,25 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.PermissionsActivity;
+import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.Member;
 import com.cloudmachine.camera.CameraActivity;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.contract.AuthPersonalInfoContract;
 import com.cloudmachine.ui.home.model.AuthPersonalInfoModel;
 import com.cloudmachine.ui.home.presenter.AuthPersonalInfoPresenter;
 import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
+import com.cloudmachine.widget.CommonTitleView;
 
 import java.io.File;
 
@@ -34,7 +42,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersonalInfoPresenter, AuthPersonalInfoModel> implements View.OnClickListener, AuthPersonalInfoContract.View, ClearEditTextView.OnTextChangeListener {
+public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersonalInfoPresenter, AuthPersonalInfoModel> implements View.OnClickListener, AuthPersonalInfoContract.View {
     public static final int REQUEST_PICK_IMAGE = 0x16;
     @BindView(R.id.pi_portrait_img)
     ImageView portraitImg;
@@ -68,12 +76,19 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
     TextView portaritFailedTv;
     @BindView(R.id.pi_describe_tv)
     TextView describeTv;
+    @BindView(R.id.pi_title_ctv)
+    CommonTitleView titleView;
+    @BindView(R.id.pi_select_cb)
+    CheckBox selectCb;
+    @BindView(R.id.pi_service_terms)
+    TextView serviceTv;
     File portraitPicFile, emblemPicFile;
     PermissionsChecker mChecker;
     String type;
     String mRedisUserId;
     String portraitImgUrl, emblemImgUrl;
     long memberId;
+    Member mMember;
 
 
     @Override
@@ -85,29 +100,17 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
     }
 
     private void initView() {
+        mMember = MemeberKeeper.getOauth(mContext);
         memberId = UserHelper.getMemberId(this);
-        boolean isComplted = getIntent().getBooleanExtra(InfoManagerActivity.KEY_COMPLETED, false);
-        if (isComplted) {
-            describeTv.setText("已完善个人信息");
-            submitBtn.setVisibility(View.GONE);
-            protraitDelteImg.setVisibility(View.GONE);
-            portraitContainer.setVisibility(View.VISIBLE);
-            emblemDeleteImg.setVisibility(View.GONE);
-            emblemContainer.setVisibility(View.VISIBLE);
-            portraitImg.setEnabled(false);
-            emblemImg.setEnabled(false);
-            mPresenter.getMemberAuthInfo(memberId);
-        } else {
-            mChecker = new PermissionsChecker(mContext);
-            submitBtn.setButtonClickEnable(false);
-            submitBtn.setButtonClickListener(this);
-            nameEdt.setOnTextChangeListener(this);
-            idEdt.setOnTextChangeListener(this);
-        }
+        mChecker = new PermissionsChecker(mContext);
+        titleView.setLeftClickListener(this);
+        submitBtn.setButtonClickEnable(false);
+        submitBtn.setButtonClickListener(this);
         nameEdt.setEnabled(false);
         idEdt.setEnabled(false);
         nameEdt.setNoClearIcon(true);
         idEdt.setNoClearIcon(true);
+        mPresenter.getMemberAuthInfo(memberId);
     }
 
 
@@ -116,24 +119,53 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
         mPresenter.setVM(this, mModel);
     }
 
-    @OnClick({R.id.pi_emblem_delete, R.id.pi_portrait_delete, R.id.pi_portrait_img, R.id.pi_emblem_img, R.id.pi_guide_container})
+    @OnClick({R.id.pi_service_terms, R.id.pi_emblem_delete, R.id.pi_portrait_delete, R.id.pi_portrait_img, R.id.pi_emblem_img, R.id.pi_guide_container})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.pi_emblem_delete:
-                emblemContainer.setVisibility(View.GONE);
-                emblemImg.setImageResource(R.drawable.ic_id_pic2);
-                emblemImg.setEnabled(true);
-                if (emblemPicFile != null && emblemPicFile.exists()) {
-                    emblemPicFile.delete();
+
+
+            case R.id.common_titleview_back_img:
+                if (portraitSuccessImg.getVisibility() == View.VISIBLE || emblemSuccessImg.getVisibility() == View.VISIBLE) {
+                    CommonUtils.showBackDialog(this);
+                } else {
+                    finish();
                 }
                 break;
+            case R.id.pi_service_terms:
+                Bundle tb = new Bundle();
+                tb.putString(QuestionCommunityActivity.H5_URL, ApiConstants.APPBmxy);
+                Constants.toActivity(this, QuestionCommunityActivity.class, tb);
+                break;
+
+            case R.id.pi_emblem_delete:
+                CommonUtils.showDeletePicDialog(this, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        emblemContainer.setVisibility(View.GONE);
+                        emblemImg.setImageResource(R.drawable.pi_emblem_bg);
+                        emblemImg.setEnabled(true);
+                        submitBtn.setButtonClickEnable(false);
+                        if (emblemPicFile != null && emblemPicFile.exists()) {
+                            emblemPicFile.delete();
+                        }
+
+                    }
+                });
+                break;
             case R.id.pi_portrait_delete:
-                portraitContainer.setVisibility(View.GONE);
-                portraitImg.setImageResource(R.drawable.ic_id_pic1);
-                portraitImg.setEnabled(true);
-                if (portraitPicFile != null && portraitPicFile.exists()) {
-                    portraitPicFile.delete();
-                }
+                CommonUtils.showDeletePicDialog(this, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        portraitContainer.setVisibility(View.GONE);
+                        portraitImg.setImageResource(R.drawable.pi_portrait_bg);
+                        portraitImg.setEnabled(true);
+                        submitBtn.setButtonClickEnable(false);
+                        if (portraitPicFile != null && portraitPicFile.exists()) {
+                            portraitPicFile.delete();
+                        }
+
+                    }
+                });
                 break;
             case R.id.pi_portrait_img:
                 type = CameraActivity.TYPE_PIC_FRONT;
@@ -155,10 +187,10 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
                 }
                 break;
             case R.id.radius_button_text:
-                if (portraitSuccessImg.getVisibility() == View.VISIBLE && emblemSuccessImg.getVisibility() == View.VISIBLE) {
+                if (selectCb.isChecked()) {
                     mPresenter.submitIdUserInfo(memberId, mRedisUserId);
                 } else {
-                    ToastUtils.showToast(mContext, "正反面身份证都要拍摄，才能提交个人信息！");
+                    ToastUtils.showToast(mContext, "需同意保密与授权协议后，才能提交！");
                 }
                 break;
         }
@@ -223,22 +255,38 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
 
     @Override
     public void returnVerifyOrcSuccess(String redisUserId, String realName, String idCardNo) {
-        if (mRedisUserId == null) {
-            mRedisUserId = redisUserId;
-        }
         if (CameraActivity.TYPE_PIC_FRONT.equals(type)) {
+            if (!TextUtils.isEmpty(realName) && !TextUtils.isEmpty(idCardNo)) {
+                updateMemberAuthInfo(realName, idCardNo);
+            } else {
+                retrunVerifyOrcFailed();
+                return;
+            }
             portraitContainer.setVisibility(View.VISIBLE);
             portraitContainer.setSelected(false);
             portraitSuccessImg.setVisibility(View.VISIBLE);
+            protraitDelteImg.setVisibility(View.VISIBLE);
             portaritFailedTv.setVisibility(View.GONE);
+            Glide.with(mContext).load(portraitImgUrl).into(portraitImg);
         } else {
+            if (!TextUtils.isEmpty(realName) && !TextUtils.isEmpty(idCardNo)) {
+                retrunVerifyOrcFailed();
+                return;
+            }
             emblemContainer.setVisibility(View.VISIBLE);
             emblemContainer.setSelected(false);
             emblemSuccessImg.setVisibility(View.VISIBLE);
+            emblemDeleteImg.setVisibility(View.VISIBLE);
             emblemFailedTv.setVisibility(View.GONE);
+            Glide.with(mContext).load(emblemImgUrl).into(emblemImg);
         }
-        if (!TextUtils.isEmpty(realName) && !TextUtils.isEmpty(idCardNo)) {
-            updateMemberAuthInfo(realName, idCardNo);
+        if (mRedisUserId == null) {
+            mRedisUserId = redisUserId;
+        }
+        if (portraitSuccessImg.getVisibility() == View.VISIBLE && emblemSuccessImg.getVisibility() == View.VISIBLE) {
+            submitBtn.setButtonClickEnable(true);
+        } else {
+            submitBtn.setButtonClickEnable(false);
         }
     }
 
@@ -274,20 +322,13 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
     @Override
     public void submitSuccess() {
         ToastUtils.showToast(mContext, "提交成功");
-        setResult(QuestionCommunityActivity.UPDATE_TIKCET);
-        mRxManager.post(PurseActivity.UPDATE_AUTH_STATUS, null);
+        setResult(RES_UPDATE_TIKCET);
+        if (mMember != null) {
+            mMember.setIsAuth(1);
+            MemeberKeeper.saveOAuth(mMember, mContext);
+        }
         finish();
     }
 
 
-    @Override
-    public void textChanged(Editable s) {
-        String nameStr = nameEdt.getText().toString();
-        String idStr = idEdt.getText().toString();
-        if (nameStr.length() > 0 && idStr.length() > 0) {
-            submitBtn.setButtonClickEnable(true);
-        } else {
-            submitBtn.setButtonClickEnable(false);
-        }
-    }
 }

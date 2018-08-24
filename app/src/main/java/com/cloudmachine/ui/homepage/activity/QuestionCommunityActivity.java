@@ -121,7 +121,6 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
     private static final int REQUEST_PERMISSION = 0x004;  //权限请求
     private static final int REQUEST_PERMISSION_PICK = 0x005;  //权限请求
     public static final int FLUSH_PAGE = 0x1330;
-    public static final int UPDATE_TIKCET = 0x110;
     private static final String PARAMS_KEY_MYID = "myid";
     public static final String PARAMS_KEY_MEMBERID = "memberId";
     public static final String PARAMS_KEY_VERSION = "appVersion";
@@ -599,13 +598,20 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                             REQUEST_PICK_IMAGE);
                 }
                 break;
+            case REQ_GO_FACE:
+                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE_CAMERA);
+                } else {
+                    gotoFace();
+                }
+                break;
             default:
                 switch (resultCode) {
-                    case UPDATE_TIKCET:
+                    case RES_UPDATE_TIKCET:
                         loadUrl();
                         break;
                     case LivenessDetectActivity.RESULT_FACE_SUCCESS:
-                        if (!TextUtils.isEmpty(faceCallBack)){
+                        if (!TextUtils.isEmpty(faceCallBack)) {
 //                          String jsMethod;
 //                            if (faceCallBack.contains("()")){
 //                                int index=faceCallBack.indexOf("()");
@@ -919,7 +925,10 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     }
                     break;
                 case Constants.HANDLER_JS_BODY:
-                    JsBody body = (JsBody) msg.obj;
+                    if (CommonUtils.isActivityDestoryed(mContext)) {
+                        return;
+                    }
+                    final JsBody body = (JsBody) msg.obj;
                     if (!TextUtils.isEmpty(body.getTitle())) {
                         shareTitle = body.getTitle();
                         shareLink = body.getLink();
@@ -964,6 +973,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     if (!TextUtils.isEmpty(h5Title)) {
                         mWvTitle.setTitleName(h5Title);
                         String rightTitle = body.getRight_title();
+                        String rightImg = body.getRight_img();
                         if (!TextUtils.isEmpty(rightTitle) && !SHARE.equals(rightTitle)) {
                             final String rightEvent = body.getRight_event();
                             if (!TextUtils.isEmpty(rightEvent)) {
@@ -993,8 +1003,19 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
 
                             });
                         } else {
-                            mWvTitle.setRightImg(0, null);
+                            if (!TextUtils.isEmpty(rightImg)) {
+                                mWvTitle.setRightImg(rightImg, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Constants.callJsMethod(mWebView, body.getRight_event());
+                                    }
+                                });
+                            } else {
+                                mWvTitle.setRightImg(0, null);
+                            }
                         }
+
+
                         final String leftEvent = body.getLeft_event();
                         if (!TextUtils.isEmpty(leftEvent)) {
                             mWvTitle.setLeftClickListener(new View.OnClickListener() {
@@ -1007,14 +1028,11 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                     }
                     break;
                 case Constants.HANDLER_FACE_RECOGNITION:
-                    faceCallBack= (String) msg.obj;
+                    faceCallBack = (String) msg.obj;
                     if (mPermissionsCheck.lacksPermissions(Constants.PERMISSIONS_CAMER_SD)) {
                         PermissionsActivity.startActivityForResult(QuestionCommunityActivity.this, REQ_GO_FACE, Constants.PERMISSIONS_CAMER_SD);
                     } else {
-                        Bundle faceData = new Bundle();
-                        faceData.putString(LivenessDetectActivity.URL_CONTRASTFACE, URLs.FACE_URL);
-                        faceData.putLong(LivenessDetectActivity.MEMBER_ID, UserHelper.getMemberId(mContext));
-                        Constants.toActivityForR(QuestionCommunityActivity.this, LivenessDetectActivity.class, faceData);
+                        gotoFace();
                     }
                     break;
             }
@@ -1033,6 +1051,13 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
             MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
         }
     };
+
+    private void gotoFace() {
+        Bundle faceData = new Bundle();
+        faceData.putString(LivenessDetectActivity.URL_CONTRASTFACE, URLs.FACE_URL);
+        faceData.putLong(LivenessDetectActivity.MEMBER_ID, UserHelper.getMemberId(mContext));
+        Constants.toActivityForR(QuestionCommunityActivity.this, LivenessDetectActivity.class, faceData);
+    }
 
 
     @Override

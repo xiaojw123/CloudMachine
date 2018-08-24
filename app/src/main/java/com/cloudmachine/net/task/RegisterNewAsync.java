@@ -25,15 +25,13 @@ public class RegisterNewAsync extends ATask {
 	private String mobile;
 	private String pwd;
 	private String code;
-	private String inviteCode;
+
 	
-	
-	public RegisterNewAsync(String mobile,String pwd,String code,Context context,Handler handler,String inviteCode){
+	public RegisterNewAsync(String mobile,String pwd,String code,Context context,Handler handler){
 		this.handler = handler;
 		this.mobile = mobile;
 		this.pwd = pwd;
 		this.code = code;
-		this.inviteCode = inviteCode;
 	}
 	
 
@@ -44,11 +42,6 @@ public class RegisterNewAsync extends ATask {
 		list.add(new BasicNameValuePair("mobile", mobile));
 		list.add(new BasicNameValuePair("pwd", pwd));
     	list.add(new BasicNameValuePair("code", code));
-		if (inviteCode.equals("-1")) {
-
-		} else {
-			list.add(new BasicNameValuePair("inviteCode", inviteCode));
-		}
 		String result = null;
 		try {
 			result = httpRequest.get(URLs.REGISTNEW_URL, list);

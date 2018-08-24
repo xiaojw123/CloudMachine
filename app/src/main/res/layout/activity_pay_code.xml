@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/public_bg"
+    tools:context="com.cloudmachine.ui.home.activity.PayCodeActivity">
+    <com.cloudmachine.widget.CommonTitleView
+        android:id="@+id/pay_code_ctv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_title_name="云盒支付码"
+        />
+
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/pay_code_rlv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-4dp"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/pay_code_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_no_pay_code"
+        android:drawablePadding="@dimen/pad1"
+        android:text="您目前暂无云盒支付码"
+        android:textColor="@color/cor5"
+        android:textSize="@dimen/text_size_13_sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dimen_size_120"
+        />
+
+</LinearLayout>

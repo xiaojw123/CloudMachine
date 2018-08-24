@@ -1,12 +1,16 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -15,18 +19,32 @@ import com.amap.api.maps.model.Text;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.net.ATask;
+import com.cloudmachine.net.HttpURLConnectionImp;
+import com.cloudmachine.net.IHttp;
 import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.contract.OperateContact;
 import com.cloudmachine.ui.home.model.OperateModel;
 import com.cloudmachine.ui.home.presenter.OperatePresenter;
+import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.utils.CommonUtils;
+import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
+import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.widget.CustomBindDialog;
+import com.google.gson.Gson;
 
+import org.apache.http.NameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -53,8 +71,8 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
     TextView termsTv;
     @BindView(R.id.operator_select_cb)
     CheckBox selectRb;
-
-
+    @BindView(R.id.operator_loading)
+    FrameLayout loadingView;
     long memberId;
     Timer mTimer;
     int timeOut = 60;//定时时长60s
@@ -87,7 +105,9 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.opeator_foraget_tv:
-                ToastUtils.showToast(mContext, "暂未开放");
+                Bundle fb = new Bundle();
+                fb.putString(QuestionCommunityActivity.H5_URL, ApiConstants.APPForgetPassword);
+                Constants.toActivity(this, QuestionCommunityActivity.class, fb);
                 break;
             case R.id.opeartor_switch_img:
                 onDrawableRightClickListener(view);
@@ -95,13 +115,15 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
             case R.id.radius_button_text:
                 if (selectRb.isChecked()) {
                     String psw = pswEdt.getText().toString();
-                    mPresenter.authOperator(memberId, psw);
+                    mPresenter.authOperator(memberId, psw, submitBtn, loadingView);
                 } else {
-                    ToastUtils.showToast(mContext, "需同意服务条款后，才能提交！");
+                    ToastUtils.showToast(mContext, "需同意手机运营商授权协议后，才能提交！");
                 }
                 break;
             case R.id.operate_service_terms:
-                ToastUtils.showToast(mContext, "暂未开放");
+                Bundle tb = new Bundle();
+                tb.putString(QuestionCommunityActivity.H5_URL, ApiConstants.APPSjyysxy);
+                Constants.toActivity(this, QuestionCommunityActivity.class, tb);
                 break;
 
         }
@@ -147,7 +169,9 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
                     if (identyfDialog != null && identyfDialog.isShowing()) {
                         identyfDialog.dismiss();
                     }
-                    mPresenter.checkVerifyCode(memberId, mTaskId, code);
+//                    mPresenter.checkVerifyCode(memberId, mTaskId, code);
+                    OperatorCodeAsync task = new OperatorCodeAsync();
+                    task.execute(String.valueOf(memberId), mTaskId, code);
                 } else {
                     ToastUtils.showToast(mContext, "验证码不能为空");
                 }
@@ -217,7 +241,7 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
     @Override
     public void returnAuthOperator(String taskId, boolean isAuthed) {
         if (isAuthed) {
-            ToastUtils.showToast(mContext, "授权成功");
+            ToastUtils.showToast(mContext, "已授权");
             finish();
         } else {
             mTaskId = taskId;
@@ -235,5 +259,64 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
             submitBtn.setButtonClickEnable(false);
         }
 
+    }
+
+    private class OperatorCodeAsync extends ATask {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            submitBtn.setButtonClickEnable(false);
+            loadingView.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            IHttp httpRequest = new HttpURLConnectionImp();
+            String result = null;
+            try {
+                List<NameValuePair> paramsList = new ArrayList<>();
+                if (params.length >= 3) {
+                    paramsList.add(Utils.addBasicValue("memberId", params[0]));
+                    paramsList.add(Utils.addBasicValue("taskId", params[1]));
+                    paramsList.add(Utils.addBasicValue("smsCode", params[2]));
+                }
+                result = httpRequest.get(Constants.URL_OPERATOR_CODE, paramsList);
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (CommonUtils.isActivityDestoryed(mContext)) {
+                return;
+            }
+            submitBtn.setButtonClickEnable(true);
+            loadingView.setVisibility(View.GONE);
+            decodeJson(result);
+        }
+
+        @Override
+        protected void decodeJson(String result) {
+            super.decodeJson(result);
+            AppLog.print("operatorCodeCheck___result__" + result);
+            if (isSuccess) {
+                ToastUtils.showToast(mContext, "提交成功");
+                finish();
+            } else {
+                ToastUtils.showToast(mContext, message);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mContext = null;
+        super.onDestroy();
     }
 }

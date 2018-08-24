@@ -228,6 +228,7 @@
     <string name="contact_info">联系人信息</string>
     <string name="info_auth">信息认证</string>
     <string name="income_proof">收入证明</string>
+    <string name="box_pay_code">云盒支付码</string>
 
 
 </resources>

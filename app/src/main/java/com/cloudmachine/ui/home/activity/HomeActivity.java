@@ -200,8 +200,10 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     int mustUpdate;
     int leftMargin;
     PermissionsChecker mChecker;
-    boolean isLastLogin;
+    long lastMemberId;
+    boolean isFirst = true;
     SparseArray<WebFragment> webFmtArray = new SparseArray<>();
+    WebFragment selWebFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -577,7 +579,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     fmt.loadUrl();
                     ft.show(fmt);
                 }
-
+                selWebFragment = fmt;
                 break;
 
 
@@ -661,10 +663,14 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     .error(R.drawable.ic_default_head)
                     .into(homeHeadImg);
             homeNicknameTv.setText(member.getNickName());
-            if (isLastLogin) {
-                isLastLogin = false;
-                reloadUrl();
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                if (lastMemberId != memberId) {
+                    reloadUrl();
+                }
             }
+            lastMemberId = memberId;
             mPresenter.getCountByStatus(memberId, 0);
             mPresenter.updateUnReadMessage(memberId);
         } else {
@@ -677,11 +683,14 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             }
             itmeMessageNimg.setNotifyPointVisible(false);
             itemOrderNimg.setNotifyPointVisible(false);
-            if (!isLastLogin) {
-                isLastLogin = true;
-                reloadUrl();
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                if (lastMemberId != -1) {
+                    reloadUrl();
+                }
             }
-
+            lastMemberId = -1;
         }
         mPresenter.getHomeBannerInfo();
 
@@ -1101,6 +1110,13 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     qBundle.putBoolean(QuestionCommunityActivity.QR_CODE, true);
                     qBundle.putString(QuestionCommunityActivity.H5_URL, qrUrl);
                     Constants.toActivity(this, QuestionCommunityActivity.class, qBundle);
+                }
+                break;
+            default:
+                if (resultCode == RES_UPDATE_TIKCET) {
+                    if (selWebFragment != null) {
+                        selWebFragment.loadUrl();
+                    }
                 }
                 break;
 

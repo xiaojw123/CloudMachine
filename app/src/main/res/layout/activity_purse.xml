@@ -69,20 +69,17 @@
         <TextView
             android:id="@+id/purse_balance_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/dimen_size_16"
-            android:layout_marginTop="@dimen/dimen_size_30"
             android:text="0"
+            android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_67_sp" />
     </LinearLayout>
 
 
-
-
-
     <FrameLayout
-        android:id="@+id/purse_money_fl"
+        android:id="@+id/purse_ticket_fl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_50"
         android:layout_below="@+id/purse_layout1"
@@ -96,31 +93,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:drawableLeft="@drawable/ic_purse_money"
+            android:drawableLeft="@drawable/ic_ticket"
             android:drawablePadding="@dimen/dimen_size_16"
-            android:text="@string/money"
+            android:text="@string/small_ticket"
             android:textColor="@color/color_66"
             android:textSize="@dimen/text_size_14_sp" />
 
 
-        <TextView
-            android:id="@+id/purse_money_auth"
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
-            android:drawablePadding="@dimen/pad1"
-            android:drawableRight="@drawable/arrow_right"
-            android:text="@string/auth_qualification"
-            android:textColor="@color/c_8"
-            android:textSize="@dimen/text_size_14_sp"
-            />
-
-
-
+            android:src="@drawable/arrow_right" />
 
 
     </FrameLayout>
-
 
 
 
@@ -129,11 +117,10 @@
         android:id="@+id/purse_salary_fl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_50"
-        android:layout_below="@+id/purse_money_fl"
+        android:layout_below="@+id/purse_ticket_fl"
         android:background="@color/white"
-        android:paddingLeft="@dimen/dimen_size_16"
-        android:paddingRight="@dimen/dimen_size_16"
-        >
+        android:paddingLeft="@dimen/dimen_size_15"
+        android:paddingRight="@dimen/dimen_size_16">
 
         <TextView
             android:layout_width="wrap_content"
@@ -154,16 +141,9 @@
             android:drawableRight="@drawable/arrow_right"
             android:text="@string/auth_real_name"
             android:textColor="@color/c_8"
-            android:textSize="@dimen/text_size_14_sp"
-            />
+            android:textSize="@dimen/text_size_14_sp" />
 
     </FrameLayout>
-
-    <View
-        style="@style/CommonLandscapeLine"
-        android:layout_below="@+id/purse_money_fl"
-        />
-
 
     <FrameLayout
         android:id="@+id/purse_detail_fl"
@@ -172,8 +152,7 @@
         android:layout_below="@+id/purse_salary_fl"
         android:background="@color/white"
         android:paddingLeft="@dimen/dimen_size_16"
-        android:paddingRight="@dimen/dimen_size_16"
-        >
+        android:paddingRight="@dimen/dimen_size_16">
 
         <TextView
             android:layout_width="wrap_content"
@@ -189,66 +168,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
-            android:src="@drawable/arrow_right"
-            />
+            android:src="@drawable/arrow_right" />
 
 
     </FrameLayout>
 
     <View
+        android:id="@+id/ticket_line"
         style="@style/CommonLandscapeLine"
-        android:layout_below="@+id/purse_salary_fl"
-        android:visibility="gone"
+        android:layout_below="@+id/purse_ticket_fl"
         />
 
+    <View
+        style="@style/CommonLandscapeLine"
+        android:layout_below="@+id/purse_salary_fl"
+        />
+
+
     <FrameLayout
-        android:id="@+id/purse_ticket_fl"
+        android:id="@+id/purse_coupon_fl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_50"
         android:layout_below="@+id/purse_detail_fl"
         android:layout_marginTop="@dimen/pad1"
         android:background="@color/white"
         android:paddingLeft="@dimen/dimen_size_16"
-        android:paddingRight="@dimen/dimen_size_16"
-        android:visibility="gone"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:drawableLeft="@drawable/ic_ticket"
-            android:drawablePadding="@dimen/dimen_size_16"
-            android:text="@string/small_ticket"
-            android:textColor="@color/color_66"
-            android:textSize="@dimen/text_size_14_sp" />
-
-        <TextView
-            android:id="@+id/purse_ticket_identify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:drawablePadding="@dimen/pad1"
-            android:drawableRight="@drawable/arrow_right"
-            android:text="身份认证"
-            android:textColor="@color/c_8"
-            android:textSize="@dimen/text_size_14_sp" />
-
-    </FrameLayout>
-
-    <View
-        style="@style/CommonLandscapeLine"
-        android:layout_below="@+id/purse_salary_fl"
-        />
-
-    <FrameLayout
-        android:id="@+id/purse_coupon_fl"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_50"
-        android:layout_below="@+id/purse_ticket_fl"
-        android:background="@color/white"
-        android:paddingLeft="@dimen/dimen_size_16"
-        android:layout_marginTop="@dimen/pad1"
         android:paddingRight="@dimen/dimen_size_16">
 
         <TextView
@@ -274,34 +218,72 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/purse_paycode_fl"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50"
+        android:layout_below="@+id/purse_coupon_fl"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/dimen_size_16"
+        android:paddingRight="@dimen/dimen_size_16"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_pay_code"
+            android:drawablePadding="@dimen/dimen_size_16"
+            android:text="@string/box_pay_code"
+            android:textColor="@color/color_66"
+            android:textSize="@dimen/text_size_14_sp" />
+
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:src="@drawable/arrow_right" />
+
+
+    </FrameLayout>
+
+    <View
+        style="@style/CommonLandscapeLine"
+        android:layout_below="@+id/purse_coupon_fl"
+        android:visibility="gone"
+        />
+
 
     <Button
         android:id="@+id/purse_extraction_cash_btn"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/purse_coupon_fl"
+        android:layout_below="@+id/purse_paycode_fl"
         android:layout_marginTop="@dimen/pad1"
         android:background="@color/white"
-        android:text="@string/extraction_cash"
         android:enabled="false"
+        android:text="@string/extraction_cash"
         android:textColor="@color/textcolor_purse_extr"
         android:textSize="@dimen/text_size_14_sp" />
 
 
     <!--<TextView-->
-        <!--android:id="@+id/purse_deposit_tv"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginBottom="@dimen/dimen_size_15"-->
-        <!--android:textColor="@color/cor5"-->
-        <!--android:textSize="@dimen/text_size_13_sp"-->
-        <!--android:paddingTop="@dimen/dimen_size_5"-->
-        <!--android:paddingBottom="@dimen/dimen_size_5"-->
-        <!--android:visibility="gone"-->
-        <!--/>-->
+    <!--android:id="@+id/purse_deposit_tv"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginBottom="@dimen/dimen_size_15"-->
+    <!--android:textColor="@color/cor5"-->
+    <!--android:textSize="@dimen/text_size_13_sp"-->
+    <!--android:paddingTop="@dimen/dimen_size_5"-->
+    <!--android:paddingBottom="@dimen/dimen_size_5"-->
+    <!--android:visibility="gone"-->
+    <!--/>-->
 
 
 </RelativeLayout>

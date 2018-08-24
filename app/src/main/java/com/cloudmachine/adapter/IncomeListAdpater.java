@@ -140,7 +140,6 @@ public class IncomeListAdpater extends BaseRecyclerAdapter<SalaryHistoryItem> im
             if (position == len - 1) {
                 lineView.setVisibility(View.GONE);
             } else {
-                lineView.setVisibility(View.VISIBLE);
                 int nextPos = position + 1;
                 if (len > nextPos) {
                     long curMoth = CommonUtils.getMonth(item.getPayoffTime());
@@ -148,8 +147,10 @@ public class IncomeListAdpater extends BaseRecyclerAdapter<SalaryHistoryItem> im
                     long nextMoth = CommonUtils.getMonth(nextItem.getPayoffTime());
                     RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
                     if (curMoth != nextMoth) {
+                        lineView.setVisibility(View.GONE);
                         params.bottomMargin = DensityUtil.dip2px(mContext, 10);
                     } else {
+                        lineView.setVisibility(View.VISIBLE);
                         params.bottomMargin = 0;
                     }
                 }

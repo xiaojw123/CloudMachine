@@ -69,6 +69,11 @@ public class ApiConstants {
     public static String AppQR="http://h5.cloudm.com/static/qr.html";
     public static String AppMachineKnowledge;
     public static String CLOCK=H5_HOST+"clock_login";
+    public static String APPForgetPassword;
+    public static String APPFwtk;
+    public static String APPRzgj;
+    public static String APPBmxy;
+    public static String APPSjyysxy;
 //    public static String AppWorkReport="http://192.168.1.109:7718/work_report?deviceId=795&week=2";
 
 
