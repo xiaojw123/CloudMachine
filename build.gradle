@@ -9,7 +9,7 @@ ext {
             version_code     : 295,
             version_name     : "4.9.5",
             isRmote          : "true",//Debug remote/local
-            isOnline         : "false",//Debug formal/test
+            isOnline         : "true",//Debug formal/test
             isInterface      : "true"//Debug 179接口联调
     ]
     libraries = [
