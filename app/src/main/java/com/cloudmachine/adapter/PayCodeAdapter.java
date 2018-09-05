@@ -14,6 +14,7 @@ import com.amap.api.maps.model.Text;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.holder.BaseHolder;
 import com.cloudmachine.bean.PayCodeItem;
+import com.cloudmachine.utils.CommonUtils;
 
 import java.util.List;
 
@@ -88,11 +89,13 @@ public class PayCodeAdapter extends BaseRecyclerAdapter<PayCodeItem> {
         public void initViewHolder(PayCodeItem item) {
             initData(orderNoTv, attrTv, configImg, timeTv, item);
             int boxStatus = item.getBoxStatus();
-            switch (boxStatus){
+            switch (boxStatus) {
                 case 2:
+                    itemView.setAlpha(1.0f);
                     statusImg.setImageResource(R.drawable.ic_pay_vaild);
                     break;
                 case 3:
+                    itemView.setAlpha(0.45f);
                     statusImg.setImageResource(R.drawable.ic_pay_invaild);
                     break;
             }
@@ -104,7 +107,7 @@ public class PayCodeAdapter extends BaseRecyclerAdapter<PayCodeItem> {
     private void initData(TextView orderNo, TextView attr, ImageView config, TextView time, PayCodeItem item) {
         orderNo.setText(item.getBoxCode());
         int buyType = item.getBuyType();
-        String buyTypeStr;
+        String buyTypeStr = null;
         int leftDrawableId = 0;
         switch (buyType) {
             case 1:
@@ -120,15 +123,20 @@ public class PayCodeAdapter extends BaseRecyclerAdapter<PayCodeItem> {
                 leftDrawableId = R.drawable.ic_online_pay;
                 break;
         }
-        Drawable leftDrawable = mContext.getResources().getDrawable(leftDrawableId);
-        leftDrawable.setBounds(0, 0, leftDrawable.getIntrinsicWidth(), leftDrawable.getIntrinsicHeight());
-        attr.setCompoundDrawables(leftDrawable, null, null, null);
+        attr.setText(buyTypeStr);
+        if (leftDrawableId != 0) {
+            Drawable leftDrawable = mContext.getResources().getDrawable(leftDrawableId);
+            leftDrawable.setBounds(0, 0, leftDrawable.getIntrinsicWidth(), leftDrawable.getIntrinsicHeight());
+            attr.setCompoundDrawables(leftDrawable, null, null, null);
+        } else {
+            attr.setCompoundDrawables(null, null, null, null);
+        }
         int boxType = item.getBoxType();
         if (boxType == 1) {
             config.setActivated(false);
         } else if (boxType == 2) {
             config.setActivated(true);
         }
-        time.setText(item.getGmtCreate());
+        time.setText(CommonUtils.getDateStampF(item.getGmtCreate()));
     }
 }

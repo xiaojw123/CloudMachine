@@ -66,7 +66,7 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
     int mCode;
     Object mObject;
 
-    List<MenuBean> mMenuBeenList;
+//    List<MenuBean> mMenuBeenList;
 
 
     @Override
@@ -93,24 +93,10 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
         if (MemeberKeeper.getOauth(this) != null) {
             JPushInterface.setAliasAndTags(getApplicationContext(), MemeberKeeper.getOauth(this).getId().toString(), null, null);
         }
-        initHomeMenu();
+
 
     }
 
-    private void initHomeMenu() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getHeadMenu().compose(RxHelper.<List<MenuBean>>handleResult()).subscribe(new RxSubscriber<List<MenuBean>>(mContext) {
-
-            @Override
-            protected void _onNext(List<MenuBean> menuBeen) {
-                mMenuBeenList = menuBeen;
-            }
-
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
-    }
 
     @Override
     public void initPresenter() {
@@ -194,12 +180,9 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
     }
 
     public void gotoNextPage(int code, Object obj) {
-        Bundle bundle = new Bundle();
-        if (mMenuBeenList != null && mMenuBeenList.size() > 0) {
-            bundle.putParcelableArrayList(HomeActivity.KEY_HOME_MENU, ((ArrayList<MenuBean>) mMenuBeenList));
-        }
         switch (code) {
             case Constants.HANDLER_H5_JUMP:
+                Bundle bundle = new Bundle();
                 if (obj != null) {
                     bundle.putString(HomeActivity.KEY_H5_AUTORITY, (String) obj);
                 }
@@ -207,11 +190,11 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
                 finish();
                 break;
             case Constants.HANDLER_SWITCH_MAINACTIVITY:
-                Constants.toActivity(this, HomeActivity.class, bundle);
+                Constants.toActivity(this, HomeActivity.class, null);
                 finish();
                 break;
             case Constants.HANDLER_SWITCH_GUIDACTIVITY:
-                Constants.toActivity(this, GuideActivity.class, bundle);
+                Constants.toActivity(this, GuideActivity.class, null);
                 finish();
                 break;
         }

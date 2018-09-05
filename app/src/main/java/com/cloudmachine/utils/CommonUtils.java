@@ -292,6 +292,10 @@ public class CommonUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
         return sdf.format(new Date(timeStamp));
     }
+    public static String getDateStampF(long timeStamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//这个是你要转成后的时间的格式
+        return sdf.format(new Date(timeStamp));
+    }
 
     public static String getSalaryMonth(long timeStamp) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月");//这个是你要转成后的时间的格式

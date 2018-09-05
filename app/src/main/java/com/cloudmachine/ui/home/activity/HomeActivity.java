@@ -51,6 +51,8 @@ import com.cloudmachine.activities.AboutCloudActivity;
 import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.activities.ViewCouponActivityNew;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.LocationBean;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
@@ -62,7 +64,9 @@ import com.cloudmachine.helper.DataSupportManager;
 import com.cloudmachine.helper.LocationManager;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.net.task.GetVersionAsync;
 import com.cloudmachine.ui.home.activity.fragment.DeviceFragment;
 import com.cloudmachine.ui.home.activity.fragment.MaintenanceFragment;
@@ -199,11 +203,13 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     Fragment deviceFragment, maintenaceFragment, h5Fragment;
     int mustUpdate;
     int leftMargin;
+    int lastSelIndex;
     PermissionsChecker mChecker;
     long lastMemberId;
     boolean isFirst = true;
     SparseArray<WebFragment> webFmtArray = new SparseArray<>();
     WebFragment selWebFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,7 +218,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         ButterKnife.bind(this);
         mHandler = new Handler(this);
         mChecker = new PermissionsChecker(this);
-        initView();
         MobclickAgent.enableEncrypt(true); // 友盟统计
         MobclickAgent.openActivityDurationTrack(false);
         setUPageStatistics(false);
@@ -226,6 +231,24 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         } else {
             initLocation();
         }
+    }
+
+    private void initHomeMenu(String memberId, final boolean isFlush) {
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getHeadMenu(memberId).compose(RxHelper.<List<MenuBean>>handleResult()).subscribe(new RxSubscriber<List<MenuBean>>(mContext) {
+
+            @Override
+            protected void _onNext(List<MenuBean> menuBeen) {
+                updateView(menuBeen);
+                if (isFlush) {
+                    reloadUrl();
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
     }
 
 
@@ -307,8 +330,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     };
 
 
-    public void initView() {
-        List<MenuBean> homeMenuBeans = getIntent().getParcelableArrayListExtra(KEY_HOME_MENU);
+    public void updateView(List<MenuBean> homeMenuBeans) {
         if (homeMenuBeans != null && homeMenuBeans.size() > 0) {
             if (homeMenuBeans.size() > 2) {
                 leftMargin = (int) getResources().getDimension(R.dimen.dimen_size_23);
@@ -327,6 +349,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                     return o1.getMenuSort() - o2.getMenuSort();
                 }
             });
+            homeMenuCotainer.removeAllViews();
             for (MenuBean bean : homeMenuBeans) {
                 if (bean.getYn() == 0) {
                     homeMenuCotainer.addView(getMenuView(bean));
@@ -504,18 +527,23 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         if (titleView.isSelected()) {
             return;
         }
+        int selectIndex = 0;
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         MenuBean menuBean = (MenuBean) titleView.getTag();
         for (int i = 0; i < homeMenuCotainer.getChildCount(); i++) {
             TextView view = (TextView) homeMenuCotainer.getChildAt(i);
             if (titleView == view) {
+                selectIndex = i;
                 titleView.setSelected(true);
             } else {
                 view.setSelected(false);
             }
 
         }
+        int scrollX = (selectIndex - lastSelIndex) * leftMargin;
+        homeMenuHsv.smoothScrollBy(scrollX, 0);
+        lastSelIndex = selectIndex;
         switch (menuBean.getMenuMake()) {
             case 1://设备
                 if (deviceFragment == null) {
@@ -665,9 +693,10 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             homeNicknameTv.setText(member.getNickName());
             if (isFirst) {
                 isFirst = false;
+                initHomeMenu(String.valueOf(memberId), false);
             } else {
                 if (lastMemberId != memberId) {
-                    reloadUrl();
+                    initHomeMenu(String.valueOf(memberId), true);
                 }
             }
             lastMemberId = memberId;
@@ -685,9 +714,10 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
             itemOrderNimg.setNotifyPointVisible(false);
             if (isFirst) {
                 isFirst = false;
+                initHomeMenu(null, false);
             } else {
                 if (lastMemberId != -1) {
-                    reloadUrl();
+                    initHomeMenu(null, true);
                 }
             }
             lastMemberId = -1;

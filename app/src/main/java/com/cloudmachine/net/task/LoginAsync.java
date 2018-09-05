@@ -27,10 +27,10 @@ public class LoginAsync extends ATask {
     private String mobile;
     private String password;
 
-    public LoginAsync(String mobile, String password, Context context, Handler handler) {
+    public  LoginAsync(String mobile, String password, Context context, Handler handler) {
         this.handler = handler;
-        this.mobile = mobile;
-        this.password = password;
+        this.mobile = mobile.trim();
+        this.password = password.trim();
         //缓存数据第1步
     }
 

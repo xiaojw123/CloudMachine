@@ -226,7 +226,6 @@
         android:background="@color/white"
         android:paddingLeft="@dimen/dimen_size_16"
         android:paddingRight="@dimen/dimen_size_16"
-        android:visibility="gone"
         >
 
         <TextView
@@ -253,7 +252,6 @@
     <View
         style="@style/CommonLandscapeLine"
         android:layout_below="@+id/purse_coupon_fl"
-        android:visibility="gone"
         />
 
 

@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-4dp"
-        android:visibility="gone"
+        android:overScrollMode="never"
         />
 
     <TextView
@@ -29,11 +29,11 @@
         android:layout_height="wrap_content"
         android:drawableTop="@drawable/ic_no_pay_code"
         android:drawablePadding="@dimen/pad1"
-        android:text="您目前暂无云盒支付码"
         android:textColor="@color/cor5"
         android:textSize="@dimen/text_size_13_sp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dimen_size_120"
+        android:visibility="gone"
         />
 
 </LinearLayout>

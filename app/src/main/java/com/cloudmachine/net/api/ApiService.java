@@ -79,10 +79,10 @@ public interface ApiService {
     Observable<BaseRespose<String>>  submitHomeAddress(@Field("uniqueId") String uniqueId,@Field("resideAddress") String resideAddress);
 
     @GET("boxCode/listBoxCodeHistory")
-    Observable<BaseRespose<List<PayCodeItem>>> getCodeHistoryList(@Query("accountId") int accountId,@Query("page") int page,@Query("size") int size);
+    Observable<BaseRespose<List<PayCodeItem>>> getCodeHistoryList(@Query("memberId") long memberId,@Query("page") int page,@Query("size") int size);
 
-    @GET("boxCode/listBoxCodesCanUse")
-    Observable<BaseRespose<List<PayCodeItem>>>  getBoxCodeList(@Query("accountId") int accountId,@Query("boxSn") String boxSn,@Query("page") int page,@Query("size") int size);
+    @GET("boxCode/listBoxCode")
+    Observable<BaseRespose<List<PayCodeItem>>>  getBoxCodeList(@Query("memberId") long memberId,@Query("page") int page,@Query("size") int size);
 
 
     /**机器图片上传
@@ -237,7 +237,7 @@ public interface ApiService {
 
     //获取首页菜单
     @GET("system/headMenu")
-    Observable<BaseRespose<List<MenuBean>>> getHeadMenu();
+    Observable<BaseRespose<List<MenuBean>>> getHeadMenu(@Query("memberId") String memberId);
 
     //获取APP广告
     @GET("system/startAd")
