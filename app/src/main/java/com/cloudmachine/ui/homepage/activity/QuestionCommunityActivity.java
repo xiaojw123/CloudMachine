@@ -43,14 +43,19 @@ import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.alipay.PayResult;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.LocationManager;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.QiniuManager;
 import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.activity.AuthPersonalInfoActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.model.JsBody;
@@ -685,21 +690,32 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity<QuestionCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<File>() {
                     @Override
-                    public void call(File file) {   //http:///excamaster
+                    public void call(final File file) {   //http:///excamaster
                         if (JsInteface.UPLOAD_QINIU_IMG.equals(mAlertType)) {
-                            QiniuManager.getUploadManager().put(file, "img_qrcode/a/" + file.getName(), QiniuManager.uptoken, new UpCompletionHandler() {
+                            Api.getDefault(HostType.HOST_H5).getQinuParams().compose(RxHelper.<QiToken>handleResult()).subscribe(new RxSubscriber<QiToken>(mContext) {
                                 @Override
-                                public void complete(String key, ResponseInfo info, JSONObject response) {
-                                    if (info.isOK()) {
-                                        Message msg = mHandler.obtainMessage();
-                                        msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
-                                        msg.obj = QiniuManager.origin + key;
-                                        mHandler.sendMessage(msg);
-                                    }
+                                protected void _onNext(final QiToken qiToken) {
+                                    QiniuManager.getUploadManager().put(file, "img_qrcode/a/" + file.getName(), qiToken.getUptoken(), new UpCompletionHandler() {
+                                        @Override
+                                        public void complete(String key, ResponseInfo info, JSONObject response) {
+                                            if (info.isOK()) {
+                                                Message msg = mHandler.obtainMessage();
+                                                msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
+                                                msg.obj = qiToken.getOrigin() + key;
+                                                mHandler.sendMessage(msg);
+                                            }else{
+                                                _onError("图片上传失败，请检查网络后重试");
+                                            }
 
+                                        }
+                                    }, null);
                                 }
-                            }, null);
 
+                                @Override
+                                protected void _onError(String message) {
+                                    ToastUtils.showToast(mContext, message);
+                                }
+                            });
                         } else {
                             Long wjdxId = UserHelper.getWjdxID(mContext);
                             if (wjdxId != null) {

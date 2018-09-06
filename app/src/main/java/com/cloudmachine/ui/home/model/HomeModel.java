@@ -31,15 +31,7 @@ public class HomeModel implements HomeContract.Model {
     }
 
 
-    @Override
-    public Observable<ForceVBean> forceUpdate() {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).forceUpdate().compose(RxHelper.<ForceVBean>handleResult());
-    }
 
-    @Override
-    public Observable<QiToken> initQinuParams() {
-        return Api.getDefault(HostType.HOST_H5).getQinuParams().compose(RxHelper.<QiToken>handleResult());
-    }
 
     @Override
     public Observable<String> getMessageUntreatedCount(long memberId) {

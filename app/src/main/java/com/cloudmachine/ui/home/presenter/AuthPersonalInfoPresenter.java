@@ -30,7 +30,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by xiaojw on 2018/7/10.
  */
-public class AuthPersonalInfoPresenter extends AuthPersonalInfoContract.Presenter {
+public class AuthPersonalInfoPresenter extends AuthPersonalInfoContract.Presenter{
 
 
     @Override
@@ -123,24 +123,10 @@ public class AuthPersonalInfoPresenter extends AuthPersonalInfoContract.Presente
     }
 
     @Override
-    public void uploadFile(File file) {
+    public void uploadFile(File file, QiniuManager.OnUploadListener listener) {
 
-        Compressor.getDefault(mContext)
-                .compressToFileAsObservable(file)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<File>() {
-                    @Override
-                    public void call(File file) {
-                        QiniuManager.getUploadManager().put(file, "img_id_card/" + file.getName(), QiniuManager.uptoken, new UpCompletionHandler() {
-                            @Override
-                            public void complete(String key, ResponseInfo info, final JSONObject response) {
-                                mView.uploadFileSuccess(QiniuManager.origin + key);
-                            }
-                        }, null);
-                    }
-                });
-
+        QiniuManager.uploadFile(mContext,listener,file,"img_id_card/");
 
     }
+
 }

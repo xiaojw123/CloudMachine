@@ -4,6 +4,7 @@ import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.helper.QiniuManager;
 import com.google.gson.JsonObject;
 
 import java.io.File;
@@ -34,7 +35,7 @@ public interface AuthPersonalInfoContract {
         public abstract void getMemberAuthInfo(long memberId);
         public abstract void submitIdUserInfo(long memberId,  String redisUserId);
         public abstract void verifyOcr(long memberId,String imgUrl,String redisUserId);
-        public abstract void uploadFile(File file);
+        public abstract void uploadFile(File file, QiniuManager.OnUploadListener listener);
 
 
 

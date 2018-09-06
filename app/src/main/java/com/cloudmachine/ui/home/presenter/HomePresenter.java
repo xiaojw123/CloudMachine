@@ -183,48 +183,6 @@ public class HomePresenter extends HomeContract.Presenter {
         }));
     }
 
-    @Override
-    public void initQinuParams() {
-        mRxManage.add(mModel.initQinuParams().subscribe(new RxSubscriber<QiToken>(mContext) {
-            @Override
-            protected void _onNext(QiToken token) {
-                if (token != null) {
-                    AppLog.print("token__" + token.getUptoken() + ", origin__" + token.getOrigin());
-                    QiniuManager.origin = token.getOrigin();
-                    QiniuManager.uptoken = token.getUptoken();
-
-                }
-            }
-
-            @Override
-            protected void _onError(String message) {
-                AppLog.print("initQinuParams onError__" + message);
-
-            }
-        }));
-    }
-
-    @Override
-    public void forceUpdate() {
-        mRxManage.add(mModel.forceUpdate().subscribe(new RxSubscriber<ForceVBean>(mContext) {
-            @Override
-            protected void _onNext(ForceVBean forceVBean) {
-                if (forceVBean != null) {
-                    if ((!TextUtils.isEmpty(forceVBean.getVersion()))) {
-
-                    }
-                } else {
-
-                }
-            }
-
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
-
-    }
 
     @Override
     public void getCountByStatus(long memberId, int status) {

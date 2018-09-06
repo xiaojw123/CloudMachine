@@ -8,8 +8,8 @@ ext {
             targetSdk        : 25,
             version_code     : 297,
             version_name     : "4.9.7",
-            isRmote          : "false",//Debug remote/local
-            isOnline         : "false",//Debug formal/test
+            isRmote          : "true",//Debug remote/local
+            isOnline         : "true",//Debug formal/test
             isInterface      : "false"//Debug 179接口联调
     ]
     libraries = [

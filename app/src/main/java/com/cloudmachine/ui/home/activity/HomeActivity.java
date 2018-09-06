@@ -225,7 +225,6 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
         initUpdateConfig();
         new GetVersionAsync(mContext, mHandler).execute();
         mPresenter.getH5ConfigInfo();
-        mPresenter.initQinuParams();
         if ((ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_FINE_LOCATION);
         } else {

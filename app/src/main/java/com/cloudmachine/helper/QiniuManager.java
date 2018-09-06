@@ -1,8 +1,31 @@
 package com.cloudmachine.helper;
 
+import android.content.Context;
+import android.view.View;
+
+import com.bumptech.glide.Glide;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.QiToken;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.utils.CommonUtils;
+import com.cloudmachine.utils.ToastUtils;
 import com.qiniu.android.common.FixedZone;
+import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
+import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
+
+import org.json.JSONObject;
+
+import java.io.File;
+
+import id.zelory.compressor.Compressor;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by xiaojw on 2017/11/2.
@@ -11,8 +34,6 @@ import com.qiniu.android.storage.UploadManager;
 public class QiniuManager {
 
     private static UploadManager uploadManager;
-    public static String uptoken;
-    public static String origin;
 
     public static UploadManager getUploadManager() {
         if (uploadManager == null) {
@@ -29,7 +50,51 @@ public class QiniuManager {
         return uploadManager;
     }
 
+    public static void uploadFile(final Context context, final OnUploadListener listener, final File file, final String dir) {
+        Api.getDefault(HostType.HOST_H5).getQinuParams().compose(RxHelper.<QiToken>handleResult()).subscribe(new RxSubscriber<QiToken>(context) {
+            @Override
+            protected void _onNext(final QiToken qiToken) {
+                Compressor.getDefault(context)
+                        .compressToFileAsObservable(file)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<File>() {
+                            @Override
+                            public void call(File file) {
+                                getUploadManager().put(file, dir + file.getName(), qiToken.getUptoken(), new UpCompletionHandler() {
+                                    @Override
+                                    public void complete(String key, ResponseInfo info, final JSONObject response) {
+                                        if (info.isOK()) {
+                                            if (listener != null) {
+                                                listener.uploadSuccess(qiToken.getOrigin() + key);
+                                            }
+                                        } else {
+                                            _onError("图片上传失败，请检查网络后重试");
+                                        }
+                                    }
+                                }, null);
+                            }
+                        });
 
+
+            }
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(context, message);
+                if (listener != null) {
+                   listener.uploadFailed();
+                }
+            }
+        });
+    }
+
+    public interface OnUploadListener {
+
+        void uploadSuccess(String picUrl);
+        void uploadFailed();
+
+    }
 
 
 }

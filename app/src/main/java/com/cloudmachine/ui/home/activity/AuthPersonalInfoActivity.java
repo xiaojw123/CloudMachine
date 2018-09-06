@@ -21,6 +21,7 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.camera.CameraActivity;
 import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.helper.QiniuManager;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.contract.AuthPersonalInfoContract;
@@ -42,8 +43,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersonalInfoPresenter, AuthPersonalInfoModel> implements View.OnClickListener, AuthPersonalInfoContract.View {
-    public static final int REQUEST_PICK_IMAGE = 0x16;
+public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersonalInfoPresenter, AuthPersonalInfoModel> implements View.OnClickListener, AuthPersonalInfoContract.View, QiniuManager.OnUploadListener {
     @BindView(R.id.pi_portrait_img)
     ImageView portraitImg;
     @BindView(R.id.pi_emblem_img)
@@ -238,11 +238,11 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
         if (CameraActivity.TYPE_PIC_FRONT.equals(type)) {
             portraitPicFile = new File(path);
             portraitImg.setEnabled(false);
-            mPresenter.uploadFile(portraitPicFile);
+            mPresenter.uploadFile(portraitPicFile, this);
         } else {
             emblemPicFile = new File(path);
             emblemImg.setEnabled(false);
-            mPresenter.uploadFile(emblemPicFile);
+            mPresenter.uploadFile(emblemPicFile, this);
         }
     }
 
@@ -331,4 +331,17 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
     }
 
 
+    @Override
+    public void uploadSuccess(String picUrl) {
+        uploadFileSuccess(picUrl);
+    }
+
+    @Override
+    public void uploadFailed() {
+        if (CameraActivity.TYPE_PIC_FRONT.equals(type)) {
+            portraitImg.setEnabled(true);
+        } else {
+            emblemImg.setEnabled(true);
+        }
+    }
 }

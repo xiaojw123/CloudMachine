@@ -47,7 +47,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class IdCardHandActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
+public class IdCardHandActivity extends BaseAutoLayoutActivity implements View.OnClickListener, QiniuManager.OnUploadListener {
 
     @BindView(R.id.hand_shoot_action)
     TextView handShootAction;
@@ -147,7 +147,7 @@ public class IdCardHandActivity extends BaseAutoLayoutActivity implements View.O
     }
 
     private void submitPic() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).perImgUpload(uniquedNo, imgUrl, 0,null).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).perImgUpload(uniquedNo, imgUrl, 0, null).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
                 CustomDialog.Builder builder = new CustomDialog.Builder(mContext);
@@ -201,30 +201,22 @@ public class IdCardHandActivity extends BaseAutoLayoutActivity implements View.O
         AppLog.print("updateImg path__" + cmFilePath);
         shootContainer.setEnabled(false);
         handFile = new File(cmFilePath);
-        Compressor.getDefault(mContext)
-                .compressToFileAsObservable(handFile)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<File>() {
-                    @Override
-                    public void call(File file) {
-                        QiniuManager.getUploadManager().put(file, "img_id_card_hand/" + file.getName(), QiniuManager.uptoken, new UpCompletionHandler() {
-                            @Override
-                            public void complete(String key, ResponseInfo info, final JSONObject response) {
-                                submitBtn.setButtonClickEnable(true);
-                                imgUrl = QiniuManager.origin + key;
-                                AppLog.print("updateImage  imgPath___" + imgUrl);
-                                Glide.with(mContext).load(imgUrl).into(idCardImg);
-                                idCardImg.setVisibility(View.VISIBLE);
-                                shootCamera.setVisibility(View.GONE);
-                                delteImg.setVisibility(View.VISIBLE);
-                                shootedImg.setVisibility(View.VISIBLE);
-
-                            }
-                        }, null);
-                    }
-                });
-
+        QiniuManager.uploadFile(mContext,this,handFile,"img_id_card_hand/");
     }
 
+    @Override
+    public void uploadSuccess(String picUrl) {
+        submitBtn.setButtonClickEnable(true);
+        imgUrl =picUrl;
+        Glide.with(mContext).load(imgUrl).into(idCardImg);
+        idCardImg.setVisibility(View.VISIBLE);
+        shootCamera.setVisibility(View.GONE);
+        delteImg.setVisibility(View.VISIBLE);
+        shootedImg.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void uploadFailed() {
+        shootContainer.setEnabled(true);
+    }
 }

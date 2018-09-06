@@ -34,9 +34,7 @@ public interface HomeContract {
     interface Model extends BaseModel {
 
 
-        Observable<ForceVBean> forceUpdate();
 
-        Observable<QiToken> initQinuParams();
 
         Observable<String> getMessageUntreatedCount(long memberId);
 
@@ -61,9 +59,7 @@ public interface HomeContract {
 
         public abstract void getHomeBannerInfo();
 
-        public abstract void initQinuParams();
 
-        public abstract void forceUpdate();
         public abstract void getCountByStatus(long memberId,int status);
 
 
