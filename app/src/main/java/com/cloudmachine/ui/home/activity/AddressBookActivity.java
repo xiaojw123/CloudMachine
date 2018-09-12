@@ -31,12 +31,16 @@ import com.cloudmachine.widget.LetterIndexView;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +66,7 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address_book);
         ButterKnife.bind(this);
-        smoothScroller=new LinearSmoothScroller(this){
+        smoothScroller = new LinearSmoothScroller(this) {
             @Override
             protected int getVerticalSnapPreference() {
                 return LinearSmoothScroller.SNAP_TO_START;
@@ -109,16 +113,23 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
             do {
                 long id = cursor.getLong(0);
                 String name = cursor.getString(1);
-                List mobileList = new ArrayList();
+                if (!isAddressName(name)) {
+                    continue;
+                }
+                List<String> mobileList = new ArrayList<>();
                 Cursor phoneCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, phoneProjection, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + id, null, null);
                 if (phoneCursor != null && phoneCursor.moveToFirst()) {
                     do {
                         String phone = phoneCursor.getString(0);
-                        if (!TextUtils.isEmpty(phone)) {
-                            mobileList.add(phone);
+                        String formartPhone = formartMobile(phone);
+                        if (!TextUtils.isEmpty(formartPhone)) {
+                            mobileList.add(formartPhone);
                         }
                     } while (phoneCursor.moveToNext());
                     phoneCursor.close();
+                }
+                if (mobileList.size() <= 0) {
+                    continue;
                 }
                 AddressBookItem item = new AddressBookItem();
                 item.setName(name);
@@ -133,6 +144,44 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
         return itemList;
     }
 
+    public boolean isAddressName(String name) {
+        if (TextUtils.isEmpty(name)) {
+            return false;
+        }
+        Pattern pattern = Pattern.compile("^[A-Za-z0-9\\u4e00-\\u9fa5]+$");
+        // 忽略大小写的写法
+        // Pattern pat = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(name);
+        // 字符串是否与正则表达式相匹配
+        return matcher.matches();
+    }
+
+    public String formartMobile(String mobile) {
+        if (TextUtils.isEmpty(mobile)) {
+            return mobile;
+        }
+        mobile = mobile.trim();
+        if (!TextUtils.isEmpty(mobile)) {
+            mobile = mobile.replace("+86", "");
+        }
+        if (!TextUtils.isEmpty(mobile)) {
+            mobile = mobile.replace("-", "");
+        }
+        if (!TextUtils.isEmpty(mobile)) {
+            mobile = mobile.replace(" ", "");
+        }
+        if (!TextUtils.isEmpty(mobile)) {
+            mobile = mobile.replace("(", "");
+        }
+        if (!TextUtils.isEmpty(mobile)) {
+            mobile = mobile.replace(")", "");
+        }
+        if (!TextUtils.isEmpty(mobile)) {
+            mobile = mobile.replace("#", "");
+        }
+        return mobile;
+    }
+
     public String getLetterStr(String name) {
         char c = name.charAt(0);
         if (c >= 'A' && c < 'Z') {
@@ -140,7 +189,11 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
         } else if (c >= 'a' && c < 'z') {
             return String.valueOf(c).toUpperCase();
         }
-        return PingYinUtil.getPingYin(name).substring(0, 1).toUpperCase();
+        String pyStr = PingYinUtil.getPingYin(name);
+        if (TextUtils.isEmpty(pyStr)) {
+            return String.valueOf(c);
+        }
+        return pyStr.substring(0, 1).toUpperCase();
     }
 
 
