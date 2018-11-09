@@ -17,12 +17,12 @@ public class WorkVideoModel  implements WorkVideoContract.Model{
 
 
     @Override
-    public Observable<BaseRespose<String>> videoUpload(long memberId, String deviceId, String id) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).videoUpload(memberId,deviceId,id).compose(RxHelper.<String>handleBaseResult());
+    public Observable<BaseRespose<String>> videoUpload(String deviceId, String id) {
+        return Api.getDefault(HostType.HOST_LARK).videoUpload(deviceId,id).compose(RxHelper.<String>handleBaseResult());
     }
 
     @Override
-    public Observable<VideoBean> getVideoList(long memberId, String deviceId,String startTime,String endTime) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getVideoList(memberId,deviceId,startTime,endTime).compose(RxHelper.<VideoBean>handleResult());
+    public Observable<VideoBean> getVideoList(String deviceId,String startTime,String endTime) {
+        return Api.getDefault(HostType.HOST_LARK).getVideoList(deviceId,startTime,endTime).compose(RxHelper.<VideoBean>handleResult());
     }
 }

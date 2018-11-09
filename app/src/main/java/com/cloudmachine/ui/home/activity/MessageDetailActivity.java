@@ -22,7 +22,6 @@ import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.widget.CommonTitleView;
 
 public class MessageDetailActivity extends BaseAutoLayoutActivity {
@@ -128,11 +127,11 @@ public class MessageDetailActivity extends BaseAutoLayoutActivity {
 
 
     private void obtainDetailById(String messageId) {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getMessageByid(messageId).compose(RxHelper.<MessageBO>handleResult()).subscribe(new RxSubscriber<MessageBO>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getMessageByid(messageId).compose(RxHelper.<MessageBO>handleResult()).subscribe(new RxSubscriber<MessageBO>(mContext) {
             @Override
             protected void _onNext(MessageBO messageDetail) {
                 if (messageDetail != null) {
-                    updateMessageDetailView(messageDetail.getContent(), messageDetail.getInviteTime());
+                    updateMessageDetailView(messageDetail.getContent(), messageDetail.getInviteDate());
                 }
 
             }

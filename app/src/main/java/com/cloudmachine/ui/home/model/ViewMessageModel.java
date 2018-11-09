@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.home.model;
 
+import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
@@ -17,37 +18,24 @@ import rx.Observable;
 public class ViewMessageModel implements ViewMessageConract.Model {
 
     @Override
-    public Observable<String> deleteMessage(long memberId, long messageId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).deleteMsg(memberId,messageId).compose(RxHelper.<String>handleResult());
+    public Observable<BaseRespose<List<MessageBO>>> getMessageList(int page) {
+        return Api.getDefault(HostType.HOST_LARK).getMessageList(page,20).compose(RxHelper.<List<MessageBO>>handleBaseResult());
     }
 
     @Override
-    public Observable<List<MessageBO>> getSystemMsg(long memberId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getSystemMsg(memberId).compose(RxHelper.<List<MessageBO>>handleResult());
+    public Observable<String> receiveMessage(int messageId, int status) {
+        return Api.getDefault(HostType.HOST_LARK).receiveMessage(messageId,status).compose(RxHelper.<String>handleResult());
+    }
+    @Override
+    public Observable<String> updateMsgStatus(int messageId) {
+        return Api.getDefault(HostType.HOST_LARK).updateMsgStatus(messageId).compose(RxHelper.<String>handleResult());
+    }
+    @Override
+    public Observable<String> deleteMessage(long messageId) {
+        return Api.getDefault(HostType.HOST_LARK).deleteMsg(messageId).compose(RxHelper.<String>handleResult());
     }
 
-    @Override
-    public Observable<List<MessageBO>> getALLMsg(long memberId,int pageNo) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getAllMsg(memberId,pageNo,20).compose(RxHelper.<List<MessageBO>>handleResult());
-    }
 
-    @Override
-    public Observable<MessageBO> questionNeed(long memberId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).questionNeed(memberId).compose(RxHelper.<MessageBO>handleResult());
-    }
 
-    @Override
-    public Observable<String> acceptMessage(long memberId, String messageId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).acceptMsg(memberId,messageId).compose(RxHelper.<String>handleResult());
-    }
 
-    @Override
-    public Observable<String> rejectMessage(long memberId, String messageId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).rejectMsg(memberId,messageId).compose(RxHelper.<String>handleResult());
-    }
-
-    @Override
-    public Observable<String> updateMsgStatus(long memberId, String messageId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).updateMsgStatus(memberId,messageId).compose(RxHelper.<String>handleResult());
-    }
 }

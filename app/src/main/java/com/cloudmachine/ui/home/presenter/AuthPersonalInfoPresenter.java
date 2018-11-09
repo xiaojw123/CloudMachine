@@ -34,8 +34,8 @@ public class AuthPersonalInfoPresenter extends AuthPersonalInfoContract.Presente
 
 
     @Override
-    public void getMemberAuthInfo(long memberId) {
-        mRxManage.add(mModel.getMemberAuthInfo(memberId).subscribe(new RxSubscriber<JsonObject>(mContext) {
+    public void getMemberAuthInfo() {
+        mRxManage.add(mModel.getMemberAuthInfo().subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
             protected void _onNext(JsonObject jsonObject) {
                 if (jsonObject != null && !jsonObject.isJsonNull()) {
@@ -56,8 +56,8 @@ public class AuthPersonalInfoPresenter extends AuthPersonalInfoContract.Presente
     }
 
     @Override
-    public void submitIdUserInfo(long memberId, String redisUserId) {
-        mRxManage.add(mModel.submitIdUserInfo(memberId, redisUserId).subscribe(new RxSubscriber<String>(mContext) {
+    public void submitIdUserInfo(String redisUserId) {
+        mRxManage.add(mModel.submitIdUserInfo(redisUserId).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
                 mView.submitSuccess();
@@ -72,9 +72,8 @@ public class AuthPersonalInfoPresenter extends AuthPersonalInfoContract.Presente
     }
 
     @Override
-    public void verifyOcr(final long memberId, String imgUrl, String redisUserId) {
-        AppLog.print("memberId___" + memberId + " ,imgUrl___" + imgUrl);
-        mRxManage.add(mModel.verifyOcr(memberId, imgUrl, redisUserId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
+    public void verifyOcr(String imgUrl, String redisUserId) {
+        mRxManage.add(mModel.verifyOcr(imgUrl, redisUserId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
             protected void _onNext(JsonObject resposeJson) {
                 if (resposeJson != null) {

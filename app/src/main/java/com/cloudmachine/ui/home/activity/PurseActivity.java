@@ -1,7 +1,5 @@
 package com.cloudmachine.ui.home.activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,23 +8,18 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.autonavi.rtbt.IFrameForRTBT;
 import com.cloudmachine.R;
-import com.cloudmachine.activities.ViewCouponActivityNew;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.LarkMemberInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
-import com.cloudmachine.ui.home.contract.ExtrContract;
 import com.cloudmachine.ui.home.contract.PurseContract;
 import com.cloudmachine.ui.home.model.PurseModel;
 import com.cloudmachine.ui.home.presenter.PursePresenter;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
-import com.cloudmachine.ui.personal.activity.PersonalDataActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
-import com.cloudmachine.utils.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,10 +35,6 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
     ImageView purseBackImg;
     @BindView(R.id.purse_balance_tv)
     TextView purseBalanceTv;
-    @BindView(R.id.purse_coupon_num_tv)
-    TextView purseCouponNumTv;
-    @BindView(R.id.purse_coupon_fl)
-    FrameLayout purseCouponFl;
     @BindView(R.id.purse_extraction_cash_btn)
     Button purseExtractionCashBtn;
     @BindView(R.id.purse_instruction_img)
@@ -64,9 +53,7 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
     FrameLayout paycodeFl;
     Member mMember;
     String walletAmountStr;
-    double mDespoitAmout;
     String mJumpUrl;
-    long memberId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,23 +61,20 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
         setContentView(R.layout.activity_purse);
         ButterKnife.bind(this);
         mMember = MemeberKeeper.getOauth(mContext);
-        memberId = mMember.getId();
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.getMemberInfo(memberId);
-        mPresenter.getWalletAmount(memberId);
-        mPresenter.getAvaildCouponList(memberId);
+        mPresenter.getMemberInfo();
+        mPresenter.getWalletAmount();
 
     }
 
     @Override
-    public void updateWalletAmountView(double walletAmount, double depositAmount, String jumpUrl) {
+    public void updateWalletAmountView(double walletAmount, String jumpUrl) {
         mJumpUrl = jumpUrl;
-        mDespoitAmout = depositAmount;
         walletAmountStr = CommonUtils.formartPrice(String.valueOf(walletAmount));
         purseBalanceTv.setText(walletAmountStr);
         if (walletAmount > 0) {
@@ -112,11 +96,11 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
         mPresenter.setVM(this, mModel);
     }
 
-    @OnClick({R.id.purse_paycode_fl,R.id.purse_ticket_fl, R.id.purse_detail_fl, R.id.purse_salary_fl, R.id.purse_instruction_img, R.id.purse_back_img, R.id.purse_coupon_fl, R.id.purse_extraction_cash_btn})
+    @OnClick({R.id.purse_paycode_fl, R.id.purse_ticket_fl, R.id.purse_detail_fl, R.id.purse_salary_fl, R.id.purse_instruction_img, R.id.purse_back_img, R.id.purse_extraction_cash_btn})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.purse_paycode_fl:
-                Constants.toActivity(this,PayCodeActivity.class,null);
+                Constants.toActivity(this, PayCodeActivity.class, null);
                 break;
             case R.id.purse_ticket_fl:
                 Bundle qcBundle = new Bundle();
@@ -149,18 +133,11 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
                 break;
 
             case R.id.purse_detail_fl:
-                if (mDespoitAmout > 0) {
-                    Constants.toActivity(this, DepositActivity.class, null);
-                } else {
-                    ToastUtils.showToast(mContext, "没有明细!");
-                }
+                Constants.toActivity(this, DepositActivity.class, null);
                 break;
 
             case R.id.purse_back_img://返回
                 finish();
-                break;
-            case R.id.purse_coupon_fl://卡券
-                Constants.toActivity(this, ViewCouponActivityNew.class, null, false);
                 break;
             case R.id.purse_extraction_cash_btn://提现
                 if (mMember.isAuth()) {
@@ -178,14 +155,8 @@ public class PurseActivity extends BaseAutoLayoutActivity<PursePresenter, PurseM
 
 
     @Override
-    public void updateAvaildCouponSumNum(int sumNum) {
-        purseCouponNumTv.setText(sumNum + "张");
-
-    }
-
-    @Override
-    public void updateMemberInfo(Member member) {
-        mMember = member;
+    public void updateMemberInfo(LarkMemberInfo info) {
+        mMember = CommonUtils.convertMember(info);
         if (mMember.isAuth()) {
             salaryAuthTv.setText(getResources().getString(R.string.has_auth));
         }

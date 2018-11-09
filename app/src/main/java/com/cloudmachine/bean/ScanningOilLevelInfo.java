@@ -4,27 +4,13 @@ import java.io.Serializable;
 
 public class ScanningOilLevelInfo implements Serializable{
 	
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3228331376777603797L;
-	/**
-	 * 
-	 */
 	private String time;//时间
 	private int level;//油位
-	private String day;
-
-	public String getDay() {
-		return day;
-	}
-
-	public void setDay(String day) {
-		this.day = day;
-	}
-
 	public String getTime() {
+		if (time==null){
+			time="";
+		}
 		return time;
 	}
 	public void setTime(String time) {

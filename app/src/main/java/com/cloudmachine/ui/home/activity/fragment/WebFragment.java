@@ -1,40 +1,36 @@
 package com.cloudmachine.ui.home.activity.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.cloudmachine.BuildConfig;
 import com.cloudmachine.R;
 import com.cloudmachine.alipay.PayResult;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
-import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.model.JsInteface;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.utils.CommonUtils;
@@ -48,8 +44,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Map;
-
-import static com.cloudmachine.MyApplication.mContext;
 
 /**
  * Created by xiaojw on 2017/12/19.
@@ -69,7 +63,6 @@ public class WebFragment extends BaseFragment {
     private static final String[] UPLOAD_PIC_ITEMS = new String[]{"选择本地图片", "拍照"};
     private PermissionsChecker mPermissionsCheck;
     private Uri imageUri;
-    public static final String PARAMS_KEY_MEMBERID = "memberId";
     private long lastMemberId = -1;
 
     public WebFragment(String url) {
@@ -99,7 +92,8 @@ public class WebFragment extends BaseFragment {
         mWebView.setWebViewClient(new H5WebClient());
         mWebView.setWebChromeClient(new MyWebChromeClient());
         mWebView.addJavascriptInterface(new JsInteface(getActivity(), mHandler), JS_INTERFACE_NAME);
-        loadUrl();
+//        loadUrl();
+        loadWebUrl();
     }
 
     private class H5WebClient extends WebViewClient {
@@ -115,7 +109,6 @@ public class WebFragment extends BaseFragment {
 
     }
 
-//
 //    public void loadUrl(String loadUrl) {
 //        mUrl = loadUrl;
 //        if (UserHelper.isLogin(getActivity())) {
@@ -124,47 +117,56 @@ public class WebFragment extends BaseFragment {
 //        loadWebUrl();
 //    }
 
-    private void loadWebUrl() {
-        String webUrl=CommonUtils.fillParams(mUrl, QuestionCommunityActivity.PARAMS_KEY_VERSION, VersionU.getVersionName());
-        mWebView.loadUrl(webUrl);
-        AppLog.print("loadWebUrl____"+webUrl);
-    }
-
-    public void loadUrl() {
-        if (!TextUtils.isEmpty(mUrl)) {
-            if (UserHelper.isLogin(getActivity())) {
-                long memeberId = UserHelper.getMemberId(getActivity());
-                if (lastMemberId != -1 && lastMemberId != memeberId) {
-                    resetUrl();
-                }
-                fillParams(PARAMS_KEY_MEMBERID, memeberId);
-                lastMemberId = memeberId;
-            } else {//http:xxx/xx?memberid=110   http:xx/xx?page=1&memberId=110
-                resetUrl();
-            }
-            loadWebUrl();
+    public void loadWebUrl() {
+        String tmpUrl;
+        if (!TextUtils.isEmpty(UserHelper.TOKEN)) {
+            tmpUrl = CommonUtils.fillParams(mUrl, Constants.KEY_TOKEN, UserHelper.TOKEN);
+            tmpUrl=CommonUtils.fillParams(tmpUrl,Constants.MEMBER_ID,UserHelper.ID);
+        } else {
+            tmpUrl = mUrl;
         }
-    }
-
-    private void resetUrl() {
-        if (mUrl.contains(PARAMS_KEY_MEMBERID)) {
-            int index = mUrl.indexOf(PARAMS_KEY_MEMBERID);
-            char c = mUrl.charAt(index - 1);
-            int nextIndex = mUrl.indexOf("&", index);
-            int startIndex, endIndex;
-            if (c == '&') {
-                startIndex = index - 1;
-            } else {
-                startIndex = index;
-            }
-            if (nextIndex == -1) {
-                endIndex = mUrl.length();
-            } else {
-                endIndex = c == '?' ? nextIndex + 1 : nextIndex;
-            }
-            mUrl = mUrl.replaceAll(mUrl.substring(startIndex, endIndex), "");
+        if (BuildConfig.DEBUG) {
+            tmpUrl = CommonUtils.fillParams(tmpUrl, Constants.APP_NAME, "CloudmMachine-Portal");
+        } else {
+            tmpUrl = CommonUtils.fillParams(tmpUrl, Constants.APP_NAME, "CloudmMachine-AppStore");
         }
+        mWebView.loadUrl(CommonUtils.fillParams(tmpUrl, QuestionCommunityActivity.PARAMS_KEY_VERSION, VersionU.getVersionName()));
     }
+//    public void loadUrl() {
+//        if (!TextUtils.isEmpty(mUrl)) {
+//            if (UserHelper.isLogin(getActivity())) {
+//                long memeberId = UserHelper.getMemberId(getActivity());
+//                if (lastMemberId != -1 && lastMemberId != memeberId) {
+//                    resetUrl();
+//                }
+//                fillParams(PARAMS_KEY_MEMBERID, memeberId);
+//                lastMemberId = memeberId;
+//            } else {//http:xxx/xx?memberid=110   http:xx/xx?page=1&memberId=110
+//                resetUrl();
+//            }
+//            loadWebUrl();
+//        }
+//    }
+
+//    private void resetUrl() {
+//        if (mUrl.contains(PARAMS_KEY_MEMBERID)) {
+//            int index = mUrl.indexOf(PARAMS_KEY_MEMBERID);
+//            char c = mUrl.charAt(index - 1);
+//            int nextIndex = mUrl.indexOf("&", index);
+//            int startIndex, endIndex;
+//            if (c == '&') {
+//                startIndex = index - 1;
+//            } else {
+//                startIndex = index;
+//            }
+//            if (nextIndex == -1) {
+//                endIndex = mUrl.length();
+//            } else {
+//                endIndex = c == '?' ? nextIndex + 1 : nextIndex;
+//            }
+//            mUrl = mUrl.replaceAll(mUrl.substring(startIndex, endIndex), "");
+//        }
+//    }
 
 
     //需要申请的权限数组
@@ -406,8 +408,12 @@ public class WebFragment extends BaseFragment {
 
     }
 
-
-//    @Override
+    @Override
+    public void onDestroyView() {
+        CommonUtils.clearWebView(mWebView);
+        super.onDestroyView();
+    }
+    //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
 //        switch (requestCode) {

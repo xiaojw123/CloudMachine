@@ -29,17 +29,18 @@ import com.cloudmachine.activities.EvaluationActivity;
 import com.cloudmachine.activities.RepairPayDetailsActivity;
 import com.cloudmachine.activities.SearchPoiActivity;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.RepairHistoryInfo;
 import com.cloudmachine.bean.ResidentAddressInfo;
-import com.cloudmachine.bean.UnfinishedBean;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.OrderStatus;
 import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.activity.RepairDetailMapActivity;
-import com.cloudmachine.ui.home.contract.MSupervisorContract;
-import com.cloudmachine.ui.home.model.MSupervisorModel;
-import com.cloudmachine.ui.home.model.SiteBean;
-import com.cloudmachine.ui.home.presenter.MSupervisorPresenter;
+import com.cloudmachine.bean.SiteBean;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.ui.repair.activity.RepairFinishDetailActivity;
@@ -57,7 +58,7 @@ import butterknife.OnClick;
  * Created by xiaojw on 2017/7/19.
  */
 
-public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, MSupervisorModel> implements MSupervisorContract.View, AMapLocationListener, AMap.OnCameraChangeListener, GeocodeSearch.OnGeocodeSearchListener {
+public class MaintenanceFragment extends BaseMapFragment implements AMapLocationListener, AMap.OnCameraChangeListener, GeocodeSearch.OnGeocodeSearchListener {
     private static final int REQCODE_LOC = 0x113;
     @BindView(R.id.repair_btn)
     RadiusButtonView repairBtn;
@@ -82,12 +83,10 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     Marker centerMarker;
     GeocodeSearch geocoderSearch;
     LatLng lastLatLng;
-    UnfinishedBean unfinishedBean;
     List<Marker> markerList = new ArrayList<>();
     String mProvince;
     double locLng, locLat;
-
-
+    RepairHistoryInfo mRepairItem;
     @Override
     protected void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
@@ -117,8 +116,56 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
 
     private void loadData() {
         if (UserHelper.isLogin(getActivity())) {
-//            mPresenter.getRepairItemView(UserHelper.getMemberId(getActivity()));
-            mPresenter.getAllianceItemView(UserHelper.getMemberId(getActivity()));
+            mRxManager.add(Api.getDefault(HostType.HOST_LARK).getRepairList(null, 1).compose(RxHelper.<List<RepairHistoryInfo>>handleResult()).subscribe(new RxSubscriber<List<RepairHistoryInfo>>(getActivity()) {
+                @Override
+                protected void _onNext(List<RepairHistoryInfo> items) {
+                    if (items != null && items.size() > 0) {
+                        mRepairItem = items.get(0);
+                        if (mRepairItem != null) {
+                            orderCotainer.setVisibility(View.VISIBLE);
+                            // TODO: 2018   /9/28 lark
+//                            String logo_flag = bean.getLogo_flag();
+//                            if ("0".equals(logo_flag)) {
+//                                if (logoImg.getVisibility() == View.VISIBLE) {
+//                                    logoImg.setVisibility(View.INVISIBLE);
+//                                }
+//                            }
+//                            if ("1".equals(logo_flag)) {
+//                                if (logoImg.getVisibility() != View.VISIBLE) {
+//                                    logoImg.setVisibility(View.VISIBLE);
+//                                }
+//                            }
+
+                            String orderStatusStr=null;
+                            switch (mRepairItem.getOrderStatus()) {
+                                case 3://待付款
+                                    orderStatusStr = OrderStatus.PAY;
+                                    break;
+                                case 4:
+                                case 5:
+                                case 6:
+                                    if (mRepairItem.isEvaluated()) {
+                                        orderStatusStr = OrderStatus.COMPLETED;
+                                    } else {
+                                        orderStatusStr = OrderStatus.EVALUATION;
+                                    }
+                                    break;
+                            }
+                            statusTv.setText(orderStatusStr);
+                            modelTv.setText(mRepairItem.getBrandName() + " "
+                                    + mRepairItem.getModelName());
+                            descTv.setText(mRepairItem.getServiceDesc());
+                            timeTv.setText(mRepairItem.getCreateTime());
+                        }
+                    }
+
+                }
+
+                @Override
+                protected void _onError(String message) {
+
+                }
+            }));
         }
     }
 
@@ -137,7 +184,6 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
 
     @Override
     protected void initPresenter() {
-        mPresenter.setVM(this, mModel);
     }
 
     @Override
@@ -193,7 +239,8 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
                 if (markerList.size() > 0) {
                     markerList.clear();
                 }
-                mPresenter.updateStationView(lat.longitude, lat.latitude);
+                // TODO: 2018/9/28 lark接口
+//                mPresenter.updateStationView(lat.longitude, lat.latitude);
             }
         }
         locLat = lat.latitude;
@@ -234,7 +281,7 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
     }
 
 
-    @Override
+    // TODO: 2018/9/28 lark pause
     public void returnStationView(SiteBean siteBean) {
         if (siteBean != null) {
             List<SiteBean.RepairStationListBean> repairsStatiionList = siteBean.getRepairStationList();
@@ -250,28 +297,6 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
         }
     }
 
-    @Override
-    public void returnRepairItemView(UnfinishedBean bean, String status) {
-        unfinishedBean = bean;
-        orderCotainer.setVisibility(View.VISIBLE);
-        String logo_flag = bean.getLogo_flag();
-        if ("0".equals(logo_flag)) {
-            if (logoImg.getVisibility() == View.VISIBLE) {
-                logoImg.setVisibility(View.INVISIBLE);
-            }
-        }
-        if ("1".equals(logo_flag)) {
-            if (logoImg.getVisibility() != View.VISIBLE) {
-                logoImg.setVisibility(View.VISIBLE);
-            }
-        }
-        statusTv.setText(status);
-        modelTv.setText(bean.getVbrandname() + " "
-                + bean.getVmaterialname());
-        descTv.setText(bean.getVdiscription());
-        timeTv.setText(bean.getDopportunity());
-
-    }
 
     @OnClick({R.id.maintence_cur_location, R.id.maintence_cardview, R.id.maintenance_order_container, R.id.radius_button_text})
     public void onClick(View view) {
@@ -283,54 +308,23 @@ public class MaintenanceFragment extends BaseMapFragment<MSupervisorPresenter, M
             case R.id.maintence_cardview:
                 break;
             case R.id.maintenance_order_container:
-                if (unfinishedBean == null) {
-                    return;
-                }
-                String flag = unfinishedBean.getFlag();
                 String status = statusTv.getText().toString();
                 if (OrderStatus.CLOSED.equals(status)) {
                     ToastUtils.showToast(getActivity(), "工单已关闭");
                     return;
                 }
-                if (unfinishedBean.isAlliance()) {
-                    switch (unfinishedBean.getNstatus()) {
-                        case "3"://待付款
-                            status = OrderStatus.PAY;
-                            break;
-                        case "4":
-                        case "5":
-                        case "6":
-                        case "7"://已完工
-                            if ("N".equals(unfinishedBean.getIs_EVALUATE())) {
-                                status = OrderStatus.EVALUATION;
-                            } else {
-                                status = OrderStatus.COMPLETED;
-                            }
-                            break;
-                    }
-                }
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("isAlliance", unfinishedBean.isAlliance());
+                bundle.putString(Constants.ORDER_NO,mRepairItem.getOrderNo());
                 if (OrderStatus.EVALUATION.equals(status)) {
-                    bundle.putString("orderNum", unfinishedBean.getOrderNum());
-                    bundle.putString("tel", unfinishedBean.getVmacoptel());
                     Constants.toActivity(getActivity(), EvaluationActivity.class, bundle);
                 } else if (OrderStatus.COMPLETED.equals(status)) {
-                    bundle.putString("orderNum", unfinishedBean.getOrderNum());
-                    bundle.putString("flag", unfinishedBean.getFlag());
-                    bundle.putString("tel", unfinishedBean.getVmacoptel());
                     Constants.toActivity(getActivity(), RepairFinishDetailActivity.class, bundle);
                 } else if (OrderStatus.PAY.equals(status)) {
-                    bundle.putString("orderNum", unfinishedBean.getOrderNum());
-                    bundle.putString("flag", flag);
                     Constants.toActivity(getActivity(), RepairPayDetailsActivity.class, bundle);
                 } else {
-                    bundle.putString("orderNum", unfinishedBean.getOrderNum());
                     bundle.putString("nstatus", status);
-                    bundle.putString("flag", flag);
                     Constants.toActivity(getActivity(), RepairDetailMapActivity.class, bundle);
                 }
-
                 break;
             case R.id.radius_button_text:
                 gotoNewRepair();

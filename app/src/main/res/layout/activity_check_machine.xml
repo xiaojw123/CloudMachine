@@ -12,16 +12,21 @@
         android:layout_height="wrap_content"
         app:common_title_name="选择机器" />
 
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_size_6"
-        android:cacheColorHint="@color/public_transparent"
-        android:divider="@color/public_transparent"
-        android:dividerHeight="@dimen/public_zero"
-        android:focusable="true"
-        android:scrollbars="none"
-        />
+    <!--<ListView-->
+        <!--android:id="@+id/listView"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_6"-->
+        <!--android:cacheColorHint="@color/public_transparent"-->
+        <!--android:divider="@color/public_transparent"-->
+        <!--android:dividerHeight="@dimen/public_zero"-->
+        <!--android:focusable="true"-->
+        <!--android:scrollbars="none"-->
+        <!--/>-->
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/select_mc_xrlv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

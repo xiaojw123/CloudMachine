@@ -1,5 +1,6 @@
 package com.cloudmachine.net.api;
 
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -7,8 +8,13 @@ import android.util.SparseArray;
 
 import com.cloudmachine.BuildConfig;
 import com.cloudmachine.MyApplication;
+import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.LocationBean;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.DataSupportManager;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.ui.login.acticity.LoginActivity;
+import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.NetWorkUtils;
 import com.cloudmachine.utils.VersionU;
 import com.google.gson.Gson;
@@ -29,6 +35,7 @@ import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
 import okhttp3.CacheControl;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -54,8 +61,7 @@ public class Api {
     //连接时长，单位：毫秒
 //    public static final int CONNECT_TIME_OUT = 7676;
     public static final int CONNECT_TIME_OUT = 60000;
-    public Retrofit retrofit;
-    public ApiService movieService;
+    private ApiService movieService;
 
     private static SparseArray<Api> sRetrofitManager = new SparseArray<>(HostType.TYPE_COUNT);
 
@@ -173,6 +179,9 @@ public class Api {
                 build.addHeader("osPlatform", "Android");
                 build.addHeader("osSystem", Build.VERSION.RELEASE);
                 build.addHeader("osVersion", VersionU.getVersionName());
+                if (!TextUtils.isEmpty(UserHelper.TOKEN)) {
+                    build.addHeader(Constants.KEY_TOKEN, UserHelper.TOKEN);
+                }
                 Request request = build.build();
                 return chain.proceed(request);
             }
@@ -186,7 +195,7 @@ public class Api {
         builder.addInterceptor(logInterceptor);
         okHttpClient = builder.build();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").serializeNulls().create();
-        retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -208,6 +217,7 @@ public class Api {
         }
         return retrofitManager.movieService;
     }
+
 
     public static void clearHostType() {
         sRetrofitManager.clear();
@@ -251,7 +261,6 @@ public class Api {
             }
         }
     };
-
 
 
 }

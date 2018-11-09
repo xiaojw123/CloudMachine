@@ -11,16 +11,24 @@ import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.LarkUrls;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.UIHelper;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DailyWorkDitailsListAsync extends ATask {
 
@@ -35,12 +43,6 @@ public class DailyWorkDitailsListAsync extends ATask {
         this.handler = handler;
         this.deviceId = deviceId;
         this.date = date;
-
-        try {
-            memberId = String.valueOf(MemeberKeeper.getOauth(context).getId());
-        } catch (Exception ee) {
-
-        }
     }
 
     @Override
@@ -55,13 +57,12 @@ public class DailyWorkDitailsListAsync extends ATask {
     @Override
     protected String doInBackground(String... params) {
         IHttp httpRequest = new HttpURLConnectionImp();
-        List<NameValuePair> list = new ArrayList<NameValuePair>();
-        list.add(new BasicNameValuePair("deviceId", String.valueOf(deviceId)));
-        list.add(new BasicNameValuePair("memberId", memberId));
-        list.add(new BasicNameValuePair("date", date));
         String result = null;
         try {
-            result = httpRequest.post(Constants.URL_DAILYWORKDITAILS, list);
+            Map<String, String> pm = new HashMap<>();
+            pm.put("deviceId", String.valueOf(deviceId));
+            pm.put("date", date);
+            result = httpRequest.post(LarkUrls.DAILY_WORK_DETAIL, pm);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,16 +79,22 @@ public class DailyWorkDitailsListAsync extends ATask {
 
     @Override
     protected void decodeJson(String result) {
-        // TODO Auto-generated method stub
         super.decodeJson(result);
         Message msg = Message.obtain();
         if (isSuccess) {
             Gson gson = new Gson();
-            BaseBO<List<DailyWorkInfo>> baseBO = gson.fromJson(result, new TypeToken<BaseBO<List<DailyWorkInfo>>>() {
-            }.getType());
-            msg.what = Constants.HANDLER_DAILYWORK_SUCCESS;
-            msg.obj = baseBO.getResult();
-            handler.sendMessage(msg);
+            try {
+                JSONObject resposeJobj = new JSONObject(result);
+                JSONObject resultJobj = resposeJobj.optJSONObject(Constants.RESULT);
+                JSONArray detailArray = resultJobj.optJSONArray("workDetailList");
+                List<DailyWorkInfo> infoList = gson.fromJson(detailArray.toString(), new TypeToken<List<DailyWorkInfo>>() {
+                }.getType());
+                msg.what = Constants.HANDLER_DAILYWORK_SUCCESS;
+                msg.obj = infoList;
+                handler.sendMessage(msg);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else {
             msg.what = Constants.HANDLER_DAILYWORK_FAIL;
             msg.obj = message;

@@ -3,7 +3,6 @@ package com.cloudmachine.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,9 +10,7 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -33,8 +30,6 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.LocationXY;
-import com.cloudmachine.bean.McDeviceBasicsInfo;
-import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.LocusListAsync;
@@ -83,8 +78,6 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
     private int timeType = 0;
     private final String hour_unit = "时";
     private final String minute_unit = "分";
-    private McDeviceBasicsInfo mcDeviceBasicsInfo;
-    private McDeviceLocation location;
     private long startTime, endTime;
     private Thread moveThread;
     Marker mMoveMarker;
@@ -96,7 +89,7 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
     String mToalLen;
     int pointSize;
     int curTimeInterval = TIME_INTERVAL;
-
+    long deviceId;
 
 
     @Override
@@ -111,41 +104,21 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
         mapView.onCreate(savedInstanceState);// 此方法必须重写
         mAmap = mapView.getMap();
         mAmap.setOnMapLoadedListener(this);
-        UiSettings us=mAmap.getUiSettings();
+        UiSettings us = mAmap.getUiSettings();
         us.setMyLocationButtonEnabled(false);
         us.setZoomControlsEnabled(false);
-        getIntentData();
+//        getIntentData();
         initView();
         MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_HISTORYLOCUS);
 //        initRoadData();
 //        moveLooper();
-        if (mcDeviceBasicsInfo != null) {
-            new LocusListAsync(mcDeviceBasicsInfo.getId(), mContext, mHandler).execute();
-        }
+        deviceId = getIntent().getLongExtra(Constants.DEVICE_ID, -1);
+        new LocusListAsync(deviceId, mHandler).execute();
     }
 
     @Override
     public void initPresenter() {
 
-    }
-
-    private void getIntentData() {
-        Intent intent = this.getIntent();
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            try {
-                mcDeviceBasicsInfo = (McDeviceBasicsInfo) bundle.getSerializable(Constants.P_MCDEVICEBASICSINFO);
-                location = mcDeviceBasicsInfo.getLocation();
-                if (null != location && location.getLat() != 0.0 && location.getLng() != 0.0) {
-                    LocationXY xy = new LocationXY();
-                    xy.setX(location.getLng());
-                    xy.setY(location.getLat());
-                    locationXY.add(xy);
-                }
-            } catch (Exception e) {
-            }
-
-        }
     }
 
     private void initView() {
@@ -199,7 +172,7 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
         for (int i = 0; i < locationXY.size(); i++) {
             polylineOptions.add(new LatLng(locationXY.get(i).getY(), locationXY.get(i).getX()));
         }
-        polylineOptions.width(DensityUtil.dip2px(this,3));
+        polylineOptions.width(DensityUtil.dip2px(this, 3));
         polylineOptions.color(Color.parseColor("#7bb4f5"));
         mVirtureRoad = mAmap.addPolyline(polylineOptions);
         pointSize = mVirtureRoad.getPoints().size();
@@ -210,26 +183,23 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
 //		markerOptions.setFlat(true);
         markerOptions.anchor(0.5f, 0.5f);
         markerOptions.icon(BitmapDescriptorFactory
-                .fromView(CommonUtils.getMarkerView(this,32,32,R.drawable.location_marker)));
+                .fromView(CommonUtils.getMarkerView(this, 32, 32, R.drawable.location_marker)));
         markerOptions.position(polylineOptions.getPoints().get(0));
         mMoveMarker = mAmap.addMarker(markerOptions);
         mMoveMarker.setRotateAngle((float) getAngle(0));
 //		mAmap.moveCamera(CameraUpdateFactory.changeLatLng(mMoveMarker.getPosition()));
 
 
-
         if (polylineOptions.getPoints().size() > 2) {
             mAmap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
-                    .fromView(CommonUtils.getMarkerView(this,19,25,R.drawable.location_start)))
+                    .fromView(CommonUtils.getMarkerView(this, 19, 25, R.drawable.location_start)))
                     .position(polylineOptions.getPoints().get(0)));
             mAmap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory
-                    .fromView(CommonUtils.getMarkerView(this,19,25,R.drawable.location_end)))
+                    .fromView(CommonUtils.getMarkerView(this, 19, 25, R.drawable.location_end)))
                     .position(polylineOptions.getPoints().get(polylineOptions.getPoints().size() - 1)));
         }
         initMapMarker();
     }
-
-
 
 
     private void initMapMarker() {
@@ -678,14 +648,12 @@ public class HistoricalTrackActivity extends BaseAutoLayoutActivity implements A
                             "yyyy-MM-dd HH:mm");
                     hideWheelView();
 
-                    if (null != mcDeviceBasicsInfo && startTime > 0 && endTime > 0) {
-                        long st, et;
+                    if (startTime > 0 && endTime > 0) {
                         if (startTime > endTime) {
                             showPromptDialog(getResources().getString(R.string.start_end_time_error));
                             return;
                         }
-                        AppLog.print("startTime___"+startTime+", endTIME__"+endTime);
-                        new LocusListAsync(mcDeviceBasicsInfo.getId(), startTime, endTime, mContext, mHandler).execute();
+                        new LocusListAsync(deviceId, startTime, endTime, mHandler).execute();
                     } else {
                         showPromptDialog(getResources().getString(R.string.start_end_time_null));
                     }

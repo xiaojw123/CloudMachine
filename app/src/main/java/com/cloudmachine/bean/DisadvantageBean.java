@@ -7,8 +7,8 @@ public class DisadvantageBean implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 7378899558237807783L;
-	private String code_NAME;
-	private String code;
+	private String tagName;
+	private String tagCode;
 	private boolean isChecked;
 	
 	
@@ -21,19 +21,19 @@ public class DisadvantageBean implements Serializable {
 		this.isChecked = isChecked;
 	}
 
-	public String getCode_NAME() {
-		return code_NAME;
+	public String getTagName() {
+		return tagName;
 	}
 
-	public void setCode_NAME(String code_NAME) {
-		this.code_NAME = code_NAME;
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
 	}
 
-	public String getCode() {
-		return code;
+	public String getTagCode() {
+		return tagCode;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setTagCode(String tagCode) {
+		this.tagCode = tagCode;
 	}
 }

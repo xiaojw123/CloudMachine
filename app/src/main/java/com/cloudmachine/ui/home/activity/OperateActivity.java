@@ -1,10 +1,7 @@
 package com.cloudmachine.ui.home.activity;
 
-import android.app.Activity;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -12,39 +9,30 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.amap.api.maps.model.Text;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.bean.Member;
-import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.contract.OperateContact;
 import com.cloudmachine.ui.home.model.OperateModel;
 import com.cloudmachine.ui.home.presenter.OperatePresenter;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.LarkUrls;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.widget.CustomBindDialog;
-import com.google.gson.Gson;
 
-import org.apache.http.NameValuePair;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -73,7 +61,6 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
     CheckBox selectRb;
     @BindView(R.id.operator_loading)
     FrameLayout loadingView;
-    long memberId;
     Timer mTimer;
     int timeOut = 60;//定时时长60s
     CustomBindDialog identyfDialog;
@@ -87,7 +74,6 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
         ButterKnife.bind(this);
         Member member = MemeberKeeper.getOauth(mContext);
         if (member != null) {
-            memberId = member.getId();
             mobieTv.setText(member.getMobile());
         }
         submitBtn.setButtonClickEnable(false);
@@ -115,7 +101,7 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
             case R.id.radius_button_text:
                 if (selectRb.isChecked()) {
                     String psw = pswEdt.getText().toString();
-                    mPresenter.authOperator(memberId, psw, submitBtn, loadingView);
+                    mPresenter.authOperator(psw, submitBtn, loadingView);
                 } else {
                     ToastUtils.showToast(mContext, "需同意手机运营商授权协议后，才能提交！");
                 }
@@ -151,7 +137,7 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
             @Override
             public void onClick(final View v) {
                 v.setEnabled(false);
-                mPresenter.getVerifyCode(memberId, mTaskId);
+                mPresenter.getVerifyCode(mTaskId);
                 startTimer(v);
             }
         });
@@ -171,7 +157,7 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
                     }
 //                    mPresenter.checkVerifyCode(memberId, mTaskId, code);
                     OperatorCodeAsync task = new OperatorCodeAsync();
-                    task.execute(String.valueOf(memberId), mTaskId, code);
+                    task.execute(mTaskId, code);
                 } else {
                     ToastUtils.showToast(mContext, "验证码不能为空");
                 }
@@ -275,13 +261,10 @@ public class OperateActivity extends BaseAutoLayoutActivity<OperatePresenter, Op
             IHttp httpRequest = new HttpURLConnectionImp();
             String result = null;
             try {
-                List<NameValuePair> paramsList = new ArrayList<>();
-                if (params.length >= 3) {
-                    paramsList.add(Utils.addBasicValue("memberId", params[0]));
-                    paramsList.add(Utils.addBasicValue("taskId", params[1]));
-                    paramsList.add(Utils.addBasicValue("smsCode", params[2]));
-                }
-                result = httpRequest.get(Constants.URL_OPERATOR_CODE, paramsList);
+                Map<String, String> pm = new HashMap<>();
+                pm.put("taskId", params[0]);
+                pm.put("smsCode", params[1]);
+                result = httpRequest.get(LarkUrls.OPERATOR_CODE_VALID, pm);
                 return result;
             } catch (Exception e) {
                 e.printStackTrace();

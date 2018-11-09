@@ -3,7 +3,7 @@ package com.cloudmachine.ui.home.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.ui.home.model.RoleBean;
+import com.cloudmachine.bean.EmunBean;
 
 import java.util.List;
 
@@ -15,20 +15,20 @@ import rx.Observable;
 
 public interface RemarkInfoContract {
     interface View extends BaseView {
-        void returnRoleListView(List<RoleBean> roleBeen);
+        void returnRoleListView(List<EmunBean> roleBeen);
         void updateRemarkSuccess();
         void updateRemarkFailed();
     }
 
     interface Model extends BaseModel {
-        Observable<List<RoleBean>> getRoleList();
-        Observable<String>  updateRemarkInfo(long fid, long memberId, long deviceId, String remark, long roleId);
+        Observable<List<EmunBean>> getRoleList();
+        Observable<String>  updateRemarkInfo(int  groupId, long deviceId, int roleId, String remark);
 
     }
 
     abstract class Presenter extends BasePresenter<RemarkInfoContract.View, RemarkInfoContract.Model> {
         public abstract void updateRoleListView();
-        public abstract void updateRemarkInfo(long fid,long memberId,long deviceId,String remark,long roleId);
+        public abstract void updateRemarkInfo(int  groupId, long deviceId, int roleId, String remark);
     }
 
 

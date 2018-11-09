@@ -1,30 +1,29 @@
 package com.cloudmachine.ui.home.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 
 import com.cloudmachine.R;
-import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.bean.AuthInfoDetail;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.widget.CommonTitleView;
-import com.google.gson.JsonObject;
 
 
 public class AddressActivity extends BaseAutoLayoutActivity implements View.OnClickListener, ClearEditTextView.OnTextChangeListener {
     ClearEditTextView addressEdt;
     CommonTitleView titleView;
     String uniqueId;
+    String mLastAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,18 @@ public class AddressActivity extends BaseAutoLayoutActivity implements View.OnCl
         addressEdt = (ClearEditTextView) findViewById(R.id.address_edt);
         addressEdt.setOnTextChangeListener(this);
         titleView.setRightClickListener(this);
+        getPersonalInfo(uniqueId, InfoAuthActivity.BNS_TYPE_ADDRESS);
     }
+
+    @Override
+    protected void returnInfoDetail(AuthInfoDetail infoDetail) {
+        mLastAddress = infoDetail.getResideAddress();
+        if (!TextUtils.isEmpty(mLastAddress)) {
+            addressEdt.setText(mLastAddress);
+            addressEdt.setSelection(mLastAddress.length());
+        }
+    }
+
 
     @Override
     public void initPresenter() {
@@ -45,23 +55,30 @@ public class AddressActivity extends BaseAutoLayoutActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         String address = addressEdt.getText().toString();
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).submitHomeAddress(uniqueId, address).compose(RxSchedulers.<BaseRespose<String>>io_main()).subscribe(new RxSubscriber<BaseRespose<String>>(mContext) {
-            @Override
-            protected void _onNext(BaseRespose<String> respose) {
-                if (respose.success()) {
-                    ToastUtils.showToast(mContext, "提交成功");
-                    finish();
-                } else {
-                    _onError(respose.getMessage());
+        if (TextUtils.equals(address,mLastAddress)){
+            ToastUtils.showToast(mContext,getResources().getString(R.string.cannot_submit));
+            return;
+        }
+        if (isInfoUpdate) {
+            updatePersonalInfo(InfoAuthActivity.BNS_TYPE_ADDRESS, uniqueId, address, null, null, null);
+        } else {
+            mRxManager.add(Api.getDefault(HostType.HOST_LARK).submitHomeAddress(uniqueId, address).compose(RxSchedulers.<BaseRespose<String>>io_main()).subscribe(new RxSubscriber<BaseRespose<String>>(mContext) {
+                @Override
+                protected void _onNext(BaseRespose<String> respose) {
+                    if (respose.success()) {
+                        ToastUtils.showToast(mContext, "提交成功");
+                        finish();
+                    } else {
+                        _onError(respose.getMessage());
+                    }
                 }
-            }
 
-            @Override
-            protected void _onError(String message) {
-                ToastUtils.showToast(mContext, message);
-            }
-        }));
-
+                @Override
+                protected void _onError(String message) {
+                    ToastUtils.showToast(mContext, message);
+                }
+            }));
+        }
     }
 
     @Override

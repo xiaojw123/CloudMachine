@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.cloudmachine.activities.RepairPayDetailsActivity;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.ui.home.activity.PayInfoActivity;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;

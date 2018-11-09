@@ -97,6 +97,11 @@ public class RadiusButtonView extends AutoRelativeLayout {
 
     }
 
+    public boolean isClickEnable(){
+        return isClickEnable;
+    }
+
+
     public void setButtonClickEnable(boolean flag) {
         isClickEnable = flag;
         if (isClickEnable) {

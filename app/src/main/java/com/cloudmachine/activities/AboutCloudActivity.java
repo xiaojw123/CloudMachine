@@ -1,86 +1,69 @@
 package com.cloudmachine.activities;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cloudmachine.BuildConfig;
 import com.cloudmachine.R;
-import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.VersionInfo;
 import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
-import com.cloudmachine.net.task.GetVersionAsync;
-import com.cloudmachine.ui.home.activity.HomeActivity;
-import com.cloudmachine.ui.home.contract.ExtrContract;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.ui.home.activity.HostConfigActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ShareDialog;
-import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.VersionU;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.Date;
-import java.util.TimeZone;
-
-import cn.jpush.android.api.JPushInterface;
-
 /**
  * 关于与帮助页面
  */
-public class AboutCloudActivity extends BaseAutoLayoutActivity implements
-        Callback, OnClickListener {
+public class AboutCloudActivity extends BaseAutoLayoutActivity implements OnClickListener {
 
-    private Context mContext;
-    private Handler mHandler;
-    private boolean isAuto = false;
-    private String downLoadLink;
-//    private Button envirBtn;
+    int clickTime, selPos;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_cloud);
-        getIntentData();
-        mContext = this;
-        mHandler = new Handler(this);
         TextView textView = (TextView) findViewById(R.id.version);
-
         String reVersion = "";
-
-        if (BuildConfig.IS_REMOTE) {
-            if (BuildConfig.IS_ONLINE) {
-                reVersion = CommonUtils.getDateStamp();
-                if (reVersion != null && reVersion.length() > 2) {
-                    reVersion = reVersion.substring(2);
-                }
-            } else {
-                reVersion = "218";
-            }
+        if (TextUtils.equals(ApiConstants.LARK_HOST, ApiConstants.ONLINE_HOST1)) {
+            selPos = 0;
+            reVersion = BuildConfig.RELEASE_TIME;
+        } else if (TextUtils.equals(ApiConstants.LARK_HOST, ApiConstants.PRE_HOST1)) {
+            selPos = 1;
+            reVersion = "218_" + BuildConfig.RELEASE_TIME;
+        } else if (TextUtils.equals(ApiConstants.LARK_HOST, ApiConstants.LOCAL_HOST1)) {
+            selPos = 2;
+            reVersion = "109_" + BuildConfig.RELEASE_TIME;
+        } else if (TextUtils.equals(ApiConstants.LARK_HOST, ApiConstants.INTEFACE_HOST1)) {
+            selPos = 3;
+            reVersion = "179_" + BuildConfig.RELEASE_TIME;
         } else {
-            if (BuildConfig.IS_INTERFACE) {
-                reVersion = "179";
-            } else {
-                reVersion = "109";
-            }
+            reVersion = "un";
         }
         textView.setText("V" + VersionU.getVersionName() + "." + reVersion);
+        if (BuildConfig.DEBUG) {
+            textView.setOnClickListener(this);
+        }
         initView();
-        new GetVersionAsync(mContext, mHandler).execute();
     }
 
 
@@ -102,65 +85,30 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
 
 
     @Override
-    public boolean handleMessage(Message msg) {
-        // TODO Auto-generated method stub
-        switch (msg.what) {
-            case Constants.HANDLER_GETVERSION_SUCCESS:
-                VersionInfo vInfo = (VersionInfo) msg.obj;
-                if (null != vInfo) {
-                    boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), vInfo.getVersion());
-                    if (isUpdate) {
-                        Constants.updateVersion(this, mHandler,
-                                vInfo.getMustUpdate(), vInfo.getMessage(), vInfo.getLink());
-                    }
-
-                }
-                break;
-            case Constants.HANDLER_GETVERSION_FAIL:
-                Constants.MyToast((String) msg.obj,
-                        getResources().getString(R.string.get_version_error));
-                break;
-            case Constants.HANDLER_VERSIONDOWNLOAD:
-                downLoadLink = (String) msg.obj;
-                PermissionsChecker checker = new PermissionsChecker(this);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    PermissionsActivity.startActivityForResult(this, HomeActivity.PEM_REQCODE_WRITESD,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                } else {
-                    Constants.versionDownload(this, downLoadLink);
-                }
-                break;
-        }
-        return false;
-    }
-
-
-    private void getIntentData() {
-        Intent intent = this.getIntent();
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            try {
-                String ectra = bundle.getString(JPushInterface.EXTRA_EXTRA);
-                if (!TextUtils.isEmpty(ectra)) {
-                    isAuto = true;
-                }
-            } catch (Exception e) {
-            }
-
-        }
-    }
-
-    @Override
     protected void onResume() {
-        //MobclickAgent.onPageStart(UMengKey.time_setting_aboat);
         super.onResume();
         MobclickAgent.onEvent(this, MobEvent.SETTING_ABOAT);
+        checkVersionUpdate();
     }
 
-    @Override
-    protected void onPause() {
-        //MobclickAgent.onPageEnd(UMengKey.time_setting_aboat);
-        super.onPause();
+    private void checkVersionUpdate() {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getVersion(Constants.ANDROID, VersionU.getVersionName()).compose(RxHelper.<VersionInfo>handleResult()).subscribe(new RxSubscriber<VersionInfo>(mContext) {
+            @Override
+            protected void _onNext(VersionInfo info) {
+                if (null != info) {
+                    boolean isCanUpdate = CommonUtils.checVersion(VersionU.getVersionName(), info.getVersion());
+                    if (isCanUpdate) {
+                        Constants.updateVersion(mContext,
+                                info.getMustUpdate(), info.getMessage(), info.getLink());
+                    }
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
     }
 
     @Override
@@ -172,7 +120,6 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
                 Constants.toActivity(AboutCloudActivity.this, QuestionCommunityActivity.class, fBundle);
                 break;
             case R.id.use_help_fl:
-//                Constants.toActivity(AboutCloudActivity.this, UseHelpActivity.class, null);
                 MobclickAgent.onEvent(this, MobEvent.TIME_H5_USE_HELP_PAGE);
                 Bundle bundle = new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppUseHelper);
@@ -183,23 +130,17 @@ public class AboutCloudActivity extends BaseAutoLayoutActivity implements
                 shareDialog.show();
                 MobclickAgent.onEvent(mContext, UMengKey.count_share_app);
                 break;
+            case R.id.version:
+                clickTime++;
+                if (clickTime == 2) {
+                    clickTime = 0;
+                    Bundle data=new Bundle();
+                    data.putInt(BuildConfig.BUILD_TYPE,selPos);
+                    Constants.toActivity(this, HostConfigActivity.class, data);
+                }
+                break;
 
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == HomeActivity.PEM_REQCODE_WRITESD) {
-            if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                ToastUtils.showToast(this, "更新失败！！");
-                CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
-            } else {
-                Constants.versionDownload(this, downLoadLink);
-            }
-
-        }
-
     }
 
     //分享信息

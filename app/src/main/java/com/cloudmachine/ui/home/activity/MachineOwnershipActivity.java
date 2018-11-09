@@ -55,7 +55,7 @@ public class MachineOwnershipActivity extends BaseAutoLayoutActivity implements 
     }
 
     private void getMachineList() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getDeviceAuthList(UserHelper.getMemberId(this)).compose(RxHelper.<List<DeviceAuthItem>>handleResult()).subscribe(new RxSubscriber<List<DeviceAuthItem>>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getDeviceAuthList().compose(RxHelper.<List<DeviceAuthItem>>handleResult()).subscribe(new RxSubscriber<List<DeviceAuthItem>>(mContext) {
             @Override
             protected void _onNext(List<DeviceAuthItem> deviceAuthItems) {
                 if (deviceAuthItems != null && deviceAuthItems.size() > 0) {
@@ -92,14 +92,13 @@ public class MachineOwnershipActivity extends BaseAutoLayoutActivity implements 
         Object obj = view.getTag();
         if (obj != null) {
             DeviceAuthItem bean = (DeviceAuthItem) obj;
-            if (bean.getAuditStatus() == 0) {
-                Bundle bundle = new Bundle();
-                bundle.putString(Constants.UNIQUEID, uniqueNo);
-                bundle.putInt(Constants.DEVICE_ID, bean.getDeviceId());
-                bundle.putString(Constants.DEVICE_NAME, bean.getBrand());
-                bundle.putString(Constants.PAGET_TYPE, IncomeProofActivity.MACHINE_OWERSHIP);
-                Constants.toActivity(this, IncomeProofActivity.class, bundle);
-            }
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.UNIQUEID, uniqueNo);
+            bundle.putBoolean(InfoAuthActivity.IS_NEW_ADD, bean.getAuditStatus() == 0);
+            bundle.putInt(Constants.DEVICE_ID, bean.getDeviceId());
+            bundle.putString(Constants.DEVICE_NAME, bean.getBrand());
+            bundle.putString(Constants.PAGET_TYPE, IncomeProofActivity.MACHINE_OWERSHIP);
+            Constants.toActivity(this, IncomeProofActivity.class, bundle);
         }
     }
 }

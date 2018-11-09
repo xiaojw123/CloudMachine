@@ -153,8 +153,7 @@ public class RebundDepositActivity extends BaseAutoLayoutActivity {
             paramsMap.put("reasionId", String.valueOf(reasonId));
         }
         paramsMap.put("id", idStr);
-        paramsMap.put("memberId", String.valueOf(UserHelper.getMemberId(this)));
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).rebundDesosit(paramsMap).compose(RxSchedulers.<BaseRespose>io_main()).subscribe(new RxSubscriber<BaseRespose>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).rebundDesosit(paramsMap).compose(RxSchedulers.<BaseRespose>io_main()).subscribe(new RxSubscriber<BaseRespose>(mContext) {
             @Override
             protected void _onNext(BaseRespose baseRespose) {
                 AppLog.print("baseRespose__" + baseRespose);
@@ -175,7 +174,7 @@ public class RebundDepositActivity extends BaseAutoLayoutActivity {
     }
 
     private void getReasonsRxTask() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getRefundReasonItems(UserHelper.getMemberId(this)).compose(RxSchedulers.<BaseRespose<List<ResonItem>>>io_main()).subscribe(new RxSubscriber<BaseRespose<List<ResonItem>>>(this) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getRefundReasonItems().compose(RxSchedulers.<BaseRespose<List<ResonItem>>>io_main()).subscribe(new RxSubscriber<BaseRespose<List<ResonItem>>>(this) {
             @Override
             protected void _onNext(BaseRespose<List<ResonItem>> listBaseRespose) {
                 updateResonListView(listBaseRespose.getResult());

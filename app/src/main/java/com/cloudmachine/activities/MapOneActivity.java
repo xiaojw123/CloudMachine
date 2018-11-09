@@ -8,10 +8,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -46,20 +42,19 @@ import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
-import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CircleFenchDialog;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.bean.McDeviceBasicsInfo;
-import com.cloudmachine.bean.McDeviceCircleFence;
-import com.cloudmachine.bean.McDeviceLocation;
+import com.cloudmachine.bean.ElectronicFenceBean;
+import com.cloudmachine.bean.LarkDeviceDetail;
+import com.cloudmachine.bean.LarkLocBean;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.listener.IMapListener;
-import com.cloudmachine.net.task.AddCircleFenchAsync;
-import com.cloudmachine.net.task.DeleteFenceAsync;
-import com.cloudmachine.net.task.DevicesBasicsInfoAsync;
+import com.cloudmachine.ui.home.contract.MapOneContract;
+import com.cloudmachine.ui.home.model.MapOneModel;
+import com.cloudmachine.ui.home.presenter.MapOnePresenter;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
@@ -74,9 +69,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MapOneActivity extends BaseAutoLayoutActivity implements
+public class MapOneActivity extends BaseAutoLayoutActivity<MapOnePresenter, MapOneModel> implements
+        MapOneContract.View,
         AMap.OnMarkerClickListener,
-        AMap.InfoWindowAdapter, AMap.CancelableCallback, Callback, AMap.OnMarkerDragListener, AMap.OnCameraChangeListener, GeocodeSearch.OnGeocodeSearchListener, IMapListener {
+        AMap.InfoWindowAdapter, AMap.OnMarkerDragListener, AMap.OnCameraChangeListener, GeocodeSearch.OnGeocodeSearchListener, IMapListener {
     private static final String MAP_DRAG = "拖动地图";
     private static final String SET_RADUIS_BY_CLICK_THIS = "点我设置半径";
     private static final int zoomDefault = 15;
@@ -85,13 +81,11 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
     private static final String NEWSET = "添加";
     private static final String DELETE = "删除";
 
-    private Handler mHandler;
 
     private MapView mapView;
     private AMap aMap;
 
 
-    private McDeviceBasicsInfo mDeviceInfo;
     private CommonTitleView titleView;
 
     private LocationSource.OnLocationChangedListener mListener;
@@ -104,20 +98,22 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
     private Polyline polyline;
     private Polygon polygon;
     private boolean isEnclosure;
-    private McDeviceLocation location;
+    //    private McDeviceLocation location;
     private boolean isAskDelete = true;
     private String radiu = "100";
     private long deviceId = -1;
-    private int deviceType;
-    private String mLat;
-    private String mLng;
-    private int mWorkStatus;
+    private boolean isOwner;
+    private double mLat;
+    private double mLng;
     private CircleFenchDialog mCircleFenchDialog;
     String deviceName;
     Marker locRaiduMark;
     FrameLayout locAddressLayout;
     TextView locAddressTv;
     GeocodeSearch geocoderSearch;
+    LarkDeviceDetail mDeviceDetail;
+    private int fenceType=2;//1：multie bound 2:circle
+    ElectronicFenceBean.CircleFenceBean mCircle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +125,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
 
     @Override
     public void initPresenter() {
-
+        mPresenter.setVM(this, mModel);
     }
 
 
@@ -163,21 +159,14 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
 
 
     private void initFencn() {            //重新初始化围栏的方法
-        if (mDeviceInfo != null) {
-            //是否有圆形的围栏
-            McDeviceCircleFence circleFence = mDeviceInfo.getCircleFence();
-            if (circleFence != null) {
-                if (!Constants.isNoEditInMcMember(deviceId, deviceType)) {
-                    titleView.setRightText(DELETE);
-                }
-                //重新初始化围栏
-                finishDraw();
-                //重新初始化围栏半径marker
-                addCircleMarkerToMap();
-                aMap.reloadMap();
-            }
-
+        if (isOwner) {
+            titleView.setRightText(DELETE);
         }
+        //重新初始化围栏
+        finishDraw();
+        //重新初始化围栏半径marker
+        addCircleMarkerToMap();
+        aMap.reloadMap();
     }
 
     private void initView(Bundle savedInstanceState) {
@@ -187,14 +176,13 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         titleView = (CommonTitleView) findViewById(R.id.title_layout);
         locAddressLayout = (FrameLayout) findViewById(R.id.mapone_loc_layout);
         locAddressTv = (TextView) findViewById(R.id.mapone_cur_location);
-        if (!Constants.isNoEditInMcMember(deviceId, deviceType)) {
+        if (isOwner) {
             titleView.setRightText(NEWSET, rightClickListener);
         }
         initMap();
-        if (deviceId != -1) {
-            new DevicesBasicsInfoAsync(deviceId, mContext, mHandler).execute();
-        }
+        mPresenter.getElecFence(deviceId);
     }
+
 
     OnClickListener rightClickListener = new OnClickListener() {
         @Override
@@ -221,25 +209,16 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            mDeviceInfo = (McDeviceBasicsInfo) bundle//拿到设备基本信息
-                    .getSerializable(Constants.P_MCDEVICEBASICSINFO);
-            if (mDeviceInfo != null) {
-                deviceId = mDeviceInfo.getId();//设备id
-                deviceType = mDeviceInfo.getType();
-                mWorkStatus = mDeviceInfo.getWorkStatus();//工作状态
-                McDeviceCircleFence fence = mDeviceInfo.getCircleFence();
-                if (fence != null) {
-                    radiu = fence.getRadiu();//范围半径
-                    mLat = fence.getLat();
-                    mLng = fence.getLng();
-                }
+            isOwner = bundle.getBoolean(Constants.IS_OWNER);
+            deviceId = bundle.getLong(Constants.DEVICE_ID, -1);
+            mDeviceDetail = bundle.getParcelable(Constants.DEVICE_DETAIL);
+            if (mDeviceDetail != null) {
+                deviceName = mDeviceDetail.getDeviceName();
             }
         }
-        mHandler = new Handler(this);
     }
 
     protected MarkerOptions getMarkerLocOptions(Context context, LatLng latLng, String title) {
-        AppLog.print("locRaiduTv marker __getMarkerLocOptions___");
         MarkerOptions options = new MarkerOptions();
         TextView locRaiduTv = new TextView(context);
         locRaiduTv.setTextColor(getResources().getColor(R.color.cor15));
@@ -260,14 +239,10 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
     }
 
     private void editFence() {
-//        if (null != myMarker && myMarker.isInfoWindowShown()) {
-//            myMarker.hideInfoWindow();
-//        }
         MobclickAgent.onEvent(this, MobEvent.COUNT_FENCE_EDIT);
         if (!isEnclosure) {
             showEditDialog();
             isEnclosure = true;
-//            jumpPoint(myMarker);
             if (null != listPoint && listPoint.size() > 0) {
                 MobclickAgent.onEvent(MapOneActivity.this, UMengKey.count_fence_add);
                 changePolygon(null);
@@ -289,63 +264,30 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
             aMap.setInfoWindowAdapter(this);// 设置自定义InfoWindow样式
             aMap.setOnMarkerDragListener(this);
             aMap.setOnCameraChangeListener(this);
-            if (mDeviceInfo != null) {
-                deviceName = mDeviceInfo.getDeviceName();
-                location = mDeviceInfo.getLocation();
-                double lat = 0;
-                double lng = 0;
-                if (location != null) {
-                    lat = location.getLat();
-                    lng = location.getLng();
-                }
-                LatLng myLatLng = new LatLng(lat, lng);
-                CommonUtils.updateReomteMarkerOpt(this, CommonUtils.getMarkerIconUrl(mDeviceInfo.getTypePicUrl(), mDeviceInfo.getWorkStatus()), myLatLng, this);
+            if (mDeviceDetail != null) {
+                LarkLocBean loc = mDeviceDetail.getLocation();
+                LatLng myLatLng = new LatLng(loc.getLat(), loc.getLng());
+                CommonUtils.updateReomteMarkerOpt(this, CommonUtils.getMarkerIconUrl(mDeviceDetail.getTypePicUrl(), mDeviceDetail.getWorkStatus()), myLatLng, this);
             }
         }
-        initFencn();
-    }
-
-    @NonNull
-    private MarkerOptions getDeviceMarkerOptions() {
-        MarkerOptions markerOption = new MarkerOptions();
-        location = mDeviceInfo.getLocation();
-        double lat = 0;
-        double lng = 0;
-        if (location != null) {
-            lat = location.getLat();
-            lng = location.getLng();
-        }
-        LatLng myLatLng = new LatLng(lat, lng);
-        markerOption.position(myLatLng);
-        markerOption.icon(BitmapDescriptorFactory
-                .fromView(getDeviceMarkerView()));
-        return markerOption;
     }
 
     @Override
     public void updateMarkerOptions(MarkerOptions options) {
-        if (null != mDeviceInfo) {
-            myMarker = aMap.addMarker(options);
-            myMarker.showInfoWindow();
-            aMap.moveCamera(CameraUpdateFactory
-                    .changeLatLng(myMarker
-                            .getPosition()));// 18
-            scaleMap();
-            aMap.moveCamera(CameraUpdateFactory.zoomTo(zoomDefault));
-        }
-
+        myMarker = aMap.addMarker(options);
+        myMarker.showInfoWindow();
+        aMap.moveCamera(CameraUpdateFactory
+                .changeLatLng(myMarker
+                        .getPosition()));// 18
+//        scaleMap();
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(zoomDefault));
     }
 
     //展示新增/编辑对话框
     public void showEditDialog() {
-//        LayoutInflater inflater = LayoutInflater.from(MapOneActivity.this);
-//        final View view = inflater.inflate(R.layout.circle_fench_dialog, null);
-//        final EditText range = (EditText) view.findViewById(R.id.et_circle_fench);
         mCircleFenchDialog = new CircleFenchDialog(this);
         mCircleFenchDialog.dialog.show();//显示
-        if (null != mDeviceInfo.getCircleFence()) {
-            mCircleFenchDialog.setEditText(mDeviceInfo.getCircleFence().getRadiu());
-        }
+        mCircleFenchDialog.setEditText(radiu);
         //确定按钮
         mCircleFenchDialog.setMyDialogOnClick(new CircleFenchDialog.CircleFenchDialogOnClick() {
             @Override
@@ -356,16 +298,15 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
                 } else {
                     //range.setText("100");
                     radiu = range.getText().toString().trim();//33
-                    String latStr = mLat;
-                    String lngStr = mLng;
+                    double lat = mLat;
+                    double lng = mLng;
                     if (locRaiduMark != null && locRaiduMark.isVisible()) {
                         LatLng pos = locRaiduMark.getPosition();
-                        latStr = String.valueOf(pos.latitude);
-                        lngStr = String.valueOf(pos.longitude);
+                        lat = pos.latitude;
+                        lng = pos.longitude;
                     }
                     MobclickAgent.onEvent(MapOneActivity.this, MobEvent.COUNT_FENCE_CONFIRM);
-                    new AddCircleFenchAsync(MapOneActivity.this, mHandler, latStr,
-                            lngStr, mDeviceInfo.getId(), radiu).execute();
+                    mPresenter.addElecFence(lat,lng,radiu,fenceType,deviceId);
                 }
                 mCircleFenchDialog.dialog.dismiss();//关闭
             }
@@ -377,7 +318,7 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
                 if (locRaiduMark != null && locRaiduMark.isVisible()) {
                     return;
                 }
-                if (null != mDeviceInfo.getCircleFence()) {
+                if (null != mCircle) {
                     titleView.setRightText(DELETE);
                     finishDraw();
                 } else {
@@ -391,20 +332,8 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
 
     private void addCircleMarkerToMap() {
         //添加显示半径图层
-        if (null != mDeviceInfo.getCircleFence() && null != mDeviceInfo) {
-            //location = mcDeviceBasicsInfo.getLocation();
-//            LatLng circlrLatlng = getLatlng(Float.parseFloat(radiu) / 4000 / 2,
-//                    new LatLng(Double.parseDouble(mcDeviceBasicsInfo.getCircleFence().getLat()),
-//                            Double.parseDouble(mcDeviceBasicsInfo.getCircleFence().getLng())), 0);
-//            mCircleMarkerOptions = new MarkerOptions();
-            rauduesTitle = "半径" + mDeviceInfo.getCircleFence().getRadiu() + "米";
-//            mCircleMarkerOptions.position(circlrLatlng);
-//            mCircleMarkerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMyBitmap(title)));
-//            mCircleMarkerOptions.icon(BitmapDescriptorFactory.fromView(getMyView()));
-//            mRadiuMarker = aMap.addMarker(mCircleMarkerOptions);
-//            mRadiuMarker.setObject("radiuMarker");
-//            mRadiuMarker.showInfoWindow();
-
+        if (null !=mCircle) {
+            rauduesTitle = "半径" + radiu + "米";
         }
     }
 
@@ -451,73 +380,17 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
     }
 
 
-    @NonNull
-    private ImageView getDeviceMarkerView() {
-        ImageView img = new ImageView(this);
-        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        int resId;
-//        switch (mWorkStatus) {
-//            case 1:
-//                resId = R.drawable.icon_machine_work;
-//                break;
-//            case 2:
-//                resId = R.drawable.icon_machine_online;
-//                break;
-//            default:
-//                resId = R.drawable.icon_machine_unwork;
-//                break;
-//        }
-        if (mDeviceInfo != null) {
-            Glide.with(this).load(CommonUtils.getMarkerIconUrl(mDeviceInfo.getTypePicUrl(), mWorkStatus)).into(img);
-        }
 
-//        img.setImageResource(resId);
-        return img;
-    }
-
-    protected MarkerOptions getMarkerOptions(Context context, LatLng latLng, int resid, String title) {
-        MarkerOptions options = new MarkerOptions();
-        ImageView img = new ImageView(context);
-//        img.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(context, Constants.MACHINE_ICON_WIDTH),DensityUtil.dip2px(context,Constants.MACHINE_ICON_HEIGHT)));
-        img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        img.setImageResource(resid);
-        options.icon(BitmapDescriptorFactory.fromView(img));
-        options.title(title);
-        options.position(latLng);
-        return options;
-    }
-
-    protected Bitmap getMyBitmap(String pm_val) {
-       /* Bitmap bitmap = BitmapDescriptorFactory.fromResource(
-                R.drawable.none).getBitmap();*/
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_marker_win).copy(Bitmap.Config.ARGB_8888, true);
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-                bitmap.getHeight());
-        Canvas canvas = new Canvas(bitmap);
-        TextPaint textPaint = new TextPaint();
-        textPaint.setAntiAlias(true);
-        textPaint.setFakeBoldText(true);
-        textPaint.setTextSize(40f);
-        textPaint.setColor(getResources().getColor(R.color.black));
-        canvas.drawText(pm_val, 25, 70, textPaint);// 设置bitmap上面的文字位置
-        return bitmap;
-    }
 
     @Override
     public View getInfoContents(Marker marker) {
         // TODO Auto-generated method stub
-//        View infoWindow = this.getLayoutInflater().inflate(
-//                R.layout.custom_info_contents, null);
-//
-//        render(marker, infoWindow);
         return getInfoWindow(marker);
     }
 
     @Override
     public View getInfoWindow(Marker marker) {
-        AppLog.print("getInfoWindow___isRemoved_" + myMarker.isRemoved());
         if (myMarker != null && myMarker.isVisible()) {
-            AppLog.print("myMark_window___show");
             return getMyView();
         }
         return null;
@@ -536,53 +409,11 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
 
     TextView markerTtileTv;
 
-    @Override
-    public void onCancel() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onFinish() {
-        // TODO Auto-generated method stub
-
-    }
-
-	/*
-     * @Override public void onLocationChanged(Location location) { // TODO
-	 * Auto-generated method stub if (mListener != null && location != null) {
-	 * //mListener.onLocationChanged(aLocation);// 显示系统小蓝点
-	 * mGPSMarker.setPosition(new LatLng(
-	 * location.getLatitude(),location.getLongitude())); } }
-	 *
-	 * @Override public void onStatusChanged(String provider, int status, Bundle
-	 * extras) { // TODO Auto-generated method stub
-	 *
-	 * }
-	 *
-	 * @Override public void onProviderEnabled(String provider) { // TODO
-	 * Auto-generated method stub
-	 *
-	 * }
-	 *
-	 * @Override public void onProviderDisabled(String provider) { // TODO
-	 * Auto-generated method stub
-	 *
-	 * }
-	 */
-
-    public static String convertToTime(long time) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date(time);
-        return df.format(date);
-    }
 
 
     private void changePolygon(Marker marker) {
         if (null != listPointMarker) {
             int size = listPointMarker.size();
-            // if(size<1)
-            // return;
             int num = -1;
             if (null != marker) {
                 for (int i = 0; i < size; i++) {
@@ -610,7 +441,6 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
                 }
             }
             // 画虚线
-            // if(size >1){
             if (null != polyline) {
                 polyline.remove();
             }
@@ -620,7 +450,6 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
                     .width(getResources().getDimension(
                             R.dimen.common_line_width)));
             polyline.setDottedLine(true);
-            // }
             // 画点 //
             if (null == marker && size <= 0) {
                 int len = listPoint.size();
@@ -631,12 +460,6 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
                             .fromView(new MapMarkerView(this)));
                     mOption.draggable(true);
                     listPointMarker.add(aMap.addMarker(mOption));
-                    //
-                    // aMap.addCircle(new
-                    // CircleOptions().center(listPoint.get(i))
-                    // .radius(100).strokeColor(Color.RED)
-                    // .fillColor(Color.RED).strokeWidth(1));
-
                 }
             }
 
@@ -663,29 +486,15 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
                 circle.remove();
             }
             //判断围栏中心点不为空
-            if (!TextUtils.isEmpty(mLat) && !TextUtils.isEmpty(mLng)) {
-                CircleOptions circleOptions = new CircleOptions();
-                circleOptions.center(new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng)));
-                circleOptions.radius(Double.parseDouble(radiu));
-                circleOptions.strokeWidth(getResources().getDimension(
-                        R.dimen.common_line_width));
-                circleOptions.strokeColor(lineColor);
-                circleOptions.fillColor(polygonColor);
-                circle = aMap.addCircle(circleOptions);
-                scaleMap();     //缩放地图
-            } else {
-                //第一次设置围栏,以机器的地理位置信息为准
-                CircleOptions circleOptions = new CircleOptions();
-                circleOptions.center(new LatLng(location.getLat(), location.getLng()));
-                circleOptions.radius(Double.parseDouble(radiu));
-                circleOptions.strokeWidth(getResources().getDimension(
-                        R.dimen.common_line_width));
-                circleOptions.strokeColor(lineColor);
-                circleOptions.fillColor(polygonColor);
-                circle = aMap.addCircle(circleOptions);
-                scaleMap();     //缩放地图
-            }
-
+            CircleOptions circleOptions = new CircleOptions();
+            circleOptions.center(new LatLng(mLat, mLng));
+            circleOptions.radius(Double.parseDouble(radiu));
+            circleOptions.strokeWidth(getResources().getDimension(
+                    R.dimen.common_line_width));
+            circleOptions.strokeColor(lineColor);
+            circleOptions.fillColor(polygonColor);
+            circle = aMap.addCircle(circleOptions);
+            scaleMap();     //缩放地图
         } else {
             if (null != listPoint && listPoint.size() > 1) {
                 if (null != polyline) {//高德边线
@@ -714,93 +523,10 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
         }
     }
 
-    @Override
-    public boolean handleMessage(Message msg) {                         //222222
-        // TODO Auto-generated method stub
-        switch (msg.what) {
-            case Constants.HANDLER_ADDFENCE_SUCCESS:
-                Constants.isChangeDevice = true;
-                finishDraw();
-                isEnclosure = false;
-                titleView.setRightText(DELETE);
-
-                break;
-            case Constants.HANDLER_ADDFENCE_FAIL:
-                Constants.MyToast((String) msg.obj);
-                finishDraw();
-                isEnclosure = false;
-                titleView.setRightText(DELETE);
-                break;
-            case Constants.HANDLER_DELETEFENCE_SUCCESS:
-                circle.remove();
-                //Constants.MyLog("删除了0");
-                Constants.isChangeDevice = true;
-                clearFence();
-                aMap.reloadMap();
-                if (myMarker != null) {
-                    aMap.moveCamera(CameraUpdateFactory.changeLatLng(myMarker.getPosition()));
-                }
-                isEnclosure = false;
-                titleView.setRightText(NEWSET);
-                new DevicesBasicsInfoAsync(deviceId, mContext, mHandler).execute();
-                break;
-            case Constants.HANDLER_DELETEFENCE_FAIL:
-                Constants.ToastAction((String) msg.obj);
-                break;
-            case Constants.HANDLER_GETDEVICEBASICSINFO_SUCCESS:     //获取围栏信息成功
-                mDeviceInfo = (McDeviceBasicsInfo) msg.obj;
-                if (null != mDeviceInfo) {
-                    if (null != mDeviceInfo.getCircleFence()) {
-                        radiu = mDeviceInfo.getCircleFence().getRadiu();//范围半径
-                        mLat = mDeviceInfo.getCircleFence().getLat();
-                        mLng = mDeviceInfo.getCircleFence().getLng();
-                        listPoint.clear();
-                    }
-                    deviceId = mDeviceInfo.getId();//设备id
-                    mWorkStatus = mDeviceInfo.getWorkStatus();//工作状态
-                    initFencn();
-                }
-                if (markerTtileTv != null) {
-                    if (NEWSET.equals(titleView.getRightText())) {
-                        markerTtileTv.setText(deviceName);
-                    } else {
-                        markerTtileTv.setText(rauduesTitle);
-                    }
-                }
-                break;
-            case Constants.HANDLER_GETDEVICEBASICSINFO_FAIL:
-                Constants.ToastAction((String) msg.obj);
-                break;
-            case Constants.HANDLER_ADDCIRCLEFENCH_SUCCESS:          //新增圆形围栏成功
-                //Constants.MyLog("成功修改围栏");
-                //修改围栏后再次请求组获取最新围栏的信息
-                Constants.isChangeDevice = true;
-                finishDraw();
-                isEnclosure = false;
-                titleView.setRightText(DELETE);
-                if (locRaiduMark != null && locRaiduMark.isVisible()) {
-                    locAddressLayout.setVisibility(View.GONE);
-                    locRaiduMark.remove();
-                    myMarker = aMap.addMarker(myMarker.getOptions());
-                    myMarker.showInfoWindow();
-                    aMap.moveCamera(CameraUpdateFactory.changeLatLng(locRaiduMark.getPosition()));
-                }
-                new DevicesBasicsInfoAsync(deviceId, mContext, mHandler).execute();
-                break;
-            case Constants.HANDLER_ADDCIRCLEFENCH_FAILD:            //新增圆形围栏失败
-                Constants.MyToast((String) msg.obj);
-//                finishDraw();
-//                isEnclosure = false;
-//                title_layout.setRightText(CHANGESET);
-                break;
-
-        }
-        return false;
-    }
 
     private void deleteFence() {
         if (isAskDelete) {
-            if (TextUtils.isEmpty(mLat) || TextUtils.isEmpty(mLng)) {
+            if (mCircle==null) {
                 ToastUtils.showToast(this, "经纬度为空！！！");
                 return;
             }
@@ -818,17 +544,14 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                return;
             }
         });
         builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                new DeleteFenceAsync(mContext, mHandler)
-                        .execute(String.valueOf(mDeviceInfo
-                                .getId()));
-
+                // TODO: 2018/9/19 删除围栏接口待补充
+                mPresenter.deleteElecFence(deviceId,fenceType);
                 dialog.dismiss();
 
             }
@@ -868,19 +591,16 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
 
     @Override
     public void onMarkerDrag(Marker arg0) {
-        // TODO Auto-generated method stub
         changePolygon(arg0);
     }
 
     @Override
     public void onMarkerDragEnd(Marker arg0) {
-        // TODO Auto-generated method stub
         isAskDelete = true;
     }
 
     @Override
     public void onMarkerDragStart(Marker arg0) {
-        // TODO Auto-generated method stub
         isAskDelete = false;
     }
 
@@ -894,24 +614,13 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
 
     //根据中心点和围栏的半径来缩放地图
     public void scaleMap() {
-        if (!TextUtils.isEmpty(mLat) && !TextUtils.isEmpty(mLng)) {
-            float dist = Float.parseFloat(radiu) / 1000; //km
-            float dealDist = (float) (dist / Math.sin(45 * Math.PI / 180)); //km
-            LatLng center = new LatLng(Double.parseDouble(mLat), Double.parseDouble(mLng));
-            LatLng northeast = getLatlng(dealDist, center, 45);
-            LatLng southwest = getLatlng(dealDist, center, 225);
-            LatLngBounds latLngBounds = new LatLngBounds(southwest, northeast);
-            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
-        } else {
-            //第一次新增,以
-            float dist = Float.parseFloat(radiu) / 1000; //km
-            float dealDist = (float) (dist / Math.sin(45 * Math.PI / 180)); //km
-            LatLng center = new LatLng(location.getLat(), location.getLng());
-            LatLng northeast = getLatlng(dealDist, center, 45);
-            LatLng southwest = getLatlng(dealDist, center, 225);
-            LatLngBounds latLngBounds = new LatLngBounds(southwest, northeast);
-            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
-        }
+        float dist = Float.parseFloat(radiu) / 1000; //km
+        float dealDist = (float) (dist / Math.sin(45 * Math.PI / 180)); //km
+        LatLng center = new LatLng(mLat, mLng);
+        LatLng northeast = getLatlng(dealDist, center, 45);
+        LatLng southwest = getLatlng(dealDist, center, 225);
+        LatLngBounds latLngBounds = new LatLngBounds(southwest, northeast);
+        aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
     }
 
 
@@ -973,4 +682,57 @@ public class MapOneActivity extends BaseAutoLayoutActivity implements
     }
 
 
+    @Override
+    public void updateFence(ElectronicFenceBean fenceBean) {
+        if (null != fenceBean) {
+            mCircle = fenceBean.getCircleFence();
+            if (null != mCircle) {
+                radiu = mCircle.getRadiu();//范围半径
+                mLat = mCircle.getLat();
+                mLng = mCircle.getLng();
+                listPoint.clear();
+                initFencn();
+            }
+        }
+        if (markerTtileTv != null) {
+            if (NEWSET.equals(titleView.getRightText())) {
+                markerTtileTv.setText(deviceName);
+            } else {
+                markerTtileTv.setText(rauduesTitle);
+            }
+        }
+
+    }
+
+    @Override
+    public void addFenceSuccess() {
+        //修改围栏后再次请求组获取最新围栏的信息
+        Constants.isChangeDevice = true;
+        finishDraw();
+        isEnclosure = false;
+        titleView.setRightText(DELETE);
+        if (locRaiduMark != null && locRaiduMark.isVisible()) {
+            locAddressLayout.setVisibility(View.GONE);
+            locRaiduMark.remove();
+            myMarker = aMap.addMarker(myMarker.getOptions());
+            myMarker.showInfoWindow();
+            aMap.moveCamera(CameraUpdateFactory.changeLatLng(locRaiduMark.getPosition()));
+        }
+        mPresenter.getElecFence(deviceId);
+    }
+
+    @Override
+    public void deleteFenceSuccess() {
+        circle.remove();
+        //Constants.MyLog("删除了0");
+        Constants.isChangeDevice = true;
+        clearFence();
+        aMap.reloadMap();
+        if (myMarker != null) {
+            aMap.moveCamera(CameraUpdateFactory.changeLatLng(myMarker.getPosition()));
+        }
+        isEnclosure = false;
+        titleView.setRightText(NEWSET);
+        mPresenter.getElecFence(deviceId);
+    }
 }

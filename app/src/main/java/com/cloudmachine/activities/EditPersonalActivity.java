@@ -1,7 +1,6 @@
 package com.cloudmachine.activities;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -14,24 +13,18 @@ import android.widget.Toast;
 import com.cloudmachine.MyApplication;
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.bean.BaseBO;
-import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.utils.MemeberKeeper;
+import com.cloudmachine.utils.LarkUrls;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.utils.URLs;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
-import com.google.gson.Gson;
 import com.umeng.analytics.MobclickAgent;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditPersonalActivity extends BaseAutoLayoutActivity implements
         OnClickListener, TextWatcher {
@@ -39,7 +32,6 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
     private LoadingDialog progressDialog;
     private ClearEditTextView info_ed;
     private String info;
-    private String key;
     private TextView save_tv;
 
     @Override
@@ -73,7 +65,6 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
             case R.id.info_save:
                 String edtText = info_ed.getText().toString().trim();
                 if (!TextUtils.isEmpty(edtText)) {
-                    key = "nickName";
                     int len = edtText.length();
                     if (len >= 2 && len <= 24) {
                         new saveInfoAsync(edtText).execute();
@@ -115,10 +106,10 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
 
     }
 
-    public class saveInfoAsync extends AsyncTask<String, String, String> {
+    private class saveInfoAsync extends ATask {
         String nickName;
 
-        public saveInfoAsync(String nickName) {
+        private saveInfoAsync(String nickName) {
             this.nickName = nickName;
         }
 
@@ -135,18 +126,11 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
                 return null;
             }
             IHttp httpRequest = new HttpURLConnectionImp();
-            List<NameValuePair> list = new ArrayList<NameValuePair>();
-
-            list.add(new BasicNameValuePair("memberId", MemeberKeeper
-                    .getOauth(EditPersonalActivity.this).getId().toString()));
-            list.add(new BasicNameValuePair("key", key));
-            list.add(new BasicNameValuePair("value", nickName));
-
-
             String result = "";
             try {
-                result = httpRequest.post(URLs.EDITINFO_URL, list);
-
+                Map<String, String> paramsMap = new HashMap<>();
+                paramsMap.put("nickName", nickName);
+                result = httpRequest.post(LarkUrls.INFO_MODIFY_URL, paramsMap);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -158,28 +142,20 @@ public class EditPersonalActivity extends BaseAutoLayoutActivity implements
         @Override
         protected void onPostExecute(String result) {
             disMiss();
-            if (result != null) {
-                Gson gson = new Gson();
-                AppLog.print("onPostExecute result_____" + result);
-                BaseBO updateResult = gson.fromJson(result, BaseBO.class);
-                if (updateResult.isOk()) {
-                    Toast.makeText(EditPersonalActivity.this, "修改成功",
-                            Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    intent.putExtra(NICK_NAME, nickName);
-                    setResult(RESULT_OK, intent);
-                    EditPersonalActivity.this.finish();
-
-                } else {
-                    Toast.makeText(EditPersonalActivity.this,
-                            updateResult.getMessage(), Toast.LENGTH_SHORT)
-                            .show();
-                }
-            } else {
-                Toast.makeText(EditPersonalActivity.this, "修改失败",
+            decodeJson(result);
+            if (isSuccess) {
+                Toast.makeText(EditPersonalActivity.this, "修改成功",
                         Toast.LENGTH_SHORT).show();
-
+                Intent intent = new Intent();
+                intent.putExtra(NICK_NAME, nickName);
+                setResult(RESULT_OK, intent);
+                finish();
+            } else {
+                Toast.makeText(mContext,
+                        message, Toast.LENGTH_SHORT)
+                        .show();
             }
+
         }
 
     }

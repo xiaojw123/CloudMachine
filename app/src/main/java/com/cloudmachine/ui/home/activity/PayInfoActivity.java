@@ -1,7 +1,6 @@
 package com.cloudmachine.ui.home.activity;
 
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,57 +14,36 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alipay.sdk.app.PayTask;
-import com.amap.api.maps.model.Text;
 import com.cloudmachine.R;
-import com.cloudmachine.activities.RepairPayDetailsActivity;
 import com.cloudmachine.alipay.PayResult;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.Operator;
-import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.SalaryPayInfo;
 import com.cloudmachine.chart.utils.AppLog;
-import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.net.api.Api;
-import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.home.contract.PayInfoContract;
 import com.cloudmachine.ui.home.model.PayInfoModel;
 import com.cloudmachine.ui.home.presenter.PayInfoPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
+import com.cloudmachine.utils.LarkUrls;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.utils.URLs;
 import com.cloudmachine.widget.CustomBindDialog;
-import com.cloudmachine.zxing.decoding.Intents;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.cache.disc.impl.TotalSizeLimitedDiscCache;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-import com.umeng.socialize.media.Base;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,18 +116,18 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
     private void initView() {
         payBtn.setOnClickListener(this);
         amountText = getIntent().getStringExtra(Constants.P_PAYAMOUNT);
-        payType = getIntent().getIntExtra(Constants.P_PAYTYPE, 0);
+        payType = getIntent().getIntExtra(Constants.P_PAYTYPE, -1);
         receiverList = getIntent().getParcelableArrayListExtra(Constants.P_RECEIVERLIST);
         salaryAmountTv.setText(amountText);
         String payTypeStr = null;
         switch (payType) {
-            case 1:
+            case Constants.PAY_TYPE_ALIPAY:
                 payTypeStr = getString(R.string.alipay);
                 break;
-            case 2:
+            case Constants.PAY_TYPE_WX:
                 payTypeStr = getString(R.string.wxPay);
                 break;
-            case 3:
+            case Constants.PAY_TYPE_PURSE:
                 payTypeStr = getString(R.string.purse_pay);
                 break;
         }
@@ -207,7 +185,7 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
 
     @Override
     public void onClick(View v) {
-        if (payType == 3) {
+        if (payType == Constants.PAY_TYPE_PURSE) {
             mPresenter.getVerfyCode(TYPE_PURSE_PAY, mMember.getMobile());
         } else {
             new PayTask().execute();
@@ -303,17 +281,17 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
         @Override
         protected String doInBackground(String... params) {
             IHttp httpRequest = new HttpURLConnectionImp();
-            List<NameValuePair> list = new ArrayList<NameValuePair>();
-            list.add(new BasicNameValuePair("memberId", String.valueOf(mMember.getId())));
-            list.add(new BasicNameValuePair("salaryCount", String.valueOf(receiverInfoArray.length())));
-            list.add(new BasicNameValuePair("salaryTotalAmount", amountText));
-            list.add(new BasicNameValuePair("payoffType", String.valueOf(payType)));
-            list.add(new BasicNameValuePair("salaryInfoDetailJsonStr", receiverInfoArray.toString()));
+
+            Map<String, String> pm = new HashMap<>();
+            pm.put("salaryCount", String.valueOf(receiverInfoArray.length()));
+            pm.put("salaryTotalAmount", amountText);
+            pm.put("payoffType", String.valueOf(payType));
+            pm.put("salaryInfoDetailJsonStr", receiverInfoArray.toString());
             if (params != null && params.length > 0) {
-                list.add(new BasicNameValuePair("verifyCode", params[0]));
+                pm.put("verifyCode", params[0]);
             }
             try {
-                return httpRequest.get(URLs.CONFIRMPAY_URL, list);
+                return httpRequest.get(LarkUrls.CONFIRM_PAY_URL, pm);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -326,32 +304,25 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
             if (result != null) {
                 Gson gson = new Gson();
                 AppLog.print("String Restult___" + result);
-                if (payType == 3) {
-                    BaseRespose<String> bo = gson.fromJson(result, new TypeToken<BaseRespose<String>>() {
-                    }.getType());
-                    if (bo.success()) {
-                        ToastUtils.showToast(mContext, bo.getResult());
-                        setResult(SUCCESS_SALARY_PAY);
-                        finish();
-                    } else {
-                        ToastUtils.showToast(mContext, bo.getMessage());
+                BaseRespose<SalaryPayInfo> bo = gson.fromJson(result, new TypeToken<BaseRespose<SalaryPayInfo>>() {
+                }.getType());
+                if (bo.success()) {
+                    SalaryPayInfo info = bo.getResult();
+                    switch (payType) {
+                        case Constants.PAY_TYPE_ALIPAY:
+                            payAli(info.getSign());
+                            break;
+                        case Constants.PAY_TYPE_WX:
+                            payWeiXin(info);
+                            break;
+                        case Constants.PAY_TYPE_PURSE:
+                            ToastUtils.showToast(mContext, "支付成功");
+                            setResult(SUCCESS_SALARY_PAY);
+                            finish();
+                            break;
                     }
                 } else {
-                    BaseRespose<SalaryPayInfo> bo = gson.fromJson(result, new TypeToken<BaseRespose<SalaryPayInfo>>() {
-                    }.getType());
-                    if (bo.success()) {
-                        SalaryPayInfo info = bo.getResult();
-                        switch (payType) {
-                            case 1:
-                                payAli(info.getSign());
-                                break;
-                            case 2:
-                                payWeiXin(info);
-                                break;
-                        }
-                    } else {
-                        ToastUtils.showToast(mContext, bo.getMessage());
-                    }
+                    ToastUtils.showToast(mContext, bo.getMessage());
                 }
 
             }
@@ -367,16 +338,26 @@ public class PayInfoActivity extends BaseAutoLayoutActivity<PayInfoPresenter, Pa
         api.registerApp(Constants.APP_ID);
         PayReq payRequest = new PayReq();
         payRequest.appId = Constants.APP_ID;
-        payRequest.partnerId = info.getPartnerid();
-        payRequest.prepayId = info.getPrepayid();
-        payRequest.packageValue = info.getPackageValue();
-        payRequest.nonceStr = info.getNoncestr();
-        payRequest.timeStamp = info.getTimestamp();
-        payRequest.sign = info.getSign();
-        api.sendReq(payRequest);
+        SalaryPayInfo.SignAgainBean signAgain = info.getSignAgain();
+        if (signAgain != null) {
+            payRequest.partnerId = signAgain.getPartnerid();
+            payRequest.prepayId = signAgain.getPrepayid();
+            payRequest.packageValue = signAgain.getPackageValue();
+            payRequest.nonceStr = signAgain.getNoncestr();
+            payRequest.timeStamp = signAgain.getTimestamp();
+            payRequest.sign = signAgain.getSign();
+            api.sendReq(payRequest);
+        } else {
+            ToastUtils.showToast(mContext, "支付签名信息不能为空");
+        }
     }
 
     public void payAli(final String orderInfo) {
+        if (TextUtils.isEmpty(orderInfo)) {
+            ToastUtils.showToast(mContext, "支付签名信息不能为空");
+
+        }
+
         Runnable payRunnable = new Runnable() {
 
             @Override

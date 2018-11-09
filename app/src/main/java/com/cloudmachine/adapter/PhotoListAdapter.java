@@ -13,6 +13,7 @@ import com.cloudmachine.bean.ScreenInfo;
 import com.cloudmachine.utils.DensityUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xiaojw on 2017/4/25.
@@ -20,9 +21,8 @@ import java.util.ArrayList;
 
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.PhotoHolder> {
     Context mContext;
-    ArrayList<String> mItems = new ArrayList<>();
-
-    public void updateItems(ArrayList<String> items) {
+    private List<String> mItems = new ArrayList<>();
+    public void updateItems(List<String> items) {
         mItems = items;
         notifyDataSetChanged();
     }
@@ -49,7 +49,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
                 public void onClick(View v) {
                     Intent intent=new Intent(mContext, BigPicActivity.class);
                     intent.putExtra(BigPicActivity.POSITION,position);
-                    intent.putStringArrayListExtra(BigPicActivity.BIG_PIC_URLS,mItems);
+                    intent.putStringArrayListExtra(BigPicActivity.BIG_PIC_URLS, (ArrayList<String>) mItems);
                     mContext.startActivity(intent);
                 }
             });

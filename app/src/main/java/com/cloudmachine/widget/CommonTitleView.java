@@ -172,11 +172,6 @@ public class CommonTitleView extends FrameLayout implements View.OnClickListener
         rightTv.setVisibility(visibility);
     }
 
-    public void setRightText(OnClickListener listener) {
-        if (listener != null) {
-            rightTv.setOnClickListener(listener);
-        }
-    }
 
     public void setLeftClickListener(OnClickListener listener) {
         if (listener != null) {

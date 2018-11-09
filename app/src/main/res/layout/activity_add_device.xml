@@ -17,7 +17,9 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/basic_info_ctv"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:visibility="gone"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -30,7 +32,6 @@
                     android:id="@+id/device_license"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    cloudm:hint="请给机器取个名字吧"
                     cloudm:name="车牌号"
                     android:layout_marginTop="@dimen/dimen_size_6"
                     />
@@ -47,42 +48,36 @@
                         android:id="@+id/device_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        cloudm:hint="请给机器取个名字吧"
                         cloudm:name="名称" />
 
                     <com.cloudmachine.autolayout.widgets.CanBeEditItemView
                         android:id="@+id/device_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        cloudm:hint="请选择机器机型"
                         cloudm:name="机型" />
 
                     <com.cloudmachine.autolayout.widgets.CanBeEditItemView
                         android:id="@+id/device_brand1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        cloudm:hint="请选择机器品牌"
                         cloudm:name="品牌" />
 
                     <com.cloudmachine.autolayout.widgets.CanBeEditItemView
                         android:id="@+id/device_model"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        cloudm:hint="请选择机器型号"
                         cloudm:name="型号" />
 
                     <com.cloudmachine.autolayout.widgets.CanBeEditItemView
                         android:id="@+id/device_rackId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        cloudm:hint=""
                         cloudm:name="机号" />
 
                     <com.cloudmachine.autolayout.widgets.CanBeEditItemView
                         android:id="@+id/device_snId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        cloudm:hint=""
                         cloudm:name="SN号"
                         android:visibility="gone"
                         />
@@ -91,14 +86,12 @@
                         android:id="@+id/device_year"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        cloudm:hint="请选择机器年份"
                         cloudm:name="年份" />
 
                     <com.cloudmachine.autolayout.widgets.CanBeEditItemView
                         android:id="@+id/device_workTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        cloudm:hint=""
                         cloudm:last="true"
                         cloudm:name="总工作时长" />
 
@@ -107,7 +100,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
-                        cloudm:hint="请输入机主名称"
                         cloudm:name="机主" />
 
                     <com.cloudmachine.autolayout.widgets.CanBeEditItemView
@@ -115,7 +107,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
-                        cloudm:hint="请输入机主手机号码"
                         cloudm:last="true"
                         cloudm:name="手机" />
 
@@ -130,7 +121,6 @@
                     android:background="@color/white"
                     android:paddingLeft="@dimen/pad2"
                     android:paddingRight="@dimen/pad2"
-                    android:visibility="gone"
                     >
 
                     <TextView

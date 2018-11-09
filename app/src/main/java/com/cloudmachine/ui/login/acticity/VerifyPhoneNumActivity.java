@@ -16,15 +16,11 @@ import com.cloudmachine.MyApplication;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.CheckNumBean;
 import com.cloudmachine.bean.Member;
-import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.api.Api;
-import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.login.contract.VerifyPhoneNumContract;
 import com.cloudmachine.ui.login.model.VerifyPhoneNumModel;
@@ -35,6 +31,8 @@ import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -158,7 +156,7 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
               /*  mPresenter.bindWx(mUnionid,mOpenid,mAccount
                 ,mCode,mInvitationValue,mPwd,mNickname,mHeadimgurl,mobileType);*/
                 mPresenter.wxBind(mUnionid, mOpenid, mAccount
-                        , mCode, null, mPwd, mNickname, mHeadimgurl, mobileType);
+                        , mCode, mPwd, mNickname, mHeadimgurl);
 
                /* mRxManager.add(Api.getDefault(HostType.CAITINGTING_HOST)
                 .wxBind(mUnionid,mOpenid,mAccount
@@ -252,18 +250,18 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
     }
 
     @Override
-    public void returnCheckNum(CheckNumBean checkNumBean) {
+    public void returnCheckNum(Integer type) {
 
         //账号未注册
-        if (checkNumBean.type == 1) {
+        if (type == 1) {
             changeMobileState(false, 1);
         }
         //账号已注册，但是未绑定微信号
-        else if (checkNumBean.type == 2) {
+        else if (type == 2) {
             changeMobileState(true, 2);
         }
         //账号已注册，绑定了其他微信
-        else if (checkNumBean.type == 3) {
+        else if (type == 3) {
             changeMobileState(true, 3);
         }
         //获取验证码
@@ -273,27 +271,17 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
     @Override
     public void returnBindWx(Member member) {
-
-        if (member != null) {
-            mMember = member;
-            MemeberKeeper.saveOAuth(mMember, VerifyPhoneNumActivity.this);
-            MyApplication.getInstance().setLogin(true);
-            MyApplication.getInstance().setFlag(true);
-
-            if (mMember != null) {
-                excamMaster(mMember.getId());
-            }
-
-            Intent intent = new Intent(VerifyPhoneNumActivity.this, HomeActivity.class);
-            startActivity(intent);
-            MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
-
-
-            Constants.isMcLogin = true;
-            //调用JPush API设置Alias
-            mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
-            MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));
-        }
+        mMember = member;
+        MyApplication.getInstance().setLogin(true);
+        MyApplication.getInstance().setFlag(true);
+        Intent intent = new Intent(VerifyPhoneNumActivity.this, HomeActivity.class);
+        startActivity(intent);
+        MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
+        Constants.isMcLogin = true;
+        //调用JPush API设置Alias
+        mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
+        MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));
+        finish();
     }
 
 
@@ -355,29 +343,6 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
 
     };
 
-    private void excamMaster(Long id) {
-
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_ASK).excamMaster(id)
-                .compose(RxHelper.<UserInfo>handleResult())
-                .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
-                    @Override
-                    protected void _onNext(UserInfo userInfo) {
-                        Long wjdsId = userInfo.userinfo.id;
-                        Long status = userInfo.userinfo.status;
-                        Long role_id = userInfo.userinfo.role_id;
-                        mMember.setWjdsId(wjdsId);
-                        mMember.setWjdsStatus(status);
-                        mMember.setWjdsRole_id(role_id);
-                        MemeberKeeper.saveOAuth(mMember, mContext);
-                        VerifyPhoneNumActivity.this.finish();
-                    }
-
-                    @Override
-                    protected void _onError(String message) {
-
-                    }
-                }));
-    }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -410,7 +375,7 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
             } else {
                 mFindBtn.setTextColor(getResources().getColor(R.color.cor2015));
             }
-        }else{
+        } else {
             if (str1.length() > 0 && str2.length() > 0) {
                 mFindBtn.setTextColor(getResources().getColor(R.color.cor15));
             } else {

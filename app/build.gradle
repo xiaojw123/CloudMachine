@@ -6,6 +6,12 @@ static def getTime() {
     new Date().format("MMdd", TimeZone.getDefault());
 }
 
+static def getRelaseTime() {
+    new Date().format("yyyyMMdd.HH.mm").substring(2);
+}
+
+def releaseTimeStr = "\"" + getRelaseTime() + "\"";
+
 android {
     compileSdkVersion cfg.compileVersion
     buildToolsVersion cfg.buildToolsVersion
@@ -35,6 +41,7 @@ android {
 
     buildTypes {
         release {
+            buildConfigField("String", "RELEASE_TIME", releaseTimeStr)
             buildConfigField("boolean", "IS_REMOTE", "true")
             buildConfigField("boolean", "IS_ONLINE", "true")
             buildConfigField("boolean", "IS_INTERFACE", "false")
@@ -44,6 +51,7 @@ android {
             manifestPlaceholders = [UMENG_KEY_VALUE: "59e5ba57677baa51d3000b93", JPUSH_KEY_VALUE: "f2d4c2e7ac5f3f997b8278ab"]
         }
         debug {
+            buildConfigField("String", "RELEASE_TIME", releaseTimeStr)
             buildConfigField("boolean", "IS_REMOTE", cfg.isRmote)
             buildConfigField("boolean", "IS_ONLINE", cfg.isOnline)
             buildConfigField("boolean", "IS_INTERFACE", cfg.isInterface)
@@ -129,6 +137,8 @@ dependencies {
     //    compile 'com.yanzhenjie:recyclerview-swipe:1.0.4'
     compile files('libs/pldroid-player-2.1.0.jar')
     //    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.3'
+    //    compile 'com.yanzhenjie:recyclerview-swipe:1.1.4'
+    compile project(':swiperecyclerview')
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.github.rey5137:material:1.2.2'
     compile 'com.github.hotchemi:permissionsdispatcher:2.3.1'
@@ -145,7 +155,6 @@ dependencies {
     compile 'cn.bingoogolapple:bga-zxing:1.1.7@aar'
     compile 'id.zelory:compressor:1.0.4'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.yanzhenjie:recyclerview-swipe:1.1.4'
     compile 'com.amap.api:location:3.4.1'
     compile 'com.amap.api:search:5.2.1'
     compile 'com.amap.api:navi-3dmap:5.2.1_3dmap5.2.1'

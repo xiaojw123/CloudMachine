@@ -11,31 +11,25 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.Member;
-import com.cloudmachine.bean.UserInfo;
-import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.api.Api;
-import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.task.ForgetPwdAsync;
 import com.cloudmachine.net.task.GetMobileCodeAsync;
-import com.cloudmachine.net.task.LoginAsync;
 import com.cloudmachine.net.task.RegisterNewAsync;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.login.contract.LoginContract;
+import com.cloudmachine.ui.login.model.LoginModel;
+import com.cloudmachine.ui.login.presenter.LoginPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.UMengKey;
-import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
 import com.umeng.analytics.MobclickAgent;
@@ -43,7 +37,7 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnClickListener, Callback, TextWatcher {
+public class FindPasswordActivity extends BaseAutoLayoutActivity<LoginPresenter,LoginModel> implements LoginContract.View, OnClickListener, Callback, TextWatcher {
     public static final String HASINVITATIONCODE = "hasInvitationCode";
     private Context mContext;
     private Handler mHandler;
@@ -93,6 +87,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
 
     @Override
     public void initPresenter() {
+        mPresenter.setVM(this,mModel);
 
     }
 
@@ -203,7 +198,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 break;
             case R.id.agreement_text:
                 Bundle bundle = new Bundle();
-                bundle.putString(QuestionCommunityActivity.H5_URL, Constants.URL_H5_ARGUMENT);
+                bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.URL_H5_ARGUMENT);
                 bundle.putString(QuestionCommunityActivity.H5_TITLE, "协议条款");
                 Constants.toActivity(this, QuestionCommunityActivity.class, bundle);
                 break;
@@ -230,7 +225,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
             } else {
                 //在这里判断是否有邀请码
                 MobclickAgent.onEvent(this, MobEvent.COUNT_LOGIN);
-                new RegisterNewAsync(phone, Utils.getPwdStr(pwdStr), code, mContext, mHandler).execute();
+                new RegisterNewAsync(phone, pwdStr, code, mContext, mHandler).execute();
             }
         } else {
             if (TextUtils.isEmpty(phone)) {
@@ -244,7 +239,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
             } else {
 //				if(type == 1){
                 new ForgetPwdAsync(phone,
-                        Utils.getPwdStr(pwdStr),
+                        pwdStr,
                         code, mContext, mHandler).execute();
 //				}else if(type == 2){
                     /*new UpdatePwdAsync(Utils.getPwdStr(old_password.getText().toString()),
@@ -295,7 +290,21 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
         }
     }
 
-    class ListenerTimerTask extends TimerTask {
+    @Override
+    public void loginSuccess(Member member) {
+        disMiss();
+        Intent intent = new Intent();
+        intent.putExtra(Constants.MC_MEMBER, member);
+        setResult(FP_LOGIN, intent);
+        finish();
+    }
+
+    @Override
+    public void setNameShakeAnimation() {
+
+    }
+
+    private class ListenerTimerTask extends TimerTask {
         @Override
         public void run() {
             // TODO Auto-generated method stub
@@ -354,27 +363,9 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
                 validate_code.setText("");
                 break;
             case Constants.HANDLER_REGISTER_SUCCESS:
-//                Map<String, String> paramsMap = new HashMap<>();
-//                paramsMap.put(phone, pwdStr);
-//                mRxManager.post(LoginActivity.RX_LOGIN, paramsMap);
                 Toast.makeText(FindPasswordActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-                new LoginAsync(phone, pwdStr, mContext, mHandler).execute();
+                mPresenter.login(phone,pwdStr);
                 break;
-            case Constants.HANDLER_LOGIN_SUCCESS:
-                Constants.isGetScore = true;
-                MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 0);
-                mMember = (Member) msg.obj;
-                if (mMember != null) {
-                    excamMaster(mMember.getId());
-                } else {
-                    loginBack();
-                }
-                break;
-            case Constants.HANDLER_LOGIN_FAIL:
-                loginBack();
-                break;
-
-
         }
         return false;
     }
@@ -389,41 +380,7 @@ public class FindPasswordActivity extends BaseAutoLayoutActivity implements OnCl
         validate_text.setText("获取验证码");
     }
 
-    Member mMember;
 
-    private void excamMaster(Long id) {
-
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_ASK).excamMaster(id)
-                .compose(RxHelper.<UserInfo>handleResult())
-                .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
-                    @Override
-                    protected void _onNext(UserInfo userInfo) {
-                        Long wjdsId = userInfo.userinfo.id;
-                        Long status = userInfo.userinfo.status;
-                        Long role_id = userInfo.userinfo.role_id;
-                        mMember.setWjdsId(wjdsId);
-                        mMember.setWjdsStatus(status);
-                        mMember.setWjdsRole_id(role_id);
-                        mMember.setNum(2L);
-                        MemeberKeeper.saveOAuth(mMember, mContext);
-                        loginBack();
-                    }
-
-                    @Override
-                    protected void _onError(String message) {
-                        MemeberKeeper.saveOAuth(mMember, mContext);
-                        loginBack();
-                    }
-                }));
-    }
-
-    public void loginBack() {
-        disMiss();
-        Intent intent = new Intent();
-        intent.putExtra(Constants.MC_MEMBER, mMember);
-        setResult(FP_LOGIN, intent);
-        finish();
-    }
 
     @Override
     protected void onPause() {

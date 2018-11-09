@@ -1,10 +1,8 @@
 package com.cloudmachine.net.task;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-import com.cloudmachine.activities.RepairPayDetailsActivity;
 import com.cloudmachine.bean.AliPayBean;
 import com.cloudmachine.bean.BaseBO;
 import com.cloudmachine.bean.WeiXinEntityBean;
@@ -12,16 +10,12 @@ import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.MemeberKeeper;
-import com.cloudmachine.utils.Utils;
+import com.cloudmachine.utils.LarkUrls;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 项目名称：CloudMachine
@@ -36,20 +30,13 @@ import java.util.List;
 public class CWPayAsync extends ATask {
 
     private Handler handler;
-    private String payType;
+    private int payType;
     private String orderNum;
-    private String userCouponId;
 
-    public CWPayAsync(Handler handler, Context context, String payType, String orderNum, String userCouponId) {
+    public CWPayAsync(Handler handler, int payType, String orderNum) {
         this.handler = handler;
         this.payType = payType;
         this.orderNum = orderNum;
-        this.userCouponId = userCouponId;
-        try {
-            memberId = String.valueOf(MemeberKeeper.getOauth(context).getId());
-        } catch (Exception e) {
-            Constants.ToastAction(e.toString());
-        }
     }
 
     @Override
@@ -57,7 +44,7 @@ public class CWPayAsync extends ATask {
         IHttp httpRequest = new HttpURLConnectionImp();
         String result = null;
         try {
-            result = httpRequest.post(Constants.URL_CWPAY, initListData());
+            result = httpRequest.post(LarkUrls.GET_PAY_SIGN, getParamsMap());
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,19 +60,18 @@ public class CWPayAsync extends ATask {
 
     @Override
     protected void decodeJson(String result) {
-        // TODO Auto-generated method stub
         super.decodeJson(result);
 
         Message msg = Message.obtain();
         if (isSuccess) {
-            if (payType.equals(RepairPayDetailsActivity.PAY_TYPE_ALIPAY)) {
+            if (payType==Constants.PAY_TYPE_ALIPAY) {
                 Gson gson = new Gson();
                 BaseBO<AliPayBean> bo = gson.fromJson(result, new TypeToken<BaseBO<AliPayBean>>() {
                 }.getType());
                 msg.what = Constants.HANDLER_GETCWPAY_SUCCESS;
                 msg.obj = bo.getResult();
                 handler.sendMessage(msg);
-            } else if (payType.equals(RepairPayDetailsActivity.PAY_TYPE_WECHAT)) {
+            } else if (payType==Constants.PAY_TYPE_WX) {
                 Gson gson = new Gson();
                 BaseBO<WeiXinEntityBean> bo = gson.fromJson(result, new TypeToken<BaseBO<WeiXinEntityBean>>() {
                 }.getType());
@@ -101,12 +87,11 @@ public class CWPayAsync extends ATask {
     }
 
 
-    private List<NameValuePair> initListData() {
-        List<NameValuePair> list = new ArrayList<NameValuePair>();
-        list.add(Utils.addBasicValue("memberId", memberId));
-        list.add(Utils.addBasicValue("payType", payType));
-        list.add(Utils.addBasicValue("orderNum", orderNum));
-        list.add(new BasicNameValuePair("coupons", userCouponId));
-        return list;
+
+    private Map<String,String> getParamsMap(){
+        Map<String,String> map=new HashMap<>();
+        map.put("payType",String.valueOf(payType));
+        map.put("orderNo",orderNum);
+        return map;
     }
 }

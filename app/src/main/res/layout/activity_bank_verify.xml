@@ -67,21 +67,40 @@
 
         <View style="@style/CommonLandscapeLine" />
 
-        <LinearLayout
+        <RelativeLayout
             style="@style/Layout_Item_Style"
             android:orientation="horizontal">
 
 
             <TextView
-                style="@style/layout_key_style"
+                android:id="@+id/cardnum_title"
+                android:layout_width="@dimen/dimen_size_100"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cor9"
+                android:textSize="@dimen/text_size_14_sp"
+                android:layout_centerVertical="true"
                 android:text="银行卡号" />
 
             <com.cloudmachine.utils.widgets.ClearEditTextView
                 android:id="@+id/bank_verify_cardno"
+                android:layout_toRightOf="@+id/cardnum_title"
+                android:layout_toLeftOf="@+id/bank_verify_question"
                 style="@style/layout_value_style"
                 android:hint="请输入银行卡号" />
 
-        </LinearLayout>
+
+            <ImageView
+                android:id="@+id/bank_verify_question"
+                android:layout_width="@dimen/dimen_size_12"
+                android:layout_height="@dimen/dimen_size_22"
+                android:paddingTop="@dimen/dimen_size_5"
+                android:paddingBottom="@dimen/dimen_size_5"
+                android:src="@drawable/icon_question_bank"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
 
 
         <com.cloudmachine.autolayout.widgets.RadiusButtonView

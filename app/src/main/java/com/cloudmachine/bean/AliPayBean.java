@@ -13,7 +13,15 @@ import java.io.Serializable;
  */
 
 public class AliPayBean implements Serializable {
+    public String getOutTradeNo() {
+        return outTradeNo;
+    }
 
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo;
+    }
+
+    private String outTradeNo;
     private String sign;
 
     public String getSign() {
@@ -24,10 +32,4 @@ public class AliPayBean implements Serializable {
         this.sign = sign;
     }
 
-    @Override
-    public String toString() {
-        return "AliPayBean{" +
-                "sign='" + sign + '\'' +
-                '}';
-    }
 }

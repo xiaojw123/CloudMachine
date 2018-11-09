@@ -3,6 +3,9 @@ package com.cloudmachine.base.baserx;
 import android.content.Context;
 
 import com.cloudmachine.MyApplication;
+import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.NetWorkUtils;
 
 import rx.Subscriber;
@@ -29,31 +32,33 @@ public void _onError(String msg) {
 public abstract class RxSubscriber<T> extends Subscriber<T> {
 
     private Context mContext;
-    private String  msg;
-    private boolean showDialog=true;
-
+    private String msg;
+    private boolean showDialog = true;
 
 
     /**
      * 是否显示浮动dialog
      */
     public void showDialog() {
-        this.showDialog= true;
+        this.showDialog = true;
     }
+
     public void hideDialog() {
-        this.showDialog= true;
+        this.showDialog = true;
     }
 
     public RxSubscriber(Context context, String msg, boolean showDialog) {
         this.mContext = context;
         this.msg = msg;
-        this.showDialog=showDialog;
+        this.showDialog = showDialog;
     }
+
     public RxSubscriber(Context context) {
-        this(context, "请稍后...",true);
+        this(context, "请稍后...", true);
     }
+
     public RxSubscriber(Context context, boolean showDialog) {
-        this(context, "请稍后...",showDialog);
+        this(context, "请稍后...", showDialog);
     }
 
     @Override
@@ -61,8 +66,9 @@ public abstract class RxSubscriber<T> extends Subscriber<T> {
         if (showDialog) {
 
         }
-            //LoadingDialog.cancelDialogForLoading();
+        //LoadingDialog.cancelDialogForLoading();
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -80,11 +86,12 @@ public abstract class RxSubscriber<T> extends Subscriber<T> {
     public void onNext(T t) {
         _onNext(t);
     }
+
     @Override
     public void onError(Throwable e) {
         if (showDialog)
             //LoadingDialog.cancelDialogForLoading();
-        e.printStackTrace();
+            e.printStackTrace();
         //网络
         if (!NetWorkUtils.isNetConnected(MyApplication.getAppContext())) {
             _onError("网络不可用,请检查你的网络");
@@ -95,7 +102,7 @@ public abstract class RxSubscriber<T> extends Subscriber<T> {
         }
         //其它
         else {
-            _onError("网络访问错误，请稍后再试"+e.toString());
+            _onError("网络访问错误，请稍后再试" + e.toString());
         }
     }
 

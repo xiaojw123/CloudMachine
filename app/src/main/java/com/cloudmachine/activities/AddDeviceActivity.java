@@ -1,10 +1,8 @@
 package com.cloudmachine.activities;
 
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,7 +14,6 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -35,17 +32,17 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CanBeEditItemView;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxSchedulers;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.EditListInfo;
-import com.cloudmachine.bean.McDeviceBasicsInfo;
+import com.cloudmachine.bean.LarkDeviceBasicDetail;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.task.ImageUploadAsync;
-import com.cloudmachine.net.task.updateDeviceInfoAsync;
-import com.cloudmachine.net.task.updateDeviceInfoByKeyAsync;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.utils.photo.util.Bimp;
-import com.cloudmachine.utils.photo.util.FileUtils;
 import com.cloudmachine.utils.photo.util.ImageItem;
 import com.cloudmachine.utils.photo.util.PublicWay;
 import com.cloudmachine.utils.photo.util.Res;
@@ -54,54 +51,39 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 查看页面基本信息
  */
-public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener {
-    public static final String DEVICE_SHOW = "device_show";
-    public static final String IMG_TITLE_SHOW = "img_title_show";
-    private static final int TAKE_PICTURE = 0x000001;
+public class AddDeviceActivity extends BaseAutoLayoutActivity implements  OnClickListener {
     public static final int UPATE_INFO = 0x1313;
-    private final static int SCANNIN_GREQUEST_CODE = 678;
     private Context mContext;
-    private Handler mHandler;
-    //	private DeviceInfo deviceInfo;
     private CanBeEditItemView device_name, device_type, device_brand1, device_model, device_year,
             device_owner, device_phone_number, device_rackId, device_snId, device_workTime;
-    //	private int addDeviceType ; //0:查看基本信息  1:新增
-    private int status;
-    private String deviceType, deviceBrand1, deviceModel;
-    private int typeId, brand1Id, modeId;
+    private String deviceType, deviceBrand, deviceModel;
+    private int typeId, brandId, modeId;
     private long deviceId;
-    private int deviceTypeId;
 
-    private View parentView;
-    private PopupWindow pop = null;
-    private LinearLayout ll_popup;
     public static Bitmap bimap;
     private ImageView decive_image, name_image, engine_image;
     private String decive_image_url, name_image_url, engine_image_url;
-    private int addImageType; //0:机器照片  1:铭牌 2:发动机号照片
-    private String nameImageUrl, engineImageUrl;
-    private String nameImagePath, engineImagePath;
-    private McDeviceBasicsInfo mcDeviceBasicsInfo;
     private RadiusButtonView change_owner;
     private FrameLayout memberLayout;
-    private boolean showDevice, showImgTitle;
     private TextView imgTv1, imgTv2, imgTv3;
     private LinearLayout deveimgCotainer;
     CanBeEditItemView licenseNoEiv;
     ArrayList<String> imgList = new ArrayList<>();
-    private String errorMessage;
     RelativeLayout btnContainer;
     ReboundScrollView mRsv;
     TextView mErrorTv;
+    boolean isOwner;
+    LarkDeviceBasicDetail mDetail;
+    Bundle mData;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
 //		Constants.addActivity(this);
         Res.init(this);
@@ -109,13 +91,70 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 getResources(),
                 R.drawable.icon_addpic_nm);
         PublicWay.activityList.add(this);
-        parentView = getLayoutInflater().inflate(R.layout.activity_add_device, null);
-        setContentView(parentView);
+        setContentView(R.layout.activity_add_device);
         mContext = this;
-        mHandler = new Handler(this);
-        getIntentData();
+        mData = getIntent().getExtras();
+        deviceId = mData.getLong(Constants.DEVICE_ID, -1);
+        isOwner = mData.getBoolean(Constants.IS_OWNER, false);
         initView();
+        updateData(deviceId);
+    }
 
+    private void updateData(final long deviceId) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getDeviceBasicDetail(deviceId).compose(RxSchedulers.<BaseRespose<LarkDeviceBasicDetail>>io_main()).subscribe(new RxSubscriber<BaseRespose<LarkDeviceBasicDetail>>(mContext) {
+            @Override
+            protected void _onNext(BaseRespose<LarkDeviceBasicDetail> br) {
+                if (br.isSuccess()) {
+                    mDetail = br.getResult();
+                    deviceType = mDetail.getCategory();
+                    typeId = mDetail.getTypeId();
+                    deviceBrand = mDetail.getBrandName();
+                    brandId = mDetail.getBrandId();
+                    deviceModel = mDetail.getModelName();
+                    modeId = mDetail.getModelId();
+                    List<String> imageUrls = mDetail.getDevicePhotoS();
+                    if (null != imageUrls) {
+                        Bimp.tempSelectBitmap.clear();
+                        for (String url : imageUrls) {
+                            ImageItem item = new ImageItem();
+                            item.setImageUrl(url);
+                            item.setSelected(true);
+                            Bimp.tempSelectBitmap.add(item);
+
+                        }
+                    }
+                    initAddDeviceItemView();
+                    initPhotoGridView();
+                    ViewGroup container = (ViewGroup) change_owner.getParent();
+                    if (isOwner) {
+                        container.setVisibility(View.VISIBLE);
+                        change_owner.setOnClickListener(new OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                // TODO Auto-generated method stub
+                                Bundle bundle = new Bundle();
+                                bundle.putInt(Constants.P_SEARCHLISTTYPE, 2);
+                                bundle.putLong(Constants.DEVICE_ID, deviceId);
+                                Constants.toActivity(AddDeviceActivity.this, SearchActivity.class, bundle);
+                            }
+                        });
+                    } else {
+                        container.setVisibility(View.GONE);
+                    }
+                } else {
+                    _onError(br.getMessage());
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+                mRsv.setVisibility(View.GONE);
+                btnContainer.setVisibility(View.GONE);
+                mErrorTv.setVisibility(View.VISIBLE);
+                mErrorTv.setText(message);
+            }
+        }));
     }
 
     @Override
@@ -123,68 +162,7 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
 
     }
 
-    private void getIntentData() {
-        Intent intent = this.getIntent();
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            try {
-                errorMessage = bundle.getString(Constants.ERROR_MESSAGE);
-                showDevice = bundle.getBoolean(DEVICE_SHOW);
-                showImgTitle = bundle.getBoolean(IMG_TITLE_SHOW);
-                mcDeviceBasicsInfo = (McDeviceBasicsInfo) bundle.getSerializable(Constants.P_MCDEVICEBASICSINFO);
-                if (null != mcDeviceBasicsInfo) {
-                    deviceId = mcDeviceBasicsInfo.getId();
-                    deviceTypeId = mcDeviceBasicsInfo.getType();
-                    deviceType = mcDeviceBasicsInfo.getCategory();
-                    typeId = mcDeviceBasicsInfo.getTypeId();
-                    deviceBrand1 = mcDeviceBasicsInfo.getBrand();
-                    brand1Id = mcDeviceBasicsInfo.getBrandId();
-                    deviceModel = mcDeviceBasicsInfo.getModel();
-                    modeId = mcDeviceBasicsInfo.getModelId();
-                    String[] imageUrl = mcDeviceBasicsInfo.getDevicePhoto();
-                    if (null != imageUrl) {
-                        Bimp.tempSelectBitmap.clear();
-                        int size = imageUrl.length;
-                        for (int i = 0; i < size; i++) {
-                            ImageItem item = new ImageItem();
-                            item.setImageUrl(imageUrl[i]);
-                            item.setSelected(true);
-                            Bimp.tempSelectBitmap.add(item);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-            }
-        }
-    }
-
     private void initView() {
-        initAddDeviceItemView();
-        initPhotoGridView();
-        change_owner = (RadiusButtonView) findViewById(R.id.change_owner);
-        ViewGroup container = (ViewGroup) change_owner.getParent();
-        if (!Constants.isNoEditInMcMember(deviceId, deviceTypeId)) {
-            container.setVisibility(View.VISIBLE);
-            change_owner.setOnClickListener(new OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(Constants.P_SEARCHLISTTYPE, 2);
-                    bundle.putLong(Constants.P_DEVICEID, deviceId);
-                    Constants.toActivity(AddDeviceActivity.this, SearchActivity.class, bundle);
-                }
-            });
-        } else {
-            container.setVisibility(View.GONE);
-        }
-
-
-    }
-
-
-    private void initAddDeviceItemView() {
         mErrorTv = (TextView) findViewById(R.id.basic_error_tv);
         mRsv = (ReboundScrollView) findViewById(R.id.basic_info_rsv);
         btnContainer = (RelativeLayout) findViewById(R.id.basic_info_btncontainer);
@@ -192,11 +170,6 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         imgTv1 = (TextView) findViewById(R.id.mac_img_tv1);
         imgTv2 = (TextView) findViewById(R.id.mac_img_tv2);
         imgTv3 = (TextView) findViewById(R.id.mac_img_tv3);
-        if (showImgTitle) {
-            imgTv1.setVisibility(View.VISIBLE);
-            imgTv2.setVisibility(View.VISIBLE);
-            imgTv3.setVisibility(View.VISIBLE);
-        }
         memberLayout = (FrameLayout) findViewById(R.id.deivce_member);
         device_name = (CanBeEditItemView) findViewById(R.id.device_name);
         device_type = (CanBeEditItemView) findViewById(R.id.device_type);
@@ -208,96 +181,6 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         device_rackId = (CanBeEditItemView) findViewById(R.id.device_rackId);
         device_snId = (CanBeEditItemView) findViewById(R.id.device_snId);
         device_workTime = (CanBeEditItemView) findViewById(R.id.device_workTime);
-        if (null != mcDeviceBasicsInfo) {
-            licenseNoEiv.setContent(mcDeviceBasicsInfo.getLicense());
-            device_name.setContent(mcDeviceBasicsInfo.getDeviceName());
-            device_type.setContent(mcDeviceBasicsInfo.getCategory());
-            device_brand1.setContent(mcDeviceBasicsInfo.getBrand());
-            device_model.setContent(mcDeviceBasicsInfo.getModel());
-            device_year.setContent(mcDeviceBasicsInfo.getFactoryTime());
-            device_rackId.setContent(mcDeviceBasicsInfo.getRackId());
-            if (!TextUtils.isEmpty(mcDeviceBasicsInfo.getSnId())) {
-                device_snId.setVisibility(View.VISIBLE);
-                device_snId.setContent(mcDeviceBasicsInfo.getSnId());
-            }
-            device_workTime.setContent(String.valueOf(mcDeviceBasicsInfo.getWorkTime()) + "时");
-            if (!Constants.isNoEditInMcMember(deviceId, mcDeviceBasicsInfo.getType())) {
-                device_name.isArrow(true);
-                device_name.setOnClickListener(this);
-            }
-        } else {
-            mRsv.setVisibility(View.GONE);
-            btnContainer.setVisibility(View.GONE);
-            mErrorTv.setVisibility(View.VISIBLE);
-            mErrorTv.setText(errorMessage);
-        }
-        memberLayout.setOnClickListener(this);
-            /*device_type.setOnClickListener(this);
-            device_brand1.setOnClickListener(this);
-			device_model.setOnClickListener(this);
-			device_year.setOnClickListener(this);
-			device_card.setOnClickListener(this);
-			device_owner.setOnClickListener(this);
-			device_phone_number.setOnClickListener(this);*/
-
-//			device_name.isEdit(true);
-        if (showDevice) {
-            memberLayout.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void initPhotoGridView() {
-
-        pop = new PopupWindow(this);
-        View view = getLayoutInflater().inflate(R.layout.item_popupwindows, null);
-        ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
-        pop.setWidth(LayoutParams.MATCH_PARENT);
-        pop.setHeight(LayoutParams.WRAP_CONTENT);
-        pop.setBackgroundDrawable(new BitmapDrawable());
-        pop.setFocusable(true);
-        pop.setOutsideTouchable(true);
-        pop.setContentView(view);
-
-        RelativeLayout parent = (RelativeLayout) view.findViewById(R.id.parent);
-        Button bt1 = (Button) view
-                .findViewById(R.id.item_popupwindows_camera);
-        Button bt2 = (Button) view
-                .findViewById(R.id.item_popupwindows_Photo);
-        Button bt3 = (Button) view
-                .findViewById(R.id.item_popupwindows_cancel);
-        parent.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                pop.dismiss();
-                ll_popup.clearAnimation();
-            }
-        });
-        bt1.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                photo();
-                pop.dismiss();
-                ll_popup.clearAnimation();
-            }
-        });
-        bt2.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(AddDeviceActivity.this,
-                        AlbumActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.activity_translate_in, R.anim.activity_translate_out);
-                pop.dismiss();
-                ll_popup.clearAnimation();
-            }
-        });
-        bt3.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                pop.dismiss();
-                ll_popup.clearAnimation();
-            }
-        });
-
         deveimgCotainer = (LinearLayout) findViewById(R.id.device_img_cotainer);
         decive_image = (ImageView) findViewById(R.id.decive_image);
         decive_image.setOnClickListener(this);
@@ -305,21 +188,60 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         name_image.setOnClickListener(this);
         engine_image = (ImageView) findViewById(R.id.engine_image);
         engine_image.setOnClickListener(this);
+        change_owner = (RadiusButtonView) findViewById(R.id.change_owner);
+    }
+
+
+
+    private void initAddDeviceItemView() {
+        memberLayout.setOnClickListener(this);
+        imgTv1.setVisibility(View.VISIBLE);
+        imgTv2.setVisibility(View.VISIBLE);
+        imgTv3.setVisibility(View.VISIBLE);
+        if (null != mDetail) {
+            licenseNoEiv.setContent(mDetail.getLicense());
+            device_name.setContent(mDetail.getDeviceName());
+            device_type.setContent(deviceType);
+            device_brand1.setContent(deviceBrand);
+            device_model.setContent(deviceModel);
+            device_year.setContent(mDetail.getFactoryTime());
+            device_rackId.setContent(mDetail.getRackId());
+            if (!TextUtils.isEmpty(mDetail.getSnId())) {
+                device_snId.setVisibility(View.VISIBLE);
+                device_snId.setContent(mDetail.getSnId());
+            }
+            device_workTime.setContent(String.valueOf(mDetail.getWorkTime()) + "时");
+            if (isOwner) {
+                device_name.isArrow(true);
+                device_name.setOnClickListener(this);
+            }
+            mRsv.setVisibility(View.VISIBLE);
+        } else {
+            mRsv.setVisibility(View.GONE);
+            btnContainer.setVisibility(View.GONE);
+            mErrorTv.setVisibility(View.VISIBLE);
+            mErrorTv.setText("没有详情数据");
+        }
+    }
+
+    private void initPhotoGridView() {
         if (imgList.size() > 0) {
             imgList.clear();
         }
-        if (null != mcDeviceBasicsInfo && null != mcDeviceBasicsInfo.getDevicePhoto() && mcDeviceBasicsInfo.getDevicePhoto().length > 0) {
-            decive_image_url = mcDeviceBasicsInfo.getDevicePhoto()[0];
+        List<String> devicePhotos = mDetail.getDevicePhotoS();
+        List<String> nameplatePhotoS = mDetail.getNameplatePhotoS();
+        List<String> enginePhotoS = mDetail.getEnginePhotoS();
+        if (devicePhotos != null && devicePhotos.size() > 0) {
+            decive_image_url = devicePhotos.get(0);
             if (!TextUtils.isEmpty(decive_image_url)) {
                 imgList.add(decive_image_url);
                 deveimgCotainer.setVisibility(View.VISIBLE);
                 ImageLoader.getInstance().displayImage(decive_image_url, decive_image,
                         Constants.displayDeviceImageOptions, null);
             }
-
         }
-        if (null != mcDeviceBasicsInfo && null != mcDeviceBasicsInfo.getNameplatePhoto() && mcDeviceBasicsInfo.getNameplatePhoto().length > 0) {
-            name_image_url = mcDeviceBasicsInfo.getNameplatePhoto()[0];
+        if (nameplatePhotoS != null && nameplatePhotoS.size() > 0) {
+            name_image_url = nameplatePhotoS.get(0);
             if (!TextUtils.isEmpty(name_image_url)) {
                 imgList.add(name_image_url);
                 deveimgCotainer.setVisibility(View.VISIBLE);
@@ -328,8 +250,8 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
             }
 
         }
-        if (null != mcDeviceBasicsInfo && null != mcDeviceBasicsInfo.getEnginePhoto()) {
-            engine_image_url = mcDeviceBasicsInfo.getEnginePhoto();
+        if (enginePhotoS != null && enginePhotoS.size() > 0) {
+            engine_image_url = enginePhotoS.get(0);
             if (!TextUtils.isEmpty(engine_image_url)) {
                 imgList.add(engine_image_url);
                 deveimgCotainer.setVisibility(View.VISIBLE);
@@ -337,21 +259,6 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                         Constants.displayDeviceImageOptions, null);
             }
         }
-        /*noScrollgridview.setOnItemClickListener(new OnItemClickListener() {
-
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				if (arg2 == Bimp.tempSelectBitmap.size()) {
-					addImageType = 0;
-					ll_popup.startAnimation(AnimationUtils.loadAnimation(AddDeviceActivity.this,R.anim.activity_translate_in));
-					pop.showAtLocation(parentView, Gravity.BOTTOM, 0, 0);
-				} else {
-//					Constants.gotoImageBrower(AddDeviceActivity.this, "1", arg2);
-					if(Bimp.tempSelectBitmap.size()>0)
-						Constants.gotoImageBrowerType(AddDeviceActivity.this, arg2, Bimp.tempSelectBitmap,true,1);
-				}
-			}
-		});*/
     }
 
 
@@ -366,30 +273,11 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
 
 
     @Override
-    protected void onPause() {
-        // TODO Auto-generated method stub
-        // MobclickAgent.onPageEnd(UMengKey.time_machine_info);
-        super.onPause();
-        try {
-            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(AddDeviceActivity.this.getCurrentFocus().getWindowToken(), 0);
-        } catch (Exception e) {
-
-        }
-    }
-
-    @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
-
         switch (v.getId()) {
 
             case R.id.deivce_member:
-                Bundle bundle_member = new Bundle();
-                bundle_member.putLong(Constants.P_DEVICEID, deviceId);
-                if (null != mcDeviceBasicsInfo)
-                    bundle_member.putInt(Constants.P_DEVICETYPE,
-                            mcDeviceBasicsInfo.getType());
-                Constants.toActivity(this, DeviceMcMemberActivity.class, bundle_member);
+                Constants.toActivity(this, DeviceMcMemberActivity.class, mData);
 
                 break;
             case R.id.device_name:
@@ -401,10 +289,10 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
                 gotoEditActivity(device_type, Constants.E_DEVICE_LIST, Constants.E_ITEMS_category, typeId, 0);
                 break;
             case R.id.device_brand1:
-                gotoEditActivity(device_brand1, Constants.E_DEVICE_LIST, Constants.E_ITEMS_brand, brand1Id, 0);
+                gotoEditActivity(device_brand1, Constants.E_DEVICE_LIST, Constants.E_ITEMS_brand, brandId, 0);
                 break;
             case R.id.device_model:
-                gotoEditActivity(device_model, Constants.E_DEVICE_LIST, Constants.E_ITEMS_model, typeId, brand1Id);
+                gotoEditActivity(device_model, Constants.E_DEVICE_LIST, Constants.E_ITEMS_model, typeId, brandId);
                 break;
             case R.id.device_year:
                 String yearStr = device_year.getContent();
@@ -482,430 +370,56 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         }
     }
 
-    @Override
-    public boolean handleMessage(Message msg) {
-        // TODO Auto-generated method stub
-        switch (msg.what) {
-        /*case Constants.HANDLER_SAVEDEVICE_SUCCESS:
-            DeviceInfo deviceInfo = (DeviceInfo)msg.obj;
-			if(null == deviceInfo){
-				deviceInfo = this.deviceInfo;
-			}
-			int state = deviceInfo.getStatus();
-			Bundle b=new Bundle();
-			b.putSerializable(Constants.P_DEVICEINFO, deviceInfo); 
-			if(state == 1 || state == 2){
-				Constants.toActivity(AddDeviceActivity.this, SensorActivity.class, b,true);
-			}else if(state == 3){
-				Constants.toActivity(AddDeviceActivity.this, SearchActivity.class, b, true);
-			}else if(state == 5){
-				Constants.toActivity(AddDeviceActivity.this, DemarcateActivity.class, b,true);
-			}else{
-				
-			}
-//			Bundle b=new Bundle();
-//			b.putSerializable(Constants.P_DEVICEINFO, (DeviceInfo)msg.obj); 
-//			Constants.toActivity(AddDeviceActivity.this, SensorActivity.class, b,true);
-			break;
-		case Constants.HANDLER_SAVEDEVICE_FAIL:
-			String message = (String)msg.obj;
-			Constants.ToastAction(null!=message?message:"新增失败！");
-			break;*/
-            case ImageUploadAsync.ImageUpload_Success:
-                String rObjStr = (String) msg.obj;
-                String[] rStr = rObjStr.split(Constants.S_FG);
-                if (null != rStr && rStr.length == 2) {
-                    if (rStr[0].equals(nameImagePath)) {
-                        nameImageUrl = rStr[1];
-                    } else if (rStr[0].equals(engineImagePath)) {
-                        engineImageUrl = rStr[1];
-                    }
-
-                }
-                break;
-            case Constants.HANDLER_UPDATEDEVICEBYKEY_SUCCESS:
-                String message_u = (String) msg.obj;
-                Constants.ToastAction(message_u);
-                Constants.isChangeDevice = true;
-                break;
-            case Constants.HANDLER_UPDATEDEVICEBYKEY_FAIL:
-                String message_u_f = (String) msg.obj;
-                Constants.ToastAction(null != message_u_f ? message_u_f : "修改失败！");
-                break;
-        /*case ImageUploadAsync.ImageUpload_Success:
-            String url = (String)msg.obj;
-			devicePhoto = Constants.arrayCopyString(devicePhoto,url);
-			image_array_view.setImageUrl(devicePhoto);
-//			if(addDeviceType == 1){
-				image_array_view.setVisibility(View.VISIBLE);
-				addPhotoButton.setVisibility(View.GONE);
-//			}
-			if(addDeviceType == 0){
-				updateDeviceInfoByKey(Constants.P_DEVICEINFO_devicePhoto,Constants.stringArray2string(devicePhoto));
-			}
-			break;
-		case ImageUploadAsync.ImageUpload_Fail:
-			Constants.ToastAction("上传失败！");
-//			if(addDeviceType == 1){
-				image_array_view.setVisibility(View.VISIBLE);
-				addPhotoButton.setVisibility(View.GONE);
-//			}
-			break;
-		case Constants.HANDLER_ADDDEVICE_SUCCESS:
-			String message1 = (String)msg.obj;
-			Constants.isAddDevice = true;
-			Constants.ToastAction(null!=message1?message1:"新增机器成功！");
-			finish();
-			break;
-		case Constants.HANDLER_ADDDEVICE_FAIL:
-			String message = (String)msg.obj;
-			Constants.ToastAction(null!=message?message:"新增失败！");
-			break;
-		*/
-
-        }
-        return false;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-
-
-            case TAKE_PICTURE:
-                if (resultCode == RESULT_OK && addImageType == 1) {
-                    String fileName = String.valueOf(System.currentTimeMillis());
-                    Bitmap bm = (Bitmap) data.getExtras().get("data");
-                    nameImagePath = FileUtils.saveBitmap(bm, fileName);
-                    name_image.setImageBitmap(bm);
-                    name_image.setVisibility(View.VISIBLE);
-                    new ImageUploadAsync(mHandler, nameImagePath).execute();
-                } else if (resultCode == RESULT_OK && addImageType == 2) {
-
-                    String engineFileName = String.valueOf(System.currentTimeMillis());
-                    Bitmap bm = (Bitmap) data.getExtras().get("data");
-                    engineImagePath = FileUtils.saveBitmap(bm, engineFileName);
-                    engine_image.setImageBitmap(bm);
-                    engine_image.setVisibility(View.VISIBLE);
-                    new ImageUploadAsync(mHandler, engineImagePath).execute();
-                } else if (Bimp.tempSelectBitmap.size() < 9 && resultCode == RESULT_OK) {
-
-                    String fileName = String.valueOf(System.currentTimeMillis());
-                    Bitmap bm = (Bitmap) data.getExtras().get("data");
-                    String fPath = FileUtils.saveBitmap(bm, fileName);
-
-                    ImageItem takePhoto = new ImageItem();
-//				takePhoto.setBitmap(bm);
-                    takePhoto.setImagePath(fPath);
-                    takePhoto.setSelected(true);
-                    Bimp.tempSelectBitmap.add(takePhoto);
+        switch (resultCode) {
+            case UPATE_INFO:
+                if (data != null) {
+                    String deviceName = data.getStringExtra(Constants.P_DEVICENAME);
+                    device_name.setContent(deviceName);
+                    mRxManager.post(Constants.UPDATE_DEVICE_NAME, deviceName);
                 }
                 break;
-        /*case SCANNIN_GREQUEST_CODE:
-            if(resultCode == RESULT_OK){
-				Bundle bundle = data.getExtras();
-				//显示扫描到的内容
-				String rStr = bundle.getString("result");
-				if(null != rStr){
-					if(!RegExp.licenseMatcher(rStr)){
-						Constants.ToastAction(getResources().getString(R.string.QR_RegExp_License_Error));
-						return;
-					}
-					device_card.setContent(rStr);
-					
-				}
-			}
-			break;*/
-            default:
-                switch (resultCode) {
-                    case UPATE_INFO:
-                        if (data != null) {
-                            String deviceName = data.getStringExtra(Constants.P_DEVICENAME);
-                            device_name.setContent(deviceName);
-                            mRxManager.post(Constants.UPDATE_DEVICE_NAME, deviceName);
+            case RESULT_OK:
+                Bundle bundle = data.getExtras();
+                int itemType = bundle.getInt(Constants.P_ITEMTYPE, -1);
+                switch (itemType) {
+                    case Constants.E_ITEMS_category:
+                        EditListInfo eInfoType = (EditListInfo) bundle.getSerializable(Constants.P_EDITRESULTITEM);
+                        if (null != eInfoType) {
+                            deviceType = eInfoType.getName();
+                            typeId = Integer.parseInt(eInfoType.getId());
+                            device_type.setContent(deviceType);
+
+                            deviceModel = "";
+                            modeId = 0;
+                            device_model.setContent(deviceModel);
+                            device_model.initEditiHint();
                         }
                         break;
-                    case RESULT_OK:
-                        Bundle bundle = data.getExtras();
-                        int editType = bundle.getInt(Constants.P_EDITTYPE);
-                        int itemType = bundle.getInt(Constants.P_ITEMTYPE, -1);
-                        switch (itemType) {
-                            case Constants.E_ITEMS_deviceName:
-                                String name = bundle.getString(Constants.P_EDITRESULTSTRING);
-                                if (!TextUtils.isEmpty(name)) {
-                                    device_name.setContent(name);
-                                    updateDeviceInfoByKey(Constants.P_DEVICEINFO_deviceName, name);
-                                } else {
-                                    Constants.ToastAction(ResV.getString(R.string.add_device_name_null));
-                                }
+                    case Constants.E_ITEMS_brand:
+                        EditListInfo eInfoBrand = (EditListInfo) bundle.getSerializable(Constants.P_EDITRESULTITEM);
+                        if (null != eInfoBrand) {
+                            deviceBrand = eInfoBrand.getName();
+                            brandId = Integer.parseInt(eInfoBrand.getId());
+                            device_brand1.setContent(deviceBrand);
 
-                                break;
-                            case Constants.E_ITEMS_category:
-                                EditListInfo eInfoType = (EditListInfo) bundle.getSerializable(Constants.P_EDITRESULTITEM);
-                                if (null != eInfoType) {
-                                    deviceType = eInfoType.getName();
-                                    typeId = Integer.parseInt(eInfoType.getId());
-                                    device_type.setContent(deviceType);
-
-                                    deviceModel = "";
-                                    modeId = 0;
-                                    device_model.setContent(deviceModel);
-                                    device_model.initEditiHint();
-                                }
-                                break;
-                            case Constants.E_ITEMS_brand:
-                                EditListInfo eInfoBrand = (EditListInfo) bundle.getSerializable(Constants.P_EDITRESULTITEM);
-                                if (null != eInfoBrand) {
-                                    deviceBrand1 = eInfoBrand.getName();
-                                    brand1Id = Integer.parseInt(eInfoBrand.getId());
-                                    device_brand1.setContent(deviceBrand1);
-
-                                    deviceModel = "";
-                                    modeId = 0;
-                                    device_model.setContent(deviceModel);
-                                    device_model.initEditiHint();
-                                }
-                                break;
-                            case Constants.E_ITEMS_model:
-                                EditListInfo eInfoModel = (EditListInfo) bundle.getSerializable(Constants.P_EDITRESULTITEM);
-                                if (null != eInfoModel) {
-                                    deviceModel = eInfoModel.getName();
-                                    modeId = Integer.parseInt(eInfoModel.getId());
-                                    device_model.setContent(deviceModel);
-
-                                    String key = Constants.P_DEVICEINFO_category + Constants.S_UPDATEDEVICEKEY_FG +
-                                            Constants.P_DEVICEINFO_typeId + Constants.S_UPDATEDEVICEKEY_FG +
-                                            Constants.P_DEVICEINFO_brand + Constants.S_UPDATEDEVICEKEY_FG +
-                                            Constants.P_DEVICEINFO_brandId + Constants.S_UPDATEDEVICEKEY_FG +
-                                            Constants.P_DEVICEINFO_model + Constants.S_UPDATEDEVICEKEY_FG +
-                                            Constants.P_DEVICEINFO_modelId;
-                                    String values = deviceType + Constants.S_UPDATEDEVICEKEY_FG +
-                                            typeId + Constants.S_UPDATEDEVICEKEY_FG +
-                                            deviceBrand1 + Constants.S_UPDATEDEVICEKEY_FG +
-                                            brand1Id + Constants.S_UPDATEDEVICEKEY_FG +
-                                            deviceModel + Constants.S_UPDATEDEVICEKEY_FG +
-                                            modeId;
-                                    updateDeviceInfo(key, values);
-                                }
-                                break;
+                            deviceModel = "";
+                            modeId = 0;
+                            device_model.setContent(deviceModel);
+                            device_model.initEditiHint();
                         }
-
                         break;
                 }
+
                 break;
         }
-
-        // TODO Auto-generated method stub
-        /*if(requestCode == IMAGE_REQUEST_CODE){
-            if (data != null && data.getData() != null) {
-				Constants.startPhotoZoom(this,PhotosGallery.getPhotosUri(mContext, data.getData())
-						,RESULT_REQUEST_CODE);
-			}
-		}else if(requestCode == CAMERA_REQUEST_CODE){
-			if (FileUtils.isSdcardExist()) {
-				File tempFile = new File(
-						Environment.getExternalStorageDirectory(),
-						imageFileName);
-				Constants.startPhotoZoom(this,Uri.fromFile(tempFile),RESULT_REQUEST_CODE);
-			} else {
-				Constants.ToastAction("没有检测到内存卡");
-			}
-		}else if(requestCode == RESULT_REQUEST_CODE){
-			if (data != null) {
-				Constants.setImageToView(data, mHandler);
-//				setImageToView(data);
-			}
-		}else if(requestCode == Constants.REQUEST_ImageActivity){
-			if (data != null ) {
-				Bundle bundle=data.getExtras(); 
-				if(bundle != null){
-					boolean isD = bundle.getBoolean(Constants.P_IMAGEBROWERDELETE);
-					if(isD){
-						devicePhoto = bundle.getStringArray(Constants.P_IMAGEBROWERURLS);
-						image_array_view.setImageUrl(devicePhoto);
-						updateDeviceInfoByKey(Constants.P_DEVICEINFO_devicePhoto,Constants.stringArray2string(devicePhoto));
-					}
-				}
-			}
-		}
-		else{
-			if(addDeviceType == 1)
-				title_layout.setRightTextEdit(true);
-			switch (resultCode)
-			{
-			case RESULT_OK:
-				Bundle bundle=data.getExtras(); 
-				int editType = bundle.getInt(Constants.P_EDITTYPE);
-				int itemType = bundle.getInt(Constants.P_ITEMTYPE);
-				switch(itemType){
-				case Constants.E_ITEMS_deviceName:
-					String name = bundle.getString(Constants.P_EDITRESULTSTRING);
-					if(!TextUtils.isEmpty(name)){
-						device_name.setContent(name);
-						updateDeviceInfoByKey(Constants.P_DEVICEINFO_deviceName,name);
-					}else{
-						Constants.ToastAction(STR_DEVICE_NAME_NULL);
-					}
-					
-					break;
-				case Constants.E_ITEMS_category:
-					EditListInfo eInfoType = (EditListInfo)bundle.getSerializable(Constants.P_EDITRESULTITEM);
-					if(null != eInfoType){
-						deviceType = eInfoType.getName();
-						typeId = eInfoType.getId();
-						device_type.setContent(deviceType);
-						
-						deviceModel = "";
-						modeId = 0;
-						device_model.setContent(deviceModel);
-					}
-					break;
-				case Constants.E_ITEMS_brand:
-					EditListInfo eInfoBrand = (EditListInfo)bundle.getSerializable(Constants.P_EDITRESULTITEM);
-					if(null != eInfoBrand){
-						deviceBrand1 = eInfoBrand.getName();
-						brand1Id = eInfoBrand.getId();
-						device_brand1.setContent(deviceBrand1);
-						
-						deviceModel = "";
-						modeId = 0;
-						device_model.setContent(deviceModel);
-					}
-					break;
-				case Constants.E_ITEMS_model:
-					EditListInfo eInfoModel = (EditListInfo)bundle.getSerializable(Constants.P_EDITRESULTITEM);
-					if(null != eInfoModel){
-						deviceModel = eInfoModel.getName();
-						modeId = eInfoModel.getId();
-						device_model.setContent(deviceModel);
-						String key =Constants.P_DEVICEINFO_category + Constants.S_UPDATEDEVICEKEY_FG +
-								Constants.P_DEVICEINFO_typeId + Constants.S_UPDATEDEVICEKEY_FG +
-								Constants.P_DEVICEINFO_brand + Constants.S_UPDATEDEVICEKEY_FG +
-								Constants.P_DEVICEINFO_brandId + Constants.S_UPDATEDEVICEKEY_FG +
-								Constants.P_DEVICEINFO_model + Constants.S_UPDATEDEVICEKEY_FG +
-								Constants.P_DEVICEINFO_modelId ;
-						String values = deviceType +  Constants.S_UPDATEDEVICEKEY_FG +
-								typeId + Constants.S_UPDATEDEVICEKEY_FG +
-								deviceBrand1 + Constants.S_UPDATEDEVICEKEY_FG +
-								brand1Id+ Constants.S_UPDATEDEVICEKEY_FG +
-								deviceModel + Constants.S_UPDATEDEVICEKEY_FG +
-								modeId;
-						updateDeviceInfo(key,values);
-					}
-					break;
-					default:
-						if(addDeviceType == 1){
-							mcDeviceBasicsInfo = (McDeviceBasicsInfo) bundle.getSerializable(Constants.P_MCDEVICEBASICSINFO);
-						}
-						break;
-				}
-				
-				break;
-			}
-		}*/
-
     }
 
-    private void updateDeviceInfoByKey(String key, String value) {
-        if (null != mcDeviceBasicsInfo && !TextUtils.isEmpty(value)) {
-            long deviceId = mcDeviceBasicsInfo.getId();
-            new updateDeviceInfoByKeyAsync(mContext, mHandler).execute(String.valueOf(deviceId), key, value);
-        }
-    }
-
-    private void updateDeviceInfo(String key, String value) {
-        if (null != mcDeviceBasicsInfo && !TextUtils.isEmpty(value)) {
-            long deviceId = mcDeviceBasicsInfo.getId();
-            new updateDeviceInfoAsync(mContext, mHandler).execute(String.valueOf(deviceId), key, value);
-        }
-    }
-    /*private void addDevice(){
-        if(null == deviceInfo){
-			deviceInfo = new DeviceInfo();
-		}
-		if(!TextUtils.isEmpty(device_card.getContent())){
-			deviceInfo.setLicense(device_card.getContent());
-		}else{
-			Constants.ToastAction(ResV.getString(R.string.add_device_card_null));
-			return;
-		}
-		if(!TextUtils.isEmpty(device_name.getContent())){
-			deviceInfo.setDevieName(device_name.getContent());
-		}else{
-			Constants.ToastAction(ResV.getString(R.string.add_device_name_null));
-			return;
-		}
-		if(!TextUtils.isEmpty(device_type.getContent())){
-			DeviceKindInfo kind = new DeviceKindInfo();
-			kind.setId(typeId);
-			kind.setName(deviceType);
-			deviceInfo.setType(kind);
-		}else{
-			Constants.ToastAction(ResV.getString(R.string.add_device_type_null));
-			return;
-		}
-		if(!TextUtils.isEmpty(device_brand1.getContent())){
-			DeviceBrandInfo brand = new DeviceBrandInfo();
-			brand.setId(brand1Id);
-			brand.setName(deviceBrand1);
-			deviceInfo.setBrand(brand);
-		}else{
-			Constants.ToastAction(ResV.getString(R.string.add_device_brand_null));
-			return;
-		}
-		if(!TextUtils.isEmpty(device_model.getContent())){
-			DeviceModelInfo mode = new DeviceModelInfo();
-			mode.setId(modeId);
-			mode.setModelName(deviceModel);
-			deviceInfo.setModel(mode);
-		}else{
-			Constants.ToastAction(ResV.getString(R.string.add_device_model_null));
-			return;
-		}
-		int bimpSize = Bimp.tempSelectBitmap.size();
-		if(bimpSize>0){
-			String[] bimpUrl = new String[bimpSize];
-			for(int i=0; i<bimpSize; i++){
-				if(null != Bimp.tempSelectBitmap.get(i).getImageUrl())
-					bimpUrl[i] = Bimp.tempSelectBitmap.get(i).getImageUrl();
-			}
-			deviceInfo.setImages(bimpUrl);
-		}
-		if(!TextUtils.isEmpty(nameImageUrl)){
-			String[] nameImage = new String[1];
-			nameImage[0] = nameImageUrl;
-			
-			deviceInfo.setNameplatePhoto(nameImage);
-		}else{
-			if(null != deviceInfo.getNameplatePhoto() && deviceInfo.getNameplatePhoto().length>0){
-			}else{
-				Constants.ToastAction(ResV.getString(R.string.add_device_nameplate_null));
-				return;
-			}
-			
-		}
-		if(!TextUtils.isEmpty(engineImageUrl)){
-			deviceInfo.setEnginePhoto(engineImageUrl);
-		}else{
-			if(null != deviceInfo.getEnginePhoto() && deviceInfo.getEnginePhoto().length()>0){
-			}else{
-				Constants.ToastAction(ResV.getString(R.string.add_device_Engine_null));
-				return;
-			}
-			
-		}
-		if(!TextUtils.isEmpty(device_year.getContent())){
-			deviceInfo.setFactoryTime(device_year.getContent());
-		}
-//		if(image_array_view.getImageUrl()!=null && image_array_view.getImageUrl().length>0){
-//			mcDeviceBasicsInfo.setDevicePhoto(image_array_view.getImageUrl());
-//		}
-		new AddDeviceAsync(mContext,mHandler,deviceInfo).execute();
-		
-	}*/
 
     private void gotoEditActivity(CanBeEditItemView view, int editType, int itemType) {
-        if (status != 0 || editType == Constants.E_DEVICE_DATA ||
+        if (editType == Constants.E_DEVICE_DATA ||
                 editType == Constants.E_DEVICE_LIST || editType == Constants.E_DEVICE_TEXT) {
             view.requestFocus();
             Bundle bundle = new Bundle();
@@ -913,8 +427,8 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
             bundle.putString(Constants.P_EDITRESULTSTRING, view.getContent());
             bundle.putInt(Constants.P_EDITTYPE, editType);
             bundle.putInt(Constants.P_ITEMTYPE, itemType);
-            bundle.putString(Constants.P_DEVICEID, String.valueOf(mcDeviceBasicsInfo.getId()));
-            bundle.putString(Constants.P_DEVICENAME, mcDeviceBasicsInfo.getDeviceName());
+            bundle.putString(Constants.P_DEVICEID, String.valueOf(deviceId));
+            bundle.putString(Constants.P_DEVICENAME, mDetail.getDeviceName());
             bundle.putString(Constants.PAGET_TYPE, Constants.IPageType.PAGE_DEVICE_INFO);
             Constants.toActivityForR(this, EditLayoutActivity.class, bundle, 0);
         } else {
@@ -944,51 +458,10 @@ public class AddDeviceActivity extends BaseAutoLayoutActivity implements Callbac
         Constants.toActivityForR(this, EditLayoutActivity.class, bundle, 0);
     }
 
-    private void showPickDialog() {
-        new AlertDialog.Builder(mContext)
-                .setTitle("确定放弃新增机器？")
-                .setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        AddDeviceActivity.this.finish();
-                    }
-                })
-                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
 
-                    }
-                }).show();
-    }
-
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
-        /*if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(status == 0){
-				showPickDialog();
-				return true;
-			}
-		}*/
-        return super.onKeyDown(keyCode, event);
-    }
-
-    public void photo() {
-        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(openCameraIntent, TAKE_PICTURE);
-    }
-
-    @Override
-    protected void onRestart() {
-        // TODO Auto-generated method stub
-        super.onRestart();
-    }
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
-        //MobclickAgent.onPageStart(UMengKey.time_machine_info);
         super.onResume();
         MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_INFO);
     }

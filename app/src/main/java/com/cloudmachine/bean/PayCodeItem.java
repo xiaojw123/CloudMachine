@@ -32,7 +32,7 @@ public class PayCodeItem {
      */
 
     private int id;
-    private long gmtCreate;
+    private String gmtCreate;
     private int accountId;
     private String accountNo;
     private int orderId;
@@ -61,11 +61,11 @@ public class PayCodeItem {
         this.id = id;
     }
 
-    public long getGmtCreate() {
+    public String getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(long gmtCreate) {
+    public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 

@@ -242,7 +242,7 @@ public class IncomeSpendActivity extends BaseAutoLayoutActivity implements XRecy
 
     public void getSalaryHistory(final int type, String year, String month, final int pageNum, int size) {
         this.pageNum = pageNum;
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getSalaryHistoryRecords(UserHelper.getMemberId(mContext), type, year, month, pageNum, size).compose(RxHelper.<List<SalaryHistoryItem>>handleBaseResult()).subscribe(new RxSubscriber<BaseRespose<List<SalaryHistoryItem>>>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getSalaryHistoryRecords(type, year, month, pageNum, size).compose(RxHelper.<List<SalaryHistoryItem>>handleBaseResult()).subscribe(new RxSubscriber<BaseRespose<List<SalaryHistoryItem>>>(mContext) {
             @Override
             protected void _onNext(BaseRespose<List<SalaryHistoryItem>> br) {
                 if (br != null) {

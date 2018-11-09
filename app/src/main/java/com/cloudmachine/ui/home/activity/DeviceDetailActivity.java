@@ -1,14 +1,10 @@
 package com.cloudmachine.ui.home.activity;
 
-import android.animation.LayoutTransition;
-import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,28 +15,21 @@ import android.widget.TextView;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.CircleOptions;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.AddDeviceActivity;
 import com.cloudmachine.activities.HistoricalTrackActivity;
 import com.cloudmachine.activities.MapOneActivity;
 import com.cloudmachine.activities.OilAmountActivity;
 import com.cloudmachine.activities.WorkTimeActivity;
+import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.bean.McDeviceBasicsInfo;
-import com.cloudmachine.bean.McDeviceInfo;
-import com.cloudmachine.bean.McDeviceLocation;
-import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.bean.LarkDeviceDetail;
+import com.cloudmachine.bean.LarkLocBean;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.IMapListener;
@@ -48,10 +37,6 @@ import com.cloudmachine.navigation.NativeDialog;
 import com.cloudmachine.navigation.other.Location;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.ui.home.contract.DeviceDetailContract;
-import com.cloudmachine.ui.home.contract.ExtrContract;
-import com.cloudmachine.ui.home.model.DeviceDetailModel;
-import com.cloudmachine.ui.home.presenter.DeviceDetailPresenter;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
@@ -66,8 +51,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
-public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter, DeviceDetailModel> implements DeviceDetailContract.View, View.OnClickListener, AMapLocationListener, IMapListener {
-    McDeviceLocation mcDeviceLoc;
+public class DeviceDetailActivity extends BaseMapActivity implements View.OnClickListener, AMapLocationListener, IMapListener {
+    LarkLocBean mDeviceLoc;
     @BindView(R.id.device_detail_repair_record)
     FrameLayout recordFl;
     @BindView(R.id.device_fence_layout)
@@ -115,28 +100,29 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
 
     long deviceId;
     Location locNow;
-    Bundle mBundle;
     String deviceName;
     int oilValue;
     String snId;
-    int type;
-    boolean isOnline, isVideo;
+    boolean isOnline, isVideo,isOwner;
     String imei;
-    McDeviceInfo mcDeviceInfo;
     int workStatus;
-    String errorMessage;
+    Bundle mBundle;
+    LarkDeviceDetail mDetail;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent=getIntent();
+        mBundle=intent.getExtras();
+        deviceId =mBundle.getLong(Constants.DEVICE_ID, -1);
+        isOwner=mBundle.getBoolean(Constants.IS_OWNER);
+        mTitleView.setRightClickListener(this);
         setinfoWIndowHiden(false);
         startlocaction(this);
         initMyLocation();
-        initView();
+        initBottomAnim();
         updateDeviceName();
-
-
     }
 
     private void initMyLocation() {
@@ -164,39 +150,22 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     protected void onResume() {
         super.onResume();
         MobclickAgent.onEvent(this, MobEvent.TIME_MACHINE_DETECTION);
-        mPresenter.getDeviceNowData(String.valueOf(deviceId));
-        if (UserHelper.isLogin(this)) {
-            mPresenter.getDeviceInfo(String.valueOf(deviceId), UserHelper.getMemberId(this));
-        } else {
-            mPresenter.getDeviceInfo(String.valueOf(deviceId));
-        }
-
-
-    }
-
-    private void initView() {
-        initBottomAnim();
-        Bundle bundle = getIntent().getExtras();
-        boolean isNowData = bundle.getBoolean(Constants.DEVICE_DETAIL_NOW, false);
-        if (isNowData) {
-            String deviceIdStr = bundle.getString(Constants.DEVICE_ID);
-            deviceId = Long.parseLong(deviceIdStr);
-        } else {
-            mcDeviceInfo = (McDeviceInfo) bundle.getSerializable(Constants.MC_DEVICEINFO);
-            if (mcDeviceInfo == null) {
-                mcDeviceInfo = new McDeviceInfo();
-                String position = bundle.getString("devicePosition");
-                mcDeviceInfo.setName(bundle.getString("deviceName"));
-                mcDeviceInfo.setId(bundle.getLong("deviceId"));
-                mcDeviceInfo.setWorkStatus(bundle.getInt("deviceWorkState"));
-                McDeviceLocation loc = new McDeviceLocation();
-                loc.setPosition(position);
-                mcDeviceInfo.setLocation(loc);
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getLarkDeviceNowData(deviceId).compose(RxHelper.<LarkDeviceDetail>handleResult()).subscribe(new RxSubscriber<LarkDeviceDetail>(mContext) {
+            @Override
+            protected void _onNext(LarkDeviceDetail detail) {
+                mDetail=detail;
+                updateDeviceDetail(detail);
             }
-            deviceId = mcDeviceInfo.getId();
-        }
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(mContext,message);
+
+            }
+        }));
 
     }
+
 
     private void initBottomAnim() {
         mScrollView.setScrollVisible(true);
@@ -206,7 +175,6 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
 
     @Override
     public void initPresenter() {
-        mPresenter.setVM(this, mModel);
     }
 
     @Override
@@ -252,20 +220,13 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 Constants.toActivity(this, WorkVideoActivity.class, bundle);
                 break;
             case R.id.common_titleview_right_tv:
-                if (mBundle == null) {
-                    mBundle = new Bundle();
-                }
-                mBundle.putBoolean(AddDeviceActivity.IMG_TITLE_SHOW, true);
-                mBundle.putBoolean(AddDeviceActivity.DEVICE_SHOW, true);
-                mBundle.putInt(Constants.P_ADDMCDEVICETYPE, 0);
-                mBundle.putString(Constants.ERROR_MESSAGE, errorMessage);
                 Constants.toActivity(DeviceDetailActivity.this,
                         AddDeviceActivity.class, mBundle);
                 break;
 
             case R.id.navigation_tv:
                 MobclickAgent.onEvent(this, MobEvent.COUNT_LOCATION_NAVIGATION);
-                Location locEnd = new Location(mcDeviceLoc.getLat(), mcDeviceLoc.getLng(), mcDeviceLoc.getPosition());
+                Location locEnd = new Location(mDeviceLoc.getLat(), mDeviceLoc.getLng(), mDeviceLoc.getPosition());
                 if (locNow == null) {
                     ToastUtils.showToast(this, "无法定位当前位置");
                     return;
@@ -279,6 +240,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                 Constants.toActivity(this, RepairRecordNewActivity.class, bundle_repair);
                 break;
             case R.id.device_fence_layout:
+                mBundle.putParcelable(Constants.DEVICE_DETAIL,mDetail);
                 Constants.toActivity(this, MapOneActivity.class, mBundle);
                 break;
             case R.id.device_path_layout:
@@ -303,88 +265,57 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
 
     }
 
-    @Override
-    public void retrunDeviceInfo(McDeviceBasicsInfo info) {
-        if (mBundle == null) {
-            mBundle = new Bundle();
-        }
-        mBundle.putSerializable(Constants.P_MCDEVICEBASICSINFO, info);
-    }
-
-    @Override
-    public void updateDeviceDetail(final McDeviceInfo info) {
-        if (info == null) {
+    public void updateDeviceDetail(LarkDeviceDetail detail) {
+        if (detail == null) {
             return;
         }
-        if (mcDeviceInfo != null) {
-            snId = mcDeviceInfo.getSnId();
-            type = mcDeviceInfo.getType();
-        } else {
-            snId = info.getSnId();
-            type = info.getType();
-        }
-        oilValue = info.getOilLave();
+        snId = detail.getSnId();
+        oilValue = detail.getOilLave();
         oilWaveTv.setText(CommonUtils.formatOilValue(oilValue));
 
-        float time = info.getWorkTime();
+        float time = detail.getWorkTime();
         timeLenTv.setText(CommonUtils.formatTimeLen(time));
-        deviceName = info.getName();
+        deviceName = detail.getDeviceName();
         mTitleView.setTitleName(deviceName);
-        mTitleView.setRightText(this);
-        mcDeviceLoc = info.getLocation();
-        mLocTv.setText(mcDeviceLoc.getPosition());
-        locTimeTv.setText(CommonUtils.formaLocTime(mcDeviceLoc.getCollectionTime()));
-        final LatLng latLng = new LatLng(mcDeviceLoc.getLat(), mcDeviceLoc.getLng());
+        mDeviceLoc = detail.getLocation();
+        mLocTv.setText(mDeviceLoc.getPosition());
+        locTimeTv.setText(CommonUtils.formaLocTime(mDeviceLoc.getCollectionTime()));
+        final LatLng latLng = new LatLng(mDeviceLoc.getLat(), mDeviceLoc.getLng());
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
         setMapZoomTo(ZOOM_DEFAULT);
         aMap.moveCamera(CameraUpdateFactory.scrollBy(0, DensityUtil.dip2px(this, 100)));
         String statusText = null;
-//        int mResId;
-        workStatus = info.getWorkStatus();
+        workStatus = detail.getWorkStatus();
         switch (workStatus) {
             case 1:
                 isOnline = true;
                 statusText = "工作中";
                 workStatusTv.setVisibility(View.VISIBLE);
-//                mResId = R.drawable.icon_machine_work;
                 break;
             case 2:
                 isOnline = true;
                 statusText = "在线";
                 workStatusTv.setVisibility(View.VISIBLE);
-//                mResId = R.drawable.icon_machine_online;
                 break;
             default:
                 isOnline = false;
                 workStatusTv.setVisibility(View.GONE);
-//                mResId = R.drawable.icon_machine_unwork;
                 break;
 
         }
         workStatusTv.setText(statusText);
         aMap.clear();
-//        Marker marker = aMap.addMarker(getMarkerOptions(this, latLng, mResId));
-        CommonUtils.updateReomteMarkerOpt(this, CommonUtils.getMarkerIconUrl(info.getTypePicUrl(), workStatus), latLng, this);
+        CommonUtils.updateReomteMarkerOpt(this, CommonUtils.getMarkerIconUrl(detail.getTypePicUrl(), workStatus), latLng, this);
         if (CommonUtils.isHConfig(snId)) {
             updateHCView();
         } else {
             workVideoTv.setVisibility(View.GONE);
         }
-//        initCircle(latLng, info.getPositAccu());
         showCustomGuide();
     }
 
-    private void initCircle(LatLng latLng, double radius) {
-        if (radius > 0) {
-            CircleOptions options = new CircleOptions();
-            options.center(latLng);
-            options.radius(radius);
-            options.strokeWidth(getResources().getDimension(R.dimen.dimen_size_1));
-            options.strokeColor(getResources().getColor(R.color.cor1));
-            options.fillColor(Color.parseColor("#15fbb233"));
-            aMap.addCircle(options);
-        }
-    }
+
+
 
     @Override
     public void updateMarkerOptions(MarkerOptions options) {
@@ -409,7 +340,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     //更新高配图片、视频入口
     public void updateHCView() {
         if (UserHelper.isLogin(this)) {
-            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(this), snId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(this) {
+            mRxManager.add(Api.getDefault(HostType.HOST_LARK).getImei(snId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(this) {
                 @Override
                 protected void _onNext(JsonObject respJobj) {
                     int code = respJobj.get("code").getAsInt();
@@ -422,8 +353,7 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
                         JsonElement videoJel = resultJobj.get("haveVideo");
                         if (videoJel != null) {
                             boolean hasVideo = videoJel.getAsBoolean();
-                            boolean isOwer = !Constants.isNoEditInMcMember(deviceId, type);
-                            isVideo = hasVideo && isOwer;
+                            isVideo = hasVideo && isOwner;
                             if (isVideo) {
                                 workVideoTv.setText(getResources().getString(R.string.video));
                                 workVideoTv.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.dimen_size_5));
@@ -469,20 +399,9 @@ public class DeviceDetailActivity extends BaseMapActivity<DeviceDetailPresenter,
     }
 
 
-    @Override
-    public void updateDeviceDetailError(String message) {
-        ToastUtils.showToast(this, message);
-    }
-
-    @Override
-    public void retrunDeviceInfoError(String message) {
-        errorMessage = message;
-    }
-
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        AppLog.print("onLocationChanged____定位信息");
         if (locNow == null) {
             locNow = new Location(aMapLocation.getLatitude(), aMapLocation.getLongitude());
         }

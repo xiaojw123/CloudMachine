@@ -74,11 +74,10 @@ public class PayCodeActivity extends BaseAutoLayoutActivity implements XRecycler
 
     private void loadData() {
         if (TextUtils.equals(PAY_CODE_HISTORY, pageType)) {
-            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getCodeHistoryList(memberId, pageNum, 20).compose(RxHelper.<List<PayCodeItem>>handleBaseResult()).subscribe(new RxSubscriber<BaseRespose<List<PayCodeItem>>>(this) {
+            mRxManager.add(Api.getDefault(HostType.HOST_LARK).getCodeHistoryList(pageNum, 20).compose(RxHelper.<List<PayCodeItem>>handleBaseResult()).subscribe(new RxSubscriber<BaseRespose<List<PayCodeItem>>>(this) {
                 @Override
                 protected void _onNext(BaseRespose<List<PayCodeItem>> br) {
                     updateItemAdapter(br);
-
                 }
 
                 @Override
@@ -88,7 +87,7 @@ public class PayCodeActivity extends BaseAutoLayoutActivity implements XRecycler
             }));
 
         } else {
-            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getBoxCodeList(memberId, pageNum, 20).compose(RxHelper.<List<PayCodeItem>>handleBaseResult()).subscribe(new RxSubscriber<BaseRespose<List<PayCodeItem>>>(this) {
+            mRxManager.add(Api.getDefault(HostType.HOST_LARK).getBoxCodeList(pageNum, 20).compose(RxHelper.<List<PayCodeItem>>handleBaseResult()).subscribe(new RxSubscriber<BaseRespose<List<PayCodeItem>>>(this) {
                 @Override
                 protected void _onNext(BaseRespose<List<PayCodeItem>> br) {
                     updateItemAdapter(br);

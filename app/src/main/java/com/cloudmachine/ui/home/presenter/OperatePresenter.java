@@ -23,8 +23,8 @@ import com.google.gson.JsonObject;
 
 public class OperatePresenter extends OperateContact.Presenter {
     @Override
-    public void getVerifyCode(long memberId, String taskId) {
-        mRxManage.add(mModel.getVerifyCode(memberId, taskId).subscribe(new RxSubscriber<String>(mContext) {
+    public void getVerifyCode(String taskId) {
+        mRxManage.add(mModel.getVerifyCode(taskId).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
                 ToastUtils.showToast(mContext, "验证码已发送");
@@ -41,8 +41,8 @@ public class OperatePresenter extends OperateContact.Presenter {
     }
 
     @Override
-    public void checkVerifyCode(long memberId, String taskId, String smsCode) {
-        mRxManage.add(mModel.checkVerifyCode(memberId, taskId, smsCode).subscribe(new RxSubscriber<String>(mContext) {
+    public void checkVerifyCode( String taskId, String smsCode) {
+        mRxManage.add(mModel.checkVerifyCode( taskId, smsCode).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
                 mView.checkVertifyCodeSuccess(s);
@@ -57,10 +57,10 @@ public class OperatePresenter extends OperateContact.Presenter {
     }
 
     @Override
-    public void authOperator(long memberId, String servicePwd, final RadiusButtonView button, final FrameLayout loadingView) {
+    public void authOperator(String servicePwd, final RadiusButtonView button, final FrameLayout loadingView) {
         button.setButtonClickEnable(false);
         loadingView.setVisibility(View.VISIBLE);
-        mRxManage.add(mModel.authOperator(memberId, servicePwd).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
+        mRxManage.add(mModel.authOperator(servicePwd).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
             protected void _onNext(JsonObject br) {
                 if (CommonUtils.isActivityDestoryed(mContext)) {

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.holder.DeviceHoler;
+import com.cloudmachine.bean.LarkDeviceDetail;
 import com.cloudmachine.bean.McDeviceInfo;
 
 import java.util.List;
@@ -16,10 +17,10 @@ import java.util.List;
  * Created by xiaojw on 2017/5/24.
  */
 
-public class DeviceListAdpater extends BaseRecyclerAdapter<McDeviceInfo> {
+public class DeviceListAdpater extends BaseRecyclerAdapter<LarkDeviceDetail> {
 
 
-    public DeviceListAdpater(Context context, List<McDeviceInfo> items) {
+    public DeviceListAdpater(Context context, List<LarkDeviceDetail> items) {
         super(context, items);
     }
 

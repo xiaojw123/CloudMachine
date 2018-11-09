@@ -1,5 +1,6 @@
 package com.cloudmachine.utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,8 +12,10 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
@@ -26,7 +29,10 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cloudmachine.R;
+import com.cloudmachine.activities.PermissionsActivity;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
+import com.cloudmachine.bean.LarkMemberInfo;
+import com.cloudmachine.bean.Member;
 import com.cloudmachine.camera.CameraActivity;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.listener.IMapListener;
@@ -58,6 +64,43 @@ import java.util.Map;
 
 public class CommonUtils {
 
+    //对webview内存进行释放
+    public static void clearWebView(WebView webView) {
+        if (webView != null) {
+            ViewParent parent = webView.getParent();
+            if (parent != null) {
+                ((ViewGroup) parent).removeView(webView);
+            }
+        }
+        assert webView!=null;
+        webView.stopLoading();
+        webView.getSettings().setJavaScriptEnabled(false);
+        webView.clearHistory();
+        webView.clearView();
+        webView.removeAllViews();
+        webView.destroy();
+    }
+
+
+    public static Member convertMember(LarkMemberInfo info) {
+        Member member = new Member();
+        member.setId(info.getId());
+        member.setMobile(info.getMobile());
+        member.setNickName(info.getNickName());
+        member.setLogo(info.getLogo());
+        member.setUniqueId(info.getUniqueId());
+        member.setIsAuth(info.getIsAuth());
+        member.setAlipayLogo(info.getAlipayLogo());
+        member.setAlipayNickname(info.getAlipayNickname());
+        member.setAlipayUserId(info.getAlipayUserId());
+        member.setWecharNickname(info.getWecharNickname());
+        member.setWecharLogo(info.getWecharLogo());
+        member.setOpenId(info.getOpenId());
+        member.setUnionId(info.getUnionid());
+        return member;
+    }
+
+
     public static boolean isActivityDestoryed(Context context) {
         if (context == null || ((Activity) (context)).isFinishing()) {
             return true;
@@ -69,7 +112,6 @@ public class CommonUtils {
         }
         return false;
     }
-
 
 
     public static void showDialog(Context context, String message, String negativeText, String positiveText, final DialogInterface.OnClickListener positiveListener) {
@@ -95,14 +137,15 @@ public class CommonUtils {
         builder.create().show();
     }
 
-    public static void showBackDialog(final Context context){
+    public static void showBackDialog(final Context context) {
         showDialog(context, "确定放弃提交吗？返回后页面数据将不会保存", "取消", "确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ((Activity)context).finish();
+                ((Activity) context).finish();
             }
         });
     }
+
     public static void showDeletePicDialog(Context context, final DialogInterface.OnClickListener listener) {
         CustomDialog.Builder builder = new CustomDialog.Builder(context);
         builder.setMessage("确定要删除这张照片吗？");
@@ -288,26 +331,44 @@ public class CommonUtils {
         return sdf.format(today);
     }
 
+    public static String getTimeStamp() {
+        return String.valueOf(System.currentTimeMillis() / 1000);
+    }
+
     public static String getDateStamp(long timeStamp) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
         return sdf.format(new Date(timeStamp));
     }
+
     public static String getDateStampF(long timeStamp) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//这个是你要转成后的时间的格式
         return sdf.format(new Date(timeStamp));
     }
 
-    public static String getSalaryMonth(long timeStamp) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月");//这个是你要转成后的时间的格式
-        String fm = sdf.format(new Date(timeStamp)).substring(2);
-        return fm;
+    //I-yyy-MM-dd hh:mm:ss O-yyyy年MM月
+    public static String getSalaryMonth(String timeStamp) {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月");//这个是你要转成后的时间的格式
+//        String fm = sdf.format(new Date(timeStamp)).substring(2);
+//        return fm;
+        if (!TextUtils.isEmpty(timeStamp)) {
+            String[] timeArray = timeStamp.split("-");
+            return timeArray[0] + "年" + timeArray[1] + "月";
+        }
+        return "未知时间";
     }
 
-    public static long getMonth(long timeStamp) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");//这个是你要转成后的时间的格式
-        String fm = sdf.format(new Date(timeStamp));
-        return Long.parseLong(fm);
-
+    //I-yyy-MM-dd hh:mm:ss O-yyyyMM
+    public static long getMonth(String timeStamp) {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");//这个是你要转成后的时间的格式
+//        String fm = sdf.format(new Date(timeStamp));
+//        return Long.parseLong(fm);
+        if (!TextUtils.isEmpty(timeStamp)) {
+            String[] timeArray = timeStamp.split("-");
+            if (timeArray.length >= 2) {
+                return Long.parseLong(timeArray[0] + timeArray[1]);
+            }
+        }
+        return 0;
     }
 
     public static double subtractDouble(double a, double b) {
@@ -317,10 +378,10 @@ public class CommonUtils {
     }
 
 
-    public static void showPermissionDialog(Context context, int reqCode) {
+    public static void showPermissionDialog(Context context, int type) {
         CustomDialog.Builder builder = new CustomDialog.Builder(context);
         String msg = "需要开启形影权限，请到设置->权限管理中开启";
-        switch (reqCode) {
+        switch (type) {
             case Constants.PermissionType.CAMERA:
                 msg = "需要开启相机服务，请到设置->隐私->相机服务，打开相机服务";
                 break;

@@ -34,11 +34,12 @@ import cn.tongdun.android.liveness.view_controller.LivenessDetectionMainActivity
 public class LivenessDetectActivity extends LivenessDetectionMainActivity {
     public static final int RESULT_FACE_SUCCESS = 0x006;
     public static final String URL_CONTRASTFACE = "url_contrastface";
-    public static final String MEMBER_ID = "memberId";
+    public static final String TOKEN="token";
     public static final String TAG = LivenessDetectActivity.class.getSimpleName();
     private String faceContrastUrl;
-    private long memberId;
+    private String token;
     String base64Data;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class LivenessDetectActivity extends LivenessDetectionMainActivity {
 //        PackageNameManager.setPackageName();
         super.onCreate(savedInstanceState);
         faceContrastUrl = getIntent().getStringExtra(URL_CONTRASTFACE);
-        memberId = getIntent().getLongExtra(MEMBER_ID, -1);
+        token=getIntent().getStringExtra(TOKEN);
     }
 
     ////////////// INITIALIZATION //////////////
@@ -101,7 +102,8 @@ public class LivenessDetectActivity extends LivenessDetectionMainActivity {
                 urlConn.setRequestMethod("POST");
                 urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
                 urlConn.setRequestProperty("Connection", "keep-alive");
-                String parmas = "memberId=" + memberId + "&image=" + URLEncoder.encode(base64Data, "UTF-8");
+                urlConn.setRequestProperty("token",token);
+                String parmas = "image=" + URLEncoder.encode(base64Data, "UTF-8");
                 Log.d("OkHttp", "Request: " + faceContrastUrl + ", parmas:" + parmas);
                 DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
                 out.writeBytes(parmas);

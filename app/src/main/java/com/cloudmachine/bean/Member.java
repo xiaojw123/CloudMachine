@@ -14,7 +14,6 @@ public class Member implements Serializable{
 
 	private static final long serialVersionUID = 263723165474245016L;
 
-	private Long num = 1L;
 
 	public int getIdentifyStatus() {
 		return identifyStatus;
@@ -29,6 +28,15 @@ public class Member implements Serializable{
 
 	private int isAuth;//1:已认证 0：未认证
 	private int identifyStatus;//资质认证1:true 0:false
+	private String token;
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 
 	public int getIsAuth() {
 		return isAuth;
@@ -42,9 +50,6 @@ public class Member implements Serializable{
 		return isAuth==1;
 	}
 
-	private Long wjdsId;//对应挖机大师id
-	private Long wjdsStatus;//对应挖机大师角色
-	private Long wjdsRole_id;//挖机大师角色
 	private Long id;//主键
 	private String name;//真实姓名
 	private String nickName;// 昵称 
@@ -53,24 +58,34 @@ public class Member implements Serializable{
 	private String mobile;//手机 
 	private String password;//密码
 	private String role;//角色  与机器的关系（机主、调度、司机、维保、销售、配件供应商、修理厂、主机代理商、租赁商、租机者、工程业主）
-	private int isValidate;// 是否邮箱验证通过
+	private Integer isValidate;// 是否邮箱验证通过
 	
 	private String logo;//大头像 
 //	private String middlelogo;//小头像
 //	private String smalllogo;//小小头像
 	private int isDeleted;//逻辑删除标记 1有效 0删除
-	private int reKgStatus;//0开启  1关闭
+	private boolean reKgStatus;//0开启  1关闭
 	private String icphotoFont;
 	private String icphotoBack;
 	
-	private int sex;
+	private Integer sex;
 	private String sexStr;
 
 	private String unionId;
 	private String openId;
 	private String invitecode;
 	private String inviteUserid;
+
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	public void setUniqueId(String uniqueId) {
+		this.uniqueId = uniqueId;
+	}
+
 	private String wecharNickname;
+	private String uniqueId;
 
 	public String getAlipayNickname() {
 		return alipayNickname;
@@ -101,37 +116,12 @@ public class Member implements Serializable{
 	private String alipayUserId;
 	private String alipayLogo;
 
-	public Long getNum() {
-		return num;
-	}
 
-	public void setNum(Long num) {
-		this.num = num;
-	}
 
-	public Long getWjdsStatus() {
-		return wjdsStatus;
-	}
 
-	public void setWjdsStatus(Long wjdsStatus) {
-		this.wjdsStatus = wjdsStatus;
-	}
 
-	public Long getWjdsRole_id() {
-		return wjdsRole_id;
-	}
 
-	public void setWjdsRole_id(Long wjdsRole_id) {
-		this.wjdsRole_id = wjdsRole_id;
-	}
 
-	public Long getWjdsId() {
-		return wjdsId;
-	}
-
-	public void setWjdsId(Long wjdsId) {
-		this.wjdsId = wjdsId;
-	}
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -216,13 +206,6 @@ public class Member implements Serializable{
 		MailCode = mailCode;
 	}
 	private String roleName;//角色名称
-	private MemberBasic memberBasic;//会员基本信息
-	public MemberBasic getMemberBasic() {
-		return null!=memberBasic?memberBasic:new MemberBasic() ;
-	}
-	public void setMemberBasic(MemberBasic memberBasic) {
-		this.memberBasic = memberBasic;
-	}
 	public String getRoleName() {
 		return roleName;
 	}
@@ -297,10 +280,10 @@ public class Member implements Serializable{
 	public void setNickname(String nickname) {
 		this.nickName = nickname;
 	}
-	public int getIsValidate() {
+	public Integer getIsValidate() {
 		return isValidate;
 	}
-	public void setIsValidate(int isValidate) {
+	public void setIsValidate(Integer isValidate) {
 		this.isValidate = isValidate;
 	}
 	public String getLogo() {
@@ -328,10 +311,10 @@ public class Member implements Serializable{
 		this.password = password;
 	}
 	
-	public void setSex(int sex){
+	public void setSex(Integer sex){
 		this.sex = sex;
 	}
-	public int getSex(){
+	public Integer getSex(){
 		return this.sex;
 	}
 	
@@ -349,10 +332,10 @@ public class Member implements Serializable{
 		return this.sexStr;
 	}
 	
-	public void setReKgStatus(int reKgStatus){
+	public void setReKgStatus(boolean reKgStatus){
 		this.reKgStatus = reKgStatus;
 	}
-	public int getReKgStatus(){
+	public boolean getReKgStatus(){
 		return this.reKgStatus;
 	}
 
@@ -387,7 +370,6 @@ public class Member implements Serializable{
 				", updater=" + updater +
 				", MailCode='" + MailCode + '\'' +
 				", roleName='" + roleName + '\'' +
-				", memberBasic=" + memberBasic +
 				'}';
 	}
 }

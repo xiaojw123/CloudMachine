@@ -1,103 +1,130 @@
 package com.cloudmachine.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.adapter.BaseRecyclerAdapter;
 import com.cloudmachine.adapter.OwnDeviceAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.base.bean.PageBean;
 import com.cloudmachine.bean.McDeviceInfo;
-import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
-import com.umeng.analytics.MobclickAgent;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CheckMachineActivity extends BaseAutoLayoutActivity implements Callback, OnItemClickListener {
+public class CheckMachineActivity extends BaseAutoLayoutActivity implements XRecyclerView.LoadingListener, BaseRecyclerAdapter.OnItemClickListener {
 
-    private ListView lvOwnDevice;
-    private Context mContext;
-    private Handler mHandler;
     private OwnDeviceAdapter ownDeviceAdapter;
-    List<McDeviceInfo> infos;
+    private XRecyclerView mRecyclerView;
+    PageBean mPage;
+    List<McDeviceInfo> mAllPageItems =new ArrayList<>();
+    int pageNum=1;
+    boolean isRefresh,isLoadMore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_machine);
-        mContext = this;
-        mHandler = new Handler(this);
         initView();
-
-
-
-//		http://api.test.cloudm.com/cloudm3/yjx/device/getDeviceByKey?osPlatform=Android&osVersion=3.1&memberId=142&type=1
     }
 
     @Override
     public void initPresenter() {
+
     }
 
-    @Override
-    protected void onResume() {
-        //MobclickAgent.onPageStart(UMengKey.time_repair_create_device);
-        super.onResume();
-        MobclickAgent.onEvent(this, MobEvent.TIME_REPAIR_CREATE_DEVICE);
-    }
-
-    @Override
-    protected void onPause() {
-        //MobclickAgent.onPageEnd(UMengKey.time_repair_create_device);
-        super.onPause();
-    }
 
     private void initView() {
-        lvOwnDevice = (ListView) findViewById(R.id.listView);
-        lvOwnDevice.setOnItemClickListener(this);
-       infos = UserHelper.getMyDevices();
-        if (infos != null && infos.size() > 0) {
-            ownDeviceAdapter = new OwnDeviceAdapter(mContext, mHandler, infos);
-            lvOwnDevice.setAdapter(ownDeviceAdapter);
+        mRecyclerView= (XRecyclerView) findViewById(R.id.select_mc_xrlv);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerView.setLoadingListener(this);
+        mRecyclerView.setPullRefreshEnabled(true);
+        mRecyclerView.setLoadingMoreEnabled(true);
+        obtainOwnDeviceList(pageNum);
+    }
+    public void obtainOwnDeviceList(int page){
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getOwnDeviceList(page).compose(RxHelper.<List<McDeviceInfo>>handleBaseResult()).subscribe(new RxSubscriber<BaseRespose<List<McDeviceInfo>>>(mContext) {
+            @Override
+            protected void _onNext(BaseRespose<List<McDeviceInfo>> br) {
+                resetLoadStatus();
+                mPage= br.getPage();
+                List<McDeviceInfo> items=br.getResult();
+                if (mPage!=null){
+                    if (mPage.first){
+                        mAllPageItems.clear();
+                    }
+                    if (items!=null&&items.size()>0){
+                        mAllPageItems.addAll(items);
+                        if (ownDeviceAdapter==null){
+                            long lastSelDeviceId= getIntent().getLongExtra(Constants.DEVICE_ID,-1);
+                            ownDeviceAdapter = new OwnDeviceAdapter(mContext, mAllPageItems);
+                            ownDeviceAdapter.setLastSelectedId(lastSelDeviceId);
+                            ownDeviceAdapter.setOnItemClickListener(CheckMachineActivity.this);
+                            mRecyclerView.setAdapter(ownDeviceAdapter);
+                        }else{
+                            ownDeviceAdapter.updateItems(mAllPageItems);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+                resetLoadStatus();
+            }
+        }));
+
+    }
+
+    private void resetLoadStatus() {
+        if (isRefresh){
+            isRefresh=false;
+            mRecyclerView.refreshComplete();
+        }
+        if (isLoadMore){
+            isLoadMore=false;
+            mRecyclerView.loadMoreComplete();
         }
     }
 
 
+
     @Override
-    public boolean handleMessage(Message arg0) {
-        // TODO Auto-generated method stub
-        return false;
+    public void onRefresh() {
+        isRefresh=true;
+        pageNum=1;
+        obtainOwnDeviceList(pageNum);
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        setSelectionItem(position);
+    public void onLoadMore() {
+        if (mPage!=null&&!mPage.last){
+            isLoadMore=true;
+            pageNum++;
+            obtainOwnDeviceList(pageNum);
+        }else{
+            isLoadMore=false;
+            mRecyclerView.setNoMore(true);
+        }
+
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
         Intent intent = new Intent();
-        intent.putExtra("selInfo", selInfo);
+        intent.putExtra("selInfo", mAllPageItems.get(position));
         setResult(Constants.CLICK_POSITION, intent);
         finish();
     }
-
-    private void setSelectionItem(int position) {
-        for (int i=0;i<infos.size();i++){
-           McDeviceInfo info=infos.get(i);
-            if (i==position){
-                selInfo=info;
-                info.setSelected(true);
-            }else{
-                info.setSelected(false);
-            }
-        }
-    }
-    McDeviceInfo selInfo;
 
 }

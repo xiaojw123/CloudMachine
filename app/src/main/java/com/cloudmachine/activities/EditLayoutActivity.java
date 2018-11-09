@@ -2,7 +2,6 @@ package com.cloudmachine.activities;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,7 +9,6 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -22,16 +20,14 @@ import android.widget.ListView;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.EditListAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.EditListInfo;
+import com.cloudmachine.bean.EmunBean;
 import com.cloudmachine.bean.MachineBrandInfo;
 import com.cloudmachine.bean.MachineModelInfo;
-import com.cloudmachine.bean.MachineTypeInfo;
-import com.cloudmachine.bean.RootNodesInfo;
-import com.cloudmachine.helper.UserHelper;
-import com.cloudmachine.net.task.GetRootNodesAsync;
-import com.cloudmachine.net.task.MachineBrandListAsync;
-import com.cloudmachine.net.task.MachineModelListAsync;
-import com.cloudmachine.net.task.MachineTypesListAsync;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.net.task.UpdateDeviceInfoTask;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
@@ -39,15 +35,12 @@ import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callback, OnClickListener, OnItemClickListener {
 
-    private Context mContext;
     private Handler mHandler;
     private String titleText;
     private int editType;
@@ -68,7 +61,7 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
     private EditListAdapter eAdapter;
     private List<EditListInfo> dataResult = new ArrayList<EditListInfo>();
     private EditListInfo editListInfo;
-//    private String value1, value2, value3;
+    //    private String value1, value2, value3;
     CommonTitleView title_layout;
 
     String deviceID, deviceName;
@@ -78,15 +71,12 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
     String typeId;
     String brandId;
     String modelId;
-    String memberId;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-        this.mContext = this;
         mHandler = new Handler(this);
         getIntentData();
         initView();
@@ -113,21 +103,17 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            try {
-                memberId=bundle.getString(Constants.MEMBER_ID);
-                brandId=bundle.getString(Constants.P_BRANDID);
-                typeId=bundle.getString(Constants.P_TYPEID);
-                modelId=bundle.getString(Constants.P_MODELID);
-                titleName = bundle.getString(Constants.P_TITLENAME);
-                itemName = bundle.getString(Constants.P_EDIT_LIST_ITEM_NAME);
-                deviceID = bundle.getString(Constants.P_DEVICEID);
-                deviceName = bundle.getString(Constants.P_DEVICENAME);
-                editType = bundle.getInt(Constants.P_EDITTYPE);
-                itemType = bundle.getInt(Constants.P_ITEMTYPE);
-                titleText = bundle.getString(Constants.P_TITLETEXT);
-                cText = bundle.getString(Constants.P_EDITRESULTSTRING);
-            } catch (Exception e) {
-            }
+            brandId = bundle.getString(Constants.P_BRANDID);
+            typeId = bundle.getString(Constants.P_TYPEID);
+            modelId = bundle.getString(Constants.P_MODELID);
+            titleName = bundle.getString(Constants.P_TITLENAME);
+            itemName = bundle.getString(Constants.P_EDIT_LIST_ITEM_NAME);
+            deviceID = bundle.getString(Constants.P_DEVICEID);
+            deviceName = bundle.getString(Constants.P_DEVICENAME);
+            editType = bundle.getInt(Constants.P_EDITTYPE);
+            itemType = bundle.getInt(Constants.P_ITEMTYPE);
+            titleText = bundle.getString(Constants.P_TITLETEXT);
+            cText = bundle.getString(Constants.P_EDITRESULTSTRING);
 
         }
     }
@@ -173,15 +159,16 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
 //                                String.valueOf(value1), String.valueOf(value2));
 //                        break;
                     case Constants.E_ITEMS_category:
-                        new MachineTypesListAsync(mContext, mHandler).execute(memberId);
+                        updateMachineTypeList();
                         break;
                     case Constants.E_ITEMS_brand:
-//                        new MachineBrandListAsync(mContext, mHandler).execute(value1);
-                        new MachineBrandListAsync(mHandler).execute(memberId,typeId);
+                        updateMachineBrandList();
+//                        new MachineBrandListAsync(mHandler).execute(memberId, typeId);
                         break;
                     case Constants.E_ITEMS_model:
-                        new MachineModelListAsync(mContext, mHandler).execute(
-                                memberId, typeId,brandId);
+                        updateMachineModelList();
+//                        new MachineModelListAsync(mContext, mHandler).execute(
+//                                memberId, typeId, brandId);
                         break;
                 }
 
@@ -201,7 +188,7 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
                     }
                     int len = name.length();
                     if (len >= 2 && len <= 12) {
-                        UpdateDeviceInfoTask task = new UpdateDeviceInfoTask(mHandler, UserHelper.getMemberId(EditLayoutActivity.this), deviceID, name);
+                        UpdateDeviceInfoTask task = new UpdateDeviceInfoTask(mHandler, deviceID, name);
                         task.execute();
                     } else {
                         ToastUtils.showToast(EditLayoutActivity.this, "请输入2~12位汉字、字母、数字组合");
@@ -209,6 +196,121 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
                 }
             });
         }
+    }
+
+    public void updateMachineBrandList() {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getBrandList(typeId, null).compose(RxHelper.<List<MachineBrandInfo>>handleResult())
+                .subscribe(new RxSubscriber<List<MachineBrandInfo>>(mContext) {
+                    @Override
+                    protected void _onNext(List<MachineBrandInfo> items) {
+                        if (items != null && items.size() > 0) {
+                            int len = items.size();
+                            dataResult.clear();
+                            int selectionId2 = -1;
+                            for (int i = 0; i < len; i++) {
+                                MachineBrandInfo item = items.get(i);
+                                EditListInfo data = new EditListInfo();
+                                data.setId(item.getId());
+                                data.setName(item.getBrandName());
+                                if (TextUtils.equals(item.getId(), brandId)) {
+                                    data.setIsClick(true);
+                                    selectionId2 = i;
+                                }
+                                dataResult.add(data);
+                            }
+                            if (selectionId2 != -1)
+                                edit_listview.setSelection(selectionId2);
+                            eAdapter.notifyDataSetChanged();
+                        } else {
+                            _onError(null);
+                        }
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+                        ToastUtils.showToast(mContext, "没有数据哦");
+                    }
+                }));
+    }
+
+
+    public void updateMachineTypeList() {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getEnum(Constants.MACHINE_TYPE).compose(RxHelper.<List<EmunBean>>handleResult())
+                .subscribe(new RxSubscriber<List<EmunBean>>(mContext) {
+                    @Override
+                    protected void _onNext(List<EmunBean> emumList) {
+                        if (emumList != null && emumList.size() > 0) {
+                            dataResult.clear();
+                            int selectionId = -1;
+                            int len = emumList.size();
+                            for (int i = 0; i < len; i++) {
+                                EmunBean item = emumList.get(i);
+                                EditListInfo data = new EditListInfo();
+                                data.setId(String.valueOf(item.getKeyType()));
+                                data.setName(item.getValueName());
+//                                    data.setPK_PROD_DEF(mInfo.getPk_PROD_DEF());
+                                if (TextUtils.equals(String.valueOf(item.getKeyType()), typeId)) {
+                                    data.setIsClick(true);
+                                    selectionId = i;
+                                }
+                                dataResult.add(data);
+
+                            }
+                            if (selectionId != -1)
+                                edit_listview.setSelection(selectionId);
+                            eAdapter.notifyDataSetChanged();
+                        } else {
+                            _onError(null);
+                        }
+
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+                        ToastUtils.showToast(mContext, "没有数据哦");
+                    }
+                }));
+
+
+    }
+
+
+    public void updateMachineModelList() {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getModelList(typeId, brandId, null).compose(RxHelper.<List<MachineModelInfo>>handleResult())
+                .subscribe(new RxSubscriber<List<MachineModelInfo>>(mContext) {
+                    @Override
+                    protected void _onNext(List<MachineModelInfo> items) {
+                        if (items != null && items.size() > 0) {
+                            int len = items.size();
+                            dataResult.clear();
+                            int selectionId3 = -1;
+                            for (int i = 0; i < len; i++) {
+                                MachineModelInfo item = items.get(i);
+                                EditListInfo data = new EditListInfo();
+                                data.setId(item.getId());
+                                data.setName(item.getModelName());
+                                if (TextUtils.equals(item.getId(), modelId)) {
+                                    data.setIsClick(true);
+                                    selectionId3 = i;
+                                }
+                                dataResult.add(data);
+                            }
+                            if (selectionId3 != -1)
+                                edit_listview.setSelection(selectionId3);
+                            eAdapter.notifyDataSetChanged();
+                        } else {
+                            _onError(null);
+                        }
+
+
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+                        ToastUtils.showToast(mContext, "没有数据哦");
+                    }
+                }));
+
     }
 
 //
@@ -242,107 +344,19 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
         String message = "";
         switch (msg.what) {
             case Constants.HANDLER_UPDATE_INFO_SUCCESS:
-                String result1 = (String) msg.obj;
-                ToastUtils.showToast(this, result1);
+                ToastUtils.showToast(this, "保存成功！");
                 Intent intent = new Intent();
                 intent.putExtra(Constants.P_DEVICENAME, name);
                 setResult(AddDeviceActivity.UPATE_INFO, intent);
                 finish();
                 break;
             case Constants.HANDLER_UPDATE_INFO_FAILD:
-                String result2 = (String) msg.obj;
-                ToastUtils.showToast(this, result2);
+                ToastUtils.showToast(this, "保存失败！");
                 break;
-            case Constants.HANDLER_GETROOTNODES_SUCCESS:
-
-                List<RootNodesInfo> rNodes = (List<RootNodesInfo>) msg.obj;
-                len = rNodes.size();
-                dataResult.clear();
-                for (int i = 0; i < len; i++) {
-                    RootNodesInfo rInfo = rNodes.get(i);
-                    EditListInfo data = new EditListInfo();
-                    data.setId(String.valueOf(rInfo.getId()));
-                    data.setName(rInfo.getName());
-                    data.setStr2(rInfo.getRemark());
-                    data.setStr1(rInfo.getPermissionId());
-                    dataResult.add(data);
-                }
-                eAdapter.notifyDataSetChanged();
-                break;
-            case Constants.HANDLER_GETROOTNODES_FAIL:
-                message = (String) msg.obj;
-                Constants.MyToast(null != message ? message : getResources().getString(R.string.empty_message1));
-                break;
-            case Constants.HANDLER_GETMACHINETYPES_SUCCESS:
-                List<MachineTypeInfo> mTypeInfo = (List<MachineTypeInfo>) msg.obj;
-                if (mTypeInfo != null) {
-                    len = mTypeInfo.size();
-                    dataResult.clear();
-                    int selectionId = -1;
-                    for (int i = 0; i < len; i++) {
-                        MachineTypeInfo mInfo = mTypeInfo.get(i);
-                        EditListInfo data = new EditListInfo();
-                        data.setId(mInfo.getId());
-                        data.setName(mInfo.getName());
-                        data.setPK_PROD_DEF(mInfo.getPk_PROD_DEF());
-                        if (mInfo.getPk_PROD_DEF() == typeId) {
-                            data.setIsClick(true);
-                            selectionId = i;
-                        }
-                        dataResult.add(data);
-                    }
-                    if (selectionId != -1)
-                        edit_listview.setSelection(selectionId);
-                    eAdapter.notifyDataSetChanged();
-                }
-                break;
-            case Constants.HANDLER_GETMACHINETYPES_FAIL:
             case Constants.HANDLER_GETMACHINEBRAND_FAIL:
             case Constants.HANDLER_GETMACHINEMODEL_FAIL:
                 message = (String) msg.obj;
                 Constants.MyToast(null != message ? message : getResources().getString(R.string.empty_message1));
-                break;
-            case Constants.HANDLER_GETMACHINEBRAND_SUCCESS:
-                List<MachineBrandInfo> mBrandInfo = (List<MachineBrandInfo>) msg.obj;
-                len = mBrandInfo.size();
-                dataResult.clear();
-                int selectionId2 = -1;
-                for (int i = 0; i < len; i++) {
-                    MachineBrandInfo mInfo = mBrandInfo.get(i);
-                    EditListInfo data = new EditListInfo();
-                    data.setId(mInfo.getId());
-                    data.setName(mInfo.getName());
-                    data.setPK_BRAND(mInfo.getPk_BRAND());
-                    if (TextUtils.equals(mInfo.getId(),brandId)) {
-                        data.setIsClick(true);
-                        selectionId2 = i;
-                    }
-                    dataResult.add(data);
-                }
-                if (selectionId2 != -1)
-                    edit_listview.setSelection(selectionId2);
-                eAdapter.notifyDataSetChanged();
-                break;
-            case Constants.HANDLER_GETMACHINEMODEL_SUCCESS:
-                List<MachineModelInfo> mModelInfo = (List<MachineModelInfo>) msg.obj;
-                len = mModelInfo.size();
-                dataResult.clear();
-                int selectionId3 = -1;
-                for (int i = 0; i < len; i++) {
-                    MachineModelInfo mInfo = mModelInfo.get(i);
-                    EditListInfo data = new EditListInfo();
-                    data.setId(mInfo.getId());
-                    data.setName(mInfo.getModelName());
-                    data.setPK_VHCL_MATERIAL(mInfo.getPk_VHCL_MATERIAL());
-                    if (TextUtils.equals(mInfo.getId(),modelId)) {
-                        data.setIsClick(true);
-                        selectionId3 = i;
-                    }
-                    dataResult.add(data);
-                }
-                if (selectionId3 != -1)
-                    edit_listview.setSelection(selectionId3);
-                eAdapter.notifyDataSetChanged();
                 break;
         }
         return false;
@@ -430,11 +444,10 @@ public class EditLayoutActivity extends BaseAutoLayoutActivity implements Callba
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        // TODO Auto-generated method stub
         if (parent.getId() == R.id.edit_listview) {
             int len = dataResult.size();
             for (int i = 0; i < len; i++) {
-                EditListInfo info=dataResult.get(i);
+                EditListInfo info = dataResult.get(i);
 
                 if (i == position) {
                     info.setIsClick(true);

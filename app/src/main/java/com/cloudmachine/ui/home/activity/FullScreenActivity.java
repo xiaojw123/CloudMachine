@@ -46,7 +46,6 @@ public class FullScreenActivity extends AppCompatActivity implements Handler.Cal
     @BindView(R.id.fullscreen_replay)
     Button mReplayBtn;
     Handler mHandler;
-    long memberId;
     String deviceId;
     String videoId;
     String playUrl;
@@ -61,7 +60,6 @@ public class FullScreenActivity extends AppCompatActivity implements Handler.Cal
         mHandler = new Handler(this);
         playUrl = getIntent().getStringExtra(PLAY_URL);
         String name = getIntent().getStringExtra(NAME);
-        memberId = getIntent().getLongExtra(Constants.MEMBER_ID, 0);
         deviceId = getIntent().getStringExtra(Constants.DEVICE_ID);
         videoId = getIntent().getStringExtra(Constants.VIDEO_ID);
         mNameTv.setText(name);
@@ -122,7 +120,7 @@ public class FullScreenActivity extends AppCompatActivity implements Handler.Cal
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fullscreen_replay:
-                Api.getDefault(HostType.HOST_CLOUDM_YJX).videoUpload(memberId, deviceId, videoId).compose(RxHelper.<String>handleBaseResult()).subscribe(new Subscriber<BaseRespose<String>>() {
+                Api.getDefault(HostType.HOST_LARK).videoUpload(deviceId, videoId).compose(RxHelper.<String>handleBaseResult()).subscribe(new Subscriber<BaseRespose<String>>() {
                     @Override
                     public void onCompleted() {
 

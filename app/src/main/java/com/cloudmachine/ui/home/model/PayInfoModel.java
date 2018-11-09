@@ -17,7 +17,7 @@ public class PayInfoModel implements PayInfoContract.Model {
 
     @Override
     public Observable<String> getVerfyCode(String mobile, int type) {
-        return Api.getDefault(HostType.HOST_CLOUDM).wxBindMobile(Long.parseLong(mobile),type).compose(RxHelper.handleBooleanResult());
+        return Api.getDefault(HostType.HOST_LARK).getCode(Long.parseLong(mobile),type).compose(RxHelper.handleBooleanResult());
     }
 
 }

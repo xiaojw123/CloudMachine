@@ -147,7 +147,7 @@ public class IdCardHandActivity extends BaseAutoLayoutActivity implements View.O
     }
 
     private void submitPic() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).perImgUpload(uniquedNo, imgUrl, 0, null).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).perImgUpload(uniquedNo, imgUrl, 0, null).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
                 CustomDialog.Builder builder = new CustomDialog.Builder(mContext);

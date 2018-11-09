@@ -17,8 +17,7 @@
         android:id="@+id/oil_form_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
 
         <FrameLayout
@@ -29,21 +28,13 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/pad2"
             android:paddingRight="@dimen/pad2">
-            <!-- <com.cloudmachine.utils.widgets.ArcView2
-                            android:id="@+id/arcView"
-                            android:layout_width="wrap_content"
-                               android:layout_height="wrap_content"
-                               android:background="@color/white"
-                               android:layout_alignParentRight="true"
-                               android:layout_centerVertical="true"
-                            /> -->
             <!--<com.cloudmachine.autolayout.widgets.DynamicWave-->
-                <!--android:id="@+id/arcView"-->
-                <!--android:layout_width="@dimen/dimen_size_49"-->
-                <!--android:layout_height="@dimen/dimen_size_49"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:layout_centerVertical="true"-->
-                <!--android:padding="@dimen/public_line_wh" />-->
+            <!--android:id="@+id/arcView"-->
+            <!--android:layout_width="@dimen/dimen_size_49"-->
+            <!--android:layout_height="@dimen/dimen_size_49"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:padding="@dimen/public_line_wh" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -75,14 +66,13 @@
 
             <Button
                 android:id="@+id/mc_custom_btn"
+                style="?android:attr/borderlessButtonStyle"
                 android:layout_width="@dimen/dimen_size_100"
                 android:layout_height="@dimen/dimen_size_37"
                 android:layout_gravity="right|center_vertical"
-                android:textColor="@color/public_blue_bg"
-                android:text="@string/calibration"
                 android:background="@drawable/bg_btn_custom"
-                style="?android:attr/borderlessButtonStyle"
-                />
+                android:text="@string/calibration"
+                android:textColor="@color/public_blue_bg" />
 
         </FrameLayout>
 
@@ -106,8 +96,8 @@
                     android:layout_marginBottom="@dimen/oil_chat_title_bottom"
                     android:layout_marginLeft="@dimen/oil_chat_title_left"
                     android:layout_marginTop="@dimen/dimen_size_25"
-                    android:textSize="@dimen/oil_chat_title_size"
-                    android:text="油位剩余百分比分布" />
+                    android:text="油位剩余百分比分布"
+                    android:textSize="@dimen/oil_chat_title_size" />
 
                 <TextView
                     style="@style/TextView.oilamount_small_text"
@@ -157,8 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/common_title_left_layout"
                 android:layout_alignParentBottom="true"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <TextView style="@style/TextView.line" />
 
@@ -196,37 +185,34 @@
                 android:layout_below="@id/chart_title_layout"
                 android:background="@color/white"
                 android:paddingLeft="@dimen/pad1"
-                android:paddingRight="@dimen/pad1"
-                >
+                android:paddingRight="@dimen/pad1">
 
 
                 <RelativeLayout
                     android:id="@+id/linechart_cotainer"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    >
+                    android:layout_height="match_parent">
 
-                <com.cloudmachine.chart.charts.LineChart
-                    android:id="@+id/linechart"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    <com.cloudmachine.chart.charts.LineChart
+                        android:id="@+id/linechart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
 
-                    />
+                        />
 
 
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:id="@+id/weekchart_cotainer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
-                    >
+                    android:visibility="gone">
 
-                <com.cloudmachine.chart.charts.LineChart
-                    android:id="@+id/weekchart"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    />
+                    <com.cloudmachine.chart.charts.LineChart
+                        android:id="@+id/weekchart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
                 </RelativeLayout>
 

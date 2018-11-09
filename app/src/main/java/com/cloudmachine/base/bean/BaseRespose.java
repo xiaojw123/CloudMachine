@@ -8,13 +8,29 @@ import java.io.Serializable;
  * on 2016.09.9:47
  */
 public class BaseRespose<T> implements Serializable {
-    public int code;
-    public boolean ok;
-    public String message;
+    private boolean success;
+    private int code;
+    private String message;
+    private String devMsg;
 
-    public T result;
+    public String getDevMsg() {
+        return devMsg;
+    }
 
-    public PageBean page;
+    public void setDevMsg(String devMsg) {
+        this.devMsg = devMsg;
+    }
+
+    private T result;
+    private PageBean page;
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
     public PageBean getPage() {
         return page;
@@ -34,14 +50,6 @@ public class BaseRespose<T> implements Serializable {
 
     public void setCode(int code) {
         this.code = code;
-    }
-
-    public boolean isOk() {
-        return ok;
-    }
-
-    public void setOk(boolean ok) {
-        this.ok = ok;
     }
 
     public String getMessage() {
@@ -64,7 +72,7 @@ public class BaseRespose<T> implements Serializable {
     public String toString() {
         return "BaseRespose{" +
                 "code=" + code +
-                ", ok=" + ok +
+                ", success=" + success +
                 ", message='" + message + '\'' +
                 ", result=" + result +
                 '}';

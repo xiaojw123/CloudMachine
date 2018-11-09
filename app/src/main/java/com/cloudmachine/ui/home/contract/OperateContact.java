@@ -20,9 +20,9 @@ public interface OperateContact {
 
     interface Model extends BaseModel {
 
-        Observable<String> getVerifyCode(long memberId,String taskId);
-        Observable<String>  checkVerifyCode(long memberId,String taskId,String smsCode);
-        Observable<JsonObject> authOperator(long memberId, String servicePwd);
+        Observable<String> getVerifyCode(String taskId);
+        Observable<String>  checkVerifyCode(String taskId,String smsCode);
+        Observable<JsonObject> authOperator(String servicePwd);
 
     }
 
@@ -33,10 +33,10 @@ public interface OperateContact {
     }
 
     public abstract class Presenter extends BasePresenter<OperateContact.View, OperateContact.Model> {
-        public abstract void getVerifyCode(long memberId,String taskId);
-        public abstract void checkVerifyCode(long memberId,String taskId,String smsCode);
+        public abstract void getVerifyCode(String taskId);
+        public abstract void checkVerifyCode(String taskId,String smsCode);
 
-        public abstract void authOperator(long memberId, String servicePwd, RadiusButtonView button, FrameLayout loadingView);
+        public abstract void authOperator(String servicePwd, RadiusButtonView button, FrameLayout loadingView);
 
     }
 

@@ -3,6 +3,8 @@ package com.cloudmachine.ui.home.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.cloudmachine.bean.CouponItem;
+
 import java.util.List;
 
 /**

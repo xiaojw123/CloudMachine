@@ -1,24 +1,20 @@
 package com.cloudmachine.net.task;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.StatisticsInfo;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.bean.BaseBO;
-import com.cloudmachine.bean.StatisticsInfo;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.URLs;
+import com.cloudmachine.utils.LarkUrls;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 项目名称：CloudMachine
@@ -32,13 +28,11 @@ import java.util.List;
 
 public class StatisticsAsync extends ATask {
 
-    private Context mContext;
     private Handler handler;
     private long deviceId;
     private String date;
 
-    public StatisticsAsync(Context context, Handler handler, long deviceId, String date) {
-        mContext = context;
+    public StatisticsAsync(Handler handler, long deviceId, String date) {
         this.handler = handler;
         this.deviceId = deviceId;
         this.date = date;
@@ -47,13 +41,13 @@ public class StatisticsAsync extends ATask {
     @Override
     protected String doInBackground(String... params) {
         IHttp httpRequest = new HttpURLConnectionImp();
-        List<NameValuePair> list = new ArrayList<NameValuePair>();
-        list.add(new BasicNameValuePair("deviceId", String.valueOf(deviceId)));
-        list.add(new BasicNameValuePair("date", date));
         String result = null;
         try {
+            Map<String,String> pm=new HashMap<>();
+            pm.put("deviceId", String.valueOf(deviceId));
+            pm.put("date", date);
             result = httpRequest
-                    .post(URLs.GET_WORK_STATISTICS, list);
+                    .get(LarkUrls.GET_MOTH_DATA, pm);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +69,6 @@ public class StatisticsAsync extends ATask {
         super.decodeJson(result);
         Message msg = Message.obtain();
         if (isSuccess) {
-            try {
                 Gson gson = new Gson();
                 BaseBO<StatisticsInfo> bo = gson.fromJson(result,
                         new TypeToken<BaseBO<StatisticsInfo>>() {
@@ -83,13 +76,7 @@ public class StatisticsAsync extends ATask {
                 msg.what = Constants.HANDLER_GETDATASTATISTICS_SUCCESS;
                 msg.obj = bo.getResult();
                 handler.sendMessage(msg);
-                return;
-            } catch (Exception e) {
-            }
-        } else {
-        }
-        // 缓存数据第4步
-        if (!isHaveCache) {
+        }else{
             msg.what = Constants.HANDLER_GETDATASTATISTICS_FAILD;
             msg.obj = message;
             handler.sendMessage(msg);

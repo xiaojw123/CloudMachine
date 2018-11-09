@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.AlianceEvaluateInfo;
 import com.cloudmachine.bean.CommentsInfo;
 import com.cloudmachine.bean.DisadvantageBean;
 import com.cloudmachine.chart.utils.AppLog;
@@ -23,7 +24,6 @@ import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.GetEvaluateInfoTask;
 import com.cloudmachine.net.task.GetTagInfoAsync;
 import com.cloudmachine.net.task.SubmitCommentAsync;
-import com.cloudmachine.ui.home.model.EvaluateInfoBean;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.tagview.TagBaseAdapter;
@@ -43,37 +43,28 @@ import java.util.List;
 public class EvaluationActivity extends BaseAutoLayoutActivity implements
         Callback {
     public static final String ACTION_TYPE = "action_type";
-    private Context mContext;
-    private Handler mHandler;
     private List<DisadvantageBean> advantageBeans = new ArrayList<>();// 优点集合
     private List<DisadvantageBean> disadvantageBeans = new ArrayList<>();// 建议集合
     private TagBaseAdapter advantageAdapter;// 优点适配器
     private TagBaseAdapter disAdvantageAdapter;// 建议适配器
     private TagCloudLayout advantage;
     private TagCloudLayout disadvantage;
-    private RadiusButtonView submit;
-    private String css_work_no;
-    private boolean isAlliance;
-    private String cust_telString;
+    private String orderNo;
     private int actionType;
     private LinearLayout editLayout;
     private LinearLayout adItemLayout, disAdItemLayout;
     private EditText sbjEdt;
-    private TextView tvDesc;
     RatingBar ratingBar;
-    private TextView advantageTv,adviceTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
-        mContext = this;
-        mHandler = new Handler(this);
+        Handler mHandler = new Handler(this);
         getIntentData();
-        advantageTv=(TextView) findViewById(R.id.comment_advantage_tv);
-        adviceTv= (TextView) findViewById(R.id.comment_advice_tv);
-        tvDesc=(TextView) findViewById(R.id.tv_desc);
+        TextView advantageTv = (TextView) findViewById(R.id.comment_advantage_tv);
+        TextView adviceTv = (TextView) findViewById(R.id.comment_advice_tv);
+        TextView tvDesc = (TextView) findViewById(R.id.tv_desc);
         sbjEdt = (EditText) findViewById(R.id.comment_my_sbj);
         adItemLayout = (LinearLayout) findViewById(R.id.advantage_item_layout);
 
@@ -82,7 +73,7 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
         advantage = (TagCloudLayout) findViewById(R.id.advantage);
         disadvantage = (TagCloudLayout) findViewById(R.id.disadvantage);
         ratingBar = (RatingBar) findViewById(R.id.rb_rating_bar);// 星星
-        submit = (RadiusButtonView) findViewById(R.id.login_btn);
+        RadiusButtonView submit = (RadiusButtonView) findViewById(R.id.login_btn);
         advantageAdapter = new TagBaseAdapter(mContext, advantageBeans);
         disAdvantageAdapter = new TagBaseAdapter(mContext, disadvantageBeans);
         advantage.setAdapter(advantageAdapter);
@@ -95,7 +86,7 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
             ratingBar.setIsIndicator(true);
             submit.setVisibility(View.GONE);
             sbjEdt.setEnabled(false);
-            new GetEvaluateInfoTask(mHandler, css_work_no,isAlliance).execute();
+            new GetEvaluateInfoTask(mHandler, mContext,orderNo).execute();
         } else {
             sbjEdt.setEnabled(true);
             tvDesc.setText(getResources().getString(R.string.rating_bar));
@@ -103,21 +94,21 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
 
                 @Override
                 public void onClick(View v) {
-                    StringBuffer sbAdvantage = new StringBuffer();
-                    StringBuffer sb1 = new StringBuffer();
-                    StringBuffer sb2 = new StringBuffer();
+                    StringBuilder sbAdvantage = new StringBuilder();
+                    StringBuilder sb1 = new StringBuilder();
+                    StringBuilder sb2 = new StringBuilder();
 
                     for (int i = 0; i < advantageBeans.size(); i++) {
                         DisadvantageBean bean = advantageBeans.get(i);
                         if (bean.isChecked()) {
-                            sb1.append(bean.getCode())
+                            sb1.append(bean.getTagCode())
                                     .append("_");
                         }
                     }
                     for (int j = 0; j < disadvantageBeans.size(); j++) {
                         DisadvantageBean bean = disadvantageBeans.get(j);
                         if (bean.isChecked()) {
-                            sb2.append(bean.getCode()).append("_");
+                            sb2.append(bean.getTagCode()).append("_");
                         }
 
                     }
@@ -136,14 +127,12 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
                         }
                     }
                     AppLog.print("evalutTag___" + sbAdvantage.toString());
-                    if (TextUtils.isEmpty(css_work_no)) {
+                    if (TextUtils.isEmpty(orderNo)) {
                         Constants.ToastAction("工单id不能为空");
                         return;
+
                     }
-                    if (TextUtils.isEmpty(cust_telString)) {
-                        Constants.ToastAction("评价人电话不能为空");
-                        return;
-                    }
+
                     if (TextUtils.isEmpty(sbAdvantage.toString())) {
                         Constants.ToastAction("评价标签不能为空");
                         return;
@@ -153,13 +142,12 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
                         ToastUtils.showToast(EvaluationActivity.this,"评分区间【1-5】");
                         return;
                     }
-                    new SubmitCommentAsync(mContext, mHandler, css_work_no, String
-                            .valueOf(rating), cust_telString, sbAdvantage
-                            .toString(), sbjEdt.getText().toString(),isAlliance).execute();
+                    new SubmitCommentAsync(mContext, orderNo, String
+                            .valueOf(rating), sbAdvantage
+                            .toString(), sbjEdt.getText().toString()).execute();
                 }
             });
-
-            new GetTagInfoAsync(mHandler,isAlliance).execute();
+            new GetTagInfoAsync(mHandler,mContext).execute();
 
         }
 
@@ -186,9 +174,7 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
 
     private void getIntentData() {
         Intent intent = this.getIntent();
-        isAlliance=intent.getBooleanExtra("isAlliance",false);
-        css_work_no = intent.getStringExtra("orderNum");// 工单id
-        cust_telString = intent.getStringExtra("tel");// 评价人电话
+        orderNo = intent.getStringExtra(Constants.ORDER_NO);// 工单id
         actionType = intent.getIntExtra(ACTION_TYPE, 0);
 
     }
@@ -200,10 +186,10 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
                 if (null != msg.obj) {
                     advantage.setItemEnable(false);
                     disadvantage.setItemEnable(false);
-                    EvaluateInfoBean bean = (EvaluateInfoBean) msg.obj;
-                    ratingBar.setRating(bean.getSatisfaction());
+                    AlianceEvaluateInfo bean = (AlianceEvaluateInfo) msg.obj;
+                    ratingBar.setRating(bean.getLevel());
                     updateData(bean.getAdvantage(), bean.getDisadvantage());
-                    String suggestion=bean.getSuggestion();
+                    String suggestion=bean.getRemark();
                     if (TextUtils.isEmpty(suggestion)){
                         editLayout.setVisibility(View.GONE);
                     }else{
@@ -211,10 +197,6 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
                     }
                 }
                 break;
-            case Constants.HANDLER_GET_EVALUATE_INFO_FAILED:
-
-                break;
-
             case Constants.HANDLER_GETTAGINFO_SUCCESS:
                 if (null != msg.obj) {
 
@@ -227,14 +209,6 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
                 }
 
                 break;
-
-            case Constants.HANDLER_SUBMITCOMMENT_SUCCESS:
-                Constants.ToastAction(String.valueOf(msg.obj));
-                finish();
-            case Constants.HANDLER_SUBMITCOMMENT_FAILD:
-                Constants.ToastAction(String.valueOf(msg.obj));
-            default:
-                break;
         }
         return false;
     }
@@ -242,8 +216,12 @@ public class EvaluationActivity extends BaseAutoLayoutActivity implements
     private void updateData(List<DisadvantageBean> advaList, List<DisadvantageBean> disAdvaList) {
         advantageBeans.clear();
         disadvantageBeans.clear();
-        advantageBeans.addAll(advaList);
-        disadvantageBeans.addAll(disAdvaList);
+        if (advaList!=null&&advaList.size()>0){
+            advantageBeans.addAll(advaList);
+        }
+        if (disAdvaList!=null&&disAdvaList.size()>0){
+            disadvantageBeans.addAll(disAdvaList);
+        }
         if (advantageBeans.size() > 0) {
             adItemLayout.setVisibility(View.VISIBLE);
             advantage.setVisibility(View.VISIBLE);

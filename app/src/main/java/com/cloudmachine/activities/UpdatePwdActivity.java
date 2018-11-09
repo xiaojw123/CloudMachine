@@ -80,9 +80,9 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 				}else if(!new_str.equals(confirm_str)){
 					Constants.ToastAction("两次密码输入不一样");
 				}else{
-					new UpdatePwdAsync(Utils.getPwdStr(old_str),
-							Utils.getPwdStr(new_str),
-							Utils.getPwdStr(confirm_str),mContext,mHandler).execute();
+					new UpdatePwdAsync(old_str,
+							new_str,
+							confirm_str,mHandler).execute();
 				}
 				
 			}
@@ -92,7 +92,6 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 
 	@Override
 	public boolean handleMessage(Message msg) {
-		// TODO Auto-generated method stub
 		switch(msg.what){
 		case Constants.HANDLER_UPDATEPWD_SUCCESS:
 			Constants.MyToast((String)msg.obj);

@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.EmunBean;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.ui.home.contract.RemarkInfoContract;
 import com.cloudmachine.ui.home.model.RemarkInfoModel;
-import com.cloudmachine.ui.home.model.RoleBean;
 import com.cloudmachine.ui.home.presenter.RemarkInfoPresenter;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.widgets.wheelview.OnWheelScrollListener;
@@ -49,8 +49,9 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
     @BindView(R.id.remarkinfo_role_name)
     TextView roleNameTv;
     int selectIndex;
-    ArrayList<RoleBean> mRoleList;
-    HashMap<String, Long> mRoleMap = new HashMap<>();
+//    ArrayList<RoleBean> mRoleList;
+    ArrayList<EmunBean> mRoleList;
+    HashMap<String, Integer> mRoleMap = new HashMap<>();
     long deviceId;
     String role;
 
@@ -71,7 +72,6 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
     }
 
     private void initView() {
-        deviceId = getIntent().getLongExtra(Constants.P_DEVICEID, 0);
         remarkinfoTitleview.setLeftOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,24 +79,24 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
             }
         });
         Intent intent = getIntent();
-        final long id = intent.getLongExtra(ID, 0);
-        final long memberId = intent.getLongExtra(MEMBER_ID, 0);
+        deviceId=intent.getLongExtra(Constants.DEVICE_ID, 0);
+        final int id = intent.getIntExtra(ID, 0);
         String name = intent.getStringExtra(NAME);
         role = intent.getStringExtra(ROLE);
         String roleRemark = intent.getStringExtra(ROLEREMARK);
-        final long rolesIds = intent.getLongExtra(ROLEIDS, 0);
+        final int rolesIds = intent.getIntExtra(ROLEIDS, 0);
         remarkinfoTitleview.setRightClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String remark = remarknameEdt.getText().toString();
                 String roleName = roleNameTv.getText().toString();
-                long roleId;
+                int roleId;
                 if (mRoleMap.containsKey(roleName)) {
                     roleId = mRoleMap.get(roleName);
                 } else {
                     roleId = rolesIds;
                 }
-                mPresenter.updateRemarkInfo(id, memberId, deviceId, remark, roleId);
+                mPresenter.updateRemarkInfo(id, deviceId, roleId,remark);
             }
         });
         nicknameEdt.setText(name);
@@ -136,11 +136,19 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
         selectIndex = wheel.getCurrentItem();
     }
 
+//    @Override
+//    public void returnRoleListView(List<RoleBean> roleList) {
+//        mRoleList = (ArrayList<RoleBean>) roleList;
+//        for (RoleBean bean : mRoleList) {
+//            mRoleMap.put(bean.getType(), bean.getId());
+//        }
+//    }
+
     @Override
-    public void returnRoleListView(List<RoleBean> roleList) {
-        mRoleList = (ArrayList<RoleBean>) roleList;
-        for (RoleBean bean : mRoleList) {
-            mRoleMap.put(bean.getType(), bean.getId());
+    public void returnRoleListView(List<EmunBean> roleBeens) {
+        mRoleList= (ArrayList<EmunBean>) roleBeens;
+        for (EmunBean bean : mRoleList) {
+            mRoleMap.put(bean.getValueName(), bean.getKeyType());
         }
     }
 
@@ -181,9 +189,9 @@ public class RemarkInfoActivity extends BaseAutoLayoutActivity<RemarkInfoPresent
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
-            RoleBean bean = data.getParcelableExtra(RoleSelActiviy.ROLE_BEAN);
+            EmunBean bean = data.getParcelableExtra(RoleSelActiviy.ROLE_BEAN);
             if (bean != null) {
-                String roleType = bean.getType();
+                String roleType = bean.getValueName();
                 if (!role.equals(roleType)) {
                     remarkinfoTitleview.setRighteTextEnalbe(true);
                     remarkinfoTitleview.setRightTextColor(getResources().getColor(R.color.cor9));

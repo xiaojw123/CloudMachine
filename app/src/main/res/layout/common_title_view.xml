@@ -60,6 +60,7 @@
             android:paddingTop="@dimen/dimen_size_2"
             android:paddingBottom="@dimen/dimen_size_2"
             android:visibility="gone"
+            android:scaleType="fitXY"
             />
 
 

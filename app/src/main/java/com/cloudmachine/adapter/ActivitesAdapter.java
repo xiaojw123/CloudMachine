@@ -13,12 +13,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
-import com.cloudmachine.bean.HomeBannerBean;
+import com.cloudmachine.bean.AdBean;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,14 +25,14 @@ import java.util.List;
  */
 
 public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.ActivitiesHoler> {
-    List<HomeBannerBean> mItems;
+    private List<AdBean> mItems;
     Context mContext;
 
     public ActivitesAdapter(Context context) {
         mContext = context;
     }
 
-    public void updateItems(ArrayList<HomeBannerBean> items) {
+    public void updateItems(List<AdBean> items) {
         mItems = items;
         notifyDataSetChanged();
     }
@@ -48,12 +47,12 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
     @Override
     public void onBindViewHolder(ActivitiesHoler holder, int position) {
         if (mItems != null && mItems.size() > 0) {
-            HomeBannerBean bannerBean = mItems.get(position);
-            if (bannerBean != null) {
-                Glide.with(mContext).load(bannerBean.picAddress).into(holder.postImg);
-                holder.titeTv.setText(bannerBean.adsTitle);
-                holder.desTv.setText(bannerBean.adsDescription);
-                holder.itemView.setTag(bannerBean);
+            AdBean bean = mItems.get(position);
+            if (bean != null) {
+                Glide.with(mContext).load(bean.getAdPicUrl()).into(holder.postImg);
+                holder.titeTv.setText(bean.getAdTitle());
+                holder.desTv.setText(bean.getAdDescription());
+                holder.itemView.setTag(bean);
             }
         }
     }
@@ -81,54 +80,23 @@ public class ActivitesAdapter extends RecyclerView.Adapter<ActivitesAdapter.Acti
         public void onClick(View v) {
             MobclickAgent.onEvent(v.getContext(),MobEvent.COUNT_AD_CLICK);
             MobclickAgent.onEvent(v.getContext(), MobEvent.TIME_H5_AD_PAGE);
-            HomeBannerBean bean = (HomeBannerBean) v.getTag();
+            AdBean bean = (AdBean) v.getTag();
             if (bean != null) {
-//                String url = !TextUtils.isEmpty(bean.adsLink) ? bean.adsLink : ;
-                String url=bean.picUrl;
-                String adsLink=bean.adsLink;
-                String shareAddress=bean.shareAddress;
-
-//                if (bean.skipType == 3) {
-//                    Intent wanaBoxIntent = new Intent(mContext, WanaCloudBox.class);
-//                    wanaBoxIntent.putExtra(Constants.P_WebView_Url, url);
-//                    mContext.startActivity(wanaBoxIntent);
-//                    return;
-//
-//                }
-                //对banner点击进行链接跳转
-//                if ("推广活动".equals(bean.adsTitle)) {
-//                    if (url != null && url.contains("?")) {
-//                        url += "&";
-//                    } else {
-//                        url += "?";
-//                    }
-//                    url += "activityId=" + bean.id;
-//                }
-
+                String url=bean.getAdJumpLink();
+                String shareAddress=bean.getAdPicUrl();
                 if (url != null && url.contains("?")) {
                     url += "&";
                 } else {
                     url += "?";
                 }
-                url += "activityId=" + bean.id;
+                url += "activityId=" + bean.getAdId();
                 Intent intent = new Intent(mContext, QuestionCommunityActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString(QuestionCommunityActivity.H5_URL, url);
-                if (!TextUtils.isEmpty(adsLink)){
-                bundle.putString(QuestionCommunityActivity.SHARE_LINK,adsLink);
-                }
+                bundle.putString(QuestionCommunityActivity.SHARE_LINK,url);
                 if (!TextUtils.isEmpty(shareAddress)){
                     bundle.putString(QuestionCommunityActivity.SHARE_PIC,shareAddress);
                 }
-//                //分享标题
-//                bundle.putString(Constants.P_WebView_Title, bean.adsTitle);
-//                bundle.putBoolean(Constants.HOME_BANNER_SHARE, true);
-//                //微信分享的链接
-//                bundle.putString(Constants.HOME_SHARE_URL, url);
-//                //微信分享的图标
-//                bundle.putString(Constants.HOME_SHARE_ICON, bean.shareAddress);
-//                //微信分享描述
-//                bundle.putString(Constants.HOME_SHARE_DESCIRPTION, bean.adsDescription);
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
             }

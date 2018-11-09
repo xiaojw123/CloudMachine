@@ -21,29 +21,9 @@ public class HostType {
     /**
      * 多少种Host类型
      */
-    public static final int TYPE_COUNT = 5;
+    public static final int TYPE_COUNT = 3;
+    public static final int HOST_LARK=1;
+    public static final int HOST_H5 =2;
+    public static final int HOST_BH_COFIG=3;//云黑子-高配
 
-    /**
-     * 云机械的Host
-     */
-    public static final int HOST_CLOUDM_YJX = 1;
-
-
-
-    /**
-     * 郭帅电脑Host地址
-     */
-    public static final int HOST_CLOUDM = 2;
-
-
-    /**
-     * 谢鑫电脑Host地址
-     */
-    public static final int HOST_CLOUDM_ASK = 4;
-
-
-
-    public static final int HOST_H5 =5;
-
-    public static final int HOST_BH_COFIG=6;//云黑子-高配
 }

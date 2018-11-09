@@ -304,15 +304,10 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
             lastId = 1;
         }
 
-        for (int i = 0; i < count; i++) {
-            if (todayTv.isSelected()) {
-                xVals.add(oilLeve[i].getTime());
-            } else {
-                xVals.add(oilLeve[i].getDay());
-            }
+
+        for (ScanningOilLevelInfo anOilLeve : oilLeve) {
+            xVals.add(anOilLeve.getTime());
         }
-
-
         for (int i = 0; i < count; i++) {
             yVals1.add(new BarEntry((float) oilLeve[i].getLevel(), i + lastId));
         }
@@ -443,7 +438,6 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
                 if (todayTv.isSelected()) {
                     if (lastLevel != null) {//array 空 or 不空
                         ScanningOilLevelInfo level0 = new ScanningOilLevelInfo();
-                        level0.setDay(lastLevel.getDay());
                         level0.setLevel(lastLevel.getLevel());
                         String time0 = lastLevel.getTime();
                         if (time0.length() >= 5) {
@@ -525,35 +519,25 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
     }
 
     public void gotoCustomOil() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).queryWorkStatus(deviceId).compose(RxSchedulers.<BaseRespose<JsonObject>>io_main()).subscribe(new RxSubscriber<BaseRespose<JsonObject>>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).queryWorkStatus(deviceId).compose(RxHelper.handleCommonResult(JsonObject.class)).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
-            protected void _onNext(BaseRespose<JsonObject> respose) {
-
-                if (respose.success()) {
-
-                    JsonObject resJobj = respose.getResult();
-                    if (resJobj != null) {
-                        JsonElement isWorkJE = resJobj.get("isWork");
-                        boolean isWork = isWorkJE.getAsBoolean();
-                        if (isWork) {
-                            Bundle data = new Bundle();
-                            data.putLong(Constants.P_DEVICEID, deviceId);
-                            Constants.toActivity(OilAmountActivity.this, OilSyncActivity.class, data);
-                        } else {
-                            showPromptDialog(R.drawable.ic_alert_mc, "请启动机器再进行校准哦！");
-                        }
+            protected void _onNext(JsonObject respose) {
+                if (respose != null) {
+                    JsonElement isWorkJE = respose.get("isWork");
+                    boolean isWork = isWorkJE.getAsBoolean();
+                    if (isWork) {
+                        Bundle data = new Bundle();
+                        data.putLong(Constants.P_DEVICEID, deviceId);
+                        Constants.toActivity(OilAmountActivity.this, OilSyncActivity.class, data);
+                    } else {
+                        showPromptDialog(R.drawable.ic_alert_mc, "请启动机器再进行校准哦！");
                     }
-
-                } else {
-                    showPromptDialog(-1, respose.getMessage());
                 }
-
-
             }
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.showToast(OilAmountActivity.this, message);
+                showPromptDialog(-1, message);
 
             }
         }));
@@ -614,29 +598,6 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
 
     }
 
-	/*class DrawTimerTask extends TimerTask{
-
-		Entry e;
-		Highlight highlight;
-		public DrawTimerTask(Entry e, Highlight highlight){
-			this.e = e;
-			this.highlight = highlight;
-		}
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			 Message message = new Message();      
-		      message.what = HANDLER_TIMER;   
-		      float f[] = new float[3];
-		      float p[] = mChart.getMarkerPosition(e, highlight);
-		      f[0] = p[0];
-		      f[1] = p[1];
-		      f[2] = e.getVal();
-		      message.obj = f;
-		      mHandler.sendMessage(message); 
-		}
-		
-	}*/
 
     @Override
     protected void onResume() {
@@ -648,7 +609,7 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
 
     public void getOilData() {
         if (todayTv.isSelected()) {
-            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getTodayOil(memberId, deviceId).compose(RxHelper.<ScanningOilLevelInfoArray>handleResult()).subscribe(new RxSubscriber<ScanningOilLevelInfoArray>(mContext) {
+            mRxManager.add(Api.getDefault(HostType.HOST_LARK).getTodayOil(deviceId).compose(RxHelper.<ScanningOilLevelInfoArray>handleResult()).subscribe(new RxSubscriber<ScanningOilLevelInfoArray>(mContext) {
                 @Override
                 protected void _onNext(ScanningOilLevelInfoArray infoArray) {
                     updateOilChat(infoArray, mChart);
@@ -660,26 +621,10 @@ public class OilAmountActivity extends BaseAutoLayoutActivity implements OnClick
                 }
             }));
         } else if (weekTv.isSelected()) {
-            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getWeeklyOil(memberId, deviceId).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(mContext) {
+            mRxManager.add(Api.getDefault(HostType.HOST_LARK).getWeeklyOil(deviceId).compose(RxHelper.<ScanningOilLevelInfoArray>handleResult()).subscribe(new RxSubscriber<ScanningOilLevelInfoArray>(mContext) {
                 @Override
-                protected void _onNext(JsonObject responseJson) {
-                    if (responseJson != null) {
-                        JsonElement resutJe = responseJson.get("result");
-                        if (resutJe != null) {
-                            Gson gson = new Gson();
-                            JsonArray resultJarray = resutJe.getAsJsonArray();
-                            ScanningOilLevelInfoArray infoArray = null;
-                            if (resultJarray != null && resultJarray.size() > 0) {
-                                ScanningOilLevelInfo[] oilLevelInfoArray = gson.fromJson(resultJarray, new TypeToken<ScanningOilLevelInfo[]>() {
-                                }.getType());
-                                infoArray = new ScanningOilLevelInfoArray();
-                                infoArray.setOilLevel(oilLevelInfoArray);
-                            }
-                            updateOilChat(infoArray, mWeekChat);
-                        }
-
-                    }
-
+                protected void _onNext(ScanningOilLevelInfoArray scanningOilLevelInfoArray) {
+                    updateOilChat(scanningOilLevelInfoArray, mWeekChat);
                 }
 
                 @Override

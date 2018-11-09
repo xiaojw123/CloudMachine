@@ -223,34 +223,6 @@
                 android:layout_marginTop="@dimen/dimen_size_6"
                 android:orientation="vertical">
 
-
-                <RelativeLayout
-                    android:id="@+id/rl_coupon"
-                    style="@style/CommonTabContainerStyle">
-
-                    <TextView
-                        android:id="@+id/tv_coupon"
-                        style="@style/personal_left_text"
-                        android:text="优惠券" />
-
-                    <ImageView
-                        android:id="@+id/arrowTip7"
-                        style="@style/arrow_right_style" />
-
-                    <TextView
-                        android:id="@+id/select3"
-                        style="@style/personal_edit_text"
-                        android:layout_alignBaseline="@+id/tv_coupon"
-                        android:layout_alignBottom="@+id/tv_coupon"
-                        android:layout_marginEnd="14dp"
-                        android:layout_marginRight="14dp"
-                        android:layout_toLeftOf="@+id/arrowTip7"
-                        android:layout_toStartOf="@+id/arrowTip7"
-                        android:background="@null"
-                        android:text="无可用" />
-                </RelativeLayout>
-
-
                 <FrameLayout
                     android:id="@+id/part_discount_layout"
                     android:layout_width="match_parent"

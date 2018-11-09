@@ -24,13 +24,13 @@ public class DownloadReceiver extends BroadcastReceiver {
             long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             if (completeDownloadId == MySharedPreferences.getSharedPLong(Constants.KEY_DownloadId)) {
                 try {
-                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(context.DOWNLOAD_SERVICE);
+                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 //						downloadManager.openDownloadedFile(completeDownloadId);
                     Cursor c = downloadManager.query(new DownloadManager.Query().setFilterById(completeDownloadId));
                     c.moveToFirst();
-                    String str = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+//                    String str = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
 
-                    context.startActivity(getApkFileIntent(context, str));
+                    context.startActivity(getApkFileIntent(context));
 //                    UserHelper.insertGuideTag(context,false);
 //                    UserHelper.insertHConfigGuideTag(context,false);
                 } catch (Exception e) {
@@ -43,7 +43,7 @@ public class DownloadReceiver extends BroadcastReceiver {
 
     }
 
-    public static Intent getApkFileIntent(Context context, String param) {
+    public static Intent getApkFileIntent(Context context) {
         File apkFile =
                 new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), Constants.APK_NAME);
         Intent intent = new Intent();

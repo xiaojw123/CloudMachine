@@ -27,7 +27,7 @@ import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.contract.AuthPersonalInfoContract;
 import com.cloudmachine.ui.home.model.AuthPersonalInfoModel;
 import com.cloudmachine.ui.home.presenter.AuthPersonalInfoPresenter;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
@@ -87,7 +87,6 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
     String type;
     String mRedisUserId;
     String portraitImgUrl, emblemImgUrl;
-    long memberId;
     Member mMember;
 
 
@@ -101,7 +100,6 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
 
     private void initView() {
         mMember = MemeberKeeper.getOauth(mContext);
-        memberId = UserHelper.getMemberId(this);
         mChecker = new PermissionsChecker(mContext);
         titleView.setLeftClickListener(this);
         submitBtn.setButtonClickEnable(false);
@@ -110,7 +108,7 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
         idEdt.setEnabled(false);
         nameEdt.setNoClearIcon(true);
         idEdt.setNoClearIcon(true);
-        mPresenter.getMemberAuthInfo(memberId);
+        mPresenter.getMemberAuthInfo();
     }
 
 
@@ -188,7 +186,7 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
                 break;
             case R.id.radius_button_text:
                 if (selectCb.isChecked()) {
-                    mPresenter.submitIdUserInfo(memberId, mRedisUserId);
+                    mPresenter.submitIdUserInfo(mRedisUserId);
                 } else {
                     ToastUtils.showToast(mContext, "需同意保密与授权协议后，才能提交！");
                 }
@@ -316,7 +314,7 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
         } else {
             emblemImgUrl = imgUrl;
         }
-        mPresenter.verifyOcr(memberId, imgUrl, mRedisUserId);
+        mPresenter.verifyOcr(imgUrl, mRedisUserId);
     }
 
     @Override

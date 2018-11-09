@@ -247,34 +247,6 @@ public class WXEntryActivity extends WXCallbackActivity{
 //        MobclickAgent.onProfileSignIn(String.valueOf(member.getId()));
 //    }
 //
-//    private void excamMaster(Long id) {
-//
-//        mRxManager.add(Api.getDefault(HostType.XIEXIN_HOSR).excamMaster(id)
-//                .compose(RxHelper.<UserInfo>handleResult())
-//                .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
-//                    @Override
-//                    protected void _onNext(UserInfo userInfo) {
-//                        AppLog.print("_onNext___userinfo"+userInfo+"___mUserinfo___"+userInfo.userinfo);
-//                        Long wjdsId = userInfo.userinfo.id;
-//                        Long status = userInfo.userinfo.status;
-//                        Long role_id = userInfo.userinfo.role_id;
-//                        member.setWjdsId(wjdsId);
-//                        member.setWjdsStatus(status);
-//                        member.setWjdsRole_id(role_id);
-////                        MemeberKeeper.saveOAuth(member, mContext);
-//                        loginComplete();
-//                    }
-//
-//                    @Override
-//                    protected void _onError(String message) {
-//                        AppLog.print("_onError___"+message);
-//                        ToastUtils.showToast(WXEntryActivity.this,"挖机数据同步失败！"+message);
-//                        loginComplete();
-//
-//                    }
-//                }));
-//    }
-//
 //    public static Member fromJsonToBean(String json) {
 //        return new Gson().fromJson(json, new TypeToken<Member>() {
 //        }.getType());

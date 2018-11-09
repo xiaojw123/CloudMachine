@@ -6,6 +6,7 @@ import com.cloudmachine.base.BaseView;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.CheckNumBean;
 import com.cloudmachine.bean.Member;
+import com.google.gson.JsonObject;
 
 import rx.Observable;
 
@@ -24,28 +25,27 @@ public interface VerifyPhoneNumContract {
     interface Model extends BaseModel {
         Observable<BaseRespose> wxBindMobile(long mobile, long type);
 
-        Observable<CheckNumBean> checkNum(long mobile);
+        Observable<Integer> checkNum(long mobile);
 
-        Observable<Member> wxBind(String unionId,
-                                  String openId,
-                                  String account,
-                                  String code,
-                                  String inviteCode,
-                                  String pwd,
-                                  String nickname,
-                                  String headLogo,
-                                  Integer type);
+        Observable<JsonObject> wxBind(String unionId,
+                                      String openId,
+                                      String account,
+                                      String code,
+                                      String pwd,
+                                      String nickname,
+                                      String headLogo
+        );
     }
 
     interface View extends BaseView {
         void returnWXBindMobile(String message);
 
-        void returnCheckNum(CheckNumBean checkNumBean);
+        void returnCheckNum(Integer type);
 
         void returnBindWx(Member member);
     }
 
-    abstract static class Presenter extends BasePresenter<View,Model> {
+    abstract  class Presenter extends BasePresenter<View, Model> {
 
         public abstract void wxBindMobile(long mobile, long type);
 
@@ -55,11 +55,10 @@ public interface VerifyPhoneNumContract {
                                     String openId,
                                     String account,
                                     String code,
-                                    String inviteCode,
                                     String pwd,
                                     String nickname,
-                                    String headLogo,
-                                    Integer type);
+                                    String headLogo
+        );
 
     }
 }

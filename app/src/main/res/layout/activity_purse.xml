@@ -120,7 +120,9 @@
         android:layout_below="@+id/purse_ticket_fl"
         android:background="@color/white"
         android:paddingLeft="@dimen/dimen_size_15"
-        android:paddingRight="@dimen/dimen_size_16">
+        android:paddingRight="@dimen/dimen_size_16"
+        android:visibility="gone"
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -186,44 +188,12 @@
 
 
     <FrameLayout
-        android:id="@+id/purse_coupon_fl"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_50"
-        android:layout_below="@+id/purse_detail_fl"
-        android:layout_marginTop="@dimen/pad1"
-        android:background="@color/white"
-        android:paddingLeft="@dimen/dimen_size_16"
-        android:paddingRight="@dimen/dimen_size_16">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:drawableLeft="@drawable/icon_card_coupon"
-            android:drawablePadding="@dimen/dimen_size_16"
-            android:text="@string/card_coupon"
-            android:textColor="@color/color_66"
-            android:textSize="@dimen/text_size_14_sp" />
-
-        <TextView
-            android:id="@+id/purse_coupon_num_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:drawablePadding="@dimen/pad1"
-            android:drawableRight="@drawable/arrow_right"
-            android:text="0张"
-            android:textColor="@color/c_8"
-            android:textSize="@dimen/text_size_14_sp" />
-
-    </FrameLayout>
-
-    <FrameLayout
         android:id="@+id/purse_paycode_fl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_50"
-        android:layout_below="@+id/purse_coupon_fl"
         android:background="@color/white"
+        android:layout_below="@+id/purse_detail_fl"
+        android:layout_marginTop="@dimen/pad1"
         android:paddingLeft="@dimen/dimen_size_16"
         android:paddingRight="@dimen/dimen_size_16"
         >
@@ -249,10 +219,6 @@
 
     </FrameLayout>
 
-    <View
-        style="@style/CommonLandscapeLine"
-        android:layout_below="@+id/purse_coupon_fl"
-        />
 
 
     <Button

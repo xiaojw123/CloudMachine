@@ -1,17 +1,11 @@
 package com.cloudmachine.ui.home.presenter;
 
-import android.text.TextUtils;
-
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.bean.Member;
+import com.cloudmachine.bean.LarkMemberInfo;
 import com.cloudmachine.ui.home.contract.PurseContract;
-import com.cloudmachine.ui.home.model.CouponBean;
-import com.cloudmachine.utils.ToastUtils;
+import com.cloudmachine.bean.CouponBean;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import java.util.Map;
 
 /**
  * Created by xiaojw on 2017/12/6.
@@ -20,19 +14,22 @@ import java.util.Map;
 public class PursePresenter extends PurseContract.Presenter {
 
     @Override
-    public void getWalletAmount(long memberId) {
-        mRxManage.add(mModel.getWalletAmount(memberId).subscribe(new RxSubscriber<JsonObject>(mContext) {
+    public void getWalletAmount() {
+        mRxManage.add(mModel.getWalletAmount().subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
             protected void _onNext(JsonObject jsonObject) {
                 if (jsonObject != null) {
-                    double walletAmount = jsonObject.get("walletAmount").getAsDouble();
-                    double depositAmount = jsonObject.get("depositAmount").getAsDouble();
+                    JsonElement walletJE=jsonObject.get("walletAmount");
                     JsonElement jrlJe=jsonObject.get("jumpUrl");
+                    double walletAmount=0;
+                    if (walletJE!=null&&!walletJE.isJsonNull()){
+                        walletAmount = walletJE.getAsDouble();
+                    }
                     String jumpUrl=null;
                     if (jrlJe!=null&&!jrlJe.isJsonNull()){
                         jumpUrl=jrlJe.getAsString();
                     }
-                    mView.updateWalletAmountView(walletAmount, depositAmount,jumpUrl);
+                    mView.updateWalletAmountView(walletAmount,jumpUrl);
                 }
 
             }
@@ -45,29 +42,11 @@ public class PursePresenter extends PurseContract.Presenter {
     }
 
 
-
     @Override
-    public void getAvaildCouponList(long memberid) {
-        mRxManage.add(mModel.getAvaildCouponList(memberid).subscribe(new RxSubscriber<CouponBean>(mContext) {
+    public void getMemberInfo() {
+        mRxManage.add(mModel.getMemberInfo().subscribe(new RxSubscriber<LarkMemberInfo>(mContext) {
             @Override
-            protected void _onNext(CouponBean couponBean) {
-                if (couponBean != null) {
-                    mView.updateAvaildCouponSumNum(couponBean.getSumNum());
-                }
-            }
-
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
-    }
-
-    @Override
-    public void getMemberInfo(long memberid) {
-        mRxManage.add(mModel.getMemberInfo(memberid).subscribe(new RxSubscriber<Member>(mContext) {
-            @Override
-            protected void _onNext(Member member) {
+            protected void _onNext(LarkMemberInfo member) {
                 mView.updateMemberInfo(member);
             }
 

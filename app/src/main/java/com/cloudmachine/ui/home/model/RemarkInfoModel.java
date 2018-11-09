@@ -1,5 +1,6 @@
 package com.cloudmachine.ui.home.model;
 
+import com.cloudmachine.bean.EmunBean;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.base.baserx.RxHelper;
@@ -15,13 +16,13 @@ import rx.Observable;
 
 public class RemarkInfoModel implements RemarkInfoContract.Model {
     @Override
-    public Observable<List<RoleBean>> getRoleList() {
-
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getRoleList().compose(RxHelper.<List<RoleBean>>handleResult());
+    public Observable<List<EmunBean>> getRoleList() {
+        return Api.getDefault(HostType.HOST_LARK).getEnum("roleType").compose(RxHelper.<List<EmunBean>>handleResult());
     }
 
     @Override
-    public Observable<String> updateRemarkInfo(long fid, long memberId, long deviceId, String remark, long roleId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).updateMemberRemark(fid,memberId,deviceId,remark,roleId).compose(RxHelper.<String>handleResult());
+    public Observable<String> updateRemarkInfo(int groupId, long deviceId, int roleId, String remark) {
+        return Api.getDefault(HostType.HOST_LARK).updateDeviceMemberRemark(groupId,deviceId,roleId,remark).compose(RxHelper.<String>handleResult());
     }
+
 }

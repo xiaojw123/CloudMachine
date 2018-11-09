@@ -9,14 +9,11 @@ import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.URLs;
+import com.cloudmachine.utils.LarkUrls;
 import com.google.gson.Gson;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ForgetPwdAsync extends ATask {
 
@@ -37,14 +34,12 @@ public class ForgetPwdAsync extends ATask {
     @Override
     protected String doInBackground(String... params) {
         IHttp httpRequest = new HttpURLConnectionImp();
-        List<NameValuePair> list = new ArrayList<NameValuePair>();
-        list.add(new BasicNameValuePair("mobile", mobile));
-        list.add(new BasicNameValuePair("pwd", pwd));
-        list.add(new BasicNameValuePair("code", code));
-        String result = null;
         try {
-            result = httpRequest.post(URLs.FORGETPWD_URL, list);
-            return result;
+            Map<String,String> pm=new HashMap<>();
+            pm.put("mobile", mobile);
+            pm.put("pwd", pwd);
+            pm.put("code", code);
+            return httpRequest.post(LarkUrls.FORGET_PWD, pm);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

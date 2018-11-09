@@ -1,13 +1,13 @@
 package com.cloudmachine.ui.home.activity.fragment;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,6 +17,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -39,24 +43,26 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.BaseRecyclerAdapter;
 import com.cloudmachine.adapter.DeviceListAdpater;
-import com.cloudmachine.bean.ArticleInfo;
+import com.cloudmachine.bean.AdBean;
+import com.cloudmachine.bean.LarkDeviceDetail;
+import com.cloudmachine.bean.LarkDeviceInfo;
+import com.cloudmachine.bean.LarkLocBean;
 import com.cloudmachine.bean.McDeviceInfo;
-import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.home.contract.DeviceContract;
 import com.cloudmachine.ui.home.model.DeviceModel;
 import com.cloudmachine.ui.home.presenter.DevicePresenter;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.UMengKey;
-import com.cloudmachine.utils.locatecity.PingYinUtil;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -64,17 +70,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
 /**
  * Created by xiaojw on 2017/7/19.
  * 高德地图2D转3D  Amap刷新flus-->reload
  */
 
-public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel> implements Handler.Callback, DeviceContract.View, View.OnClickListener, BaseRecyclerAdapter.OnItemClickListener {
-    private static final long DEFUALT_UNLOGIN_ID = -1;
-    //    @BindView(R.id.device_ques_ans_tv)
-//    TextView homeQuestionAnsTv;
+public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel> implements Handler.Callback, DeviceContract.View, View.OnClickListener, BaseRecyclerAdapter.OnItemClickListener, XRecyclerView.LoadingListener {
     @BindView(R.id.device_flush_imgBtn)
     ImageButton homeFlushBtn;
     @BindView(R.id.device_phone_imgBtn)
@@ -85,33 +87,35 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     ViewPager deviceVp;
     @BindView(R.id.device_box_act_tv)
     TextView boxActTv;
+    @BindView(R.id.device_redpacket_img)
+    ImageView redPacketImg;
 
     List<McDeviceInfo> mDeviceList;
+    List<LarkDeviceInfo> mLarkDeviceList;
     PopupWindow menuPop, phonePop;
     TextView devicesNumTv;
     DeviceListAdpater deviceListAdpater;
-    long lasMemberId;
     List<View> viewList;
     ClearEditTextView popSearchEdt;
     View popLineView;
-    RecyclerView devicesListRlv;
-    List<ArticleInfo> infoList;
+    XRecyclerView devicesListRlv;
+    List<AdBean> mItems;
     Handler mHandler;
     int actIndex, actLen;
     String mBoxTel = Constants.CUSTOMER_PHONE_BOX;
     String mRepairTel = Constants.CUSTOMER_PHONE_REPAIR;
     private int deviceSize;
-    long memberId;
-
+    long memberId = Constants.INVALID_DEVICE_ID;
+    private List<LarkDeviceDetail> mAllDeviceList = new ArrayList<>();
+    private int pageNum, mToalSize;
+    private boolean isRefresh, isLoadMore, isSearch, isLastPage;
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_MAP);
-            loadData();
-        }
+    protected void initView() {
+        MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_MAP);
+        mPresenter.registerRxEvent();
     }
+
 
     @Override
     public void onResume() {
@@ -123,62 +127,46 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_MAP);
+            loadData();
+        }
+    }
+
+    @Override
     protected void setAMap() {
         aMap.setInfoWindowAdapter(this);
-//        aMap.setOnMapClickListener(this);
         aMap.setOnMarkerClickListener(this);
     }
 
+
     private void loadData() {
+
+        mPresenter.getDeviceMapList(1);
         if (UserHelper.isLogin(getActivity())) {
             memberId = UserHelper.getMemberId(getActivity());
-            // TODO: 2017/8/14 for v3.2.0 Test
-//            if (memberId==lasMemberId){
-//                return;
-//            }
-            if (mDeviceList != null && mDeviceList.size() > 1) {
+            if (mLarkDeviceList != null && mLarkDeviceList.size() > 1) {
                 menuTv.setVisibility(View.VISIBLE);
             } else {
                 menuTv.setVisibility(View.GONE);
             }
-            UserHelper.setOwner(getActivity(), memberId, false);
-            mPresenter.getDevices(memberId, Constants.MC_DevicesList_AllType);
-            lasMemberId = memberId;
+            mPresenter.getAllDeviceList(1, null);
         } else {
-            if (lasMemberId == DEFUALT_UNLOGIN_ID) {
-                return;
-            }
+            memberId = Constants.INVALID_DEVICE_ID;
             aMap.clear();
             aMap.reloadMap();
             menuTv.setVisibility(View.GONE);
-            mPresenter.getDevices(Constants.MC_DevicesList_AllType);
-            lasMemberId = DEFUALT_UNLOGIN_ID;
         }
-        if (infoList == null) {
+        if (mItems == null) {
             mHandler = new Handler(this);
-            mPresenter.getArticleList();
+            ((HomeActivity) getActivity()).obtainSystemAd(HomeActivity.AD_ROLL);
         }
         mPresenter.getServiceTel();
+        mPresenter.getReadPacketConfig();
     }
 
-    @Override
-    protected void initView() {
-        MobclickAgent.onEvent(getActivity(), MobEvent.TIME_HOME_MAP);
-        registerRxEvent();
-    }
-
-    private void registerRxEvent() {
-        mRxManager.on(Constants.UPDATE_DEVICE_LIST, new Action1<String>() {
-            @Override
-            public void call(String o) {
-                if (UserHelper.isLogin(getActivity())) {
-                    mPresenter.getDevices(UserHelper.getMemberId(getActivity()), Constants.MC_DevicesList_AllType);
-                } else {
-                    mPresenter.getDevices(Constants.MC_DevicesList_AllType);
-                }
-            }
-        });
-    }
 
     private void showPhonePop() {
         if (phonePop == null) {
@@ -200,10 +188,9 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
 
     private void showMenuPop() {
-        if (mDeviceList == null) {
+        if (mAllDeviceList == null) {
             return;
         }
-        int len = mDeviceList.size();
         if (menuPop == null) {
             View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.pop_home_menu, null);
             View menuPopBg = contentView.findViewById(R.id.pop_device_bg);
@@ -215,28 +202,30 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             menuPopCo.setOnClickListener(this);
             menuPopBg.setOnClickListener(this);
             devicesNumTv = (TextView) contentView.findViewById(R.id.pop_devie_num_tv);
-            devicesListRlv = (RecyclerView) contentView.findViewById(R.id.pop_device_list_rlv);
-            if (len >= 4) {
+            devicesListRlv = (XRecyclerView) contentView.findViewById(R.id.pop_device_list_rlv);
+            devicesListRlv.setPullRefreshEnabled(true);
+            devicesListRlv.setLoadingMoreEnabled(true);
+            devicesListRlv.setLoadingListener(this);
+            if (mToalSize >= 4) {
                 devicesListRlv.getLayoutParams().height = DensityUtil.dip2px(getActivity(), 427);
 
             }
-//            devicesListRlv.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
             devicesListRlv.setLayoutManager(new LinearLayoutManager(getActivity()));
-            deviceListAdpater = new DeviceListAdpater(getActivity(), mDeviceList);
+            deviceListAdpater = new DeviceListAdpater(getActivity(), mAllDeviceList);
             deviceListAdpater.setOnItemClickListener(this);
             devicesListRlv.setAdapter(deviceListAdpater);
             menuPop = CommonUtils.getAnimPop(contentView);
         } else {
-            deviceListAdpater.updateItems(mDeviceList);
+            deviceListAdpater.updateItems(mAllDeviceList);
             devicesListRlv.smoothScrollToPosition(0);
         }
-        devicesNumTv.setText("全部(" + len + ")");
-        if (len >= 20) {
+        devicesNumTv.setText("全部(" + mToalSize + ")");
+        if (mToalSize >= 20) {
             popSearchEdt.setVisibility(View.VISIBLE);
             popLineView.setVisibility(View.GONE);
             Editable editable = popSearchEdt.getText();
             if (editable != null && editable.length() > 0) {
-                updateSearchList(editable);
+                updateSearchList();
             }
         } else {
             popSearchEdt.setVisibility(View.GONE);
@@ -258,28 +247,15 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
         @Override
         public void afterTextChanged(Editable s) {
-            updateSearchList(s);
+            updateSearchList();
         }
     };
 
-    private void updateSearchList(Editable s) {
-        if (s.length() > 0) {
-            String searchKey = s.toString();
-            List<McDeviceInfo> searchList = new ArrayList<>();
-            for (McDeviceInfo info : mDeviceList) {
-                String deviceName = info.getName();
-                if (deviceName != null) {
-                    String deviceNamePy = PingYinUtil.getPingYin(deviceName);
-                    if (deviceName.contains(searchKey) || deviceNamePy.contains(searchKey)) {
-                        searchList.add(info);
-                    }
-                }
-            }
-            deviceListAdpater.updateItems(searchList);
-        } else {
-            deviceListAdpater.updateItems(mDeviceList);
-        }
+    private void updateSearchList() {
+        isSearch = true;
+        devicesListRlv.refresh();
     }
+
 
     TextView.OnEditorActionListener serachActionListener = new TextView.OnEditorActionListener() {
         @Override
@@ -295,11 +271,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     private void flush() {
         aMap.clear();
         aMap.reloadMap();
-        if (UserHelper.isLogin(getActivity())) {
-            mPresenter.getDevices(UserHelper.getMemberId(getActivity()), Constants.MC_DevicesList_AllType);
-        } else {
-            mPresenter.getDevices(Constants.MC_DevicesList_AllType);
-        }
+        mPresenter.getDeviceMapList(1);
     }
 
     @Override
@@ -314,18 +286,57 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     LatLngBounds.Builder latLngBuilder;
 
+
     @Override
-    public void updateDevices(List<McDeviceInfo> deviceList) {
+    public void retrunAllDeviceError() {
+        resetScrollStatus();
+    }
+
+    @Override
+    public void returnAllDeviceList(List<LarkDeviceDetail> deviceList, boolean isFirst, boolean isLast, int toalSize) {
+        mToalSize = toalSize;
+        isLastPage = isLast;
+        if (isFirst) {
+            pageNum = 1;
+            mAllDeviceList.clear();
+        }
+        mAllDeviceList.addAll(deviceList);
+        if (isRefresh || isLoadMore || isSearch) {
+            resetScrollStatus();
+            if (deviceListAdpater != null) {
+                deviceListAdpater.updateItems(mAllDeviceList);
+            }
+        }
+    }
+
+    private void resetScrollStatus() {
+        if (isSearch) {
+            isSearch = false;
+            devicesNumTv.setText("全部(" + mToalSize + ")");
+        }
+        if (isRefresh) {
+            isRefresh = false;
+            devicesListRlv.refreshComplete();
+        }
+        if (isLoadMore) {
+            isLoadMore = false;
+            devicesListRlv.loadMoreComplete();
+        }
+    }
+
+    @Override
+    public void updateLarkDevices(List<LarkDeviceInfo> deviceList) {
         aMap.clear();
         aMap.reloadMap();
-        mDeviceList = deviceList;
+        mLarkDeviceList = deviceList;
         viewList = new ArrayList<>();
-        if (mDeviceList != null) {
-            deviceSize = mDeviceList.size();
+        if (mLarkDeviceList != null) {
+            deviceSize = mLarkDeviceList.size();
             if (deviceSize > 0) {
                 deviceVp.setVisibility(View.VISIBLE);
                 latLngBuilder = LatLngBounds.builder();
-                addMarkerView(0);
+                UserHelper.setOwner(getActivity(), memberId, false);
+                addLarkMarkerView(0);
             } else {
                 menuTv.setVisibility(View.GONE);
                 deviceVp.setVisibility(View.INVISIBLE);
@@ -334,16 +345,15 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             menuTv.setVisibility(View.GONE);
             deviceVp.setVisibility(View.INVISIBLE);
         }
-
     }
 
+
     //递归遍历DeviceList添加Marker
-    public void addMarkerView(final int position) {
-        final McDeviceInfo info = mDeviceList.get(position);
+    public void addLarkMarkerView(final int position) {
+        final LarkDeviceInfo info = mLarkDeviceList.get(position);
         checkOwner(info);
         String imgUrl = CommonUtils.getMarkerIconUrl(info.getTypePicUrl(), info.getWorkStatus());
-        final McDeviceLocation location = info.getLocation();
-        final LatLng latLng = new LatLng(location.getLat(), location.getLng());
+        final LatLng latLng = new LatLng(info.getLat(), info.getLng());
         latLngBuilder.include(latLng);
         Glide.with(this).load(imgUrl)
                 .into(new SimpleTarget<GlideDrawable>() {
@@ -359,9 +369,9 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                         Marker marker = aMap.addMarker(options);
                         marker.setObject(info);
                         curMarker = marker;
-                        viewList.add(getItemView(info, marker));
+                        viewList.add(getItemView(marker));
                         if (position < deviceSize - 1) {
-                            addMarkerView(position + 1);
+                            addLarkMarkerView(position + 1);
                         } else {
                             updateViewPager(viewList.size());
                         }
@@ -371,10 +381,9 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
     }
 
-    private void checkOwner(McDeviceInfo info) {
+    private void checkOwner(LarkDeviceInfo info) {
         if (!UserHelper.isOwner(getActivity(), memberId)) {
-            boolean isOwner = !Constants.isNoEditInMcMember(info.getId(), info.getType());
-            if (isOwner) {
+            if (Constants.isOwner(info.getRoleType())) {
                 UserHelper.setOwner(getActivity(), memberId, true);
             }
         }
@@ -405,21 +414,18 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         }
     }
 
-    @Override
-    public void updateArticles(List<ArticleInfo> articleInfoList) {
-        infoList = articleInfoList;
-        if (infoList != null && infoList.size() > 0) {
+    public void updateRollAd(List<AdBean> items) {
+        mItems = items;
+        if (mItems != null && mItems.size() > 0) {
             boxActTv.setVisibility(View.VISIBLE);
-            if (infoList != null && infoList.size() > 0) {
+            if (mItems != null && mItems.size() > 0) {
                 actIndex = 0;
-                actLen = infoList.size();
+                actLen = mItems.size();
                 setCurrentBoxAct();
             }
         } else {
             boxActTv.setVisibility(View.GONE);
         }
-
-
     }
 
     @Override
@@ -434,6 +440,35 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     }
 
     @Override
+    public void retrunPacketConfig(String imgUrl, String jumpUrl, final boolean isNoOpen) {
+        redPacketImg.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(imgUrl)) {
+            Glide.with(getActivity()).load(imgUrl).into(new SimpleTarget<GlideDrawable>() {
+                @Override
+                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                    redPacketImg.setImageDrawable(resource);
+                    if (isNoOpen) {
+                        mPresenter.startRedPacketAnim(redPacketImg);
+                    }
+                }
+            });
+        } else {
+            redPacketImg.setImageResource(R.drawable.ic_red_packet);
+            if (isNoOpen) {
+                mPresenter.startRedPacketAnim(redPacketImg);
+            }
+        }
+        redPacketImg.setEnabled(!TextUtils.isEmpty(jumpUrl));
+        redPacketImg.setTag(jumpUrl);
+
+    }
+
+    @Override
+    public void hidenPacket() {
+        redPacketImg.setVisibility(View.GONE);
+    }
+
+    @Override
     public void updateDevicesError(String errorMsg) {
         aMap.clear();
         aMap.reloadMap();
@@ -442,10 +477,19 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     }
 
     private void setCurrentBoxAct() {
-        ArticleInfo info = infoList.get(actIndex);
+        AdBean info = mItems.get(actIndex);
         if (info != null) {
             boxActTv.setTag(info);
-            boxActTv.setText(info.getArtTitle());
+            boxActTv.setText(info.getAdTitle());
+            String adJumpLink = info.getAdJumpLink();
+            if (!TextUtils.isEmpty(adJumpLink)) {
+                boxActTv.setEnabled(true);
+                Drawable rd = getResources().getDrawable(R.drawable.ic_box_arrow_right);
+                boxActTv.setCompoundDrawablesWithIntrinsicBounds(null, null, rd, null);
+            } else {
+                boxActTv.setEnabled(false);
+                boxActTv.setCompoundDrawables(null, null, null, null);
+            }
             if (actLen > 1) {
                 mHandler.sendEmptyMessageDelayed(Constants.HANDLER_CHANGE_BOX_ACT, 10000);
             }
@@ -453,31 +497,8 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     }
 
 
-    private View getItemView(McDeviceInfo info, Marker marker) {
+    private View getItemView(Marker marker) {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_deviceinfo, null);
-        TextView locTv = (TextView) v.findViewById(R.id.device_info_loc);
-        TextView statusTv = (TextView) v.findViewById(R.id.device_info_status);
-        TextView oilTv = (TextView) v.findViewById(R.id.device_info_oil);
-        TextView lenTv = (TextView) v.findViewById(R.id.device_info_timelen);
-        McDeviceLocation location = info.getLocation();
-        switch (info.getWorkStatus()) {
-            case 1:
-                statusTv.setVisibility(View.VISIBLE);
-                statusTv.setText("工作中");
-                break;
-            case 2:
-                statusTv.setVisibility(View.VISIBLE);
-                statusTv.setText("在线");
-                break;
-
-            default:
-                statusTv.setVisibility(View.GONE);
-                break;
-
-        }
-        oilTv.setText(CommonUtils.formatOilValue(info.getOilLave()));
-        lenTv.setText(CommonUtils.formatTimeLen(info.getWorkTime()));
-        locTv.setText(location.getPosition());
         v.setTag(marker);
         v.setOnClickListener(this);
         return v;
@@ -490,7 +511,6 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
         @Override
         public void onPageSelected(int position) {
-            AppLog.print("onPageSelected_____" + position);
             setSelectedMarker(position);
         }
 
@@ -505,20 +525,28 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         Marker itemMarker = (Marker) itemView.getTag();
         itemMarker.showInfoWindow();
         aMap.moveCamera(CameraUpdateFactory.changeLatLng((itemMarker.getPosition())));
-//        aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(itemMarker.getPosition(),);
+        LarkDeviceInfo info = (LarkDeviceInfo) itemMarker.getObject();
+        mPresenter.updatePagerItem(info.getDeviceId(), itemView);
     }
 
 
-    @OnClick({R.id.device_box_act_tv, R.id.device_phone_imgBtn, R.id.device_menu_tv, R.id.device_flush_imgBtn})
+    @OnClick({R.id.device_redpacket_img, R.id.device_box_act_tv, R.id.device_phone_imgBtn, R.id.device_menu_tv, R.id.device_flush_imgBtn})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.device_redpacket_img://红包跳转
+                String jumpUrl = (String) view.getTag();
+                Bundle data = new Bundle();
+                data.putString(QuestionCommunityActivity.H5_URL, jumpUrl);
+                Constants.toActivity(getActivity(), QuestionCommunityActivity.class, data);
+                break;
+
             case R.id.device_box_act_tv:
-                ArticleInfo info = (ArticleInfo) view.getTag();
+                AdBean info = (AdBean) view.getTag();
                 if (info != null) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(QuestionCommunityActivity.H5_URL, info.getPicUrl());
-                    bundle.putString(QuestionCommunityActivity.SHARE_PIC, info.getShareAddress());
-                    bundle.putString(QuestionCommunityActivity.SHARE_LINK, info.getArtLink());
+                    bundle.putString(QuestionCommunityActivity.H5_URL, info.getAdJumpLink());
+                    bundle.putString(QuestionCommunityActivity.SHARE_PIC, info.getAdPicUrl());
+                    bundle.putString(QuestionCommunityActivity.SHARE_LINK, info.getAdJumpLink());
                     Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle);
                 }
                 break;
@@ -548,15 +576,8 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
             case R.id.device_info_cotainer:
                 MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_CLICK_MACHINE_DETAIL_FROM_UNDER_INFOVIEW);
                 Marker marker = (Marker) view.getTag();
-                gotoDeviceDetail((McDeviceInfo) marker.getObject());
+                gotoDeviceDetail((LarkDeviceInfo) marker.getObject());
                 break;
-//            case R.id.device_ques_ans_tv://问答
-//                MobclickAgent.onEvent(getActivity(), MobEvent.TIME_H5_COMMUNITY_PAGE);
-//                MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_HOME_ASK_CLICK);
-//                Bundle bundle = new Bundle();
-//                bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppCommunity);
-//                Constants.toActivity(getActivity(), QuestionCommunityActivity.class, bundle);
-//                break;
             case R.id.device_flush_imgBtn:
                 MobclickAgent.onEvent(getActivity(), UMengKey.count_machine_refresh);
                 flush();
@@ -575,12 +596,27 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     @Override
     public void onItemClick(View view, int position) {
         MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_CLICK_MACHINE_DETAIL_FROM_LIST);
-        gotoDeviceDetail((McDeviceInfo) view.getTag());
+        LarkDeviceDetail detail = (LarkDeviceDetail) view.getTag();
+        LarkDeviceInfo info = new LarkDeviceInfo();
+        info.setDeviceId(detail.getDeviceId());
+        info.setDeviceName(detail.getDeviceName());
+        info.setTypeId(detail.getTypeId());
+        info.setTypePicUrl(detail.getTypePicUrl());
+        info.setCategory(detail.getCategory());
+        info.setRoleType(detail.getRoleType());
+        info.setSnId(detail.getSnId());
+        info.setWorkStatus(detail.getWorkStatus());
+        LarkLocBean loc = detail.getLocation();
+        if (loc != null) {
+            info.setLat(loc.getLat());
+            info.setLng(loc.getLng());
+        }
+        gotoDeviceDetail(info);
     }
 
     @Override
     public View getMarkerInfoView(Marker marker) {
-        final McDeviceInfo bean = (McDeviceInfo) marker.getObject();
+        final LarkDeviceInfo bean = (LarkDeviceInfo) marker.getObject();
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.bottomMargin = DensityUtil.dip2px(getActivity(), 7);
         TextView title_tv = new TextView(getActivity());
@@ -594,7 +630,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         title_tv.setMaxEms(12);
         title_tv.setEllipsize(TextUtils.TruncateAt.END);
         title_tv.setSingleLine();
-        title_tv.setText(bean.getName());
+        title_tv.setText(bean.getDeviceName());
         title_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -602,7 +638,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 gotoDeviceDetail(bean);
             }
         });
-        int index = mDeviceList.indexOf(bean);
+        int index = mLarkDeviceList.indexOf(bean);
         if (deviceVp.getCurrentItem() != index) {
             deviceVp.setCurrentItem(index);
         }
@@ -610,14 +646,14 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     }
 
 
-    private void gotoDeviceDetail(McDeviceInfo info) {
+    private void gotoDeviceDetail(LarkDeviceInfo info) {
+        MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_CLICK_MACHINE_DETAIL);
         if (menuPop != null && menuPop.isShowing()) {
             menuPop.dismiss();
         }
-        MobclickAgent.onEvent(getActivity(), MobEvent.COUNT_CLICK_MACHINE_DETAIL);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.MC_DEVICEINFO, info);
-//        bundle.putSerializable(Constants.MC_LOC_NOW, locNow);
+        bundle.putLong(Constants.DEVICE_ID, info.getDeviceId());
+        bundle.putBoolean(Constants.IS_OWNER, Constants.isOwner(info.getRoleType()));
         Constants.toActivity(getActivity(), DeviceDetailActivity.class, bundle);
     }
 
@@ -631,11 +667,39 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         return false;
     }
 
+    @Override
+    public void onRefresh() {
+        isRefresh = true;
+        pageNum = 1;
+        mPresenter.getAllDeviceList(pageNum, getSearchKey());
+
+    }
+
+    public String getSearchKey() {
+        String searchKey = popSearchEdt.getText().toString();
+        if (searchKey.length() == 0) {
+            searchKey = null;
+        }
+        return searchKey;
+    }
+
+    @Override
+    public void onLoadMore() {
+        if (!isLastPage) {
+            isLoadMore = true;
+            pageNum++;
+            mPresenter.getAllDeviceList(pageNum, getSearchKey());
+        } else {
+            isLoadMore = false;
+            devicesListRlv.setNoMore(true);
+        }
+    }
+
 
     private class DevicePagerAdapter extends PagerAdapter {
         List<View> mViewList;
 
-        public DevicePagerAdapter(List<View> viewList) {
+        DevicePagerAdapter(List<View> viewList) {
             mViewList = viewList;
         }
 
@@ -660,6 +724,11 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView(mViewList.get(position));
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     @Override

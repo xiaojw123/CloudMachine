@@ -1,15 +1,16 @@
 package com.cloudmachine.ui.home.contract;
 
+import android.view.KeyEvent;
+
+import com.amap.api.location.AMapLocation;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.bean.ForceVBean;
-import com.cloudmachine.bean.HomeBannerBean;
-import com.cloudmachine.bean.QiToken;
-import com.cloudmachine.ui.home.model.PopItem;
+import com.cloudmachine.bean.H5Config;
+import com.cloudmachine.bean.MenuBean;
+import com.cloudmachine.bean.VersionInfo;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -20,47 +21,41 @@ import rx.Observable;
 
 public interface HomeContract {
     interface View extends BaseView {
-        void updateMessageCount(int count);
+        void updateMessageCount(int msgCount,int orderCount);
 
 
-        void updatePromotionInfo(List<PopItem> items);
 
-        void updateActivitySize(int count);
 
         void updateH5View();
-        void updateOrderView(boolean hasOrder);
+
+        void updateView(List<MenuBean> homeMenuBeans);
+        void reloadUrl();
+        void updateVersionRemind();
     }
 
     interface Model extends BaseModel {
+        Observable<VersionInfo> getVersionInfo();
+
+        Observable<JsonObject> getMessageUntreatedCount();
 
 
 
+        Observable<H5Config> getConfigInfo();
 
-        Observable<String> getMessageUntreatedCount(long memberId);
 
-        Observable<List<PopItem>> getPromotionModel(long memberId);
 
-        Observable<JsonObject> getH5ConfigInfo();
-
-        Observable<ArrayList<HomeBannerBean>> getHomeBannerInfo();
-        Observable<Integer> getCountByStatus(long memberId,int status);
+        Observable<List<MenuBean>> getHomeMenu();
 
     }
 
     abstract class Presenter extends BasePresenter<HomeContract.View, HomeContract.Model> {
+        public abstract void initHomeMenu(final boolean isFlush);
+        public abstract void  getVersionInfo();
+        public abstract void updateUnReadMessage();
+        public abstract void initH5Config();
 
 
-        public abstract void updateUnReadMessage(long memberId);
 
-
-        public abstract void getPromotionInfo(long memberId);
-
-        public abstract void getH5ConfigInfo();
-
-        public abstract void getHomeBannerInfo();
-
-
-        public abstract void getCountByStatus(long memberId,int status);
 
 
     }

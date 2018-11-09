@@ -3,10 +3,7 @@ package com.cloudmachine.ui.home.activity.fragment;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.TextAppearanceSpan;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +20,9 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.utils.AutoUtils;
 import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.bean.StatisticsInfo;
-import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.StatisticsAsync;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.text.SimpleDateFormat;
@@ -48,11 +43,8 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
 
     private Handler mHandler;
     private long mDeviceId;
-    private CommonTitleView title_layout;
     private ImageView mIvCalendar;
     private ArrayList<String> calendarList = new ArrayList<>();
-    private ListView lvCalendar;
-    private View mView;
     private PopupWindow mPopupWindow;
     private TextView mSelectMonth;
     private StringBuilder sb = new StringBuilder();
@@ -60,7 +52,6 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
     private TextView mTvTotalHoursValue;
     private TextView mTvAveHoursValue;
     private TextView mTvWorkRateValue;
-    private String mCurrentString;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy年MM月");
     private String mReplace;
     private TextView mEmptyTv;
@@ -100,25 +91,25 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
                 mTvTotalHoursValue.setText(toalWorkTime);
                 mTvAveHoursValue.setText(avgWorkTime);
                 mTvWorkRateValue.setText(workRate);
-                if (!TextUtils.isEmpty(statisticsInfo.getDeviceName()) && statisticsInfo.getRanking() != 0 && !TextUtils.isEmpty(statisticsInfo.getLeading())) {
-                    if (!isAdded()) {
-                        return false;
-                    }
-                    String strLine2 = statisticsInfo.getDeviceName() + "  累计工时数在云机械设备中排名" + statisticsInfo.getRanking() + ", 请继续保持哦。";
-                    SpannableString spanLine2 = new SpannableString(strLine2);
-                    spanLine2.setSpan(new TextAppearanceSpan(getActivity(), R.style.device_name), 0, statisticsInfo.getDeviceName().length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    spanLine2.setSpan(new TextAppearanceSpan(getActivity(), R.style.ranking), statisticsInfo.getDeviceName().length() + 16, statisticsInfo.getDeviceName().length() + 16 + String.valueOf(statisticsInfo.getRanking()).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    //Constants.MyLog(spanLine2.length()+"1111111111");
-                    if (TextUtils.isEmpty(mCurrentString)) {
-                        mCurrentString = mReplace;
-                    }
-                    String strLine3 = mCurrentString.substring(4) + "月份开工率已领先" + statisticsInfo.getLeading() + "%的云机械设备。";
-
-                    SpannableString spanLine3 = new SpannableString(strLine3);
-                    spanLine3.setSpan(new TextAppearanceSpan(getActivity(), R.style.ranking), mCurrentString.substring(4).length() + 8, mCurrentString.substring(4).length() + 8 + statisticsInfo.getLeading().length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {
-                    Constants.MyToast("当月没有数据");
-                }
+//                if (!TextUtils.isEmpty(statisticsInfo.getDeviceName()) && statisticsInfo.getRanking() != 0 && !TextUtils.isEmpty(statisticsInfo.getLeading())) {
+//                    if (!isAdded()) {
+//                        return false;
+//                    }
+//                    String strLine2 = statisticsInfo.getDeviceName() + "  累计工时数在云机械设备中排名" + statisticsInfo.getRanking() + ", 请继续保持哦。";
+//                    SpannableString spanLine2 = new SpannableString(strLine2);
+//                    spanLine2.setSpan(new TextAppearanceSpan(getActivity(), R.style.device_name), 0, statisticsInfo.getDeviceName().length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    spanLine2.setSpan(new TextAppearanceSpan(getActivity(), R.style.ranking), statisticsInfo.getDeviceName().length() + 16, statisticsInfo.getDeviceName().length() + 16 + String.valueOf(statisticsInfo.getRanking()).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    //Constants.MyLog(spanLine2.length()+"1111111111");
+//                    if (TextUtils.isEmpty(mCurrentString)) {
+//                        mCurrentString = mReplace;
+//                    }
+//                    String strLine3 = mCurrentString.substring(4) + "月份开工率已领先" + statisticsInfo.getLeading() + "%的云机械设备。";
+//
+//                    SpannableString spanLine3 = new SpannableString(strLine3);
+//                    spanLine3.setSpan(new TextAppearanceSpan(getActivity(), R.style.ranking), mCurrentString.substring(4).length() + 8, mCurrentString.substring(4).length() + 8 + statisticsInfo.getLeading().length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                } else {
+//                    Constants.MyToast("当月没有数据");
+//                }
                 break;
             case Constants.HANDLER_GETDATASTATISTICS_FAILD:
                 mEmptyTv.setVisibility(View.VISIBLE);
@@ -148,13 +139,13 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
     private void splitString(TextView tv) {
         String str1 = tv.getText().toString();
         String str2 = getString(str1, "年");
-        mCurrentString = getString(str2, "月");
+        String mCurrentString = getString(str2, "月");
         String part1 = mCurrentString.substring(0, 4);//生成日历左侧的时间格式
         String part2 = mCurrentString.substring(4);
         sb.setLength(0);
         sb.append(part2).append("/").append(part1);
         mSelectMonth.setText(sb.toString());
-        new StatisticsAsync(getActivity(), mHandler, mDeviceId, mCurrentString).execute();
+        new StatisticsAsync(mHandler, mDeviceId, mCurrentString).execute();
         //new StatisticsAsync(mContext, mHandler, 833, mCurrentString).execute();
     }
 
@@ -172,8 +163,8 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
 
     private void showPopupWindow() {
         if (mPopupWindow == null) {
-            mView = getActivity().getLayoutInflater().inflate(R.layout.check_calendar_view, null);
-            lvCalendar = (ListView) mView.findViewById(R.id.lv_calendar);
+            View mView = getActivity().getLayoutInflater().inflate(R.layout.check_calendar_view, null);
+            ListView lvCalendar = (ListView) mView.findViewById(R.id.lv_calendar);
             lvCalendar.setAdapter(new CheckCalendarAdapter());
             lvCalendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -261,8 +252,7 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
         int postion = s.indexOf(s1);
         int length = s1.length();
         int Length = s.length();
-        String newString = s.substring(0, postion) + s.substring(postion + length, Length);
-        return newString;//返回已经删除好的字符串  
+        return s.substring(0, postion) + s.substring(postion + length, Length);//返回已经删除好的字符串
     }
 
     private void closePopupWindow() {
@@ -300,7 +290,7 @@ public class StatisticsFragment extends BaseFragment implements Handler.Callback
 //            mViewReportBtn.setText("查看"+deviceName+"月度工作报表");
 //        }
         initCalendarData();
-        new StatisticsAsync(getActivity(), mHandler, mDeviceId, mReplace).execute();
+        new StatisticsAsync(mHandler, mDeviceId, mReplace).execute();
 
     }
 

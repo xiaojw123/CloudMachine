@@ -20,7 +20,7 @@
        android:layout_height="wrap_content"
        android:text="@string/no_desposit_detail"
        android:layout_gravity="center_horizontal"
-       android:layout_marginTop="@dimen/spa7"
+       android:layout_marginTop="@dimen/dimen_size_120"
        android:visibility="gone"
        />
     <com.jcodecraeer.xrecyclerview.XRecyclerView

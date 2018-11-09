@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.activities.SearchActivity;
+import com.cloudmachine.bean.SearchMemberItem;
 import com.cloudmachine.listener.OnClickEffectiveListener;
 import com.cloudmachine.bean.MemberInfo;
 import com.cloudmachine.utils.widgets.RadiusButtonView;
@@ -22,7 +23,7 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import java.util.List;
 
 public class McSearchMemberAdapter extends BaseAdapter {
-    private List<MemberInfo> dataResult;
+    private List<SearchMemberItem> dataResult;
     private Context context;
     private Handler handler;
     private LayoutInflater layoutInflater;
@@ -31,7 +32,7 @@ public class McSearchMemberAdapter extends BaseAdapter {
     private long deviceId;
     private int searchListType;
 
-    public McSearchMemberAdapter(List<MemberInfo> dataResult, int searchListType, Context context, Handler mHandler, long deviceId) {
+    public McSearchMemberAdapter(List<SearchMemberItem> dataResult, int searchListType, Context context, Handler mHandler, long deviceId) {
         this.context = context;
         this.handler = mHandler;
         this.deviceId = deviceId;
@@ -52,7 +53,7 @@ public class McSearchMemberAdapter extends BaseAdapter {
     }
 
     @Override
-    public MemberInfo getItem(int position) {
+    public SearchMemberItem getItem(int position) {
         return dataResult.get(position);
     }
 
@@ -83,13 +84,13 @@ public class McSearchMemberAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        if (searchListType == 3) {
+        if (searchListType == 1) {
             viewHolder.arrow_add.setText("添加");
         }
-        final MemberInfo dInfo = dataResult.get(position);
+        final SearchMemberItem dInfo = dataResult.get(position);
         String imgString = dInfo.getMiddlelogo();
-        viewHolder.title.setText(dInfo.getName());
-        viewHolder.summary.setText(dInfo.getMobi());
+        viewHolder.title.setText(dInfo.getNickName());
+        viewHolder.summary.setText(dInfo.getMobile());
         ImageLoader.getInstance().displayImage(imgString, viewHolder.info_img,
                 displayImageOptions, commImageLoadingLis);
         viewHolder.arrow.setVisibility(View.GONE);
@@ -123,8 +124,8 @@ public class McSearchMemberAdapter extends BaseAdapter {
 				intent_h.putExtra(Constants.P_MERMBERNAME, memberInfo.getName());
 				intent_h.putExtra(Constants.P_MERMBERROLE, memberInfo.getRole());
 				intent_h.putExtra(Constants.P_MERMBERPERMISSION, memberInfo.getPermissName());*/
-                MemberInfo memberInfo = dataResult.get(position);
-            if (searchListType == 3) {
+            SearchMemberItem memberInfo = dataResult.get(position);
+            if (searchListType == 1) {
                 ((SearchActivity) context).addMember(memberInfo);
             } else {
                 ((SearchActivity) context).showAlertView(memberInfo);

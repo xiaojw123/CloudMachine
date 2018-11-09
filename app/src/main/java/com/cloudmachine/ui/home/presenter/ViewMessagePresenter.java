@@ -1,8 +1,11 @@
 package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.base.bean.PageBean;
 import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.ui.home.contract.ViewMessageConract;
+import com.cloudmachine.utils.ToastUtils;
 
 import java.util.List;
 
@@ -11,28 +14,56 @@ import java.util.List;
  */
 
 public class ViewMessagePresenter extends ViewMessageConract.Presenter {
+
     @Override
-    public void deleteMessage(long memberId, final MessageBO msgBo) {
-      mRxManage.add(mModel.deleteMessage(memberId,msgBo.getId()).subscribe(new RxSubscriber<String>(mContext,false) {
-          @Override
-          protected void _onNext(String s) {
-              mView.returnDeleteMessage(msgBo);
-          }
+    public void getMessageList(int page) {
+        mRxManage.add(mModel.getMessageList(page).subscribe(new RxSubscriber<BaseRespose<List<MessageBO>>>(mContext) {
+            @Override
+            protected void _onNext(BaseRespose<List<MessageBO>> br) {
+                PageBean page = br.getPage();
+                boolean isFirst = false;
+                boolean isLast = false;
+                if (page != null) {
+                    isFirst = page.first;
+                    isLast = page.last;
+                }
+                mView.updateMessageList(br.getResult(), isFirst, isLast);
+            }
 
-          @Override
-          protected void _onError(String message) {
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(mContext, message);
+                mView.updateMessageError();
+            }
+        }));
 
-          }
-      }));
     }
 
     @Override
-    public void acceptMessage(long memberId, final MessageBO msgBO) {
-        mRxManage.add(mModel.acceptMessage(memberId, String.valueOf(msgBO.getId())).subscribe(new RxSubscriber<String>(mContext,false) {
+    public void receiveMessage(final MessageBO item, final int status) {
+        mRxManage.add(mModel.receiveMessage(item.getId(), status).subscribe(new RxSubscriber<String>(mContext) {
             @Override
-            protected void _onNext(String stringBaseRespose) {
-                msgBO.setStatus(3);
-                mView.returnAcceptMessage();
+            protected void _onNext(String s) {
+                item.setStatus(status);
+                mView.updateListAdapter();
+
+            }
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(mContext, message);
+
+            }
+        }));
+
+    }
+
+    @Override
+    public void deleteMessage(final MessageBO msgBo) {
+        mRxManage.add(mModel.deleteMessage(msgBo.getId()).subscribe(new RxSubscriber<String>(mContext, false) {
+            @Override
+            protected void _onNext(String s) {
+                mView.returnDeleteMessage(msgBo);
             }
 
             @Override
@@ -40,35 +71,16 @@ public class ViewMessagePresenter extends ViewMessageConract.Presenter {
 
             }
         }));
-
-
     }
 
-    @Override
-    public void rejectMessage(long memberId, final MessageBO msgBO) {
-        mRxManage.add(mModel.rejectMessage(memberId, String.valueOf(msgBO.getId())).subscribe(new RxSubscriber<String>(mContext,false) {
-            @Override
-            protected void _onNext(String stringBaseRespose) {
-                msgBO.setStatus(2);
-                mView.returnRejectMessage();
-            }
-
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
-
-
-    }
 
     @Override
-    public void updateMsgStatus(long memberId, final MessageBO msgBO) {
-        mRxManage.add(mModel.updateMsgStatus(memberId,String.valueOf(msgBO.getId())).subscribe(new RxSubscriber<String>(mContext,false) {
+    public void updateMsgStatus(final MessageBO msgBO) {
+        mRxManage.add(mModel.updateMsgStatus(msgBO.getId()).subscribe(new RxSubscriber<String>(mContext) {
             @Override
-            protected void _onNext(String stringBaseRespose) {
+            protected void _onNext(String s) {
                 msgBO.setStatus(4);
-                mView.updateMsgStatus();
+                mView.updateListAdapter();
             }
 
             @Override
@@ -76,56 +88,7 @@ public class ViewMessagePresenter extends ViewMessageConract.Presenter {
 
             }
         }));
-
     }
 
-    @Override
-    public void getSystemMsg(long memberId) {
-        mRxManage.add(mModel.getSystemMsg(memberId).subscribe(new RxSubscriber<List<MessageBO>>(mContext, false) {
-            @Override
-            protected void _onNext(List<MessageBO> messageBOs) {
-                mView.returnGetSystemMsg(messageBOs);
-            }
 
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
-
-    }
-
-    @Override
-    public void getALLMsg(long memberId, int pageNo) {
-        mRxManage.add(mModel.getALLMsg(memberId,pageNo).subscribe(new RxSubscriber<List<MessageBO>>(mContext,false) {
-            @Override
-            protected void _onNext(List<MessageBO> messageBOs) {
-                mView.retrunGetAllMsg(messageBOs);
-            }
-
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
-
-    }
-
-    @Override
-    public void questionNeed(final long memberId) {
-        mRxManage.add(mModel.questionNeed(memberId).subscribe(new RxSubscriber<MessageBO>(mContext,false) {
-            @Override
-            protected void _onNext(MessageBO messageBO) {
-                messageBO.setMessageType(5);
-                mView.retrunQuestionNeed(messageBO);
-                getALLMsg(memberId,1);
-            }
-
-            @Override
-            protected void _onError(String message) {
-                getALLMsg(memberId,1);
-            }
-        }));
-
-    }
 }

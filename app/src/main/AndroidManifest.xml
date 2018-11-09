@@ -107,34 +107,6 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme">
 
-        <!-- <meta-data -->
-        <!-- android:name="com.taobao.android.hotfix.IDSECRET" -->
-        <!-- android:value="24604065-1" /> -->
-        <!-- <meta-data -->
-        <!-- android:name="com.taobao.android.hotfix.APPSECRET" -->
-        <!-- android:value="e489794ab324ddf3f5b26f53bd1e55ed" /> -->
-        <!-- <meta-data -->
-        <!-- android:name="com.taobao.android.hotfix.RSASECRET" -->
-        <!-- android:value="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnQX3myAaH+JR1olEebfYST/3Zjp11eJOn8EVVpkj5FDSK1rQfIER7c0TwHDzdjRJ8e0okJUoBdYeZBcUEyprQfEtyXpUxKSFTQFn+sb0VF27jtnEiBOoZQkOGyCHhX/xblk9ZfqQEAmKghh1D2ZAq/6iufUbayEdRXCpXPfpbpmzhOJs/NdykSfP5ZH6gK210lf9DmwsxJVX/yTShOhaw7iaCSNhnAzQbpCtl9EjvLAylg29zrAX0nxGrox6yqe4mZX5MpjljrC1ZqzHcfEyRgdMiWyaBv7g7dwFUyHl3LqKt2c1oULucal1iwbp7iICtQWxSr5LehHY9o3GPM3x1AgMBAAECggEAOQInqbvQDhR6dcYHpDmSwBcnzTnBDcM1gO5yk4kEInHynsgjyOA0t2dIvhbB4DovbOKRGNTk7q5is5O13bY5IorbJHZ8n68HPtsWUau/aSr9jvwmf5PxPv7JCW25rpoK6CTJkxWJThyKBXDxFKlZbG6Lzj3BIt1VAbRKckYbyZTWPni64oN7iSShu0TMkGTuXETXDzCNYRmCk8uLH4vWTen+8yJUDuwY4qIloqjCEz1KspTe4WYVL6+4HKsW3fRiiJOcR9lfDK09zAEewkgcUfnHxFNmqINihe14Z0uK/iQ0g9ZmNhviiuyTYjlbpSkpB9tZ/mVVh9lMRxdV3fQ/2QKBgQD+bOMNgd1Wzj32vPlhVSgoVJRudXvU4PqgloGHIjj09clewdnmqDSlfC27RCqtGudMPW1BcTeYiMRWTFeboU/MiiEJ28Qr2zIbK7afG3XiGEraAs0FugcwJQpFZiKtHfHQUfuDzx5LC/2xD1q8dJKh2fwhOVZ5gPQF+86V4ia7qwKBgQCoSn4zAXYologvkhzGFuWrv+jF9Sj+I4e/Oq5Z9gUfJNO5I2moruASFkVoZgSBlctXi97g5tMPT+GEyzy16qXVFyp52z0PaXwg4Vghq7Lup8+mbLFG5eggMkvW2unkWZ0Oxut9O5C6PpuuA0Nxp9St4M/28AHLoNOeBmz+dGOIXwKBgQD88D+idBMac5vCqwi6LTDpN30Be6cKckh4UmifcfRyA9CYddwtpdgBFT1ZyWEsC20brI3r26TL7lxS9z65qFtvG3vREz0p5Jch0AmUkHZXupLfvp0ZLmJrCMf3Spz6wqRe2MJVvhl9voQN/RfV94a3hcFVPm2sCfmP4VD2TYj4VQKBgA417B4me3HF9E4ACon3mQE9vUwp/YIoQeg17k8OZTRSCcbSZLOnwKgGVWoRY0QGABuuZe2b0Cq01hg+iSvbWpF52U5c4vUQNTkZjjWZqAxbAz/MYdPYyhcd6CWGasWrg4Wh6nSyuO/hJYg2IlXQlDbyit0ROzWUqQnpBP8fmOAFAoGBAJ6QSUBSUl3Boo+x/vxcKOaKNW4WdEp4hgQnA1lFjgWNQGjOdDNX3qzg9ZY44KNSmJaqZonUheXpbWX3efEC9V+dD8AmsAdqX67B7lkbXgTjgBBXeT3cXQ33UVm54Bg7AaqmIrsedhpzWRLF2KikPQ06ZCdlsOpgBA1QW2J9GJWK" /> -->
-
-
-        <!-- 配置兼容glide -->
-        <meta-data
-            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
-            android:value="GlideModule" />
-        <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="ffd30c2fe06c5aed9bf94e5068781c0a" />
-        <meta-data
-            android:name="design_width"
-            android:value="1080" />
-        <meta-data
-            android:name="design_height"
-            android:value="1920" />
-
-        <!-- 定位需要的服务 -->
-        <service android:name="com.amap.api.location.APSService" />
-
         <!-- 照相图片选择器 -->
         <activity
             android:name="me.iwf.photopicker.PhotoPickerActivity"
@@ -242,6 +214,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".ui.login.acticity.LoginActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
@@ -252,10 +225,6 @@
             android:name=".activities.UpdatePwdActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
-        <activity
-            android:name=".activities.SuggestBackActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".ui.login.acticity.FindPasswordActivity"
             android:screenOrientation="portrait"
@@ -345,10 +314,6 @@
             android:name=".activities.EvaluationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
-        <!-- 设置微信登录页面为透明 -->
-        <!-- android:launchMode="singleTask" -->
-        <!-- android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" -->
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
@@ -382,54 +347,102 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".ui.repair.activity.ViewRepairActivity"
+            android:name=".ui.home.activity.QuestionCommunityActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".ui.homepage.activity.QuestionCommunityActivity"
+            android:name=".ui.home.activity.ViewMessageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".ui.homepage.activity.ViewMessageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:name="cn.jpush.android.ui.PushActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.cloudmachine" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.BigPicActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.home.activity.HomeActivity"
+            android:launchMode="singleTask"
+            />
+        <activity android:name=".ui.home.activity.ActivitesActivity" />
+        <activity
+            android:name=".ui.home.activity.DeviceDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.home.activity.BaseMapActivity" />
+        <activity android:name=".ui.home.activity.RemarkInfoActivity" />
+        <activity android:name=".ui.home.activity.TrackHistoryActivity" />
+        <activity android:name=".ui.home.activity.RepairRecordNewActivity" />
+        <activity android:name=".ui.repair.activity.RepairFinishDetailActivity" />
+        <activity android:name=".ui.home.activity.PayDeviceInfoActivity" />
+        <activity android:name=".ui.home.activity.RepairDetailMapActivity" />
+        <activity android:name=".ui.home.activity.RoleSelActiviy" />
+        <activity android:name=".zxing.activity.CaptureActivity" />
+        <activity android:name=".ui.home.activity.WorkPickItemActivity" />
+        <activity android:name=".ui.home.activity.PurseActivity" />
+        <activity android:name=".ui.home.activity.ExtractionCashActivity" />
+        <activity android:name=".ui.home.activity.DepositActivity" />
+        <activity android:name=".ui.home.activity.RebundDepositActivity" />
+        <activity android:name="com.alipay.sdk.app.H5AuthActivity" />
+        <activity android:name=".ui.home.activity.MessageDetailActivity" />
+        <activity
+            android:name=".ui.home.activity.WorkVideoActivity"
+            android:hardwareAccelerated="true" />
+        <activity
+            android:name=".ui.home.activity.FullScreenActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ui.home.activity.OilSyncActivity" />
+        <activity android:name=".ui.home.activity.SalaryActivity" />
+        <activity android:name=".ui.home.activity.PersonChooseActivity" />
+        <activity android:name=".ui.home.activity.PayInfoActivity" />
+        <activity android:name=".ui.home.activity.IncomeSpendActivity" />
+        <activity android:name=".ui.home.activity.AuthPersonalInfoActivity" />
+        <activity
+            android:name=".camera.CameraActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ui.home.activity.BankVerifyctivity" />
+        <activity android:name=".ui.home.activity.ContactActivity" />
+        <activity android:name=".ui.home.activity.OperateActivity" />
+        <activity android:name=".ui.home.activity.AddressBookActivity" />
+        <activity android:name=".ui.home.activity.RelationActivity" />
+        <activity android:name=".ui.home.activity.InfoAuthActivity" />
+        <activity android:name=".ui.home.activity.IdCardHandActivity" />
+        <activity android:name=".ui.home.activity.PicPreviewActivity" />
+        <activity android:name=".ui.home.activity.IncomeProofActivity" />
+        <activity android:name=".ui.home.activity.MachineOwnershipActivity" />
+        <activity android:name=".ui.home.activity.PayCodeActivity" />
+        <activity android:name=".ui.home.activity.AddressActivity" />
+
+        <!-- 定位需要的服务 -->
+        <service android:name="com.amap.api.location.APSService" />
+        <service
+            android:name="cn.jpush.android.service.DownloadService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name="cn.jpush.android.service.PushService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTER" />
+                <action android:name="cn.jpush.android.intent.REPORT" />
+                <action android:name="cn.jpush.android.intent.PushService" />
+                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+            </intent-filter>
+        </service>
 
         <receiver android:name=".wxapi.AppRegister">
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
         </receiver>
-
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.cloudmachine.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true"
-            tools:replace="name,authorities,exported,grantUriPermissions">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"
-                tools:replace="name,resource" />
-        </provider>
-
-        <!--
-         <activity
-             android:name="activities.RepairBasicInfomationActivity"
-             android:screenOrientation="portrait"
-             android:theme="@style/AppTheme" >
-         </activity>
-        -->
-
-
-        <!--
-        <activity
-            android:name="com.cloudmachine.main.photoImgeView.ImagePagerActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            >
-        </activity>
-        -->
-
         <receiver android:name=".broadcast.DownloadReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
@@ -449,39 +462,6 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-
-        <!-- Required SDK核心功能 -->
-        <activity
-            android:name="cn.jpush.android.ui.PushActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-            <intent-filter>
-                <action android:name="cn.jpush.android.ui.PushActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="com.cloudmachine" />
-            </intent-filter>
-        </activity>
-        <!-- Required  SDK核心功能 -->
-        <service
-            android:name="cn.jpush.android.service.DownloadService"
-            android:enabled="true"
-            android:exported="false" />
-
-        <!-- Required SDK 核心功能 -->
-        <service
-            android:name="cn.jpush.android.service.PushService"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTER" />
-                <action android:name="cn.jpush.android.intent.REPORT" />
-                <action android:name="cn.jpush.android.intent.PushService" />
-                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
-            </intent-filter>
-        </service>
-
-        <!-- Required SDK核心功能 -->
         <receiver
             android:name="cn.jpush.android.service.PushReceiver"
             android:enabled="true">
@@ -521,18 +501,37 @@
             </intent-filter>
         </receiver>
 
-        <!-- Required  . Enable it you can get statistics data with channel -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.cloudmachine.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="name,authorities,exported,grantUriPermissions">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                tools:replace="name,resource" />
+        </provider>
+
+        <!-- 配置兼容glide -->
+        <meta-data
+            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+            android:value="GlideModule" />
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="ffd30c2fe06c5aed9bf94e5068781c0a" />
+        <meta-data
+            android:name="design_width"
+            android:value="1080" />
+        <meta-data
+            android:name="design_height"
+            android:value="1920" />
         <meta-data
             android:name="JPUSH_CHANNEL"
             android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="${JPUSH_KEY_VALUE}" />
-        <!--
-            UMENG_APPKEY
-            线上环境:59e5ba57677baa51d3000b93
-            测试环境:57bd696d67e58e71d3000d02
-        -->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="${UMENG_KEY_VALUE}" />
@@ -540,66 +539,17 @@
             android:name="UMENG_CHANNEL"
             android:value="cloudm" />
 
-        <activity
-            android:name=".activities.BigPicActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ui.home.activity.HomeActivity" />
-        <activity android:name=".ui.home.activity.ActivitesActivity" />
-        <activity
-            android:name=".ui.home.activity.DeviceDetailActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ui.home.activity.BaseMapActivity" />
-        <activity android:name=".ui.home.activity.RemarkInfoActivity" />
-        <activity android:name=".ui.home.activity.TrackHistoryActivity" />
-        <activity android:name=".ui.home.activity.RepairRecordNewActivity" />
-        <activity android:name=".ui.repair.activity.RepairFinishDetailActivity" />
-        <activity android:name=".ui.home.activity.PayDeviceInfoActivity" />
-        <activity android:name=".ui.home.activity.RepairDetailMapActivity" />
-        <activity android:name=".ui.home.activity.ConsumptionActivity" />
-        <activity android:name=".ui.home.activity.RoleSelActiviy" />
-        <activity android:name=".activities.ViewCouponActivityNew" />
-        <activity android:name=".activities.ConponSecListActivity" />
-        <activity android:name=".zxing.activity.CaptureActivity" />
-        <activity android:name=".ui.home.activity.WorkPicListActivity" />
-        <activity android:name=".ui.home.activity.WorkPickItemActivity" />
-        <activity android:name=".ui.home.activity.PurseActivity" />
-        <activity android:name=".ui.home.activity.PurseDetailActivity" />
-        <activity android:name=".ui.home.activity.ExtractionCashActivity" />
-        <activity android:name=".ui.home.activity.DepositActivity" />
-        <activity android:name=".ui.home.activity.RebundDepositActivity" />
-        <activity android:name="com.alipay.sdk.app.H5AuthActivity" />
-        <activity android:name=".ui.home.activity.MessageDetailActivity" />
-        <activity
-            android:name=".ui.home.activity.WorkVideoActivity"
-            android:hardwareAccelerated="true" />
-        <activity
-            android:name=".ui.home.activity.FullScreenActivity"
-            android:screenOrientation="landscape" />
-        <activity android:name=".ui.home.activity.OilSyncActivity" />
-        <activity android:name=".ui.home.activity.AuthNameActivity" />
-        <activity android:name=".ui.home.activity.SalaryActivity" />
-        <activity android:name=".ui.home.activity.PersonChooseActivity" />
-        <activity android:name=".ui.home.activity.PayInfoActivity" />
-        <activity android:name=".ui.home.activity.IncomeSpendActivity" />
-        <activity android:name=".ui.home.activity.AuthPersonalInfoActivity" />
-        <activity android:name=".ui.home.activity.InfoManagerActivity" />
-        <activity android:name=".ui.home.activity.FaceInfoActivity" />
-        <activity
-            android:name=".camera.CameraActivity"
-            android:screenOrientation="landscape" />
-        <activity android:name=".ui.home.activity.BankVerifyctivity" />
-        <activity android:name=".ui.home.activity.TicketActivity" />
-        <activity android:name=".ui.home.activity.ContactActivity" />
-        <activity android:name=".ui.home.activity.OperateActivity" />
-        <activity android:name=".ui.home.activity.AddressBookActivity" />
-        <activity android:name=".ui.home.activity.RelationActivity" />
-        <activity android:name=".ui.home.activity.InfoAuthActivity" />
-        <activity android:name=".ui.home.activity.IdCardHandActivity" />
-        <activity android:name=".ui.home.activity.PicPreviewActivity" />
-        <activity android:name=".ui.home.activity.IncomeProofActivity" />
-        <activity android:name=".ui.home.activity.MachineOwnershipActivity" />
-        <activity android:name=".ui.home.activity.PayCodeActivity" />
-        <activity android:name=".ui.home.activity.AddressActivity"></activity>
+        <!-- <meta-data -->
+        <!-- android:name="com.taobao.android.hotfix.IDSECRET" -->
+        <!-- android:value="24604065-1" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="com.taobao.android.hotfix.APPSECRET" -->
+        <!-- android:value="e489794ab324ddf3f5b26f53bd1e55ed" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="com.taobao.android.hotfix.RSASECRET" -->
+        <!-- android:value="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnQX3myAaH+JR1olEebfYST/3Zjp11eJOn8EVVpkj5FDSK1rQfIER7c0TwHDzdjRJ8e0okJUoBdYeZBcUEyprQfEtyXpUxKSFTQFn+sb0VF27jtnEiBOoZQkOGyCHhX/xblk9ZfqQEAmKghh1D2ZAq/6iufUbayEdRXCpXPfpbpmzhOJs/NdykSfP5ZH6gK210lf9DmwsxJVX/yTShOhaw7iaCSNhnAzQbpCtl9EjvLAylg29zrAX0nxGrox6yqe4mZX5MpjljrC1ZqzHcfEyRgdMiWyaBv7g7dwFUyHl3LqKt2c1oULucal1iwbp7iICtQWxSr5LehHY9o3GPM3x1AgMBAAECggEAOQInqbvQDhR6dcYHpDmSwBcnzTnBDcM1gO5yk4kEInHynsgjyOA0t2dIvhbB4DovbOKRGNTk7q5is5O13bY5IorbJHZ8n68HPtsWUau/aSr9jvwmf5PxPv7JCW25rpoK6CTJkxWJThyKBXDxFKlZbG6Lzj3BIt1VAbRKckYbyZTWPni64oN7iSShu0TMkGTuXETXDzCNYRmCk8uLH4vWTen+8yJUDuwY4qIloqjCEz1KspTe4WYVL6+4HKsW3fRiiJOcR9lfDK09zAEewkgcUfnHxFNmqINihe14Z0uK/iQ0g9ZmNhviiuyTYjlbpSkpB9tZ/mVVh9lMRxdV3fQ/2QKBgQD+bOMNgd1Wzj32vPlhVSgoVJRudXvU4PqgloGHIjj09clewdnmqDSlfC27RCqtGudMPW1BcTeYiMRWTFeboU/MiiEJ28Qr2zIbK7afG3XiGEraAs0FugcwJQpFZiKtHfHQUfuDzx5LC/2xD1q8dJKh2fwhOVZ5gPQF+86V4ia7qwKBgQCoSn4zAXYologvkhzGFuWrv+jF9Sj+I4e/Oq5Z9gUfJNO5I2moruASFkVoZgSBlctXi97g5tMPT+GEyzy16qXVFyp52z0PaXwg4Vghq7Lup8+mbLFG5eggMkvW2unkWZ0Oxut9O5C6PpuuA0Nxp9St4M/28AHLoNOeBmz+dGOIXwKBgQD88D+idBMac5vCqwi6LTDpN30Be6cKckh4UmifcfRyA9CYddwtpdgBFT1ZyWEsC20brI3r26TL7lxS9z65qFtvG3vREz0p5Jch0AmUkHZXupLfvp0ZLmJrCMf3Spz6wqRe2MJVvhl9voQN/RfV94a3hcFVPm2sCfmP4VD2TYj4VQKBgA417B4me3HF9E4ACon3mQE9vUwp/YIoQeg17k8OZTRSCcbSZLOnwKgGVWoRY0QGABuuZe2b0Cq01hg+iSvbWpF52U5c4vUQNTkZjjWZqAxbAz/MYdPYyhcd6CWGasWrg4Wh6nSyuO/hJYg2IlXQlDbyit0ROzWUqQnpBP8fmOAFAoGBAJ6QSUBSUl3Boo+x/vxcKOaKNW4WdEp4hgQnA1lFjgWNQGjOdDNX3qzg9ZY44KNSmJaqZonUheXpbWX3efEC9V+dD8AmsAdqX67B7lkbXgTjgBBXeT3cXQ33UVm54Bg7AaqmIrsedhpzWRLF2KikPQ06ZCdlsOpgBA1QW2J9GJWK" /> -->
+
+        <activity android:name=".ui.home.activity.HostConfigActivity"></activity>
     </application>
 
 </manifest>

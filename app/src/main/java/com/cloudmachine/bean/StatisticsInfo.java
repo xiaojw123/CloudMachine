@@ -19,8 +19,8 @@ public class StatisticsInfo {
     private String workRate;
     private String mouth;
     private String avgWorkTime;
-    private long ranking;
-    private String leading;
+//    private long ranking;
+//    private String leading;
 
     public String getTotalWorkTime() {
         return totalWorkTime;
@@ -78,21 +78,21 @@ public class StatisticsInfo {
         this.avgWorkTime = avgWorkTime;
     }
 
-    public long getRanking() {
-        return ranking;
-    }
+//    public long getRanking() {
+//        return ranking;
+//    }
+//
+//    public void setRanking(long ranking) {
+//        this.ranking = ranking;
+//    }
 
-    public void setRanking(long ranking) {
-        this.ranking = ranking;
-    }
-
-    public String getLeading() {
-        return leading;
-    }
-
-    public void setLeading(String leading) {
-        this.leading = leading;
-    }
+//    public String getLeading() {
+//        return leading;
+//    }
+//
+//    public void setLeading(String leading) {
+//        this.leading = leading;
+//    }
 
     @Override
     public String toString() {
@@ -104,8 +104,6 @@ public class StatisticsInfo {
                 ", workRate='" + workRate + '\'' +
                 ", mouth='" + mouth + '\'' +
                 ", avgWorkTime='" + avgWorkTime + '\'' +
-                ", ranking=" + ranking +
-                ", leading='" + leading + '\'' +
                 '}';
     }
 }

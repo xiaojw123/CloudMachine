@@ -60,7 +60,7 @@
             android:visibility="gone"
             />
 
-        <android.support.v7.widget.RecyclerView
+        <com.jcodecraeer.xrecyclerview.XRecyclerView
             android:id="@+id/pop_device_list_rlv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

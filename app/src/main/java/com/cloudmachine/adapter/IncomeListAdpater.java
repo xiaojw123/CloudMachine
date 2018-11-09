@@ -35,7 +35,6 @@ import butterknife.OnClick;
 
 public class IncomeListAdpater extends BaseRecyclerAdapter<SalaryHistoryItem> implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
     private int mType;//1支付 其他 收入
-    private int tmpPos;
 
     public IncomeListAdpater(Context context, List<SalaryHistoryItem> items) {
         super(context, items);
@@ -49,7 +48,6 @@ public class IncomeListAdpater extends BaseRecyclerAdapter<SalaryHistoryItem> im
 
     @Override
     public int getItemViewType(int position) {
-        tmpPos = position;
         return position;
     }
 
@@ -163,7 +161,7 @@ public class IncomeListAdpater extends BaseRecyclerAdapter<SalaryHistoryItem> im
                 amountTv.setTextColor(mContext.getResources().getColor(R.color.c_ff8901));
             }
             amountTv.setText(String.valueOf(item.getSalaryAmount()));
-            timeTv.setText(item.getFoarmtDate());
+            timeTv.setText(item.getPayoffTime());
 
         }
     }

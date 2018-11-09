@@ -54,8 +54,7 @@ public class PersonChooseActivity extends BaseAutoLayoutActivity implements View
         mTitleView.setRightClickListener(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new LineItemDecoration(this));
-        long meberId = UserHelper.getMemberId(this);
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getMchineOperators(meberId).compose(RxHelper.<List<Operator>>handleResult()).subscribe(new RxSubscriber<List<Operator>>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getMchineOperators().compose(RxHelper.<List<Operator>>handleResult()).subscribe(new RxSubscriber<List<Operator>>(mContext) {
             @Override
             protected void _onNext(List<Operator> operators) {
                 if (operators != null && operators.size() > 0) {

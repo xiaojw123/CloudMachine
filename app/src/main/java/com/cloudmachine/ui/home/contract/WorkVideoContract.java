@@ -18,9 +18,9 @@ public interface WorkVideoContract {
 
 
     interface Model extends BaseModel {
-        Observable<BaseRespose<String>> videoUpload(long memberId, String deviceId, String id);
+        Observable<BaseRespose<String>> videoUpload(String deviceId, String id);
 
-        Observable<VideoBean> getVideoList(long memberId, String deviceId,String startTime,String endTime);
+        Observable<VideoBean> getVideoList(String deviceId,String startTime,String endTime);
 
     }
 
@@ -32,9 +32,9 @@ public interface WorkVideoContract {
     }
 
     abstract class Presenter extends BasePresenter<WorkVideoContract.View,WorkVideoContract.Model> {
-        public abstract void videoUpload(long memberId, String deviceId, String id);
+        public abstract void videoUpload(String deviceId, String id);
 
-        public abstract void getVideoList(long memberId, String deviceId,String startTime,String endTime);
+        public abstract void getVideoList(String deviceId,String startTime,String endTime);
 
     }
 

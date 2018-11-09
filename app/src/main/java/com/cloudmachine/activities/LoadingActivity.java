@@ -1,45 +1,35 @@
 package com.cloudmachine.activities;
 
 
-import android.app.ActivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.support.v4.view.NestedScrollingParent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.cloudmachine.BuildConfig;
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.AdBean;
-import com.cloudmachine.bean.MenuBean;
 import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.chart.highlight.HorizontalBarHighlighter;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.DataSupportManager;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.api.Api;
-import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.HomeActivity;
-import com.cloudmachine.ui.home.activity.IncomeSpendActivity;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -94,7 +84,6 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
             JPushInterface.setAliasAndTags(getApplicationContext(), MemeberKeeper.getOauth(this).getId().toString(), null, null);
         }
 
-
     }
 
 
@@ -134,11 +123,17 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
                     item.setTimeStamp(CommonUtils.getDateStamp());
                     item.save();
                 }
-                timeCount = item.getAdTime();
+                timeCount = item.getAdStopTime();
                 screenAdLayout.setVisibility(View.VISIBLE);
                 splashImg.setVisibility(View.GONE);
-                Glide.with(mContext).load(item.getAdLink()).into(screenAdimg);
-                screenAdimg.setTag(item.getOpenLink());
+                Glide.with(mContext).load(item.getAdPicUrl()).into(screenAdimg);
+                String adJumpLinik=item.getAdJumpLink();
+                if (!TextUtils.isEmpty(adJumpLinik)){
+                    screenAdimg.setEnabled(true);
+                    screenAdimg.setTag(adJumpLinik);
+                }else{
+                    screenAdimg.setEnabled(false);
+                }
                 screenAdtimerTv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -230,9 +225,9 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.screen_adimg:
-                cancelTimer();
                 Object obj = view.getTag();
                 if (obj != null) {
+                    cancelTimer();
                     MobclickAgent.onEvent(this, MobEvent.TIME_H5_START_AD);
                     String openUrl = (String) obj;
                     Bundle bundle = new Bundle();
@@ -247,6 +242,7 @@ public class LoadingActivity extends BaseAutoLayoutActivity implements Callback 
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
+
         }
     }
 }

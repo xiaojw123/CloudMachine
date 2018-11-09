@@ -35,8 +35,11 @@ import com.cloudmachine.adapter.PhotoAdapter;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
+import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.EditListInfo;
-import com.cloudmachine.bean.MachineTypeInfo;
+import com.cloudmachine.bean.EmunBean;
+import com.cloudmachine.bean.LarkLocBean;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.NewRepairInfo;
@@ -44,9 +47,11 @@ import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.DeviceHelper;
 import com.cloudmachine.helper.MobEvent;
+import com.cloudmachine.helper.QiniuManager;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.listener.RecyclerItemClickListener;
-import com.cloudmachine.net.task.MachineTypesListAsync;
+import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.net.task.SubmitRepairAsync;
 import com.cloudmachine.ui.repair.contract.NewRepairContract;
 import com.cloudmachine.ui.repair.model.NewRepairModel;
@@ -59,13 +64,12 @@ import com.cloudmachine.utils.PictureUtil;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UMengKey;
-import com.cloudmachine.utils.URLs;
-import com.cloudmachine.utils.UploadPhotoUtils;
 import com.cloudmachine.utils.photo.util.PublicWay;
 import com.cloudmachine.utils.photo.util.Res;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +83,7 @@ import me.iwf.photopicker.PhotoPreview;
  * @author shixionglu 新增报修页面
  */
 public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter, NewRepairModel> implements
-        Callback, OnClickListener, NewRepairContract.View {
+        Callback, OnClickListener, NewRepairContract.View, QiniuManager.OnKeyUploadListener {
     public static final String DEFAULT_LOCAITOIN = "defualt_location";
     public static final String DEFAULT_PROVINCE = "defualt_province";
     public static final String KEY_LOC_LNG = "loc_lng";
@@ -112,6 +116,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     Map<String, String> selectPhotosMap = new HashMap<>();
     private String typeId, brandId, modelId;
     String memberId;
+    McDeviceInfo selDeviceInfo;
 
 
     @Override
@@ -130,8 +135,32 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         getIntentData();
         initView();
         initLocation();
+        obtainMachineTypeList();
+    }
 
-        new MachineTypesListAsync(mContext, mHandler).execute(memberId);
+    public void obtainMachineTypeList() {
+
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getEnum(Constants.MACHINE_TYPE).compose(RxHelper.<List<EmunBean>>handleResult())
+                .subscribe(new RxSubscriber<List<EmunBean>>(mContext) {
+                    @Override
+                    protected void _onNext(List<EmunBean> emumList) {
+                        if (emumList != null && emumList.size() > 0) {
+                            EmunBean emunItem = emumList.get(0);
+                            if (emunItem != null) {
+                                deviceType = emunItem.getValueName();
+                                setTextToView(tvType, deviceType);
+                                typeId = String.valueOf(emunItem.getKeyType());
+                                deviceModel = "";
+                            }
+                        }
+                    }
+
+                    @Override
+                    protected void _onError(String message) {
+
+                    }
+                }));
+
 
     }
 
@@ -214,7 +243,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
             et_rackIdname.setText(repairInfo.getVmachinenum());
             typeId = repairInfo.getTypeId();
             brandId = repairInfo.getBrandId();
-            modelId = repairInfo.getModelname();
+            modelId = repairInfo.getModelId();
             setTextToView(tvType, repairInfo.getTypeName());
             setTextToView(tvModel, repairInfo.getModelname());
             setTextToView(tvBrand, repairInfo.getBrandname());
@@ -231,7 +260,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         macopAddress.setOnClickListener(this);
         checkMac.setOnClickListener(checkMacListener);
         btnSubmitNow.setOnClickListener(btnSubmitListener);
-        if (UserHelper.getMyDevices().size() > 0) {
+        if (UserHelper.isOwner(mContext, UserHelper.getMemberId(mContext))) {
             showButton.setVisibility(View.VISIBLE);
             tvCheckMac.setVisibility(View.VISIBLE);
         }
@@ -253,8 +282,12 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
     };
 
     private void checkMac() {
+        Bundle data=new Bundle();
+        if (selDeviceInfo!=null){
+            data.putLong(Constants.DEVICE_ID,selDeviceInfo.getDeviceId());
+        }
         Constants.toActivityForR(NewRepairActivity.this,
-                CheckMachineActivity.class, null, Constants.REQUEST_ToSearchDeviceActivity);
+                CheckMachineActivity.class, data, Constants.REQUEST_ToSearchDeviceActivity);
     }
 
     private void submitRepairInfo() {
@@ -312,14 +345,10 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
             Constants.MyToast("机器铭牌号码不能为空！");
         } else if (TextUtils.isEmpty(locAddress)) {
             Constants.MyToast("机器位置信息不能为空！");
-        }else  if (TextUtils.isEmpty(vdiscription)){
+        } else if (TextUtils.isEmpty(vdiscription)) {
             Constants.MyToast("故障描述不能为空！");
         } else {
-            long memberId = -1;
-            if (UserHelper.isLogin(this)) {
-                memberId = UserHelper.getMemberId(this);
-            }
-            mPresenter.getWarnMessage(memberId, vmacoptel, newRepairInfo);
+            mPresenter.getWarnMessage(vmacoptel, newRepairInfo);
         }
     }
 
@@ -452,28 +481,11 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
             case Constants.HANDLER_NEWREPAIR_FAILD:
                 ToastUtils.showToast(this, (String) msg.obj);
                 break;
-            case Constants.HANDLER_GETMACHINETYPES_SUCCESS:
-                List<MachineTypeInfo> mTypeInfo = (List<MachineTypeInfo>) msg.obj;
-                if (null != mTypeInfo && mTypeInfo.size() > 0) {
-                    MachineTypeInfo mInfo = mTypeInfo.get(0);
-                    if (null != mInfo) {
-                        deviceType = mInfo.getName();
-                        setTextToView(tvType, deviceType);
-                        typeId = String.valueOf(mInfo.getId());
-                        deviceModel = "";
-                    }
-                }
-                break;
             case Constants.HANDLER_UPLOAD_SUCCESS:
 //                String url = (String) msg.obj;
                 //向集合添加选中的url
 //                selectPhotos.add(url);
-                Map<String, String> paramsMap = (Map<String, String>) msg.obj;
-                selectPhotosMap.putAll(paramsMap);
-                for (Map.Entry<String, String> entry : selectPhotosMap.entrySet()) {
-                    AppLog.print("uploadsucess____entry key__" + entry.getKey() + "__value__" + entry.getValue());
 
-                }
 
                 break;
             default:
@@ -535,10 +547,17 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
             if (photos != null && photos.size() > 0) {
                 for (int i = 0; i < photos.size(); i++) {
                     if (requestCode == PhotoPicker.REQUEST_CODE) {
-                        String fileName = String.valueOf(System.currentTimeMillis());
-                        Bitmap smallBitmap = PictureUtil.getSmallBitmap(photos.get(i));
-                        String filename = FileUtils.saveBitmap(smallBitmap, fileName);
-                        UploadPhotoUtils.getInstance(this).upLoadFile(photos.get(i), filename, URLs.UPLOAD_AVATOR, mHandler);
+                        String photoKey=photos.get(i);
+                        String picName = String.valueOf(System.currentTimeMillis());
+                        Bitmap smallBitmap = PictureUtil.getSmallBitmap(photoKey);
+                        String fileName = FileUtils.saveBitmap(smallBitmap, picName);
+                        File file;
+                        if (!TextUtils.isEmpty(fileName)){
+                            file=new File(fileName);
+                        }else{
+                            file=new File(photoKey);
+                        }
+                        QiniuManager.uploadFile(mContext,this,file,"img_repair/",photos.get(i));
                     } else {
                         if (selectPhotosMap.size() > 0) {
                             String key = photos.get(i);
@@ -625,9 +644,9 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                 break;
             case Constants.CLICK_POSITION:
                 if (data != null) {
-                    McDeviceInfo item = (McDeviceInfo) data.getSerializableExtra("selInfo");
-                    if (item != null) {
-                        showMyDeviceInfo(item);
+                    selDeviceInfo = (McDeviceInfo) data.getSerializableExtra("selInfo");
+                    if (selDeviceInfo != null) {
+                        mPresenter.getLocactionInfo(selDeviceInfo.getDeviceId());
                     }
                 }
                 break;
@@ -641,26 +660,6 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         destroyLocation();
     }
 
-    private void showMyDeviceInfo(McDeviceInfo info) {
-        if (null != info) {
-            typeId = String.valueOf(info.getTypeId());
-            brandId = String.valueOf(info.getBrandId());
-            modelId = String.valueOf(info.getModelId());
-            vmachinenum = info.getRackId();
-            et_rackIdname.setText(vmachinenum);
-            vworkaddress = info.getLocation().getPosition();
-            province = info.getLocation().getProvince();
-            locLat = info.getLocation().getLat();
-            locLng = info.getLocation().getLng();
-            deviceId = String.valueOf(info.getLocation()
-                    .getDeviceId());
-            setTextToView(tvType, info.getCategory());
-            setTextToView(tvBrand, info.getBrand());
-            setTextToView(tvModel, info.getModel());
-            setTextToView(text_address, vworkaddress);
-        }
-
-    }
 
     @Override
     public void onClick(View v) {
@@ -712,12 +711,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         bundle.putString(Constants.P_TYPEID, typeId);
         bundle.putString(Constants.P_BRANDID, brandId);
         bundle.putString(Constants.P_MODELID, modelId);
-        bundle.putString(Constants.MEMBER_ID, memberId);
         Constants.toActivityForR(this, EditLayoutActivity.class, bundle, 0);
-    }
-
-    @Override
-    public void returnUploadPhoto(String url) {
     }
 
     @Override
@@ -728,4 +722,43 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
         showDialog(message, info);
     }
 
+    @Override
+    public void returnLocatDetail(LarkLocBean loc) {
+        if (selDeviceInfo != null) {
+            typeId = String.valueOf(selDeviceInfo.getTypeId());
+            brandId = String.valueOf(selDeviceInfo.getBrandId());
+            modelId = String.valueOf(selDeviceInfo.getModelId());
+            vmachinenum = selDeviceInfo.getRackId();
+            et_rackIdname.setText(vmachinenum);
+            deviceId = String.valueOf(selDeviceInfo.getDeviceId());
+            if (loc != null) {
+                vworkaddress = loc.getPosition();
+                province = loc.getProvince();
+                locLat = loc.getLat();
+                locLng = loc.getLng();
+            } else {
+                vworkaddress = "";
+                province = "";
+                locLat = 0;
+                locLng = 0;
+            }
+            setTextToView(tvType, selDeviceInfo.getCategory());
+            setTextToView(tvBrand, selDeviceInfo.getBrandName());
+            setTextToView(tvModel, selDeviceInfo.getModelName());
+            setTextToView(text_address, vworkaddress);
+        }
+    }
+
+
+    @Override
+    public void uploadSuccess(String key, String picUrl) {
+        Map<String, String> paramsMap = new HashMap<>();
+        paramsMap.put(key,picUrl);
+        selectPhotosMap.putAll(paramsMap);
+    }
+
+    @Override
+    public void uploadFailed() {
+
+    }
 }

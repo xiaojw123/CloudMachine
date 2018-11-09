@@ -13,14 +13,14 @@ public class WorkVideoPresenter extends WorkVideoContract.Presenter {
 
 
     @Override
-    public void videoUpload(long memberId, String deviceId, final String id) {
-        mRxManage.add(mModel.videoUpload(memberId, deviceId, id).subscribe(new RxSubscriber<BaseRespose<String>>(mContext) {
+    public void videoUpload(String deviceId, final String id) {
+        mRxManage.add(mModel.videoUpload(deviceId, id).subscribe(new RxSubscriber<BaseRespose<String>>(mContext) {
             @Override
             protected void _onNext(BaseRespose<String> respose) {
                 if (respose.success()) {
                     mView.returnVideoUploadSuccess();
                 } else {
-                    mView.returnVideoUploadError(respose.message);
+                    mView.returnVideoUploadError(respose.getMessage());
                 }
             }
 
@@ -34,8 +34,8 @@ public class WorkVideoPresenter extends WorkVideoContract.Presenter {
     }
 
     @Override
-    public void getVideoList(long memberId, String deviceId,String startTime,String endTime) {
-        mRxManage.add(mModel.getVideoList(memberId, deviceId, startTime, endTime).subscribe(new RxSubscriber<VideoBean>(mContext) {
+    public void getVideoList(String deviceId,String startTime,String endTime) {
+        mRxManage.add(mModel.getVideoList(deviceId, startTime, endTime).subscribe(new RxSubscriber<VideoBean>(mContext) {
             @Override
             protected void _onNext(VideoBean videoBean) {
                 if (videoBean != null) {

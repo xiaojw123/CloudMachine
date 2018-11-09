@@ -137,6 +137,6 @@ public class PayCodeAdapter extends BaseRecyclerAdapter<PayCodeItem> {
         } else if (boxType == 2) {
             config.setActivated(true);
         }
-        time.setText(CommonUtils.getDateStampF(item.getGmtCreate()));
+        time.setText(item.getGmtCreate());
     }
 }

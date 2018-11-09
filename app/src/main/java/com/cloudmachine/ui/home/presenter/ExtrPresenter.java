@@ -4,9 +4,10 @@ import android.text.TextUtils;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.bean.LarkMemberInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.ui.home.contract.ExtrContract;
-import com.cloudmachine.ui.home.model.CouponBean;
+import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.ToastUtils;
 
 import java.util.Map;
@@ -55,8 +56,8 @@ public class ExtrPresenter extends ExtrContract.Presenter {
     }
 
     @Override
-    public void unBind(long memberId, final int type) {
-        mRxManage.add(mModel.unBind(memberId, type).subscribe(new RxSubscriber<BaseRespose>(mContext) {
+    public void unBind(final int type) {
+        mRxManage.add(mModel.unBind(type).subscribe(new RxSubscriber<BaseRespose>(mContext) {
             @Override
             protected void _onNext(BaseRespose baseRespose) {
                 mView.returnUnBind(type, baseRespose.success());
@@ -98,12 +99,12 @@ public class ExtrPresenter extends ExtrContract.Presenter {
 
 
     @Override
-    public void getMemberInfo(final long memberId) {
+    public void getMemberInfo() {
 
-        mRxManage.add(mModel.getMemberInfo(memberId).subscribe(new RxSubscriber<Member>(mContext) {
+        mRxManage.add(mModel.getMemberInfo().subscribe(new RxSubscriber<LarkMemberInfo>(mContext) {
             @Override
-            protected void _onNext(Member member) {
-                mView.returnMemberInfo(member);
+            protected void _onNext(LarkMemberInfo info) {
+                mView.returnMemberInfo(CommonUtils.convertMember(info));
             }
 
             @Override

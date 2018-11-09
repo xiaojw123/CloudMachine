@@ -9,14 +9,11 @@ import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.URLs;
+import com.cloudmachine.utils.LarkUrls;
 import com.google.gson.Gson;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GetMobileCodeAsync extends ATask {
 
@@ -35,12 +32,12 @@ public class GetMobileCodeAsync extends ATask {
     @Override
     protected String doInBackground(String... params) {
         IHttp httpRequest = new HttpURLConnectionImp();
-        List<NameValuePair> list = new ArrayList<NameValuePair>();
-        list.add(new BasicNameValuePair("mobile", mobile));
-        list.add(new BasicNameValuePair("type", type));
         String result = null;
         try {
-            result = httpRequest.get(URLs.GETCODE_URL, list);
+            Map<String,String> paramsMap=new HashMap<>();
+            paramsMap.put("mobile",mobile);
+            paramsMap.put("type",type);
+            result = httpRequest.get(LarkUrls.GET_CODE_URL, paramsMap);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

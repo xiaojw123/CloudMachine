@@ -3,12 +3,9 @@ package com.cloudmachine.ui.home.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.bean.Member;
-import com.cloudmachine.ui.home.model.CouponBean;
+import com.cloudmachine.bean.LarkMemberInfo;
+import com.cloudmachine.bean.CouponBean;
 import com.google.gson.JsonObject;
-
-import java.util.Map;
 
 import rx.Observable;
 
@@ -19,21 +16,18 @@ import rx.Observable;
 public interface PurseContract {
 
     interface View extends BaseView {
-        void updateWalletAmountView(double walletAmount,double depositAmount,String jumpUrl);
-        void updateAvaildCouponSumNum(int sumNum);
-        void updateMemberInfo(Member member);
+        void updateWalletAmountView(double walletAmount,String jumpUrl);
+        void updateMemberInfo(LarkMemberInfo member);
     }
 
     interface Model extends BaseModel {
-        Observable<JsonObject> getWalletAmount(long memberId);
-        Observable<CouponBean> getAvaildCouponList(long memberid);
-        Observable<Member> getMemberInfo(long memberid);
+        Observable<JsonObject> getWalletAmount();
+        Observable<LarkMemberInfo> getMemberInfo();
     }
 
     public abstract class Presenter extends BasePresenter<PurseContract.View, PurseContract.Model> {
-        public abstract void getWalletAmount(long memberId);
-        public  abstract void getAvaildCouponList(long memberid);
-        public abstract void getMemberInfo(long memberid);
+        public abstract void getWalletAmount();
+        public abstract void getMemberInfo();
     }
 
 

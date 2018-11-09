@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.AuthInfoDetail;
 import com.cloudmachine.bean.TypeItem;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
@@ -44,7 +46,7 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
     @BindView(R.id.contact_mobile_tv)
     TextView mobileTv;
     @BindView(R.id.contact_name_tv)
-    TextView nameTv;
+    EditText nameTv;
     @BindView(R.id.contact_relation_tv)
     TextView relationTv;
     @BindView(R.id.contact_submit_btn)
@@ -52,8 +54,8 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
 
 
     PermissionsChecker mChecker;
-    int selectPos = -1;
     TypeItem typeItem;
+    int mFirstCode = -1;
 
 
     @Override
@@ -64,6 +66,18 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
         mChecker = new PermissionsChecker(mContext);
         submitBtn.setButtonClickEnable(false);
         submitBtn.setButtonClickListener(this);
+        String uniqueId = getIntent().getStringExtra(Constants.UNIQUEID);
+        getPersonalInfo(uniqueId, InfoAuthActivity.BNS_TYPE_CONTACT);
+    }
+
+    @Override
+    protected void returnInfoDetail(AuthInfoDetail infoDetail) {
+        mFirstCode = infoDetail.getCode();
+        String name=infoDetail.getEmergencyContactName();
+        nameTv.setText(name);
+        mobileTv.setText(infoDetail.getEmergencyContactMobile());
+        relationTv.setText(infoDetail.getEmergencyRelation());
+        nameTv.setSelection(name.length());
     }
 
     @Override
@@ -90,7 +104,13 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
                 String name = nameTv.getText().toString();
                 if (!TextUtils.isEmpty(name)) {
                     Bundle data = new Bundle();
-                    data.putInt(Constants.RELATION_POSITION, selectPos);
+                    if (typeItem != null) {
+                        data.putInt(Constants.RELATION_CODE, typeItem.getCode());
+                    } else {
+                        if (isInfoUpdate) {
+                            data.putInt(Constants.RELATION_CODE, mFirstCode);
+                        }
+                    }
                     Constants.toActivityForR(this, RelationActivity.class, data, SELECT_RELATION);
                 } else {
                     ToastUtils.showToast(mContext, "紧急联系人不能为空!");
@@ -113,7 +133,7 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).saveContacts(UserHelper.getMemberId(this), contactJarray.toString()).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).saveContacts(contactJarray.toString()).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
                 ToastUtils.showToast(mContext,"提交成功");
@@ -152,7 +172,6 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
             case SELECT_RELATION:
                 if (data != null) {
                     typeItem = data.getParcelableExtra(Constants.TYPE_ITEM);
-                    selectPos = data.getIntExtra(Constants.RELATION_POSITION, -1);
                     relationTv.setText(typeItem.getValue());
                     submitBtn.setButtonClickEnable(true);
                 }

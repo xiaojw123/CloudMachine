@@ -1,5 +1,6 @@
 package com.cloudmachine.net.task;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
@@ -9,7 +10,8 @@ import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.URLs;
+import com.cloudmachine.utils.LarkUrls;
+import com.cloudmachine.utils.ToastUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,11 +23,11 @@ import java.util.List;
 public class GetTagInfoAsync extends ATask {
 
     private Handler handler;
-    private boolean isAlience;
+    private Context mContext;
 
-    public GetTagInfoAsync(Handler mHandler,boolean isAlience) {
+    public GetTagInfoAsync(Handler mHandler, Context context) {
         this.handler = mHandler;
-        this.isAlience=isAlience;
+        mContext=context;
 
     }
 
@@ -35,8 +37,7 @@ public class GetTagInfoAsync extends ATask {
         List<NameValuePair> list = new ArrayList<NameValuePair>();
         String result = null;
         try {
-            String url=isAlience?URLs.GET_TAG_INFO_ALLIANCE:URLs.GET_TAG_INFO;
-            result = httpRequest.post(url, list);
+            result = httpRequest.get(LarkUrls.GET_EVALUATE_URL, null);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,8 +54,6 @@ public class GetTagInfoAsync extends ATask {
 
     @Override
     protected void decodeJson(String result) {
-        // TODO Auto-generated method stub
-        // 缓存数据第3步
         super.decodeJson(result);
         Message msg = Message.obtain();
         if (isSuccess) {
@@ -65,10 +64,8 @@ public class GetTagInfoAsync extends ATask {
             msg.what = Constants.HANDLER_GETTAGINFO_SUCCESS;
             msg.obj = bo.getResult();
             handler.sendMessage(msg);
-        } else {
-            msg.what = Constants.HANDLER_GETTAGINFO_FAILD;
-            msg.obj = message;
-            handler.sendMessage(msg);
+        }else{
+            ToastUtils.showToast(mContext,message);
         }
     }
 

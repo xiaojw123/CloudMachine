@@ -15,35 +15,20 @@ import com.cloudmachine.utils.ToastUtils;
  */
 
 public class PersonalDataPresenter extends PersonalDataContract.Presenter{
-    @Override
-    public void modifyNickName(long memberId, String key, String value) {
-        mRxManage.add(mModel.modifyNickName(memberId,key,value)
-        .subscribe(new RxSubscriber<String>(mContext,false) {
-            @Override
-            protected void _onNext(String s) {
-                mView.returnModifyNickName();
-            }
-
-            @Override
-            protected void _onError(String message) {
-                ToastUtils.error(message,true);
-            }
-        }));
-    }
 
     @Override
-    public void modifyLogo(long memberId, String key, String value) {
-        mRxManage.add(mModel.modifyLogo(memberId, key, value)
-        .subscribe(new RxSubscriber<String>(mContext,false) {
-            @Override
-            protected void _onNext(String s) {
-                mView.returnModifyLogo();
-            }
+    public void modifyMemberInfo(String nickName, String logo) {
+        mRxManage.add(mModel.modifyMemberInfo(nickName,logo)
+                .subscribe(new RxSubscriber<String>(mContext,false) {
+                    @Override
+                    protected void _onNext(String s) {
+                        mView.returnModifyLogo();
+                    }
 
-            @Override
-            protected void _onError(String message) {
-                ToastUtils.error(message,true);
-            }
-        }));
+                    @Override
+                    protected void _onError(String message) {
+                        ToastUtils.error(message,true);
+                    }
+                }));
     }
 }

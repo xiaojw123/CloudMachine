@@ -3,8 +3,8 @@ package com.cloudmachine.ui.home.contract;
 import com.cloudmachine.base.BaseModel;
 import com.cloudmachine.base.BasePresenter;
 import com.cloudmachine.base.BaseView;
-import com.cloudmachine.ui.home.model.CouponBean;
-import com.cloudmachine.ui.home.model.CouponItem;
+import com.cloudmachine.bean.CouponBean;
+import com.cloudmachine.bean.CouponItem;
 
 import java.util.List;
 

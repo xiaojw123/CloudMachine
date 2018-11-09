@@ -11,48 +11,39 @@ import com.cloudmachine.R;
 import com.cloudmachine.adapter.PhotoListAdapter;
 import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.RepairDetail;
 import com.cloudmachine.bean.WorkDetailBean;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.utils.Constants;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PayDeviceInfoActivity extends BaseAutoLayoutActivity {
-    private TextView tvBrand;
-    private TextView tvModel;
-    private TextView emptTv;
-    private LinearLayout detailLlt;
-    private TextView desTv;
-    private TextView noTv;
-    private TextView locTv;
-    private RecyclerView infoImgRlv;
-    ArrayList<String> logoList;
-    private TextView imgTitleTv;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_device_info);
-        WorkDetailBean workDetail = (WorkDetailBean) getIntent().getSerializableExtra(Constants.WORK_DETAIL);
-        String flag = getIntent().getStringExtra(Constants.FLAG);
-        logoList = getIntent().getStringArrayListExtra(Constants.LOGO_LIST);
-        imgTitleTv = (TextView) findViewById(R.id.device_info_title);
-        emptTv = (TextView) findViewById(R.id.pay_di_empty_tv);
-        noTv = (TextView) findViewById(R.id.pay_di_dno);
-        locTv = (TextView) findViewById(R.id.pay_di_loc);
-        desTv = (TextView) findViewById(R.id.pay_di_des);
-        detailLlt = (LinearLayout) findViewById(R.id.pay_di_detail_llt);
-        tvBrand = (TextView) findViewById(R.id.tv_device_brand);
-        tvModel = (TextView) findViewById(R.id.tv_device_model);
-        infoImgRlv = (RecyclerView) findViewById(R.id.device_info_rlv);
+        RepairDetail detail =getIntent().getParcelableExtra(Constants.REPAIR_DETAIL);
+        TextView imgTitleTv = (TextView) findViewById(R.id.device_info_title);
+        TextView emptTv = (TextView) findViewById(R.id.pay_di_empty_tv);
+        TextView noTv = (TextView) findViewById(R.id.pay_di_dno);
+        TextView locTv = (TextView) findViewById(R.id.pay_di_loc);
+        TextView desTv = (TextView) findViewById(R.id.pay_di_des);
+        LinearLayout  detailLlt = (LinearLayout) findViewById(R.id.pay_di_detail_llt);
+        TextView  tvBrand = (TextView) findViewById(R.id.tv_device_brand);
+        TextView  tvModel = (TextView) findViewById(R.id.tv_device_model);
+        RecyclerView infoImgRlv = (RecyclerView) findViewById(R.id.device_info_rlv);
         //刷新耗件详情列表
-        if (workDetail == null) {
+        if (detail == null) {
             emptTv.setVisibility(View.VISIBLE);
             detailLlt.setVisibility(View.GONE);
             return;
         }
+        List<String> logoList=detail.getAttachmentUrls();
         if (logoList != null && logoList.size() > 0) {
             imgTitleTv.setVisibility(View.VISIBLE);
             infoImgRlv.setVisibility(View.VISIBLE);
@@ -63,22 +54,12 @@ public class PayDeviceInfoActivity extends BaseAutoLayoutActivity {
             infoImgRlv.setAdapter(adapter);
         }
         //设置机器品牌
-        tvBrand.setText(workDetail.getVbrandname());
+        tvBrand.setText(detail.getBrandName());
         //设置机器型号
-        tvModel.setText(workDetail.getVmaterialname());
-//        rdDevicenameTv.setText(detailBean.getVbrandname());
-//        rdDevicenoTv.setText(detailBean.getVmaterialname());
-//        rdDescriptionTv.setText(detailBean.getVdiscription());
-
-        noTv.setText(workDetail.getVmachinenum());
-        locTv.setText(workDetail.getVworkaddress());
-        String description;
-        if ("0".equals(flag)) {
-            description = workDetail.getVdiscription();
-        } else {
-            description = workDetail.getCusdemanddesc();
-        }
-        desTv.setText(description);
+        tvModel.setText(detail.getModelName());
+        noTv.setText(String.valueOf(detail.getModelId()));
+        locTv.setText(detail.getAddressDetail());
+        desTv.setText(detail.getServiceDesc());
 
     }
 

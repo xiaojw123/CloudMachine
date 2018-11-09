@@ -1,6 +1,5 @@
 package com.cloudmachine.ui.home.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,18 +14,16 @@ import android.widget.TextView;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.BaseRecyclerAdapter;
 import com.cloudmachine.adapter.decoration.LineItemDecoration;
-import com.cloudmachine.adapter.decoration.SpaceItemDecoration;
 import com.cloudmachine.adapter.holder.BaseHolder;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.EmunBean;
 import com.cloudmachine.bean.TypeItem;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.ui.home.contract.ExtrContract;
 import com.cloudmachine.utils.Constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecyclerAdapter.OnItemClickListener {
@@ -46,10 +43,10 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
     }
 
     public void updateView(){
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getRelationType(0).compose(RxHelper.<List<TypeItem>>handleResult()).subscribe(new RxSubscriber<List<TypeItem>>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getEnum("relationShip").compose(RxHelper.<List<EmunBean>>handleResult()).subscribe(new RxSubscriber<List<EmunBean>>(mContext) {
             @Override
-            protected void _onNext(List<TypeItem> typeItems) {
-                RelationAdapter adapter = new RelationAdapter(mContext, typeItems);
+            protected void _onNext(List<EmunBean> items) {
+                RelationAdapter adapter = new RelationAdapter(mContext, items);
                 adapter.setOnItemClickListener(RelationActivity.this);
                 mRecyclerView.setAdapter(adapter);
 
@@ -81,10 +78,10 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
         }
     }
 
-    private class RelationAdapter extends BaseRecyclerAdapter<TypeItem> {
+    private class RelationAdapter extends BaseRecyclerAdapter<EmunBean> {
 
 
-        public RelationAdapter(Context context, List<TypeItem> items) {
+        public RelationAdapter(Context context, List<EmunBean> items) {
             super(context, items);
         }
 
@@ -97,7 +94,7 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
 
     }
 
-    private class RelationHolder extends BaseHolder<TypeItem> {
+    private class RelationHolder extends BaseHolder<EmunBean> {
 
         TextView nameTv;
         ImageView statusImg;
@@ -109,13 +106,13 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
         }
 
         @Override
-        public void initViewHolder(TypeItem item) {
+        public void initViewHolder(EmunBean item) {
 
         }
 
         @Override
-        public void initViewHolder(TypeItem item, int position) {
-            nameTv.setText(item.getValue());
+        public void initViewHolder(EmunBean item, int position) {
+            nameTv.setText(item.getValueName());
             if (selectPos>=0&&selectPos==position){
                 statusImg.setVisibility(View.VISIBLE);
             }else{

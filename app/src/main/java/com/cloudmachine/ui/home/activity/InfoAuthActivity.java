@@ -1,40 +1,42 @@
 package com.cloudmachine.ui.home.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.amap.api.maps.model.Text;
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.AuthBean;
-import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.widget.CommonTitleView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
-
-
+    public static final int BNS_TYPE_ENGINEER = 1;
+    public static final int BNS_TYPE_INCOME = 2;
+    public static final int BNS_TYPE_DEVICE = 3;
+    public static final int BNS_TYPE_ADDRESS = 4;
+    public static final int BNS_TYPE_CONTACT = 5;
+    public static final String IS_NEW_ADD = "is_new_add";
     @BindView(R.id.info_auth_name_tv)
     TextView infoAuthNameTv;
     @BindView(R.id.info_auth_idcard_tv)
@@ -78,7 +80,7 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
     String uniqueNo;
     String realName;
     int status1;
-    int lStatus0, lStatus1, lStatus2, lStatus3, lStatus4, lStatus5, lStatus6;
+    int lStatus0, lStatus1, lStatus2, lStatus3, lStatus4, lStatus5, lStatus6, lStatus7;
     boolean isFResume = true;
 
 
@@ -96,7 +98,7 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
     }
 
     private void initView() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getAuthInfo(UserHelper.getMemberId(this)).compose(RxHelper.<AuthBean>handleResult()).subscribe(new RxSubscriber<AuthBean>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getAuthInfo().compose(RxHelper.<AuthBean>handleResult()).subscribe(new RxSubscriber<AuthBean>(mContext) {
             @Override
             protected void _onNext(AuthBean authBean) {
                 uniqueNo = authBean.getUserUniqueNo();
@@ -111,21 +113,27 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
                 int status5 = authBean.getIncomeCheckStatus();
                 int status6 = authBean.getMachineCheckStatus();
                 int status7 = authBean.getResideAddressCheckStatus();
-                setAuthStatus(status0, idcardStatus);
-                setAuthStatus1(status1, relationStatus);//0未完善1已完善2已过期
-                setAuthStatus1(status2, operatorStatus);//0未授权1已授权
-                setAuthStatus1(status3, infoAuthBankStatus);//0未验证1已验证
-                setAuthStatus(status4, engineerContractStatus);
-                setAuthStatus(status5, personalIncomeStatus);
-                setAuthStatus(status6, deviceOwnerStatus);
-                setAuthStatus(status7, addressStatus);
-                if (authBean.getPlatformStatus() == 1) {//资金账号已开户
+                setAuthStatus(status0, authBean.getIdentityCheckStatusTxt(), idcardStatus);
+                setAuthStatus1(status1, authBean.getRelationAuthStatusTxt(), relationStatus);//0未完善1已完善2已过期
+                setAuthStatus1(status2, authBean.getOperatorAuthorizedStatusTxt(), operatorStatus);//0未授权1已授权
+                setAuthStatus1(status3, authBean.getCardFourElementAuthStatusTxt(), infoAuthBankStatus);//0未验证1已验证
+                setAuthStatus(status4, authBean.getLicenceCheckStatusTxt(), engineerContractStatus);
+                setAuthStatus(status5, authBean.getIncomeCheckStatusTxt(), personalIncomeStatus);
+                setAuthStatus(status6, authBean.getMachineCheckStatusTxt(), deviceOwnerStatus);
+                setAuthStatus(status7, authBean.getResideAddressCheckStatusTxt(), addressStatus);
+                int platformStatus = authBean.getPlatformStatus();
+                if (platformStatus == 1) {//资金账号已开户
                     modelContainer.setVisibility(View.VISIBLE);
+                    bankAccountContainer.setTag(ApiConstants.APPRzgj);
+                } else {
+                    if ((status0 = status1 = status2 = status3) == 1 && (status4 = status5 = status6 = status7) == 2) {
+                        obtainOpenAccountUrl();
+                    }
                 }
                 if (isFResume) {
                     isFResume = false;
                 } else {
-                    if (lStatus0 != status0 || lStatus1 != status1 || lStatus2 != status2 || lStatus3 != status3 || lStatus4 != status4 || lStatus5 != status5 || lStatus6 != status6) {
+                    if (lStatus0 != status0 || lStatus1 != status1 || lStatus2 != status2 || lStatus3 != status3 || lStatus4 != status4 || lStatus5 != status5 || lStatus6 != status6 || lStatus7 != status7) {
                         setResult(RES_UPDATE_TIKCET);
                     }
                 }
@@ -136,6 +144,8 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
                 lStatus4 = status4;
                 lStatus5 = status5;
                 lStatus6 = status6;
+                lStatus7 = status7;
+
             }
 
             @Override
@@ -146,23 +156,36 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
         }));
     }
 
+    private void obtainOpenAccountUrl() {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getOpenAccountUrl().compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+            @Override
+            protected void _onNext(String s) {
+                if (!TextUtils.isEmpty(s)) {
+                    bankAccountContainer.setTag(s);
+                    modelContainer.setVisibility(View.VISIBLE);
+                } else {
+                    modelContainer.setVisibility(View.GONE);
+                }
+            }
 
-    public void setAuthStatus(int status, TextView tv) {
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+
+
+    }
+
+    public void setAuthStatus(int status, String statusTxt, TextView tv) {
         ViewGroup container = (ViewGroup) tv.getParent();
-        String statusText = "待审核";
         switch (status) {
             case 0://待审
             case 3://失败
-                if (tv == addressStatus) {
-                    statusText = "待完善";
-                } else {
-                    statusText = "待上传";
-                }
                 setDefaultStausView(tv, container);
                 break;
             case 1://审核中
-                statusText = "审核中";
-                if (tv != deviceOwnerStatus) {
+                if (tv == idcardStatus) {
                     container.setEnabled(false);
                 }
                 tv.setTextColor(getResources().getColor(R.color.c_ff8901));
@@ -171,57 +194,43 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
                 tv.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
             case 2://完成
-                statusText = "已完善";
+                if (tv == idcardStatus) {
+                    container.setEnabled(false);
+                }
                 setCompleteStatusView(tv, container);
                 break;
         }
-        tv.setText(statusText);
+        tv.setText(statusTxt);
     }
 
-    public void setAuthStatus1(int status, TextView tv) {
+    public void setAuthStatus1(int status, String statusTxt, TextView tv) {
         ViewGroup container = (ViewGroup) tv.getParent();
-        String statusText = "待完善";
         switch (status) {
             case 0:
             case 2:
-                if (tv == operatorStatus) {
-                    statusText = "待授权";
-                } else if (tv == infoAuthBankStatus) {
-                    statusText = "待验证";
-                } else {
-                    statusText = "待完善";
-                }
                 setDefaultStausView(tv, container);
                 break;
             case 1:
-                if (tv == operatorStatus) {
-                    statusText = "已授权";
-                } else if (tv == infoAuthBankStatus) {
-                    statusText = "已验证";
-                } else {
-                    statusText = "已完善";
-                }
+                container.setEnabled(false);
                 setCompleteStatusView(tv, container);
                 break;
-            case 3:
-                if (tv == operatorStatus) {
-                    statusText = "审核中";
-                }
-                container.setEnabled(false);
-                tv.setTextColor(getResources().getColor(R.color.c_ff8901));
-                tv.setCompoundDrawables(null, null, null, null);
-                tv.setCompoundDrawablePadding(0);
-                tv.setBackgroundColor(getResources().getColor(R.color.transparent));
-                break;
+//            case 3:
+//                if (tv == operatorStatus) {
+//                    statusText = "审核中";
+//                    container.setEnabled(false);
+//                }
+//                tv.setTextColor(getResources().getColor(R.color.c_ff8901));
+//                tv.setCompoundDrawables(null, null, null, null);
+//                tv.setCompoundDrawablePadding(0);
+//                tv.setBackgroundColor(getResources().getColor(R.color.transparent));
+//                break;
         }
-        tv.setText(statusText);
+        tv.setText(statusTxt);
 
     }
 
+
     private void setCompleteStatusView(TextView tv, ViewGroup container) {
-        if (tv != deviceOwnerStatus) {
-            container.setEnabled(false);
-        }
         tv.setTextColor(getResources().getColor(R.color.c_64baa4));
         Drawable leftDrawable = getResources().getDrawable(R.drawable.ic_item_status_left);
         leftDrawable.setBounds(0, 0, leftDrawable.getIntrinsicWidth(), leftDrawable.getIntrinsicHeight());
@@ -234,9 +243,7 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
     }
 
     private void setDefaultStausView(TextView tv, ViewGroup container) {
-        if (tv != deviceOwnerStatus) {
-            container.setEnabled(true);
-        }
+        container.setEnabled(true);
         tv.setTextColor(getResources().getColor(R.color.c_ff8901));
         Drawable rightDrawable = getResources().getDrawable(R.drawable.arrow_right);
         rightDrawable.setBounds(0, 0, rightDrawable.getIntrinsicWidth(), rightDrawable.getIntrinsicHeight());
@@ -257,11 +264,15 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
             case R.id.info_auth_address:
                 Bundle addressData = new Bundle();
                 addressData.putString(Constants.UNIQUEID, uniqueNo);
+                addressData.putBoolean(IS_NEW_ADD, lStatus7 == 0);
                 Constants.toActivity(this, AddressActivity.class, addressData);
                 break;
 
             case R.id.info_auth_relation_container://联系人
-                Constants.toActivity(this, ContactActivity.class, null);
+                Bundle contactData = new Bundle();
+                contactData.putString(Constants.UNIQUEID, uniqueNo);
+                contactData.putBoolean(IS_NEW_ADD, lStatus1 == 0);
+                Constants.toActivity(this, ContactActivity.class, contactData);
                 break;
             case R.id.info_auth_idcard_container:
                 Bundle idData = new Bundle();
@@ -276,6 +287,9 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
                     CommonUtils.showDialog(mContext, "您尚未完善联系人信息，请先完善", "取消", "去完善", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            Bundle contactData = new Bundle();
+                            contactData.putString(Constants.UNIQUEID, uniqueNo);
+                            contactData.putBoolean(IS_NEW_ADD, lStatus1 == 0);
                             Constants.toActivity(InfoAuthActivity.this, ContactActivity.class, null);
                         }
                     });
@@ -291,11 +305,13 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
                 Bundle egData = new Bundle();
                 egData.putString(Constants.PAGET_TYPE, IncomeProofActivity.ENGINEER_CONTRACT);
                 egData.putString(Constants.UNIQUEID, uniqueNo);
+                egData.putBoolean(IS_NEW_ADD, lStatus4 == 0);
                 Constants.toActivity(this, IncomeProofActivity.class, egData);
                 break;
             case R.id.info_auth_personal_income:
                 Bundle piData = new Bundle();
                 piData.putString(Constants.UNIQUEID, uniqueNo);
+                piData.putBoolean(IS_NEW_ADD, lStatus5 == 0);
                 piData.putString(Constants.PAGET_TYPE, IncomeProofActivity.INCOME_PROOF);
                 Constants.toActivity(this, IncomeProofActivity.class, piData);
                 break;
@@ -305,10 +321,13 @@ public class InfoAuthActivity extends BaseAutoLayoutActivity implements View.OnC
                 Constants.toActivity(this, MachineOwnershipActivity.class, deData);
                 break;
             case R.id.bankaccount_container:
-                Bundle bkData = new Bundle();
-                bkData.putString(QuestionCommunityActivity.H5_URL, ApiConstants.APPRzgj);
-                bkData.putString(QuestionCommunityActivity.H5_TITLE, "融资管家");
-                Constants.toActivity(this, QuestionCommunityActivity.class, bkData);
+                Object obj = view.getTag();
+                if (obj != null) {
+                    Bundle bkData = new Bundle();
+                    bkData.putString(QuestionCommunityActivity.H5_URL, (String)obj);
+                    bkData.putString(QuestionCommunityActivity.H5_TITLE, "融资管家");
+                    Constants.toActivity(this, QuestionCommunityActivity.class, bkData);
+                }
                 break;
         }
     }

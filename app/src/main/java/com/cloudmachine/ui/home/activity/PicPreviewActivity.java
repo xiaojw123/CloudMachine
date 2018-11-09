@@ -1,10 +1,8 @@
 package com.cloudmachine.ui.home.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -27,6 +25,7 @@ public class PicPreviewActivity extends BaseAutoLayoutActivity implements View.O
     public static final String PREVIEW_IDCARD = "p_idcard";
     public static final String PREVIEW_INCOME = "p_income";
     public static final String PRERIVEW_ENGER = "p_enger";
+    public static final String PRERIVEW_MACHINE="p_machine";
     @BindView(R.id.preview_back_img)
     ImageView backImg;
     @BindView(R.id.preview_title_tv)
@@ -34,6 +33,7 @@ public class PicPreviewActivity extends BaseAutoLayoutActivity implements View.O
     @BindView(R.id.preview_vp)
     ViewPager viewPager;
     String pageType;
+    int len;
 
 
     @Override
@@ -54,12 +54,22 @@ public class PicPreviewActivity extends BaseAutoLayoutActivity implements View.O
                 itemViewList.add(getItemImg(R.drawable.ic_income_sample));
                 break;
             case PRERIVEW_ENGER:
-                titleTv.setText("查看示例1/2");
+                titleTv.setText("查看示例1/4");
                 itemViewList.add(getItemImg(R.drawable.ic_enger_sample1));
                 itemViewList.add(getItemImg(R.drawable.ic_enger_sample2));
+                itemViewList.add(getItemImg(R.drawable.ic_enger_sample3));
+                itemViewList.add(getItemImg(R.drawable.ic_enger_sample4));
+                viewPager.addOnPageChangeListener(this);
+                break;
+            case PRERIVEW_MACHINE:
+                titleTv.setText("查看示例1/3");
+                itemViewList.add(getItemImg(R.drawable.ic_machine_sample1));
+                itemViewList.add(getItemImg(R.drawable.ic_machine_sample2));
+                itemViewList.add(getItemImg(R.drawable.ic_machine_sample3));
                 viewPager.addOnPageChangeListener(this);
                 break;
         }
+        len =itemViewList.size();
         viewPager.setAdapter(new PreviewAdapter(itemViewList));
         viewPager.setCurrentItem(0);
     }
@@ -78,7 +88,7 @@ public class PicPreviewActivity extends BaseAutoLayoutActivity implements View.O
 
     @Override
     public void onPageSelected(int position) {
-        titleTv.setText("查看示例" + (position + 1) + "/2");
+        titleTv.setText("查看示例" + (position + 1) + "/"+len);
     }
 
     @Override

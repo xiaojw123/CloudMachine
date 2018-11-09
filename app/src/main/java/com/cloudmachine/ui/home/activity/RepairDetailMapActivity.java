@@ -16,17 +16,13 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cloudmachine.R;
-import com.cloudmachine.bean.AllianceDetail;
-import com.cloudmachine.bean.BOInfo;
-import com.cloudmachine.bean.CWInfo;
+import com.cloudmachine.bean.RepairDetail;
 import com.cloudmachine.bean.ScreenInfo;
-import com.cloudmachine.bean.WorkDetailBean;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.OrderStatus;
-import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.contract.RepairDetailContract;
 import com.cloudmachine.ui.home.model.RepairDetailModel;
-import com.cloudmachine.ui.home.model.SiteBean;
+import com.cloudmachine.bean.SiteBean;
 import com.cloudmachine.ui.home.presenter.RepairDetailPresenter;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
@@ -61,14 +57,12 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
     @BindView(R.id.rdm_detail_layout)
     RelativeLayout rdmDetilaLayout;
 
-    WorkDetailBean detailBean;
-    ArrayList<String> logoList;
     LatLngBounds.Builder LatLngBuilder;
     boolean isRepairing;
     String mobile;
     int left, top;
-    String flag;
     String nstatus;
+    RepairDetail mDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,27 +71,12 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
         top = ScreenInfo.screen_height / 4;
         setinfoWIndowHiden(false);
         initGeocoder();
-        boolean isAlliance = getIntent().getBooleanExtra("isAlliance", false);
-        String orderNum = getIntent().getStringExtra("orderNum");
-        flag = getIntent().getStringExtra("flag");
+        String orderNum = getIntent().getStringExtra(Constants.ORDER_NO);
         nstatus = getIntent().getStringExtra("nstatus");
         repairDetailCtv.setTitleName(nstatus);
-        if (isAlliance) {//加盟站接口请求
-            String status = getIntent().getStringExtra("orderStatus");
-            isRepairing = "2".equals(status);
-            if (UserHelper.isLogin(this)) {
-                mPresenter.updateAllianceDetail(UserHelper.getMemberId(this), orderNum);
-            }
-        } else {
-            if (OrderStatus.CANCEL.equals(nstatus) || OrderStatus.WAIT.equals(nstatus)) {
-                isRepairing = false;
-            } else {
-                isRepairing = true;
-            }
-            mPresenter.updateRepairFinishDetail(orderNum, flag);
-        }
-//        icon_head_technician
-//        ic_repair_detail_station
+        String status = getIntent().getStringExtra("orderStatus");
+        isRepairing = "2".equals(status);
+        mPresenter.getRepairDetail(orderNum);
     }
 
     @Override
@@ -176,107 +155,6 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
 
     }
 
-    @Override
-    public void returnDetailView(BOInfo boInfo) {
-        detailBean = boInfo.getWorkDetail();
-        logoList = boInfo.getLogoList();
-        updateDetail();
-    }
-
-    @Override
-    public void returnDetailView(CWInfo boInfo) {
-        detailBean = boInfo.getWorkDetail();
-        logoList = boInfo.getLogoList();
-        updateDetail();
-    }
-
-    @Override
-    public void returnAllianceDetail(AllianceDetail detail) {
-        detailBean = new WorkDetailBean();
-        detailBean.setVbrandname(detail.getBrandName());
-        detailBean.setVmaterialname(detail.getModelName());
-        detailBean.setCusdemanddesc(detail.getDemandDescription());
-        detailBean.setVmachinenum(detail.getMachineNum());
-        detailBean.setTech_NAME(detail.getArtificerName());
-        detailBean.setTech_MOBILE(detail.getArtificerMobile());
-        detailBean.setStation_NAME(detail.getStationName());
-        detailBean.setStation_MOBILE(detail.getAllianceStationMobile());
-        detailBean.setStation_LON(detail.getOrderLng());
-        detailBean.setStation_LAT(detail.getOrderLat());
-        detailBean.setService_LON(detail.getArtificerLng());
-        detailBean.setService_LAT(detail.getArtificerLat());
-        detailBean.setVworkaddress(detail.getAddressDetail());
-        logoList = (ArrayList<String>) detail.getAttachmentUrls();
-        updateDetail();
-    }
-
-    private void updateDetail() {
-        if (detailBean != null) {
-            int resdId;
-            String title;
-            LatLngBuilder = new LatLngBounds.Builder();
-            String lng = detailBean.getStation_LON();
-            String lat = detailBean.getStation_LAT();
-            double dLat = 0;
-            double dLng = 0;
-            if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lng)) {
-                dLat = Double.parseDouble(lat);
-                dLng = Double.parseDouble(lng);
-            }
-            LatLng curLatlng = new LatLng(dLat, dLng);
-            if (dLat == 0 || dLng == 0) {
-                //定位失败
-                aMap.addMarker(getMarkerLocOptions(this, curLatlng, "定位失败"));
-            } else {
-                aMap.addMarker(getMarkerLocOptions(this, curLatlng, detailBean.getVworkaddress()));
-//                aMap.addMarker(getNormalMarkerOptions(this, curLatlng, R.drawable.icon_cur_repair_loc, Constants.CURRENT_LOC));
-            }
-            LatLngBuilder.include(curLatlng);
-            rdDevicenameTv.setText(detailBean.getVbrandname());
-            rdDevicenoTv.setText(detailBean.getVmaterialname());
-            if ("0".equals(flag)) {
-                rdDescriptionTv.setText(detailBean.getVdiscription());
-            } else {
-                rdDescriptionTv.setText(detailBean.getCusdemanddesc());
-            }
-            if (isRepairing) {
-                resdId = R.drawable.icon_head_technician;
-                title = detailBean.getTech_NAME();
-                mobile = detailBean.getTech_MOBILE();
-                List<LatLng> latLngList = new ArrayList<>();
-                String serviceLat = detailBean.getService_LAT();
-                String serviceLon = detailBean.getService_LON();
-                if (!TextUtils.isEmpty(serviceLat) && !TextUtils.isEmpty(serviceLon)) {
-                    double la = Double.parseDouble(serviceLat);
-                    double lo = Double.parseDouble(serviceLon);
-                    LatLng latLng = new LatLng(la, lo);
-                    if (curLatlng != null) {
-                        latLngList.add(curLatlng);
-                    }
-                    latLngList.add(latLng);
-                    LatLngBuilder.include(latLng);
-                    aMap.addMarker(getTechnicianMarkerOptions(la, lo, R.drawable.icon_work_order, null));
-                    aMap.addPolyline(new PolylineOptions().addAll(latLngList).width(8).color(Color.parseColor("#7bb4f5")));
-                }
-            } else {
-                resdId = R.drawable.ic_repair_detail_station;
-                title = detailBean.getStation_NAME();
-                mobile = detailBean.getStation_MOBILE();
-            }
-            rdTitleTv.setText(title);
-            rdImg.setImageResource(resdId);
-            if (!isRepairing) {
-                if (dLat != 0 && dLng != 0) {
-                    mPresenter.updateStationView(dLng, dLat);
-                } else {
-                    aMap.moveCamera(CameraUpdateFactory.newLatLngBoundsRect(LatLngBuilder.build(), left, left, top, top));
-                }
-            } else {
-                aMap.moveCamera(CameraUpdateFactory.newLatLngBoundsRect(LatLngBuilder.build(), left, left, top, top));
-            }
-
-        }
-    }
 
     @OnClick({R.id.rd_call_img, R.id.rdm_detail_layout})
     public void onClick(View view) {
@@ -286,14 +164,78 @@ public class RepairDetailMapActivity extends BaseMapActivity<RepairDetailPresent
                 break;
             case R.id.rdm_detail_layout:
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(Constants.WORK_DETAIL, detailBean);
-                bundle.putStringArrayList(Constants.LOGO_LIST, logoList);
-                bundle.putString(Constants.FLAG, flag);
+                if (mDetail != null) {
+                    bundle.putParcelable(Constants.REPAIR_DETAIL, mDetail);
+                }
                 Constants.toActivity(this, PayDeviceInfoActivity.class, bundle);
                 break;
 
         }
 
 
+    }
+
+
+    @Override
+    public void updateRepairDetail(RepairDetail detail) {
+        mDetail = detail;
+        if (detail != null) {
+            int resdId;
+            String title;
+            double dLat = 0;
+            double dLng = 0;
+            String l1 = detail.getOrderLat();
+            String l2 = detail.getOrderLng();
+            if (!TextUtils.isEmpty(l1) && !TextUtils.isEmpty(l2)) {
+                dLat = Double.parseDouble(l1);
+                dLng = Double.parseDouble(l2);
+            }
+            LatLng curLatlng = new LatLng(dLat, dLng);
+            if (dLat == 0 || dLng == 0) {
+                //定位失败
+                aMap.addMarker(getMarkerLocOptions(this, curLatlng, "定位失败"));
+            } else {
+                aMap.addMarker(getMarkerLocOptions(this, curLatlng, detail.getAddressDetail()));
+            }
+            LatLngBuilder = new LatLngBounds.Builder();
+            LatLngBuilder.include(curLatlng);
+            rdDevicenameTv.setText(detail.getBrandName());
+            rdDevicenoTv.setText(detail.getModelName());
+            rdDescriptionTv.setText(detail.getServiceDesc());
+            if (isRepairing) {
+                resdId = R.drawable.icon_head_technician;
+                title = detail.getArtificerName();
+                mobile = detail.getArtificerMobile();
+                List<LatLng> latLngList = new ArrayList<>();
+                String serviceLat = detail.getArtificerLat();
+                String serviceLon = detail.getArtificerLng();
+                if (!TextUtils.isEmpty(serviceLat) && !TextUtils.isEmpty(serviceLon)) {
+                    double la = Double.parseDouble(serviceLat);
+                    double lo = Double.parseDouble(serviceLon);
+                    LatLng latLng = new LatLng(la, lo);
+                    latLngList.add(curLatlng);
+                    latLngList.add(latLng);
+                    LatLngBuilder.include(latLng);
+                    aMap.addMarker(getTechnicianMarkerOptions(la, lo, R.drawable.icon_work_order, null));
+                    aMap.addPolyline(new PolylineOptions().addAll(latLngList).width(8).color(Color.parseColor("#7bb4f5")));
+                }
+            } else {
+                resdId = R.drawable.ic_repair_detail_station;
+                title = detail.getStationName();
+                mobile = detail.getAllianceStationMobile();
+            }
+            rdTitleTv.setText(title);
+            rdImg.setImageResource(resdId);
+            if (!isRepairing) {
+                if (dLat != 0 && dLng != 0) {
+//                    mPresenter.updateStationView(dLng, dLat);
+                } else {
+                    aMap.moveCamera(CameraUpdateFactory.newLatLngBoundsRect(LatLngBuilder.build(), left, left, top, top));
+                }
+            } else {
+                aMap.moveCamera(CameraUpdateFactory.newLatLngBoundsRect(LatLngBuilder.build(), left, left, top, top));
+            }
+
+        }
     }
 }

@@ -9,16 +9,12 @@ import java.util.ArrayList;
 
 public class CWInfo implements Serializable{
 
-    private ArrayList<WorkcollarListBean> workcollarList;
     private WorkSettleBean workSettle;
     private ArrayList<ScheduleBean> schedule;
     private WorkDetailBean workDetail;
     private String flag;
     private ArrayList<String> logoList;
 
-    public ArrayList<WorkcollarListBean> getWorkcollarList() {
-        return workcollarList;
-    }
 
     public ArrayList<String> getLogoList() {
         return logoList;
@@ -28,9 +24,6 @@ public class CWInfo implements Serializable{
         this.logoList = logoList;
     }
 
-    public void setWorkcollarList(ArrayList<WorkcollarListBean> workcollarList) {
-        this.workcollarList = workcollarList;
-    }
 
     public WorkSettleBean getWorkSettle() {
         return workSettle;
@@ -67,7 +60,6 @@ public class CWInfo implements Serializable{
     @Override
     public String toString() {
         return "CWInfo{" +
-                "workcollarList=" + workcollarList +
                 ", workSettle=" + workSettle +
                 ", schedule=" + schedule +
                 ", workDetail=" + workDetail +

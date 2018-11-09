@@ -14,7 +14,7 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.ui.home.activity.fragment.StatisticsFragment;
 import com.cloudmachine.ui.home.activity.fragment.WorkTimeFragment;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.UMengKey;
 import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;

@@ -136,7 +136,7 @@ public class OilSyncActivity extends BaseAutoLayoutActivity<OilSyncPresenter, Oi
                     break;
                 }
                 if (UserHelper.isLogin(this)) {
-                    mPresenter.syncOilLevel(deviceId, oilPos, UserHelper.getMemberId(this));
+                    mPresenter.syncOilLevel(deviceId, oilPos);
                 } else {
                     ToastUtils.showToast(this, "您还未登录，登录之后才能提交哦");
 

@@ -19,9 +19,9 @@ import rx.Observable;
 public interface AuthPersonalInfoContract {
 
     interface Model extends BaseModel {
-        Observable<JsonObject> getMemberAuthInfo(long memberId);
-        Observable<String> submitIdUserInfo(long memberId,  String redisUserId);
-        Observable<JsonObject> verifyOcr(long memberId, String imgUrl,String redisUserId);
+        Observable<JsonObject> getMemberAuthInfo();
+        Observable<String> submitIdUserInfo(String redisUserId);
+        Observable<JsonObject> verifyOcr(String imgUrl,String redisUserId);
     }
     interface View extends BaseView {
         void updateMemberAuthInfo(String realName,String idCardNo);
@@ -32,9 +32,9 @@ public interface AuthPersonalInfoContract {
     }
 
     public abstract class Presenter extends BasePresenter<AuthPersonalInfoContract.View, AuthPersonalInfoContract.Model> {
-        public abstract void getMemberAuthInfo(long memberId);
-        public abstract void submitIdUserInfo(long memberId,  String redisUserId);
-        public abstract void verifyOcr(long memberId,String imgUrl,String redisUserId);
+        public abstract void getMemberAuthInfo();
+        public abstract void submitIdUserInfo(String redisUserId);
+        public abstract void verifyOcr(String imgUrl,String redisUserId);
         public abstract void uploadFile(File file, QiniuManager.OnUploadListener listener);
 
 

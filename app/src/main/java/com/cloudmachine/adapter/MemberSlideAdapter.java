@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.holder.BaseHolder;
+import com.cloudmachine.bean.LarkMemberItem;
 import com.cloudmachine.bean.Member;
-import com.cloudmachine.bean.MemberInfoSlide;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.widgets.RadiusButtonView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -26,13 +26,13 @@ import java.util.List;
 import butterknife.BindView;
 
 
-public class MemberSlideAdapter extends BaseRecyclerAdapter<MemberInfoSlide> {
+public class MemberSlideAdapter extends BaseRecyclerAdapter<LarkMemberItem> {
     private LayoutInflater layoutInflater;
     private DisplayImageOptions displayImageOptions;
     OnItemClickListener mOnItemClickListener;
     Member member;
 
-    public MemberSlideAdapter(List<MemberInfoSlide> dataResult, Context context) {
+    public MemberSlideAdapter(List<LarkMemberItem> dataResult, Context context) {
         super(context, dataResult);
         this.layoutInflater = LayoutInflater.from(context);
         displayImageOptions = new DisplayImageOptions.Builder()
@@ -65,7 +65,7 @@ public class MemberSlideAdapter extends BaseRecyclerAdapter<MemberInfoSlide> {
     }
 
 
-    class MemberSlideHolder extends BaseHolder<MemberInfoSlide> {
+    class MemberSlideHolder extends BaseHolder<LarkMemberItem> {
         @BindView(R.id.info_img)
         ImageView info_img;
         @BindView(R.id.arrow)
@@ -82,19 +82,19 @@ public class MemberSlideAdapter extends BaseRecyclerAdapter<MemberInfoSlide> {
         }
 
         @Override
-        public void initViewHolder(MemberInfoSlide dInfo) {
-            if (dInfo != null) {
-                String imgString = dInfo.getMiddlelogo();
+        public void initViewHolder(LarkMemberItem item) {
+            if (item != null) {
+                String imgString = item.getMiddleLogo();
                 String titleName;
-                String remarkName = dInfo.getRoleRemark();
+                String remarkName = item.getRemark();
                 if (!TextUtils.isEmpty(remarkName)) {
                     titleName = remarkName;
                 } else {
-                    titleName = dInfo.getName();
+                    titleName = item.getNickName();
                 }
                 View rightView = itemView.findViewById(R.id.swipe_right);
                 int color = mContext.getResources().getColor(R.color.cor8);
-                if (dInfo.getRoleIdS() == 1) {
+                if (item.getRoleId() == 1) {
                     color = mContext.getResources().getColor(R.color.cor2);
                     if (rightView != null) {
                         setSwipeParent(rightView.getParent(), false);
@@ -105,16 +105,16 @@ public class MemberSlideAdapter extends BaseRecyclerAdapter<MemberInfoSlide> {
                     }
                 }
                 if (member != null) {
-                    if (dInfo.getMemberId() == member.getId()) {
+                    if (item.getMemberId() == member.getId()) {
                         titleName = "我";
                     }
                 }
                 title.setTextColor(color);
                 title.setText(titleName);
-                summary.setText(dInfo.getRole());
+                summary.setText(item.getRoleValue());
                 ImageLoader.getInstance().displayImage(imgString, info_img,
                         displayImageOptions, null);
-                itemView.setTag(R.id.id_RemarkInfo, dInfo);
+                itemView.setTag(R.id.id_RemarkInfo, item);
                 itemView.setOnClickListener(new View.OnClickListener() {
 
                     @Override

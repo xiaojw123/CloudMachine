@@ -7,6 +7,7 @@ import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.CheckNumBean;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.ui.login.contract.VerifyPhoneNumContract;
+import com.google.gson.JsonObject;
 
 import rx.Observable;
 
@@ -24,36 +25,31 @@ public class VerifyPhoneNumModel implements VerifyPhoneNumContract.Model {
 
     @Override
     public Observable<BaseRespose> wxBindMobile(long mobile, long type) {
-        return Api.getDefault(HostType.HOST_CLOUDM).wxBindMobile(mobile, type);
+        return Api.getDefault(HostType.HOST_LARK).getCode(mobile, type);
     }
 
     @Override
-    public Observable<CheckNumBean> checkNum(long mobile) {
-        return Api.getDefault(HostType.HOST_CLOUDM).checkNum(mobile)
-                .compose(RxHelper.<CheckNumBean>handleResult())
-                ;
+    public Observable<Integer> checkNum(long mobile) {
+        return Api.getDefault(HostType.HOST_LARK).checkNum(mobile)
+                .compose(RxHelper.<Integer>handleResult());
     }
 
     @Override
-    public Observable<Member> wxBind(String unionId,
+    public Observable<JsonObject> wxBind(String unionId,
                                      String openId,
                                      String account,
                                      String code,
-                                     String inviteCode,
                                      String pwd,
                                      String nickname,
-                                     String headLogo,
-                                     Integer type) {
-        return Api.getDefault(HostType.HOST_CLOUDM).wxBind(unionId,
+                                     String headLogo) {
+        return Api.getDefault(HostType.HOST_LARK).wxBind(unionId,
                 openId,
                 account,
                 code,
-                inviteCode,
                 pwd,
                 nickname,
-                headLogo,
-                type)
-                .compose(RxHelper.<Member>handleResult());
+                headLogo)
+                .compose(RxHelper.handleCommonResult(JsonObject.class));
     }
 
 

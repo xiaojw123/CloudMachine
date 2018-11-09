@@ -65,9 +65,9 @@ public class OilSyncPresenter extends OilSyncContract.Presenter {
     }
 
     @Override
-    public void syncOilLevel(final long deviceId, int oilPos, long memberId) {
+    public void syncOilLevel(final long deviceId, int oilPos) {
         mView.showLoadingDailog();
-        mRxManage.add(mModel.syncOilLevel(deviceId, oilPos, memberId).subscribe(new RxSubscriber<BaseRespose<String>>(mContext) {
+        mRxManage.add(mModel.syncOilLevel(deviceId, oilPos).subscribe(new RxSubscriber<BaseRespose<String>>(mContext) {
             @Override
             protected void _onNext(BaseRespose<String> respose) {
                 if (respose.success()) {

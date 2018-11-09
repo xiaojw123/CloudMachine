@@ -21,7 +21,7 @@ public interface OilSyncContract {
     interface Model extends BaseModel{
 
      Observable<List<OilSynBean>> getOilSyncList(long deviceId);
-     Observable<BaseRespose<String>>  syncOilLevel(long deviceId,int oilPos, long memberId);
+     Observable<BaseRespose<String>>  syncOilLevel(long deviceId,int oilPos);
      Observable<BaseRespose<String>>  restOilLevel(long deviceId);
 
     }
@@ -36,7 +36,7 @@ public interface OilSyncContract {
 
     abstract class Presenter extends BasePresenter<OilSyncContract.View,OilSyncContract.Model>{
         public abstract void getOilSyncList(long deviceId);
-        public abstract void syncOilLevel(long deviceId,int oilPos,long memberId);
+        public abstract void syncOilLevel(long deviceId,int oilPos);
         public abstract void  restOilLevel(long deviceId);
 
     }

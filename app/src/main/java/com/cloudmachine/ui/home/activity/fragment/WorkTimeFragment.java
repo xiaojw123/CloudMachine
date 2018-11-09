@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -38,7 +37,6 @@ import com.cloudmachine.chart.data.BarEntry;
 import com.cloudmachine.chart.data.Entry;
 import com.cloudmachine.chart.highlight.Highlight;
 import com.cloudmachine.chart.listener.OnChartValueSelectedListener;
-import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.task.DailyWorkDitailsListAsync;
@@ -48,7 +46,6 @@ import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.mpchart.DailyWorkYAxisValueFormatter;
-import com.cloudmachine.widget.CommonTitleView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.text.DateFormat;
@@ -69,7 +66,6 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
     protected HorizontalBarChart dailyChart;
     protected BarChart mChart;
     private Typeface tf;
-    private CommonTitleView title_layout;
     private List<DailyWorkInfo> dailyWorkList;
     private int page = 0;
     private static final int SHOWNUM = 7;
@@ -163,7 +159,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
         yr.setEnabled(false);
         mChart.getLegend().setEnabled(false);
         initDailyWorkPop();
-        new GetWorkTimeListAsync(deviceId, getActivity(), mHandler).execute();
+        new GetWorkTimeListAsync(deviceId, mHandler).execute();
     }
 
     public void initDailyWorkPop() {
@@ -391,7 +387,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
                         ToastUtils.showCenterToast(getActivity(), "未获取到当日工作时间的分布信息");
                     }
                 } else {
-                    Constants.MyToast((String) msg.obj);
+                    ToastUtils.showCenterToast(getActivity(), "未获取到当日工作时间的分布信息");
                 }
                 break;
             case Constants.HANDLER_DAILYWORK_FAIL:
@@ -409,7 +405,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
                 }
                 boolean istTime = false;
                 for (ScanningWTInfo info : wtInfo) {
-                    float workTime = info.getDayWorkHour();
+                    float workTime =info.getTotalWorkTime();
                     if (workTime != 0) {
                         istTime = true;
                     }
@@ -427,7 +423,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
                     int addLen = 7 - s;
                     for (int i = 0; i < addLen; i++) {
                         ScanningWTInfo info = new ScanningWTInfo();
-                        info.setDayWorkHour(0);
+                        info.setTotalWorkTime(0);
                         info.setCollectionDate("");
                         wtInfo.add(0, info);
                     }
@@ -464,7 +460,6 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.left_image:
                 page++;
@@ -506,7 +501,7 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
         }
         boolean isData = false;
         for (int i = 0; i < len; i++) {
-            float workTime = showWTInof[page][len - i - 1].getDayWorkHour();
+            float workTime = showWTInof[page][len - i - 1].getTotalWorkTime();
             if (workTime != 0) {
                 isData = true;
             }

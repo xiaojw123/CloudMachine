@@ -18,16 +18,16 @@ import rx.Observable;
 public class OilSyncModel  implements OilSyncContract.Model{
     @Override
     public Observable<List<OilSynBean>> getOilSyncList(long deviceId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getOilSynList(deviceId).compose(RxHelper.<List<OilSynBean>>handleResult());
+        return Api.getDefault(HostType.HOST_LARK).getOilSynList(deviceId).compose(RxHelper.<List<OilSynBean>>handleResult());
     }
 
     @Override
-    public Observable<BaseRespose<String>> syncOilLevel(long deviceId, int oilPos,long memberId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).syncOil(deviceId,oilPos,memberId).compose(RxHelper.<String>handleBaseResult());
+    public Observable<BaseRespose<String>> syncOilLevel(long deviceId, int oilPos) {
+        return Api.getDefault(HostType.HOST_LARK).syncOil(deviceId,oilPos).compose(RxHelper.<String>handleBaseResult());
     }
 
     @Override
     public Observable<BaseRespose<String>> restOilLevel(long deviceId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).resetOilLevel(deviceId).compose(RxHelper.<String>handleBaseResult());
+        return Api.getDefault(HostType.HOST_LARK).resetOilLevel(deviceId).compose(RxHelper.<String>handleBaseResult());
     }
 }

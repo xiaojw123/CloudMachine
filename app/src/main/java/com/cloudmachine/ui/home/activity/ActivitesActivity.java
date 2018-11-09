@@ -6,18 +6,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.cloudmachine.R;
 import com.cloudmachine.adapter.ActivitesAdapter;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.bean.HomeBannerBean;
-import com.cloudmachine.ui.home.contract.ActivitesContract;
-import com.cloudmachine.ui.home.model.ActvitiesModel;
-import com.cloudmachine.ui.home.presenter.ActivitiesPresenter;
+import com.cloudmachine.bean.AdBean;
 import com.cloudmachine.utils.UMengKey;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class ActivitesActivity extends BaseAutoLayoutActivity<ActivitiesPresenter, ActvitiesModel> implements ActivitesContract.View, XRecyclerView.LoadingListener {
+public class ActivitesActivity extends BaseAutoLayoutActivity implements XRecyclerView.LoadingListener {
     XRecyclerView mRecyclerView;
     ActivitesAdapter mActivitesAdapter;
 
@@ -31,7 +28,6 @@ public class ActivitesActivity extends BaseAutoLayoutActivity<ActivitiesPresente
 
     @Override
     public void initPresenter() {
-        mPresenter.setVM(this, mModel);
     }
 
     private void initView() {
@@ -45,23 +41,24 @@ public class ActivitesActivity extends BaseAutoLayoutActivity<ActivitiesPresente
             mActivitesAdapter = new ActivitesAdapter(this);
         }
         mRecyclerView.setAdapter(mActivitesAdapter);
-        mPresenter.getHomeBannerInfo();
+        obtainSystemAd(AD_ACTIVITIES);
     }
 
     @Override
-    public void returnHomeBannerInfo(ArrayList<HomeBannerBean> homeBannerBeen) {
-        mActivitesAdapter.updateItems(homeBannerBeen);
+    protected void updateAdActivities(List items) {
+        mActivitesAdapter.updateItems(items);
         mRecyclerView.refreshComplete();
     }
 
     @Override
-    public void loadBannerError() {
+    protected void updateAdActivitiesError() {
         mRecyclerView.refreshComplete();
     }
+
 
     @Override
     public void onRefresh() {
-        mPresenter.getHomeBannerInfo();
+        obtainSystemAd(AD_ACTIVITIES);
     }
 
     @Override

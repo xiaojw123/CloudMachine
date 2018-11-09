@@ -1,34 +1,28 @@
 package com.cloudmachine.net.task;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.bean.BaseBO;
+import com.cloudmachine.bean.ScanningWTInfo;
 import com.cloudmachine.net.ATask;
 import com.cloudmachine.net.HttpURLConnectionImp;
 import com.cloudmachine.net.IHttp;
-import com.cloudmachine.bean.BaseBO;
-import com.cloudmachine.bean.ScanningWTInfo;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.MemeberKeeper;
+import com.cloudmachine.utils.LarkUrls;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GetWorkTimeListAsync extends ATask {
 
-    private Context context;
     private Handler handler;
     private long deviceId;
 
-    public GetWorkTimeListAsync(long deviceId, Context context, Handler handler) {
-        this.context = context;
+    public GetWorkTimeListAsync(long deviceId, Handler handler) {
         this.handler = handler;
         this.deviceId = deviceId;
         //缓存数据第1步
@@ -38,17 +32,11 @@ public class GetWorkTimeListAsync extends ATask {
     @Override
     protected String doInBackground(String... params) {
         IHttp httpRequest = new HttpURLConnectionImp();
-        List<NameValuePair> list = new ArrayList<NameValuePair>();
-        if (UserHelper.isLogin(context)) {
-            String memid = String.valueOf(MemeberKeeper.getOauth(context).getId());
-            list.add(new BasicNameValuePair("memberId", memid));
-        }
-        list.add(new BasicNameValuePair("rowSize", "28"));
-        list.add(new BasicNameValuePair("deviceId", String.valueOf(deviceId)));
-
+        Map<String,String> pm=new HashMap<>();
+        pm.put("deviceId",String.valueOf(deviceId));
         String result = null;
         try {
-            result = httpRequest.post(Constants.URL_WORKTIMELIST, list);
+            result = httpRequest.post(LarkUrls.GET_DAY_DATA, pm);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,8 +54,6 @@ public class GetWorkTimeListAsync extends ATask {
 
     @Override
     protected void decodeJson(String result) {
-        // TODO Auto-generated method stub
-        //缓存数据第3步
         super.decodeJson(result);
         Message msg = Message.obtain();
         if (isSuccess) {

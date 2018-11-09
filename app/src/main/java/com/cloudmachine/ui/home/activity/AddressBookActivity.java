@@ -191,7 +191,7 @@ public class AddressBookActivity extends BaseAutoLayoutActivity implements Lette
         }
         String pyStr = PingYinUtil.getPingYin(name);
         if (TextUtils.isEmpty(pyStr)) {
-            return String.valueOf(c);
+            return "#";
         }
         return pyStr.substring(0, 1).toUpperCase();
     }

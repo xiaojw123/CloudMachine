@@ -3,22 +3,17 @@ package com.cloudmachine.ui.home.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Path;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
-import android.text.Spanned;
-import android.text.TextDirectionHeuristic;
 import android.text.TextUtils;
-import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -26,18 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.autonavi.rtbt.IFrameForRTBT;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.Operator;
-import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.net.api.ApiConstants;
-import com.cloudmachine.ui.home.contract.ExtrContract;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
-import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.DensityUtil;
 import com.cloudmachine.utils.InputMoney;
@@ -46,9 +36,6 @@ import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.widget.CommonTitleView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -154,11 +141,11 @@ public class SalaryActivity extends BaseAutoLayoutActivity implements View.OnCli
                         Bundle data = new Bundle();
                         int payType = 0;
                         if (aliPayCb.isChecked()) {
-                            payType = 1;
+                            payType = Constants.PAY_TYPE_ALIPAY;
                         } else if (wxPayCb.isChecked()) {
-                            payType = 2;
+                            payType = Constants.PAY_TYPE_WX;
                         } else if (purseCb.isChecked()) {
-                            payType = 3;
+                            payType = Constants.PAY_TYPE_PURSE;
                         }
                         data.putInt(Constants.P_PAYTYPE, payType);
                         data.putString(Constants.P_PAYAMOUNT, amountText);

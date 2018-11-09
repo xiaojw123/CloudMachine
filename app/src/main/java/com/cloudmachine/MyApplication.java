@@ -6,12 +6,10 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
 import com.bumptech.glide.Glide;
@@ -21,10 +19,11 @@ import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.ScreenInfo;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.CustomActivityManager;
+import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
+import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.LogUtils;
 import com.cloudmachine.utils.ResV;
 import com.cloudmachine.utils.photo.util.Res;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -46,33 +45,17 @@ import com.umeng.socialize.UMShareAPI;
 
 import org.litepal.LitePalApplication;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InvalidClassException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.Hashtable;
 
 import cn.jpush.android.api.JPushInterface;
-/*正式环境
-* UMENT_APPKEY修改
-* 日志管理 IS_RELEASE true关闭*/
+
 public class MyApplication extends Application {
 
     private static MyApplication baseApplication;
     public static Context mContext;
-
-    private int pageSize = 10;
     private boolean isLogin;
-    private boolean isFresh;
     private boolean isFlag = false;
-    private int msgNum;
     private Member tempMember;
-
 
 
     @Override
@@ -89,13 +72,6 @@ public class MyApplication extends Application {
         this.tempMember = tempMember;
     }
 
-    public int getMsgNum() {
-        return msgNum;
-    }
-
-    public void setMsgNum(int msgNum) {
-        this.msgNum = msgNum;
-    }
 
     public boolean isFlag() {
         return isFlag;
@@ -105,34 +81,6 @@ public class MyApplication extends Application {
         this.isFlag = isFlag;
     }
 
-    private String catId;
-
-    public boolean isFresh() {
-        return isFresh;
-    }
-
-    public void setFresh(boolean isFresh) {
-        this.isFresh = isFresh;
-    }
-
-    public String getCatId() {
-        return catId;
-    }
-
-    public void setCatId(String catId) {
-        this.catId = catId;
-    }
-
-    private Hashtable<String, Object> memeryCache = new Hashtable<String, Object>();
-    private static final int CACHE_TIME = 60 * 60000;//缓存失效时间
-
-    public Hashtable<String, Object> getMemeryCache() {
-        return memeryCache;
-    }
-
-    public void setMemeryCache(Hashtable<String, Object> memeryCache) {
-        this.memeryCache = memeryCache;
-    }
 
     public boolean isLogin() {
         return isLogin;
@@ -144,47 +92,19 @@ public class MyApplication extends Application {
 
     public static ImageLoader imageLoader;
 
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    /**
-     * 没有网络
-     */
-    public static final int NETWORKTYPE_INVALID = 0;
-    /**
-     * wap网络
-     */
-    public static final int NETWORKTYPE_WAP = 1;
-    /**
-     * 2G网络
-     */
-    public static final int NETWORKTYPE_2G = 2;
-    /**
-     * 3G和3G以上网络
-     */
-    public static final int NETWORKTYPE_3G = 3;
-    /**
-     * wifi网络
-     */
-    public static final int NETWORKTYPE_WIFI = 4;
     private static MyApplication mApplication;
-    public static final boolean ENCRYPTED = true;
 
     public synchronized static MyApplication getInstance() {
         return mApplication;
     }
+
     static {
         //设置全局的Header构建器
         SmartRefreshLayout.setDefaultRefreshHeaderCreater(new DefaultRefreshHeaderCreater() {
             @NonNull
             @Override
             public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
-                return  new ClassicsHeader(context);
+                return new ClassicsHeader(context);
             }
         });
         //设置全局的Footer构建器
@@ -192,7 +112,7 @@ public class MyApplication extends Application {
             @NonNull
             @Override
             public RefreshFooter createRefreshFooter(Context context, RefreshLayout layout) {
-                return  new ClassicsFooter(context);
+                return new ClassicsFooter(context);
             }
         });
     }
@@ -202,18 +122,12 @@ public class MyApplication extends Application {
         super.onCreate();
         AppLog.print("MyApplication crated at 2017-11-13, no y");
         initSocialConfig();
-        this.mContext = this;
+        mContext = this;
 //        initSopfix();
        /* Glide.get(this).register(GlideUrl.class, InputStream.class,
                 new OkHttpUrlLoader.Factory(*//*RetrofitUtils.getOkHttpClient())*//*);*/
         //baseApplication赋值
         baseApplication = this;
-        //初始化Glide
-        Glide.get(this).register(GlideUrl.class,
-                InputStream.class,
-                new OkHttpUrlLoader.Factory(new Api(HostType.HOST_CLOUDM_YJX).okHttpClient));
-        //初始化logger
-        LogUtils.logInit(/*BuildConfig.LOG_DEBUG*/true);
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);
         Res.init(this);
@@ -244,8 +158,16 @@ public class MyApplication extends Application {
         //		CrashHandler.getInstance().init(this);
         ResV.init(this);
         initDB();
+        initLocData();
         registerActivityLifecycleCallbacks(lifecycleCallback);
+    }
 
+    private void initLocData() {
+        UserHelper.TOKEN = UserHelper.getValue(this, Constants.KEY_TOKEN);
+        UserHelper.ID = UserHelper.getValue(this, Constants.KEY_ID);
+        if (BuildConfig.DEBUG) {
+            ApiConstants.initHost(this);
+        }
     }
 
     private void initDB() {
@@ -253,14 +175,12 @@ public class MyApplication extends Application {
     }
 
     private void initSocialConfig() {
-        Config.DEBUG=true;
+        Config.DEBUG = true;
         UMShareAPI.get(this);
         PlatformConfig.setWeixin("wxfb6afbcc23f867df", "3c69a7395f5e54009accf1e1194d553c");
         PlatformConfig.setQQZone("1105584331", "2KIceJS92PMlkFKw");
         PlatformConfig.setSinaWeibo("41475887", "9da46957176d1e1e360c1252f54e94a9", "http://www.cloudm.com/");
     }
-
-
 
 
     private void initSopfix() {
@@ -304,39 +224,6 @@ public class MyApplication extends Application {
         return false;
     }
 
-    /**
-     * 获取网络状态，wifi,wap,2g,3g.
-     *
-     * @param context
-     * @return int 网络状态 {@link #NETWORKTYPE_2G},{@link #NETWORKTYPE_3G}, *
-     * {@link #NETWORKTYPE_INVALID},{@link #NETWORKTYPE_WAP}*
-     * {@link #NETWORKTYPE_WIFI}
-     */
-
-    private static int getNetWorkType(Context context) {
-        int mNetWorkType = -1;
-        ConnectivityManager manager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            String type = networkInfo.getTypeName();
-
-            if (type.equalsIgnoreCase("WIFI")) {
-                mNetWorkType = NETWORKTYPE_WIFI;
-            } else if (type.equalsIgnoreCase("MOBILE")) {
-                String proxyHost = android.net.Proxy.getDefaultHost();
-
-                mNetWorkType = TextUtils.isEmpty(proxyHost) ? (isFastMobileNetwork(context) ? NETWORKTYPE_3G
-                        : NETWORKTYPE_2G)
-                        : NETWORKTYPE_WAP;
-            }
-        } else {
-            mNetWorkType = NETWORKTYPE_INVALID;
-        }
-
-        return mNetWorkType;
-    }
-
     private static boolean isFastMobileNetwork(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context
                 .getSystemService(Context.TELEPHONY_SERVICE);
@@ -378,119 +265,12 @@ public class MyApplication extends Application {
         }
     }
 
-    /**
-     * 判断缓存数据是否可读
-     *
-     * @param cachefile
-     * @return
-     */
-    private boolean isReadDataCache(String cachefile) {
-        return readObject(cachefile) != null;
-    }
-
-    /**
-     * 判断缓存是否存在
-     *
-     * @param cachefile
-     * @return
-     */
-    private boolean isExistDataCache(String cachefile) {
-        boolean exist = false;
-        File data = getFileStreamPath(cachefile);
-        if (data.exists())
-            exist = true;
-        return exist;
-    }
-
-    /**
-     * 判断缓存是否失效
-     *
-     * @param cachefile
-     * @return
-     */
-    public boolean isCacheDataFailure(String cachefile) {
-        boolean failure = false;
-        File data = getFileStreamPath(cachefile);
-        if (data.exists() && (System.currentTimeMillis() - data.lastModified()) > CACHE_TIME)
-            failure = true;
-        else if (!data.exists())
-            failure = true;
-        return failure;
-    }
-
-    /**
-     * 保存对象
-     *
-     * @param ser
-     * @param file
-     * @throws java.io.IOException
-     */
-    public boolean saveObject(Serializable ser, String file) {
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        try {
-            fos = openFileOutput(file, MODE_PRIVATE);
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(ser);
-            oos.flush();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                oos.close();
-            } catch (Exception e) {
-            }
-            try {
-                fos.close();
-            } catch (Exception e) {
-            }
-        }
-    }
-
-    /**
-     * 读取对象
-     *
-     * @param file
-     * @return
-     * @throws java.io.IOException
-     */
-    public Serializable readObject(String file) {
-        if (!isExistDataCache(file))
-            return null;
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-        try {
-            fis = openFileInput(file);
-            ois = new ObjectInputStream(fis);
-            return (Serializable) ois.readObject();
-        } catch (FileNotFoundException e) {
-        } catch (Exception e) {
-            e.printStackTrace();
-            //反序列化失败 - 删除缓存文件
-            if (e instanceof InvalidClassException) {
-                File data = getFileStreamPath(file);
-                data.delete();
-            }
-        } finally {
-            try {
-                ois.close();
-            } catch (Exception e) {
-            }
-            try {
-                fis.close();
-            } catch (Exception e) {
-            }
-        }
-        return null;
-    }
 
     public static Context getAppContext() {
         return baseApplication;
     }
 
-  private  ActivityLifecycleCallbacks lifecycleCallback=new ActivityLifecycleCallbacks() {
+    private ActivityLifecycleCallbacks lifecycleCallback = new ActivityLifecycleCallbacks() {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 

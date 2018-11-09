@@ -56,7 +56,7 @@ public class DepositActivity extends BaseAutoLayoutActivity implements XRecycler
     }
 
     private void getDataRxTask() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getDepositList(UserHelper.getMemberId(this)).compose(RxSchedulers.<BaseRespose<List<DepositItem>>>io_main()).subscribe(new RxSubscriber<BaseRespose<List<DepositItem>>>(this) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getDepositList().compose(RxSchedulers.<BaseRespose<List<DepositItem>>>io_main()).subscribe(new RxSubscriber<BaseRespose<List<DepositItem>>>(this) {
             @Override
             protected void _onNext(BaseRespose<List<DepositItem>> listBaseRespose) {
                 if (isRefresh) {

@@ -11,7 +11,6 @@ import android.util.Log;
 
 import com.cloudmachine.R;
 import com.cloudmachine.activities.AboutCloudActivity;
-import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.helper.CustomActivityManager;
 import com.cloudmachine.helper.UserHelper;
@@ -20,8 +19,8 @@ import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.activity.IncomeSpendActivity;
 import com.cloudmachine.ui.home.activity.MessageDetailActivity;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
-import com.cloudmachine.ui.homepage.activity.ViewMessageActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.ViewMessageActivity;
 import com.cloudmachine.utils.Constants;
 
 import org.json.JSONException;
@@ -94,19 +93,19 @@ public class MyReceiver extends BroadcastReceiver {
                     Activity topAct = CustomActivityManager.getInstance().getTopActivity();
                     String type = extraJson.getString("type");
                     switch (type) {
-                        case "11":
+                        case "2":
                             if (topAct != null && topAct instanceof HomeActivity) {
                                 ((HomeActivity) topAct).updateDeviceMessage();
                             }
                             break;
-                        case "12":
+                        case "1003":
                             Class topClass = topAct.getClass();
                             if (BaseAutoLayoutActivity.class.isAssignableFrom(topClass)) {
                                 String url = extraJson.optString("url");
                                 ((BaseAutoLayoutActivity) topAct).showDepsitPayPop(url);
                             }
                             break;
-                        case "17":
+                        case "11":
                             MediaPlayer player = MediaPlayer.create(context, R.raw.diaoluo);
                             player.start();
                             break;
@@ -166,15 +165,15 @@ public class MyReceiver extends BroadcastReceiver {
                     String type = extraJson.getString("type");
                     int iType = Integer.valueOf(type);
                     switch (iType) {//1,邀请消息  2,报警消息 3,版本消息  4,电子围栏 5,问卷调查
-                        case 1:
-                        case 5:
-                        case 11:
+                        case 1://添加成员
+                        case 2://更改机主
+                        case 7://申请消息
                             //打开自定义的Activity    //MessageActivity
                             Intent i1 = new Intent(context, ViewMessageActivity.class);
                             i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(i1);
                             return;
-                        case 2:
+                        case 3://报警消息
                             if (extraJson.has("deviceId") && extraJson.has("nickName")) {
                                 String deviceIdStr = extraJson.getString("deviceId");
                                 String nickNameStr = extraJson.getString("nickName");
@@ -186,48 +185,27 @@ public class MyReceiver extends BroadcastReceiver {
                                 context.startActivity(i2);
                             }
                             return;
-                        case 3:
-                            Intent i3 = new Intent(context, AboutCloudActivity.class);
-                            i3.putExtras(bundle);
-                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            context.startActivity(i3);
-                            return;
-                        case 8:
-                            Intent i4 = new Intent(context, QuestionCommunityActivity.class);
-                            bundle.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppBoxDetail);
-                            i4.putExtras(bundle);
-                            i4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            context.startActivity(i4);
-                            return;
-                        case 9:
-                        case 10:
-//                            notifaction__Result__{"url":"http:\/\/h5.test.cloudm.com\/n\/ask_chatlist?qid=949&auid=4823&myid=4852","type":"9"}
-                            Intent notifyIntent = new Intent(context, QuestionCommunityActivity.class);
-                            String notifyUrl = extraJson.optString("url");
-                            notifyIntent.putExtra(QuestionCommunityActivity.H5_URL, notifyUrl);
-                            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            context.startActivity(notifyIntent);
-                            break;
-                        case 12:
-                        case 14:
-                            Intent tbIntent = new Intent(context, QuestionCommunityActivity.class);
-                            tbIntent.putExtra(QuestionCommunityActivity.H5_URL, extraJson.optString("url"));
-                            tbIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            context.startActivity(tbIntent);
-                            break;
-                        case 15://消息内容跳转
+                        case 8://文本消息,查看详情"
                             String idStr = extraJson.getString("id");
                             Intent detailIntent = new Intent(context, MessageDetailActivity.class);
                             detailIntent.putExtra(MessageDetailActivity.MESSAGE_ID, idStr);
                             context.startActivity(detailIntent);
                             break;
-                        case 16://支出
+                        case 9://链接消息
+                        case 1003:
+                            Intent webIntent = new Intent(context, QuestionCommunityActivity.class);
+                            String url = extraJson.optString("url");
+                            webIntent.putExtra(QuestionCommunityActivity.H5_URL, url);
+                            webIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(webIntent);
+                            break;
+
+                        case 10://支出
                             Bundle spendData = new Bundle();
                             spendData.putInt(IncomeSpendActivity.TYPE, IncomeSpendActivity.TYPE_SPEND);
                             gotoActivity(context, IncomeSpendActivity.class, spendData);
                             break;
-                        case 17://收入
+                        case 11://收入
                             Bundle incomeData = null;
                             if (!UserHelper.isOwner(context, UserHelper.getMemberId(context))) {
                                 incomeData = new Bundle();
@@ -235,7 +213,6 @@ public class MyReceiver extends BroadcastReceiver {
                             }
                             gotoActivity(context, IncomeSpendActivity.class, incomeData);
                             break;
-
                         default:
                             Intent i2 = new Intent(context, HomeActivity.class);
                             i2.putExtras(bundle);
@@ -246,7 +223,6 @@ public class MyReceiver extends BroadcastReceiver {
                     }
                 }
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

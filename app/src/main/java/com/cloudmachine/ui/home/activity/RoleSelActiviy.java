@@ -17,9 +17,9 @@ import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.bean.EmunBean;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.listener.RecyclerItemClickListener;
-import com.cloudmachine.ui.home.model.RoleBean;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class RoleSelActiviy extends BaseAutoLayoutActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_role_sel);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.role_sel_rlv);
-        List<RoleBean> roleList = getIntent().getParcelableArrayListExtra(ROLE_LIST);
+        List<EmunBean> roleList = getIntent().getParcelableArrayListExtra(ROLE_LIST);
         roleName = getIntent().getStringExtra(ROLE_NAME);
         adapter = new RoleSelAdapter(roleList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -49,7 +49,7 @@ public class RoleSelActiviy extends BaseAutoLayoutActivity {
             public void onItemClick(View view, int position) {
 //                adapter.setSelectPosition(position);
                 Intent data = new Intent();
-                RoleBean bean = (RoleBean) view.getTag();
+                EmunBean bean = (EmunBean) view.getTag();
                 data.putExtra(ROLE_BEAN, bean);
                 setResult(RESULT_OK, data);
                 finish();
@@ -67,13 +67,12 @@ public class RoleSelActiviy extends BaseAutoLayoutActivity {
     public void initPresenter() {
 
     }
+    private class RoleSelAdapter extends RecyclerView.Adapter<RoleSelHoler> {
 
-    class RoleSelAdapter extends RecyclerView.Adapter<RoleSelHoler> {
-
-        List<RoleBean> mRoleList;
+        List<EmunBean> mRoleList;
         int mSelPosition;
 
-        public RoleSelAdapter(List<RoleBean> roleList) {
+        public RoleSelAdapter(List<EmunBean> roleList) {
             mRoleList = roleList;
         }
 
@@ -113,8 +112,8 @@ public class RoleSelActiviy extends BaseAutoLayoutActivity {
             if (mRoleList == null || mRoleList.size() < 1) {
                 return;
             }
-            RoleBean bean = mRoleList.get(position);
-            String type = bean.getType();
+            EmunBean bean = mRoleList.get(position);
+            String type = bean.getValueName();
             holder.titleTv.setText(type);
             if (roleName.equals(type)) {
                 holder.selImg.setVisibility(View.VISIBLE);

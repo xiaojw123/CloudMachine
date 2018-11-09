@@ -22,18 +22,14 @@ public class SalaryHistoryItem {
 
     private String payMemberId;
     private String payMemberName;
-    private long payoffTime;
+    private String payoffTime;
     private String recordDesc;
-    private int receiveMemberId;
+    private String receiveMemberId;
     private String receiveMemberName;
     private double salaryAmount;
     private double totalAmountOfInterval;
 
 
-
-    public String getFoarmtDate() {
-        return CommonUtils.getDateStamp(payoffTime);
-    }
 
     public void setFoarmtDate(String formatDate) {
         this.formatDate = formatDate;
@@ -57,11 +53,11 @@ public class SalaryHistoryItem {
         this.payMemberName = payMemberName;
     }
 
-    public long getPayoffTime() {
+    public String getPayoffTime() {
         return payoffTime;
     }
 
-    public void setPayoffTime(long payoffTime) {
+    public void setPayoffTime(String payoffTime) {
         this.payoffTime = payoffTime;
     }
 
@@ -73,11 +69,11 @@ public class SalaryHistoryItem {
         this.recordDesc = recordDesc;
     }
 
-    public int getReceiveMemberId() {
+    public String getReceiveMemberId() {
         return receiveMemberId;
     }
 
-    public void setReceiveMemberId(int receiveMemberId) {
+    public void setReceiveMemberId(String receiveMemberId) {
         this.receiveMemberId = receiveMemberId;
     }
 

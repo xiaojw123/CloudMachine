@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -34,20 +33,11 @@ import com.cloudmachine.activities.UpdatePwdActivity;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.base.baserx.RxHelper;
-import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.bean.ExcamMasterInfo;
 import com.cloudmachine.bean.Member;
-import com.cloudmachine.bean.UserInfo;
 import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.api.Api;
-import com.cloudmachine.net.api.ApiConstants;
-import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.net.task.ImageUploadAsync;
-import com.cloudmachine.net.task.UpdateMemberInfoAsync;
-import com.cloudmachine.ui.home.activity.InfoManagerActivity;
+import com.cloudmachine.helper.QiniuManager;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.personal.contract.PersonalDataContract;
 import com.cloudmachine.ui.personal.model.PersonalDataModel;
@@ -60,9 +50,7 @@ import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.PhotosGallery;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.utils.UIHelper;
 import com.cloudmachine.utils.UMengKey;
-import com.cloudmachine.utils.UploadPhotoUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
@@ -75,10 +63,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import de.hdodenhof.circleimageview.CircleImageView;
-import id.zelory.compressor.Compressor;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 import static com.cloudmachine.utils.Constants.IMAGE_PATH;
 
@@ -91,9 +75,10 @@ import static com.cloudmachine.utils.Constants.IMAGE_PATH;
  * 修改时间：2017/4/5 上午9:31
  * 修改备注：
  */
+// TODO: 2018/9/13 个人信息
 
 public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPresenter, PersonalDataModel> implements
-        View.OnClickListener, Handler.Callback, PersonalDataContract.View {
+        View.OnClickListener, Handler.Callback, PersonalDataContract.View, QiniuManager.OnUploadListener {
 
     @BindView(R.id.head_iamge)
     CircleImageView mHeadIamge;
@@ -115,20 +100,11 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     ImageView mArrowTip1;
     @BindView(R.id.my_qrcode)
     RelativeLayout myQrCodeRl;
-
-
-
-
     private int imgsign = -1;
-    private int infoSign = -1;
     private Uri imageUri;
     private String imagePath;
-    private String imString;
     private boolean isClickCamera;
-    private boolean isUpdateImage;
-    private String uploadResult = "";
     private Handler mHandler;
-    private Context mContext;
     private PermissionsChecker mPermissionsChecker; // 权限检测器
     private static final int REQUEST_PICK_IMAGE = 0x001; //相册选取
     private static final int REQUEST_CAPTURE = 0x002;  //拍照
@@ -138,57 +114,35 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     private static final int REQUEST_UPDATE = 0x005;  //权限请求
     private static final int PSW_UPDATE = 0x006;  //权限请求
     private String mLogo;
-    private String mMobile;
     private String mNickName;
-    private long mLoginType;
-    private RadiusButtonView mBtnSynchronousWxData;
     private String mWecharNickname;
     private String mWecharLogo;
     private Long mMemberId;
     private String mUrl;
     private boolean syncWx = false;
-    private Member memberInfo;
+    private Member member;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personaldata);
-        mContext = this;
-        mHandler = new Handler(this);
         ButterKnife.bind(this);
-        getIntentData();
-        initView();
         MobclickAgent.onEvent(this, MobEvent.TIME_PROFILE);
-
-    }
-
-    private void getIntentData() {
-
-        Intent intent = this.getIntent();
-        Bundle bundle = intent.getExtras();
-        memberInfo = (Member) bundle.getSerializable("memberInfo");
-        if (memberInfo != null) {
-            mLogo = memberInfo.getLogo();
-            mMobile = memberInfo.getMobile();
-            mNickName = memberInfo.getNickname();
-            mWecharNickname = memberInfo.getWecharNickname();
-            mWecharLogo = memberInfo.getWecharLogo();
-        }
+        initView();
     }
 
     private void initView() {
-        mMemberId = MemeberKeeper.getOauth(this).getId();
-        mBtnSynchronousWxData = (RadiusButtonView) findViewById(R.id.btn_synchronousWxData);
-        mBtnSynchronousWxData.setOnClickListener(this);
-        mLoginType = MySharedPreferences.getSharedPInt(MySharedPreferences.key_login_type);
-        if (mLoginType == 0) {
-            mBtnSynchronousWxData.setVisibility(View.GONE);
+        RadiusButtonView synchButton = (RadiusButtonView) findViewById(R.id.btn_synchronousWxData);
+        synchButton.setOnClickListener(this);
+        long loginType = MySharedPreferences.getSharedPInt(MySharedPreferences.key_login_type);
+        if (loginType == 0) {
+            synchButton.setVisibility(View.GONE);
         } else {
             if (mWecharLogo != null && mWecharNickname != null) {
                 if (mWecharLogo.equals(mLogo) && mWecharNickname.equals(mNickName)) {
-                    mBtnSynchronousWxData.setVisibility(View.GONE);
+                    synchButton.setVisibility(View.GONE);
                 } else {
-                    mBtnSynchronousWxData.setVisibility(View.VISIBLE);
+                    synchButton.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -198,7 +152,17 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     }
 
     private void initData() {
-
+        mHandler = new Handler(this);
+        member = MemeberKeeper.getOauth(this);
+        if (member == null) {
+            return;
+        }
+        mMemberId = member.getId();
+        mLogo = member.getLogo();
+        String mobile = member.getMobile();
+        mNickName = member.getNickname();
+        mWecharNickname = member.getWecharNickname();
+        mWecharLogo = member.getWecharLogo();
         if (!TextUtils.isEmpty(mLogo)) {
             Glide.with(mContext).load(mLogo)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -207,13 +171,14 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     .error(R.drawable.ic_default_head)
                     .into(mHeadIamge);
         }
-        if (!TextUtils.isEmpty(mMobile)) {
-            mEditTextPhone.setText(mMobile);
+        if (!TextUtils.isEmpty(mobile)) {
+            mEditTextPhone.setText(mobile);
         }
         if (!TextUtils.isEmpty(mNickName)) {
             mNicknameTv.setText(mNickName);
         }
     }
+
 
     private void initPermissionChecker() {
 
@@ -259,8 +224,8 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 //            case R.id.btn_synchronousWxData:
             case R.id.radius_button_text:
                 syncWx = true;
-                mPresenter.modifyLogo(mMemberId, "logo", mWecharLogo);
-                mPresenter.modifyNickName(mMemberId, "nickName", mWecharNickname);
+                mPresenter.modifyMemberInfo(null, mWecharLogo);
+                mPresenter.modifyMemberInfo(mWecharNickname, null);
                 break;
         }
     }
@@ -273,9 +238,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     static final String[] PERMISSIONS_PICK = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     private void showImageDialog() {
-
         imgsign = 2;
-        infoSign = 2;
         new AlertDialog.Builder(PersonalDataActivity.this)
                 .setTitle("头像照片")
                 .setItems(items, new DialogInterface.OnClickListener() {
@@ -379,8 +342,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                             if (imgsign == 2) {
                                 //Bitmap photo = extras.getParcelable("data");
 //                        mHeadIamge.setImageBitmap(bitmap);//展示到当前页面
-                                imString = savePhotoToSDCard(bitmap);
-                                isUpdateImage = true;
+                                String imString = savePhotoToSDCard(bitmap);
                                 compressPicture(imString);
                                 //new ImageUploadAsync(handler, imString, 1111).execute();
                                 //UploadPhotoUtils.getInstance(this).upLoadFile(imString, "http://api.test.cloudm.com/kindEditorUpload",mHandler);
@@ -417,13 +379,11 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 if (data != null) {
                     String nickname = data.getStringExtra(EditPersonalActivity.NICK_NAME);
                     mNicknameTv.setText(nickname);
-                    memberInfo.setNickname(nickname);
-                    MemeberKeeper.saveOAuth(memberInfo, this);
+                    member.setNickname(nickname);
+                    MemeberKeeper.saveOAuth(member, this);
                 }
-                synchWjdsData();
                 break;
             case PSW_UPDATE:
-                synchWjdsData();
                 break;
         }
         // super.onActivityResult(requestCode, resultCode, data);
@@ -431,21 +391,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
     private void compressPicture(String imString) {
         File file = new File(imString);
-        Compressor.getDefault(this)
-                .compressToFileAsObservable(file)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<File>() {
-                    @Override
-                    public void call(File file) {
-                        UploadPhotoUtils.getInstance(PersonalDataActivity.this).upLoadFile(file, ApiConstants.CLOUDM_YJX_HOST + "member/kindEditorUpload", mHandler);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        ToastUtils.error(throwable.getMessage(), true);
-                    }
-                });
+        QiniuManager.uploadFile(mContext, this, file, "member/");
     }
 
 
@@ -577,29 +523,17 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
             return null;
         } finally {
             try {
-                fileOutputStream.flush();
-                fileOutputStream.close();
+                if (fileOutputStream != null) {
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+                }
             } catch (IOException e) {
-                return null;
+                e.printStackTrace();
             }
         }
         return newFilePath;
     }
 
-    private Handler handler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == ImageUploadAsync.ImageUpload_Success) {
-                uploadResult = (String) msg.obj;
-                new UpdateMemberInfoAsync("logo", uploadResult, mContext, mHandler).execute();
-            } else if (msg.what == ImageUploadAsync.ImageUpload_Fail) {
-                UIHelper.ToastMessage(PersonalDataActivity.this, "头像上传失败");
-            }
-        }
-
-    };
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -607,17 +541,15 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         switch (msg.what) {
             //上传个人信息成功
             case Constants.HANDLER_UPDATEMEMBERINFO_SUCCESS:
-                isUpdateImage = false;
                 Constants.MyToast("保存成功");
                 break;
             case Constants.HANDLER_UPDATEMEMBERINFO_FAIL:
-                isUpdateImage = false;
                 Constants.MyToast((String) msg.obj);
                 break;
             case Constants.HANDLER_UPLOAD_SUCCESS:
                 mUrl = (String) msg.obj;
                 if (mUrl != null) {
-                    mPresenter.modifyLogo(mMemberId, "logo", mUrl);
+                    mPresenter.modifyMemberInfo(null, mUrl);
                 }
                 break;
             case Constants.HANDLER_UPLOAD_FAILD:
@@ -631,8 +563,8 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     @Override
     public void returnModifyNickName() {
         mNicknameTv.setText(mWecharNickname);
-        memberInfo.setNickName(mWecharNickname);
-        MemeberKeeper.saveOAuth(memberInfo, this);
+        member.setNickName(mWecharNickname);
+        MemeberKeeper.saveOAuth(member, this);
     }
 
     @Override
@@ -644,9 +576,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     .crossFade()
                     .error(R.drawable.ic_default_head)
                     .into(mHeadIamge);
-            memberInfo.setLogo(mWecharLogo);
+            member.setLogo(mWecharLogo);
         } else {
-            memberInfo.setLogo(mUrl);
+            member.setLogo(mUrl);
             Glide.with(mContext).load(mUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
@@ -654,46 +586,9 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     .error(R.drawable.ic_default_head)
                     .into(mHeadIamge);
         }
-        MemeberKeeper.saveOAuth(memberInfo, this);
-        synchWjdsData();
+        MemeberKeeper.saveOAuth(member, this);
     }
 
-
-    private void synchWjdsData() {
-        if (memberInfo == null) {
-            return;
-        }
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_ASK).excamMaster(memberInfo.getId())
-                .compose(RxHelper.<UserInfo>handleResult())
-                .subscribe(new RxSubscriber<UserInfo>(mContext, false) {
-                    @Override
-                    protected void _onNext(UserInfo userInfo) {
-
-                        if (userInfo != null) {
-                            ExcamMasterInfo info = userInfo.userinfo;
-                            if (info != null) {
-                                AppLog.print("挖机大师数据同步开始同步");
-                                Long wjdsId = info.id;
-                                Long status = info.status;
-                                Long role_id = info.role_id;
-                                memberInfo.setWjdsId(wjdsId);
-                                memberInfo.setWjdsStatus(status);
-                                memberInfo.setWjdsRole_id(role_id);
-                                memberInfo.setNum(2L);
-                                MemeberKeeper.saveOAuth(memberInfo, mContext);
-                                AppLog.print("挖机大师数据同步同步成功");
-                            }
-
-                        }
-
-                    }
-
-                    @Override
-                    protected void _onError(String message) {
-
-                    }
-                }));
-    }
 
     public void exitLogin(View view) {
         MobclickAgent.onEvent(this, MobEvent.COUNT_LOGOUT);
@@ -722,4 +617,19 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     }
 
 
+    @Override
+    public void uploadSuccess(String picUrl) {
+        Message msg = Message.obtain();
+        msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
+        msg.obj = picUrl;
+        mHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void uploadFailed() {
+        Message msg = Message.obtain();
+        msg.what = Constants.HANDLER_UPLOAD_FAILD;
+        msg.obj = "图片上传失败";
+        mHandler.sendMessage(msg);
+    }
 }

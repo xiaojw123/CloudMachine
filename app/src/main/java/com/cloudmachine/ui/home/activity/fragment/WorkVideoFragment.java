@@ -109,7 +109,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     VideoListAdapter mVideoListAdapter;
     String deviceId;
     String playUrl;
-    long memberId;
     String videoId;
     String liveUrl;
     String startTime, endTime;
@@ -149,7 +148,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
     private void initParams() {
         deviceId = getActivity().getIntent().getStringExtra(Constants.DEVICE_ID);
-        memberId = UserHelper.getMemberId(getActivity());
         sn = getActivity().getIntent().getStringExtra(Constants.SN_ID);
         isOnLine = getActivity().getIntent().getBooleanExtra(Constants.IS_ONLINE, false);
     }
@@ -178,7 +176,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     private void initTab() {
         workVideoTabToday.setSelected(true);
         workVideoTabYesterday.setSelected(false);
-        initDateTime(0);
+//        initDateTime(0);
     }
 
     private void initVideoView() {
@@ -265,7 +263,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     }
 
     public void resumeVideo() {
-        mPresenter.getVideoList(memberId, deviceId, startTime, endTime);
+        mPresenter.getVideoList(deviceId, startTime, endTime);
         if (resultCode == FullScreenActivity.MEIA_STATUS_REPLAY) {
             playComptete();
         } else if (resultCode == FullScreenActivity.MEIA_STATUS_PAUSE) {
@@ -356,14 +354,14 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
         int id = view.getId();
         switch (id) {
             case R.id.work_video_replay:
-                mPresenter.videoUpload(memberId, deviceId, videoId);
+                mPresenter.videoUpload(deviceId, videoId);
                 break;
             case R.id.work_live_status://回到直播
                 setVideoSelectedItem(null);
                 playUrl = liveUrl;
                 videoId = null;
                 name = null;
-                mPresenter.videoUpload(memberId, deviceId, videoId);
+                mPresenter.videoUpload(deviceId, videoId);
                 break;
             case R.id.work_video_tab_period:
                 showWheel();
@@ -400,7 +398,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                             initDateTime(1, time1, time2);
                         }
                         AppLog.print("time1___" + time1 + ", time2__" + time2);
-                        mPresenter.getVideoList(memberId, deviceId, startTime, endTime);
+                        mPresenter.getVideoList(deviceId, startTime, endTime);
                     }
                 }
                 break;
@@ -412,7 +410,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                 Bundle bundle = new Bundle();
                 bundle.putString(FullScreenActivity.PLAY_URL, playUrl);
                 bundle.putString(FullScreenActivity.NAME, name);
-                bundle.putLong(Constants.MEMBER_ID, memberId);
                 bundle.putString(Constants.DEVICE_ID, deviceId);
                 bundle.putString(Constants.VIDEO_ID, videoId);
                 Intent intent = new Intent(getActivity(), FullScreenActivity.class);
@@ -425,7 +422,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                     isPause = false;
                     startPlay();
                 } else {
-                    mPresenter.videoUpload(memberId, deviceId, videoId);
+                    mPresenter.videoUpload(deviceId, videoId);
                 }
                 break;
             case R.id.work_video_tab_today:
@@ -450,7 +447,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
                         initDateTime(1);
                     }
                 }
-                mPresenter.getVideoList(memberId, deviceId, startTime, endTime);
+                mPresenter.getVideoList(deviceId, startTime, endTime);
                 break;
         }
 
@@ -599,7 +596,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     }
 
     public void flushData() {
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM_YJX).getImei(UserHelper.getMemberId(getActivity()), sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(getActivity()) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getImei(sn).compose(RxSchedulers.<JsonObject>io_main()).subscribe(new RxSubscriber<JsonObject>(getActivity()) {
             @Override
             protected void _onNext(JsonObject respJobj) {
                 JsonObject resultJobj = respJobj.getAsJsonObject("result");
@@ -625,7 +622,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
     @Override
     public void onRefresh() {
-        mPresenter.getVideoList(memberId, deviceId, startTime, endTime);
+        mPresenter.getVideoList(deviceId, startTime, endTime);
     }
 
     @Override
@@ -643,7 +640,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
             videoId = String.valueOf(item.getId());
             playUrl = item.getLiveUrl();
             setVideoSelectedItem(item);
-            mPresenter.videoUpload(memberId, deviceId, String.valueOf(item.getId()));
+            mPresenter.videoUpload(deviceId, String.valueOf(item.getId()));
         }
 
 

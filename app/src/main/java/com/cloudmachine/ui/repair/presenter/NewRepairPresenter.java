@@ -1,6 +1,7 @@
 package com.cloudmachine.ui.repair.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
+import com.cloudmachine.bean.LarkDeviceDetail;
 import com.cloudmachine.bean.NewRepairInfo;
 import com.cloudmachine.ui.repair.contract.NewRepairContract;
 import com.google.gson.JsonObject;
@@ -18,23 +19,8 @@ import com.google.gson.JsonObject;
 public class NewRepairPresenter extends NewRepairContract.Presenter {
 
     @Override
-    public void upLoadPhotoRequest(String filename) {
-        mRxManage.add(mModel.upLoadPhoto(filename).subscribe(new RxSubscriber<String>(mContext) {
-            @Override
-            protected void _onNext(String s) {
-                mView.returnUploadPhoto(s);
-            }
-
-            @Override
-            protected void _onError(String message) {
-
-            }
-        }));
-    }
-
-    @Override
-    public void getWarnMessage(long memeberId, String tel, final NewRepairInfo info) {
-        mRxManage.add(mModel.getWarnMessage(memeberId, tel).subscribe(new RxSubscriber<JsonObject>(mContext) {
+    public void getWarnMessage(String tel, final NewRepairInfo info) {
+        mRxManage.add(mModel.getWarnMessage(tel).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
             protected void _onNext(JsonObject jsonObject) {
                 if (jsonObject != null) {
@@ -47,6 +33,29 @@ public class NewRepairPresenter extends NewRepairContract.Presenter {
             @Override
             protected void _onError(String message) {
                 mView.returnGetWarnMessage(info, null);
+            }
+        }));
+
+    }
+
+    @Override
+    public void getLocactionInfo(long deviceId) {
+        mRxManage.add(mModel.getLocactionInfo(deviceId).subscribe(new RxSubscriber<LarkDeviceDetail>(mContext) {
+            @Override
+            protected void _onNext(LarkDeviceDetail detail) {
+                if (detail!=null){
+                    mView.returnLocatDetail(detail.getLocation());
+                }else{
+                    mView.returnLocatDetail(null);
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+                mView.returnLocatDetail(null);
+
+
+
             }
         }));
 

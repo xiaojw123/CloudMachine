@@ -18,19 +18,19 @@ import rx.Observable;
 public class OperateModel implements OperateContact.Model {
     //internalTimeMinutes参数为1表示1分钟
     @Override
-    public Observable<String> getVerifyCode(long memberId, String taskId) {
+    public Observable<String> getVerifyCode(String taskId) {
 
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).retryOperatorCode(memberId,taskId,1).compose(RxHelper.<String>handleResult());
+        return Api.getDefault(HostType.HOST_LARK).retryOperatorCode(taskId,1).compose(RxHelper.<String>handleResult());
     }
 
     @Override
-    public Observable<String> checkVerifyCode(long memberId, String taskId, String smsCode) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).checkOperatorCode(memberId,taskId,smsCode).compose(RxHelper.<String>handleResult());
+    public Observable<String> checkVerifyCode(String taskId, String smsCode) {
+        return Api.getDefault(HostType.HOST_LARK).checkOperatorCode(taskId,smsCode).compose(RxHelper.<String>handleResult());
     }
 
     @Override
-    public Observable<JsonObject> authOperator(long memberId, String servicePwd) {
+    public Observable<JsonObject> authOperator(String servicePwd) {
 
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).authOperator(memberId,servicePwd);
+        return Api.getDefault(HostType.HOST_LARK).authOperator(servicePwd);
     }
 }

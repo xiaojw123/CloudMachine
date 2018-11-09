@@ -5,14 +5,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,26 +28,30 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.cloudmachine.R;
 import com.cloudmachine.activities.PermissionsActivity;
-import com.cloudmachine.adapter.PhotoAdapter;
 import com.cloudmachine.autolayout.AutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxManager;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.AdBean;
+import com.cloudmachine.bean.AuthInfoDetail;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.CustomActivityManager;
 import com.cloudmachine.helper.DataSupportManager;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.InfoAuthActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.AppManager;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.LoadingDialog;
+import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.StatusBarCompat;
 import com.cloudmachine.utils.TUtil;
+import com.cloudmachine.utils.ToastUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareAPI;
@@ -53,23 +60,25 @@ import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import me.iwf.photopicker.PhotoPicker;
 import rx.functions.Action1;
 
 public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends BaseModel> extends AutoLayoutActivity {
+    protected static final int AD_START = 1;//启动广告
+    public static final int AD_ROLL = 2;//白条滚动广告
+    public static final int AD_WINDOW = 3;//弹窗广告
+    protected static final int AD_ACTIVITIES = 4;//活动中心广告
     public static final int REQ_CLEAR_WEBCACHE = 0x91;
     public static final int REQ_PIC_CAMERA = 0x92;
     public static final int REQ_GO_FACE = 0x93;
     public static final int REQ_CAMERA_PROOF = 0X94;
     public static final int RES_UPDATE_TIKCET = 0x110;
-    public static final int RES_LOGIN_SUCCESS=0x96;
+    public static final int RES_LOGIN_SUCCESS = 0x96;
     PopupWindow depositPayPop, mAdPop;
     public RxManager mRxManager;
     public T mPresenter;
@@ -79,19 +88,19 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     private Timer mTimer;
     private TextView mTimerTv;
     private int timeCount;
-    public boolean isForbidenAd;
     protected String cmFilePath;
     protected int mActionType;
-
+    public boolean isForbidenAd;
 
     private Activity topAct;
+    protected PermissionsChecker mPerChecker;
+    protected boolean isInfoUpdate;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        AppLog.print("BaseAcon onCreate");
         //初始化状态栏系列事件
         doBeforeSetcontentView();
         //初始化Rx管理器
@@ -106,6 +115,80 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         AppManager.getAppManager().addActivity(this);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
+
+    protected void getPersonalInfo(String uniqueId, int bnsType) {
+        if (isNewAdd()) {
+            return;
+        }
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getPersonalInformation(uniqueId, bnsType).compose(RxHelper.<AuthInfoDetail>handleResult()).subscribe(new RxSubscriber<AuthInfoDetail>(mContext) {
+            @Override
+            protected void _onNext(AuthInfoDetail infoDetail) {
+                if (infoDetail != null) {
+                    isInfoUpdate = true;
+                    returnInfoDetail(infoDetail);
+                }
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+
+
+    }
+
+    public boolean isNewAdd() {
+        return getIntent().getBooleanExtra(InfoAuthActivity.IS_NEW_ADD, true);
+    }
+
+
+    protected void returnInfoDetail(AuthInfoDetail infoDetail) {
+
+    }
+
+    protected void updatePersonalInfo(int bnsType, String uniqueId, String resideAddress, String income, String deviceId, String listUrl) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).updatePersonalInformation(bnsType, uniqueId, resideAddress, income, deviceId, listUrl).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+            @Override
+            protected void _onNext(String s) {
+                ToastUtils.showToast(mContext, s);
+                finish();
+            }
+
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(mContext, "更新失败！");
+
+            }
+        }));
+
+    }
+
+    public boolean hasPermission(int reqCode, String... permissions) {
+        if (mPerChecker == null) {
+            mPerChecker = new PermissionsChecker(this);
+        }
+        if (mPerChecker.lacksPermissions(permissions)) {
+            PermissionsActivity.startActivityForResult(this, reqCode,
+                    permissions);
+            return false;
+        } else {
+            return true;
+
+        }
+    }
+
+    public boolean isGrandPermission(int resultCode, int permissionType) {
+        if (resultCode == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            CommonUtils.showPermissionDialog(this, permissionType);
+            return false;
+        }
+
+
+    }
+
 
     protected void registerObserverEvent(String eventName) {
         mRxManager.on(eventName, new Action1<Object>() {
@@ -137,22 +220,6 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     }
 
     private void SetStatusBarColor() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            AppLog.printError("SetStatusBarColor___");
-//            Window window = getWindow();
-//            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-//            // 激活状态栏设置
-//            tintManager.setStatusBarTintEnabled(true);
-//            // 使用颜色资源
-//            tintManager.setStatusBarTintResource(R.color.main_color);
-//            FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
-//            LinearLayout container = (LinearLayout) decorView.getChildAt(0);
-//            FrameLayout cotentContainer = (FrameLayout) container.getChildAt(1);
-//            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cotentContainer.getLayoutParams();
-//            params.topMargin = 50;
-//        }
-
         StatusBarCompat.setStatusBarColor(this, ContextCompat.getColor(this, R.color.cor10));
     }
 
@@ -176,96 +243,30 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         this.isOpen = isOpen;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AppLog.print("BaseAc onStart");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        AppLog.print("BaseAc onRestart");
-    }
-
-//    int time;
-//    int curTime;
-//    int count;
-//    AdBean curAdBean;
-//
-//    //
-//    public void showAd() {
-//        final List<AdBean> adBeenList = DataSupport.findAll(AdBean.class);
-//        for (AdBean bean : adBeenList) {
-//            time += bean.getAdTime();
-//        }
-//        //displayType 4 b
-//        curAdBean = adBeenList.get(0);
-//        curTime = curAdBean.getAdTime();
-//        if (curAdBean.getDisplayType()==1){
-//
-//        }
-//
-//        Timer t = new Timer();
-//        t.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        time--;
-//                        curTime--;
-//                        if (time > 0) {
-//                            if (curTime == 0) {
-//                                count++;
-//                                curAdBean = adBeenList.get(count);
-//                                curTime = curAdBean.getAdTime();
-////                            Glide.with(mContext).load(curAdBean.getAdTime()).into(i)
-//                            }
-//
-//                        } else {
-//                            //取消定时器
-//                        }
-//
-//                    }
-//                });
-//
-//            }
-//        }, 1000);
-//
-//
-//        List<AdBean> adBeens = new ArrayList<>();
-//        List<AdBean> showAdBeans = new ArrayList<>();
-//        for (AdBean bean : adBeens) {
-//            if (bean.getYn() == 0) {
-//                showAdBeans.add(bean);
-//            }
-//        }
-//        DataSupport.saveAll(showAdBeans);
-//
-//    }
 
     @Override
     protected void onResume() {
-        AppLog.print("BaseAc onResume");
         super.onResume();
         if (isOpen) {
             MobclickAgent.onPageStart(getClass().getName());
         }
         MobclickAgent.onResume(this);
+        showStartAd();
+    }
+
+    private void showStartAd() {
         Activity curAct = CustomActivityManager.getInstance().getTopActivity();
-        AppLog.print("curAct__" + curAct + ", topAct__" + topAct);
+        AppLog.print("onresume___curAct__"+curAct+"__topAct__"+topAct);
         if (topAct == curAct) {
-            AppLog.print("CurActivity被唤醒");
             AdBean curAdBean = DataSupportManager.findFirst(AdBean.class);
             if (curAdBean != null) {
-                timeCount = curAdBean.getAdTime();
+                timeCount = curAdBean.getAdStopTime();
                 int type = curAdBean.getDisplayType();
                 switch (type) {
                     case 1://只展示一次
                         curAdBean.setDisplayType(0);
                         curAdBean.save();
-                        showAdPop(curAdBean.getAdLink(), curAdBean.getOpenLink());
+                        showAdPop(curAdBean.getAdPicUrl(), curAdBean.getAdJumpLink());
                         break;
                     case 2:
                         AppLog.print("day of year___" + CommonUtils.getDateStamp());
@@ -273,64 +274,135 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
                             if (!curAdBean.getTimeStamp().equals(CommonUtils.getDateStamp())) {
                                 curAdBean.setTimeStamp(CommonUtils.getDateStamp());
                                 curAdBean.save();
-                                showAdPop(curAdBean.getAdLink(), curAdBean.getOpenLink());
+                                showAdPop(curAdBean.getAdPicUrl(), curAdBean.getAdJumpLink());
                             }
                         } else {
                             curAdBean.setTimeStamp(CommonUtils.getDateStamp());
                             curAdBean.save();
-                            showAdPop(curAdBean.getAdLink(), curAdBean.getOpenLink());
+                            showAdPop(curAdBean.getAdPicUrl(), curAdBean.getAdJumpLink());
                         }
                         break;
                     case 4:
-                        showAdPop(curAdBean.getAdLink(), curAdBean.getOpenLink());
+                        showAdPop(curAdBean.getAdPicUrl(), curAdBean.getAdJumpLink());
                         break;
 
                 }
             }
-            mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).getStartAd().compose(RxHelper.<List<AdBean>>handleResult()).subscribe(new RxSubscriber<List<AdBean>>(mContext) {
-                @Override
-                protected void _onNext(List<AdBean> remoteAdBeenList) {
-                    AdBean locAdBean = DataSupportManager.findFirst(AdBean.class);
-                    if (remoteAdBeenList != null && remoteAdBeenList.size() > 0) {
-                        AdBean remoteAdBean = remoteAdBeenList.get(0);
-                        if (remoteAdBean != null) {
-                            int remoteType = remoteAdBean.getDisplayType();
-                            if (remoteType != 0) {
-                                if (locAdBean != null) {
-                                    int locType = locAdBean.getDisplayType();
-                                    if ((locType == 0 && remoteType == 1) || (locType == 2 && remoteType == 2)) {
-                                        String locLink = locAdBean.getAdLink();
-                                        if (locLink != null && !locLink.equals(remoteAdBean.getAdLink())) {
-                                            DataSupport.deleteAll(AdBean.class);
-                                            remoteAdBean.save();
-                                            Glide.with(mContext).load(remoteAdBean.getAdLink());
-                                        }
-                                        return;
-                                    }
-                                    DataSupport.deleteAll(AdBean.class);
-                                }
-                                remoteAdBean.save();
-                                Glide.with(mContext).load(remoteAdBean.getAdLink());
-                                return;
-                            }
+            obtainSystemAd(AD_START);
+        }
+    }
+
+
+    public void obtainSystemAd(final int adType) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).getSystemAd(adType).compose(RxHelper.<List<AdBean>>handleResult())
+                .subscribe(new RxSubscriber<List<AdBean>>(mContext) {
+                    @Override
+                    protected void _onNext(List<AdBean> items) {
+                        switch (adType) {
+                            case AD_START:
+                                flushAdCache(items);
+                                break;
+                            case AD_ROLL:
+                                updateAdRoll(items);
+                                break;
+                            case AD_WINDOW:
+                                updateAdWindow(items);
+                                break;
+                            case AD_ACTIVITIES:
+                                updateAdActivities(items);
+                                break;
                         }
                     }
+
+                    @Override
+                    protected void _onError(String message) {
+                        if (adType == AD_ACTIVITIES) {
+                            updateAdActivitiesError();
+                        }
+
+                    }
+                }));
+
+    }
+
+    private void flushAdCache(List<AdBean> items) {
+        AdBean locAdBean = DataSupportManager.findFirst(AdBean.class);
+        if (items != null && items.size() > 0) {
+            AdBean remoteAdBean = items.get(0);
+            if (remoteAdBean != null) {
+                int remoteType = remoteAdBean.getDisplayType();
+                if (remoteType != 0) {
                     if (locAdBean != null) {
+                        int locType = locAdBean.getDisplayType();
+                        if ((locType == 0 && remoteType == 1) || (locType == 2 && remoteType == 2)) {
+                            String locLink = locAdBean.getAdPicUrl();
+                            if (locLink != null && !locLink.equals(remoteAdBean.getAdPicUrl())) {
+                                DataSupport.deleteAll(AdBean.class);
+                                new GetImageCacheTask(remoteAdBean).execute();
+                            }
+                            return;
+                        }
                         DataSupport.deleteAll(AdBean.class);
                     }
+                    new GetImageCacheTask(remoteAdBean).execute();
+                    return;
                 }
+            }
+        }
+        if (locAdBean != null) {
+            DataSupport.deleteAll(AdBean.class);
+        }
+    }
 
-                @Override
-                protected void _onError(String message) {
+    private class GetImageCacheTask extends AsyncTask<Void, Void, File> {
 
-                }
-            }));
+        AdBean mAdBean;
 
+        private GetImageCacheTask(AdBean bean) {
+            mAdBean = bean;
         }
 
+        @Override
+        protected File doInBackground(Void... params) {
+            try {
+                return Glide.with(mContext)
+                        .load(mAdBean.getAdPicUrl())
+                        .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .get();
+            } catch (Exception ex) {
+                return null;
+            }
+        }
 
-        AppLog.print("这是真的吗");
+        @Override
+        protected void onPostExecute(File result) {
+            if (result == null) {
+                return;
+            }
+            //此path就是对应文件的缓存路径
+            String path = result.getPath();
+            AppLog.print("GET IMG PATH__" + path);
+            if (!TextUtils.isEmpty(path)) {
+                mAdBean.setAdPicUrl(path);
+                mAdBean.save();
+            }
+        }
+    }
 
+
+    protected void updateAdWindow(List<AdBean> items) {
+
+    }
+
+    protected void updateAdRoll(List<AdBean> items) {
+
+    }
+
+    protected void updateAdActivities(List<AdBean> items) {
+
+    }
+
+    protected void updateAdActivitiesError() {
 
     }
 
@@ -347,9 +419,9 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     @Override
     protected void onStop() {
         super.onStop();
-        AppLog.print("BaseAct onStop__" + isForbidenAd);
         if (!isForbidenAd) {
             topAct = CustomActivityManager.getInstance().getTopActivity();
+            AppLog.print("onstop___"+topAct);
         } else {
             isForbidenAd = false;
             topAct = null;
@@ -359,11 +431,9 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 
     @Override
     protected void onDestroy() {
-        // TODO Auto-generated method stub
         closeAdPop();
-        mContext=null;
+        mContext = null;
         super.onDestroy();
-        AppLog.print("BaseAct onDestroy__");
         if (mPresenter != null)
             mPresenter.onDestroy();
         mRxManager.clear();
@@ -413,18 +483,6 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQ_CLEAR_WEBCACHE://清理H5缓存
-                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
-                } else {
-                    clearWebCahe();
-                }
-                break;
-
-
-        }
-
     }
 
 
@@ -566,6 +624,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 
 
     protected void startCamera() {
+        isForbidenAd=true;
         Intent tpIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (tpIntent.resolveActivity(mContext.getPackageManager()) != null) {

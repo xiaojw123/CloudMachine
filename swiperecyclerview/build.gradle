@@ -1,0 +1,18 @@
+apply plugin: 'com.android.library'
+def cfg = rootProject.ext.configuration
+def libs = rootProject.ext.libraries
+
+android {
+
+    compileSdkVersion cfg.compileVersion
+    buildToolsVersion cfg.buildToolsVersion
+    defaultConfig {
+        minSdkVersion cfg.minSdk
+        targetSdkVersion cfg.targetSdk
+    }
+}
+
+dependencies {
+    compile "com.android.support:recyclerview-v7:${libs.support}"
+    compile 'com.yanzhenjie:loading:1.0.2'
+}

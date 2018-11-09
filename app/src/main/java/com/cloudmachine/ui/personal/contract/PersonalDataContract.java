@@ -19,10 +19,7 @@ import rx.Observable;
 public interface PersonalDataContract {
 
     interface Model extends BaseModel {
-        Observable<String> modifyNickName(long memberId, String key, String value);
-
-        Observable<String> modifyLogo(long memberId, String key, String value);
-
+        Observable<String> modifyMemberInfo(String nickName,String logo);
     }
 
     interface View extends BaseView {
@@ -32,7 +29,6 @@ public interface PersonalDataContract {
     }
 
     abstract static class Presenter extends BasePresenter<View,Model> {
-        public abstract void modifyNickName(long memberId, String key, String value);
-        public abstract void modifyLogo(long memberId, String key, String value);
+        public abstract void modifyMemberInfo(String nickName,String logo);
     }
 }

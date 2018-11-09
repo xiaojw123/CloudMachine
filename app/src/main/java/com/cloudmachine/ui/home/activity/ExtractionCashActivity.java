@@ -17,9 +17,11 @@ import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
+import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.base.bean.BaseRespose;
+import com.cloudmachine.bean.LarkMemberInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
@@ -50,7 +52,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter, ExtrModel> implements ExtrContract.View {
-    private static final String FOMART_BALANCE="可用余额%1$s元";
+    private static final String FOMART_BALANCE = "可用余额%1$s元";
     public static final int TYPE_ALIPAY = 11;
     public static final int TYPE_WX = 10;
     private static final int AUTH_SUCESS = 0x12;
@@ -80,10 +82,7 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
     TextView cashAllTv;
 
 
-
-
-
-    int mType;
+    int mType=-1;
     String walletAmountStr;
     Member mMember;
     CustomBindDialog identyfDialog;
@@ -100,10 +99,14 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
         wxAccountLlt.setEnabled(false);
         aliPayAccountLlt.setEnabled(false);
         walletAmountStr = getIntent().getStringExtra(PurseActivity.KEY_WALLETAMOUNT);
-        balanceTv.setText(String.format(FOMART_BALANCE,walletAmountStr));
+        balanceTv.setText(String.format(FOMART_BALANCE, walletAmountStr));
         mMember = (Member) getIntent().getSerializableExtra(Constants.MC_MEMBER);
-        mPresenter.getMemberInfo(mMember.getId());
+        mPresenter.getMemberInfo();
     }
+
+
+
+
 
     @Override
     public void initPresenter() {
@@ -111,7 +114,7 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
 
     }
 
-    @OnClick({R.id.extr_cash_all,R.id.wx_acount_llt, R.id.alipay_account_llt, R.id.extr_cash_alipay_rl, R.id.extr_cash_wxpay_rl, R.id.extr_cash_sure_btn})
+    @OnClick({R.id.extr_cash_all, R.id.wx_acount_llt, R.id.alipay_account_llt, R.id.extr_cash_alipay_rl, R.id.extr_cash_wxpay_rl, R.id.extr_cash_sure_btn})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.extr_cash_all:
@@ -144,8 +147,8 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
             case R.id.radius_button_text:
                 if (extrCashWxpayCb.isChecked() || extrCashAlipayCb.isChecked()) {
                     cashOutAmout();
-                }else{
-                    ToastUtils.showToast(mContext,"请选择提现账户");
+                } else {
+                    ToastUtils.showToast(mContext, "请选择提现账户");
                 }
                 break;
         }
@@ -170,33 +173,45 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                mPresenter.unBind(mMember.getId(), type);
+                mPresenter.unBind(type);
             }
         });
         builder.create().show();
     }
 
     private void cashOutAmout() {
-       final String cashAmout=cashEdt.getText().toString();
-        if (TextUtils.isEmpty(cashAmout)){
-            ToastUtils.showToast(mContext,"提现金额不可为空!");
+        final String cashAmout = cashEdt.getText().toString();
+        if (TextUtils.isEmpty(cashAmout)) {
+            ToastUtils.showToast(mContext, "提现金额不可为空!");
             return;
         }
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).cashOut(UserHelper.getMemberId(this), mType,cashAmout).compose(RxSchedulers.<BaseRespose>io_main()).subscribe(new RxSubscriber<BaseRespose>(mContext) {
+//        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).cashOut(UserHelper.getMemberId(this), mType, cashAmout).compose(RxHelper.handleCommonResult(null)).subscribe(new RxSubscriber<JsonObject>(mContext) {
+//            @Override
+//            protected void _onNext(JsonObject jsonObject) {
+//
+//            }
+//
+//            @Override
+//            protected void _onError(String message) {
+//
+//
+//            }
+//        }));
+        String timeStamp=CommonUtils.getTimeStamp();
+        String sign=CommonUtils.getD5Str("moneytype"+timeStamp);
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).cashOut(mType, cashAmout,timeStamp,sign).compose(RxHelper.handleCommonResult(JsonObject.class)).subscribe(new RxSubscriber<JsonObject>(mContext) {
             @Override
-            protected void _onNext(BaseRespose baseRespose) {
-                AppLog.print("Retrofit Res__"+baseRespose);
-                if (baseRespose.success()) {
-                    CommonUtils.showSuccessDialog(mContext, "提现成功", cashAmout, "退款将在3-7个中作日到账");
-                } else {
-                    ToastUtils.showToast(mContext, baseRespose.getMessage());
-                }
+            protected void _onNext(JsonObject jsonObject) {
+                CommonUtils.showSuccessDialog(mContext, "提现成功", cashAmout, "退款将在3-7个中作日到账");
             }
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.showToast(mContext, "提现失败");
-
+                if (!TextUtils.isEmpty(message)) {
+                    ToastUtils.showToast(mContext, message);
+                } else {
+                    ToastUtils.showToast(mContext, "提现失败");
+                }
             }
         }));
 
@@ -383,7 +398,7 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
                 wxAccountLlt.setEnabled(false);
                 extrCashWxpayCb.setChecked(false);
             }
-            mType = 0;
+            mType = -1;
         }
 
     }
@@ -429,7 +444,7 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
 
     private void bindAliPay() {
 
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).aliPayOpenAuth(UserHelper.getMemberId(this)).compose(RxSchedulers.<BaseRespose<String>>io_main()).subscribe(new RxSubscriber<BaseRespose<String>>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).aliPayOpenAuth(UserHelper.getMemberId(this)).compose(RxSchedulers.<BaseRespose<String>>io_main()).subscribe(new RxSubscriber<BaseRespose<String>>(mContext) {
             @Override
             protected void _onNext(BaseRespose<String> stringBaseRespose) {
                 final String authResult = stringBaseRespose.getResult();
@@ -488,7 +503,7 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
                     }
                 }
                 AppLog.print("authCode__" + authCode);
-                Api.getDefault(HostType.HOST_CLOUDM).aliPayUserInfo(UserHelper.getMemberId(mContext), authCode).compose(RxSchedulers.<BaseRespose<JsonObject>>io_main()).subscribe(new RxSubscriber<BaseRespose<JsonObject>>(mContext) {
+                Api.getDefault(HostType.HOST_LARK).aliPayUserInfo(UserHelper.getMemberId(mContext), authCode).compose(RxSchedulers.<BaseRespose<JsonObject>>io_main()).subscribe(new RxSubscriber<BaseRespose<JsonObject>>(mContext) {
                     @Override
                     protected void _onNext(BaseRespose<JsonObject> userResultRes) {
                         if (userResultRes != null) {
@@ -529,7 +544,7 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
     };
 
     private void setAliPaySelected() {
-        mType = TYPE_ALIPAY;
+        mType = Constants.PAY_TYPE_ALIPAY;
         extrCashAlipayCb.setChecked(true);
         if (extrCashWxpayCb.isChecked()) {
             extrCashWxpayCb.setChecked(false);
@@ -537,7 +552,7 @@ public class ExtractionCashActivity extends BaseAutoLayoutActivity<ExtrPresenter
     }
 
     private void setWxPaySelected() {
-        mType = TYPE_WX;
+        mType = Constants.PAY_TYPE_WX;
         extrCashWxpayCb.setChecked(true);
         if (extrCashAlipayCb.isChecked()) {
             extrCashAlipayCb.setChecked(false);

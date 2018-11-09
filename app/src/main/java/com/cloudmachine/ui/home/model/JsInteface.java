@@ -2,7 +2,10 @@ package com.cloudmachine.ui.home.model;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,17 +20,15 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.activity.AuthPersonalInfoActivity;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.home.activity.InfoAuthActivity;
-import com.cloudmachine.ui.homepage.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.utils.URLs;
 import com.cloudmachine.utils.VersionU;
 import com.google.gson.Gson;
 import com.tencent.mm.sdk.modelpay.PayReq;
@@ -40,20 +41,17 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-import cn.tongdun.android.liveness.LivenessDetectActivity;
-
-import static com.cloudmachine.MyApplication.mContext;
-
 /**
  * Created by xiaojw on 2017/7/24.
  */
 
 public class JsInteface {
     private Handler mHandler;
+    private static final String COPY_TEXT = "copyText";
     private static final String CLOSE_EVENT = "close_event";
     public static final String Go_Login_Page = "goLoginPage()";
-    public static final String SCAN_EVENT = "scan_event";
-    public static final String LOCATION_EVENT = "location_event";
+    private static final String SCAN_EVENT = "scan_event";
+    private static final String LOCATION_EVENT = "location_event";
     private static final String CLICK_REPAIR = "click_repair()";
     private static final String Go_Scan_Code = "goScan()";
     private static final String FACERECOGNITION_EVENT = "faceRecognition_event";
@@ -66,7 +64,7 @@ public class JsInteface {
     public static final String ALERT_IMAGE_WARN = "CM_icon_warning";
     public static final String ALERT_IMAGE_CONFIRM = "CM_icon_confirm";
     public static final String UPLOAD_QINIU_IMG = "upload_qiniu_img_qrcode";
-    Context mContext;
+    private Context mContext;
 
     public JsInteface(Context context, Handler handler) {
         mContext = context;
@@ -85,6 +83,20 @@ public class JsInteface {
         return VersionU.getVersionCode();
     }
 
+
+    @JavascriptInterface
+    public void openByBrowser(String url) throws JSONException {
+        if (!TextUtils.isEmpty(url)) {
+            JSONObject urlJobj = new JSONObject(url);
+            String urlStr = urlJobj.optString("url");
+            if (!TextUtils.isEmpty(urlStr)) {
+                Intent intent = new Intent();
+                intent.setData(Uri.parse(urlStr));
+                intent.setAction(Intent.ACTION_VIEW);
+                mContext.startActivity(intent);
+            }
+        }
+    }
     @JavascriptInterface
     public void clearWebViewCache() {
         AppLog.print("clearWebViewCache____");
@@ -116,8 +128,7 @@ public class JsInteface {
     public void gotoDeviceDetail(String deviceId) {
         AppLog.print("gotoDeviceDetail_____deviceId__" + deviceId);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.DEVICE_ID, deviceId);
-        bundle.putBoolean(Constants.DEVICE_DETAIL_NOW, true);
+        bundle.putLong(Constants.DEVICE_ID, Long.parseLong(deviceId));
         Constants.toActivity((Activity) mContext, DeviceDetailActivity.class, bundle);
         ((Activity) mContext).finish();
     }
@@ -144,9 +155,9 @@ public class JsInteface {
                 PayInfo info = gson.fromJson(infoJson, PayInfo.class);
                 if (info != null) {
                     int payType = info.getPayType();
-                    if (payType == 10 || payType == 101) {
+                    if (payType == Constants.PAY_TYPE_WX) {
                         payByWeiXin(info);
-                    } else if (payType == 11 || payType == 102) {
+                    } else if (payType ==Constants.PAY_TYPE_ALIPAY) {
                         payByAliPay(info.getSign());
                     }
                 } else {
@@ -222,7 +233,10 @@ public class JsInteface {
             return;
         }
         JSONObject jobj = new JSONObject(jsonStr);
-        if (jobj.has(PUSH_NEW_WEB)) {
+        if (jobj.has(COPY_TEXT)) {
+            String copyText = jobj.optString(COPY_TEXT);
+            copyText(copyText);
+        } else if (jobj.has(PUSH_NEW_WEB)) {
             String url = jobj.optString(PUSH_NEW_WEB);
             if (!TextUtils.isEmpty(url)) {
                 Bundle newWebData = new Bundle();
@@ -283,6 +297,14 @@ public class JsInteface {
                 msg.what = Constants.HANDLER_JS_BODY;
                 mHandler.sendMessage(msg);
             }
+        }
+    }
+
+    private void copyText(String copyText) {
+        if (!TextUtils.isEmpty(copyText)) {
+            ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+            cm.setText(copyText);
+            ToastUtils.showCenterToast(mContext, "复制成功");
         }
     }
 

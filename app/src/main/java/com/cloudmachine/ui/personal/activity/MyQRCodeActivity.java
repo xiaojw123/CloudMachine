@@ -104,11 +104,7 @@ public class MyQRCodeActivity extends BaseAutoLayoutActivity {
         setContentView(R.layout.activity_myqrcode);
         ButterKnife.bind(this);
         MobclickAgent.onEvent(this, MobEvent.RQCODE);
-        initView();
-        //检查权限(6.0以上做权限判断)
-        AppLog.print("权限检查");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            AppLog.print("没有授权");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION);
         } else {
             initLocation();
@@ -181,14 +177,6 @@ public class MyQRCodeActivity extends BaseAutoLayoutActivity {
 
 
 
-    private void initView() {
-
-
-//        Location location= LocationUtils.getInstance(this).showLocation();
-//        String address = "纬度："+location.getLatitude()+"经度："+location.getLongitude();
-//        AppLog.print("address___"+address);
-
-    }
 
     private void createQrcode() {
         String memberId = String.valueOf(UserHelper.getMemberId(this));

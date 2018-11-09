@@ -1,13 +1,14 @@
 package com.cloudmachine.base.baserx;
 
-import com.amap.api.navi.view.PoiInputResItemWidget;
 import com.cloudmachine.base.bean.BaseRespose;
-import com.cloudmachine.chart.utils.AppLog;
+import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.NullStringToEmptyAdapterFactory;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import okio.Timeout;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -29,6 +30,51 @@ import rx.schedulers.Schedulers;
 public class RxHelper {
 
 
+    public static <M> Observable.Transformer<JsonObject, M> handleCommonResult(final Class<M> cls) {
+        return new Observable.Transformer<JsonObject, M>() {
+            @Override
+            public Observable<M> call(Observable<JsonObject> observable) {
+                return observable.flatMap(new Func1<JsonObject, Observable<M>>() {
+                    @Override
+                    public Observable<M> call(JsonObject s) {
+                        Gson gson = new GsonBuilder().create();
+                        BaseRespose response = gson.fromJson(s, new TypeToken<BaseRespose>() {
+                        }.getType());
+                        if (response.isSuccess()) { //结果正确
+                            if (cls != null) {
+                                JsonElement resultJE = s.get(Constants.RESULT);
+                                if (resultJE != null && !resultJE.isJsonNull()) {
+                                    JsonObject resultJobj = resultJE.getAsJsonObject();
+                                    M m;
+                                    if (cls == JsonObject.class) {
+                                        m = (M) resultJobj;
+                                        return createData(m);
+                                    } else {
+                                        m = gson.fromJson(resultJobj, cls);
+                                        return createData(m);
+                                    }
+
+                                } else {
+                                    return createData(null);
+                                }
+                            }else{
+                                return createData(null);
+                            }
+                        } else {
+                            if (Constants.checkToken(response)) {
+                                //如果发生错误则解析到BaseError中，最终由onError处理
+                                return Observable.error(new ServerException(response.getDevMsg()));
+                            } else {
+                                //如果发生错误则解析到BaseError中，最终由onError处理
+                                return Observable.error(new ServerException(response.getMessage()));
+                            }
+                        }
+                    }
+                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
     /**
      * 对服务器返回数据进行预处理(正常情况只需要result)
      *
@@ -43,9 +89,13 @@ public class RxHelper {
                     @Override
                     public Observable<T> call(BaseRespose<T> result) {
                         if (result.success()) {
-                            return createData(result.result);
+                            return createData(result.getResult());
                         } else {
-                            return Observable.error(new ServerException(result.getMessage()));
+                            if (Constants.checkToken(result)) {
+                                return Observable.error(new ServerException(result.getDevMsg()));
+                            } else {
+                                return Observable.error(new ServerException(result.getMessage()));
+                            }
                         }
                     }
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -68,10 +118,14 @@ public class RxHelper {
                 return baseResposeObservable.flatMap(new Func1<BaseRespose<T>, Observable<BaseRespose<T>>>() {
                     @Override
                     public Observable<BaseRespose<T>> call(BaseRespose<T> tBaseRespose) {
-                        if (tBaseRespose.code == 800) {
+                        if (tBaseRespose.getCode() == 800) {
                             return createData(tBaseRespose);
                         } else {
-                            return Observable.error(new ServerException(tBaseRespose.getMessage()));
+                            if (Constants.checkToken(tBaseRespose)) {
+                                return Observable.error(new ServerException(tBaseRespose.getDevMsg()));
+                            } else {
+                                return Observable.error(new ServerException(tBaseRespose.getMessage()));
+                            }
                         }
                     }
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -92,10 +146,14 @@ public class RxHelper {
                 return baseResposeObservable.flatMap(new Func1<BaseRespose, Observable<String>>() {
                     @Override
                     public Observable<String> call(BaseRespose baseRespose) {
-                        if (baseRespose.code == 800) {
-                            return createData(baseRespose.message);
+                        if (baseRespose.getCode() == 800) {
+                            return createData(baseRespose.getMessage());
                         } else {
-                            return Observable.error(new ServerException(baseRespose.message));
+                            if (Constants.checkToken(baseRespose)) {
+                                return Observable.error(new ServerException(baseRespose.getDevMsg()));
+                            } else {
+                                return Observable.error(new ServerException(baseRespose.getMessage()));
+                            }
                         }
                     }
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -110,10 +168,10 @@ public class RxHelper {
                 return baseResposeObservable.flatMap(new Func1<BaseRespose, Observable<String>>() {
                     @Override
                     public Observable<String> call(BaseRespose baseRespose) {
-                        if (baseRespose.code == 800) {
-                            return createData(baseRespose.message);
-                        } else if (baseRespose.code == 16305) {
-                            return Observable.error(new ServerException(String.valueOf(baseRespose.code)));
+                        if (baseRespose.getCode() == 800) {
+                            return createData(baseRespose.getMessage());
+                        } else if (baseRespose.getCode() == 16305) {
+                            return Observable.error(new ServerException(String.valueOf(baseRespose.getCode())));
                         } else {
                             return Observable.error(new ServerException(baseRespose.getMessage()));
                         }

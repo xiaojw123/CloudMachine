@@ -30,6 +30,7 @@ import com.cloudmachine.widget.CommonTitleView;
 import com.cloudmachine.widget.ImageViewTouch;
 import com.cloudmachine.widget.ImageViewTouchBase;
 import com.cloudmachine.widget.PreviewViewPager;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
+import rx.functions.Action1;
 
 public class WorkPickItemActivity extends BaseAutoLayoutActivity implements View.OnClickListener {
 
@@ -147,16 +149,16 @@ public class WorkPickItemActivity extends BaseAutoLayoutActivity implements View
 
     @Override
     public void onClick(View v) {
-
-        PermissionsChecker checker = new PermissionsChecker(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            PermissionsActivity.startActivityForResult(this, HomeActivity.PEM_REQCODE_WRITESD,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
-        } else {
-            dowloadFile();
-        }
-
-
+        RxPermissions.getInstance(mContext).request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE).subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean grant) {
+                if (grant){
+                    dowloadFile();
+                }else{
+                    CommonUtils.showPermissionDialog(mContext, Constants.PermissionType.STORAGE);
+                }
+            }
+        });
     }
 
     private void dowloadFile() {
@@ -177,7 +179,7 @@ public class WorkPickItemActivity extends BaseAutoLayoutActivity implements View
                 }
             }
         }
-        mRxManager.add(Api.getDefault(HostType.HOST_CLOUDM).downloadFile(picItem.getImgUrl()).compose(RxSchedulers.<ResponseBody>io_main()).subscribe(new RxSubscriber<ResponseBody>(this) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).downloadFile(picItem.getImgUrl()).compose(RxSchedulers.<ResponseBody>io_main()).subscribe(new RxSubscriber<ResponseBody>(this) {
             @Override
             protected void _onNext(ResponseBody responseBody) {
                 FileOutputStream fos = null;
@@ -210,18 +212,5 @@ public class WorkPickItemActivity extends BaseAutoLayoutActivity implements View
         Uri uri = Uri.fromFile(file);
         intent.setData(uri);
         sendBroadcast(intent);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == HomeActivity.PEM_REQCODE_WRITESD) {
-            if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                CommonUtils.showPermissionDialog(this, Constants.PermissionType.STORAGE);
-            } else {
-                dowloadFile();
-            }
-        }
-
     }
 }

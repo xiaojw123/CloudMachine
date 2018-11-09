@@ -18,24 +18,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.adapter.McSearchAdapter;
 import com.cloudmachine.adapter.McSearchMemberAdapter;
 import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.bean.McDeviceInfo;
-import com.cloudmachine.bean.MemberInfo;
+import com.cloudmachine.bean.SearchMemberItem;
 import com.cloudmachine.helper.MobEvent;
-import com.cloudmachine.net.task.DevicesListAsync;
 import com.cloudmachine.net.task.GivePermissionNewAsync;
 import com.cloudmachine.net.task.SearchMemberAsync;
-import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.UIHelper;
@@ -48,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchActivity extends BaseAutoLayoutActivity implements OnClickListener, IXListViewListener,
-        Callback, OnItemClickListener {
+        Callback {
 
     private Context mContext;
     private Handler mHandler;
@@ -57,10 +51,9 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
     private boolean isLoading;
     private InputMethodManager imm;
     private XListView listview;
-    private McSearchAdapter mAdapter;
+    //    private McSearchAdapter mAdapter;
     private McSearchMemberAdapter mMemberAdapter;
-    private List<McDeviceInfo> deviceList = new ArrayList<McDeviceInfo>();
-    private List<MemberInfo> memberList = new ArrayList<MemberInfo>();
+    private List<SearchMemberItem> memberList = new ArrayList<SearchMemberItem>();
     private int pageNo = 1;
     private int searchListType = -1; //0:搜索机器 1:搜索成员  2:搜索成员移交机主
     private TextView button_cancel;
@@ -68,7 +61,7 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
     private ImageView mBtnBack;
 
 
-    MemberInfo mInfo;
+    SearchMemberItem mInfo;
     private TextView emptTv;
     private TextView contentTv;
 
@@ -81,7 +74,6 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         mContext = this;
         mHandler = new Handler(this);
         getIntentData();
-//		searchListType = getIntent().getExtras().getInt(Constants.P_SEARCHLISTTYPE);
         initView();
 
     }
@@ -101,12 +93,8 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            try {
-                searchListType = bundle.getInt(Constants.P_SEARCHLISTTYPE);
-                deviceId = bundle.getLong(Constants.P_DEVICEID);
-            } catch (Exception e) {
-            }
-
+            searchListType = bundle.getInt(Constants.P_SEARCHLISTTYPE);
+            deviceId = bundle.getLong(Constants.DEVICE_ID);
         }
 
     }
@@ -126,12 +114,6 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-    }
-
 
     private void initView() {
         emptTv = (TextView) findViewById(R.id.noti_empt_tv);
@@ -146,19 +128,10 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         listview.setVisibility(View.GONE);
         imm = (InputMethodManager) this
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (searchListType == 0) {
-            mAdapter = new McSearchAdapter(deviceList, this);
-            listview.setAdapter(mAdapter);
-            listview.setOnItemClickListener(this);
-        }
-        if (searchListType == 1 || searchListType == 2 || searchListType == 3) {
-            searchText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
-            searchText.setHint(getResources().getString(R.string.search_member_hint_message));
-            mMemberAdapter = new McSearchMemberAdapter(memberList, searchListType, this, mHandler, deviceId);
-            listview.setAdapter(mMemberAdapter);
-        }
-
-
+        searchText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+        searchText.setHint(getResources().getString(R.string.search_member_hint_message));
+        mMemberAdapter = new McSearchMemberAdapter(memberList, searchListType, this, mHandler, deviceId);
+        listview.setAdapter(mMemberAdapter);
 //		listview.setShowFooterView(false);
         listview.setPullLoadEnable(false);
         listview.setPullRefreshEnable(false);
@@ -181,7 +154,7 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length()==0){
+                if (s.length() == 0) {
                     listview.setVisibility(View.GONE);
                     emptTv.setVisibility(View.GONE);
                 }
@@ -213,15 +186,11 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
 
         });
     }
-    public static void setEditTextInhibitInputSpace(EditText editText){
 
 
-    }
-
-
-    public void showAlertView(MemberInfo info) {
+    public void showAlertView(SearchMemberItem info) {
         mInfo = info;
-        Spanned spannd = Html.fromHtml("确定将设备移交给<font color=\"#333333\">\"" + info.getName() + "\"</font>，移交之后您将无法管理此设备");
+        Spanned spannd = Html.fromHtml("确定将设备移交给<font color=\"#333333\">\"" + info.getNickName() + "\"</font>，移交之后您将无法管理此设备");
         CustomDialog.Builder builder = new CustomDialog.Builder(this);
         builder.setMessage(spannd);
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -239,8 +208,8 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         builder.create().show();
     }
 
-    public void addMember(MemberInfo info) {
-        MobclickAgent.onEvent(this,MobEvent.COUNT_MEMEBER_ADD);
+    public void addMember(SearchMemberItem info) {
+        MobclickAgent.onEvent(this, MobEvent.COUNT_MEMEBER_ADD);
         mInfo = info;
         mHandler.sendEmptyMessage(Constants.HANDLER_ADDMEMBER);
 
@@ -262,7 +231,6 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         }
 
     };
-    private MemberInfo memberInfo;
 
     @Override
     public void onRefresh() {
@@ -280,30 +248,11 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
     public boolean handleMessage(Message msg) {
         // TODO Auto-generated method stub
         switch (msg.what) {
-            case Constants.HANDLER_GETDEVICELIST_SUCCESS:
-                listview.setVisibility(View.VISIBLE);
-                emptTv.setVisibility(View.GONE);
-                isLoading = false;
-                if (deviceList != null)
-                    deviceList.clear();
-                deviceList.addAll((List<McDeviceInfo>) msg.obj);
-                listview.setPullLoadEnable(false);
-                mAdapter.notifyDataSetChanged();
-                break;
-            case Constants.HANDLER_GETDEVICELIST_FAIL:
-                isLoading = false;
-                if (deviceList != null)
-                    deviceList.clear();
-                listview.setVisibility(View.GONE);
-                emptTv.setVisibility(View.VISIBLE);
-//                mEmptyLayout.setErrorMessage("未找到您要的设备，请重新搜索！");
-//                mEmptyLayout.showError();
-                break;
             case Constants.HANDLER_SEARCHMEMBER_SUCCESS:
                 isLoading = false;
                 if (null != memberList) {
                     memberList.clear();
-                    MemberInfo info = (MemberInfo) msg.obj;
+                    SearchMemberItem info = (SearchMemberItem) msg.obj;
                     if (info != null) {
                         memberList.add(info);
                     }
@@ -311,7 +260,7 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
                         listview.setVisibility(View.VISIBLE);
                         emptTv.setVisibility(View.GONE);
                         mMemberAdapter.notifyDataSetChanged();
-                    }else{
+                    } else {
                         listview.setVisibility(View.GONE);
                         emptTv.setVisibility(View.VISIBLE);
                     }
@@ -336,11 +285,10 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
                 UIHelper.ToastMessage(mContext, (String) msg.obj);
                 break;
             case Constants.HANDLER_ADDMEMBER:
-                memberInfo = mInfo;
-                new GivePermissionNewAsync(memberInfo.getMemberId(), deviceId, searchListType, mContext, mHandler).execute();
+                new GivePermissionNewAsync(mInfo.getMemberId(), deviceId, searchListType, mHandler).execute();
                 break;
             case Constants.HANDLER_ADDMEMBER_SUCCESS:
-                if (searchListType == 3) {
+                if (searchListType ==1) {
                     ToastUtils.showToast(this, "添加成功，等待对方确认");
                 } else {
                     ToastUtils.showToast(this, "移交成功，等待对方确认");
@@ -356,23 +304,6 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         return false;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-                            long id) {
-        // TODO Auto-generated method stub
-        McDeviceInfo info = mAdapter.getItem(position - 1);
-        long dId = info.getId();
-
-        Intent intent = new Intent(mContext, DeviceDetailActivity.class);
-        intent.putExtra("deviceId", dId);
-        intent.putExtra("deviceName", info.getName());
-        intent.putExtra("deviceMac", info.getMacAddress());
-        intent.putExtra("deviceWorkState", info.getWorkStatus());
-        startActivity(intent);
-
-
-    }
-
     private void clickSearch() {
         String sText = searchText.getText().toString().replaceAll(" ", "");
         if (TextUtils.isEmpty(sText)) {
@@ -381,15 +312,9 @@ public class SearchActivity extends BaseAutoLayoutActivity implements OnClickLis
         }
         listview.setVisibility(View.VISIBLE);
         isLoading = true;
-//		displaylist.clear();
         imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
-        if (searchListType == 0) {
-            new DevicesListAsync(Constants.MC_DevicesList_AllType, sText, mContext, mHandler).execute();
-        }
-        if (searchListType == 1 || searchListType == 2 || searchListType == 3) {
-            sText = sText.replace("-", "").trim();
-            new SearchMemberAsync(mContext, mHandler).execute(sText);
-        }
+        sText = sText.replace("-", "").trim();
+        new SearchMemberAsync(mContext, mHandler).execute(sText);
 
     }
 

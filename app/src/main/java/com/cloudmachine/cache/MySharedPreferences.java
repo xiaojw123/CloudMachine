@@ -18,7 +18,7 @@ public class MySharedPreferences {
 				 SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
 		 SharedPreferences.Editor edit = sp.edit();
 		 edit.putBoolean(key, b);
-		 edit.commit();
+		 edit.apply();
 	 }
 	 
 	 public static boolean getSharedPBoolean(String key) {
@@ -33,7 +33,7 @@ public class MySharedPreferences {
 				 SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
 		 SharedPreferences.Editor edit = sp.edit();
 		 edit.putString(key, str);
-		 edit.commit();
+		 edit.apply();
 	 }
 	 
 	 public static String getSharedPString(String key) {
@@ -51,7 +51,7 @@ public class MySharedPreferences {
 				 SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
 		 SharedPreferences.Editor edit = sp.edit();
 		 edit.putLong(key, id);
-		 edit.commit();
+		 edit.apply();
 	 }
 	 
 	 public static long getSharedPLong(String key) {
@@ -65,7 +65,7 @@ public class MySharedPreferences {
 				 SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
 		 SharedPreferences.Editor edit = sp.edit();
 		 edit.putInt(key, id);
-		 edit.commit();
+		 edit.apply();
 	 }
 
 	public static long getSharedPInt(String key) {

@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by xiaojw on 2017/12/1.
  */
 
-public class DepositAdapter extends BaseRecyclerAdapter {
+public class DepositAdapter extends BaseRecyclerAdapter<DepositItem> {
 
 
     public DepositAdapter(Context context, List items) {

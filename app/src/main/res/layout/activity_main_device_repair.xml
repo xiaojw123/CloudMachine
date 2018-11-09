@@ -56,76 +56,18 @@
             android:layout_height="fill_parent"
             >
 
-
-
-            <LinearLayout
+            <com.jcodecraeer.xrecyclerview.XRecyclerView
+                android:id="@+id/repair_list_xlv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
+                android:paddingTop="@dimen/dimen_size_6"
+                android:overScrollMode="never"
+                android:focusable="true"
+                android:scrollbars="none"
                 android:layout_marginBottom="@dimen/dimen_size_60"
-                >
-            <LinearLayout
-                android:id="@+id/repair_nav_container"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_size_45"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                >
-
-                <TextView
-                    android:id="@+id/repair_all_tv"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="全国"
-                    android:textColor="@color/coupon_title_textcolor"
-                    android:textSize="@dimen/siz3" />
-
-
-                <TextView
-                    android:id="@+id/repair_area_tv"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="鄂苏皖"
-                    android:textColor="@color/coupon_title_textcolor"
-                    android:textSize="@dimen/siz3" />
-
-            </LinearLayout>
-
-
-
-            <com.cloudmachine.utils.widgets.XListView
-                android:id="@+id/xlv_complete"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:cacheColorHint="@color/public_transparent"
-                android:divider="@color/public_transparent"
-                android:paddingTop="@dimen/dimen_size_6"
-                android:overScrollMode="never"
-                android:dividerHeight="@dimen/public_zero"
-                android:focusable="true"
-                android:scrollbars="none"
-                android:visibility="gone"
                 />
 
-            <com.cloudmachine.utils.widgets.XListView
-                android:id="@+id/repair_alliance_xlv"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:cacheColorHint="@color/public_transparent"
-                android:divider="@color/public_transparent"
-                android:paddingTop="@dimen/dimen_size_6"
-                android:overScrollMode="never"
-                android:dividerHeight="@dimen/public_zero"
-                android:focusable="true"
-                android:scrollbars="none"
-                android:visibility="gone"
-                />
 
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/rl_repair_now"

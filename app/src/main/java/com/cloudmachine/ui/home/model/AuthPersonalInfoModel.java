@@ -18,17 +18,17 @@ import rx.schedulers.Schedulers;
 
 public class AuthPersonalInfoModel implements AuthPersonalInfoContract.Model {
     @Override
-    public Observable<JsonObject> getMemberAuthInfo(long memberId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).getMemberAuthInfo(memberId).compose(RxHelper.<JsonObject>handleResult());
+    public Observable<JsonObject> getMemberAuthInfo() {
+        return Api.getDefault(HostType.HOST_LARK).getMemberAuthInfo().compose(RxHelper.<JsonObject>handleResult());
     }
 
     @Override
-    public Observable<String> submitIdUserInfo(long memberId, String redisUserId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).submitIdUserInfo(memberId,redisUserId).compose(RxHelper.<String>handleResult());
+    public Observable<String> submitIdUserInfo(String redisUserId) {
+        return Api.getDefault(HostType.HOST_LARK).submitIdUserInfo(redisUserId).compose(RxHelper.<String>handleResult());
     }
 
     @Override
-    public Observable<JsonObject> verifyOcr(long memberId, String imgUrl,String redisUserId) {
-        return Api.getDefault(HostType.HOST_CLOUDM_YJX).verifyOcr(memberId,imgUrl,redisUserId);
+    public Observable<JsonObject> verifyOcr(String imgUrl,String redisUserId) {
+        return Api.getDefault(HostType.HOST_LARK).verifyOcr(imgUrl,redisUserId);
     }
 }

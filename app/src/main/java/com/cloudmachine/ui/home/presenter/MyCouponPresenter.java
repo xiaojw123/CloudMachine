@@ -2,7 +2,7 @@ package com.cloudmachine.ui.home.presenter;
 
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.ui.home.contract.MyCouponContract;
-import com.cloudmachine.ui.home.model.CouponBean;
+import com.cloudmachine.bean.CouponBean;
 
 /**
  * Created by xiaojw on 2017/10/11.

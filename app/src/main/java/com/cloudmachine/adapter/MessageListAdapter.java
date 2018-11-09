@@ -41,23 +41,6 @@ public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
     }
 
 
-    public void updateItems(List<MessageBO> items) {
-        if (mItems != null && mItems.size() > 0) {
-            mItems.addAll(items);
-        } else {
-            mItems = items;
-        }
-        notifyDataSetChanged();
-    }
-
-    public void updateItem(MessageBO item) {
-        if (mItems == null) {
-            mItems = new ArrayList<>();
-        }
-        mItems.add(0, item);
-        notifyDataSetChanged();
-    }
-
     public void removeItem(MessageBO item) {
         mItems.remove(item);
         notifyDataSetChanged();
@@ -70,9 +53,8 @@ public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return  new MessageListHolder(LayoutInflater.from(mContext).inflate(R.layout.list_item_message, parent, false));
+        return new MessageListHolder(LayoutInflater.from(mContext).inflate(R.layout.list_item_message, parent, false));
     }
-
 
 
     class MessageListHolder extends BaseHolder<MessageBO> implements View.OnClickListener {
@@ -110,7 +92,7 @@ public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
             } else {
                 unReadAlertView.setVisibility(View.INVISIBLE);
             }
-            itemDateTv.setText(item.getInviteTime());
+            itemDateTv.setText(item.getInviteDate());
             phoneTv.setVisibility(View.GONE);
             int messageType = item.getMessageType();
             switch (messageType) {
@@ -121,11 +103,11 @@ public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
                 case 9:
                 case 10:
                 case 11:
-                    if (messageType==10||messageType==11){
+                    if (messageType == 10 || messageType == 11) {
                         Glide.with(mContext).load(item.getImgpath())
                                 .error(R.drawable.ic_message_money)
                                 .into(itemMessageImg);
-                    }else{
+                    } else {
                         Glide.with(mContext).load(item.getImgpath())
                                 .error(R.drawable.ic_message_system)
                                 .into(itemMessageImg);
@@ -139,7 +121,7 @@ public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
                 case 6:
                     itemTitleTv.setText("问答社区");
 
-                    String content = item.getInviterNickname()
+                    String content = item.getFromMemberNickname()
                             + "回复了<font color=\"#333333\">\""
                             + item.getContent()
                             + "\"</font>点击查看";
@@ -151,9 +133,9 @@ public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
                     Glide.with(mContext).load(item.getImgpath())
                             .error(R.drawable.ic_default_head)
                             .into(itemMessageImg);
-                    itemTitleTv.setText(item.getInviterNickname() + "");
+                    itemTitleTv.setText(item.getFromMemberNickname());
                     phoneTv.setVisibility(View.VISIBLE);
-                    phoneTv.setText(item.getInviterMobile());
+                    phoneTv.setText(item.getFromMemberMobile());
                     String dMessage = "";
                     switch (status) {
                         case 1:
@@ -174,7 +156,7 @@ public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
                     break;
 
                 default:
-                    itemTitleTv.setText(item.getInviterNickname());
+                    itemTitleTv.setText(item.getFromMemberNickname());
                     Glide.with(mContext).load(item.getImgpath())
                             .error(R.drawable.ic_default_head)
                             .into(itemMessageImg);
@@ -236,15 +218,13 @@ public class MessageListAdapter extends BaseRecyclerAdapter<MessageBO> {
             } else {
                 return;
             }
-            long memberId = UserHelper.getMemberId(mContext);
             switch (v.getId()) {
                 case R.id.item_message_accept://接受移交
-                    mPresenter.acceptMessage(memberId, msgBO);
+                    mPresenter.receiveMessage(msgBO, 3);
                     break;
                 case R.id.item_message_refuse://拒绝移交
-                    mPresenter.rejectMessage(memberId, msgBO);
+                    mPresenter.receiveMessage(msgBO, 2);
                     break;
-
             }
 
 

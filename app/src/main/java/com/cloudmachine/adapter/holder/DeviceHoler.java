@@ -4,13 +4,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
+import com.cloudmachine.bean.LarkDeviceDetail;
+import com.cloudmachine.bean.LarkLocBean;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.McDeviceLocation;
 import com.cloudmachine.utils.CommonUtils;
 
 import butterknife.BindView;
 
-public class DeviceHoler extends BaseHolder<McDeviceInfo> {
+public class DeviceHoler extends BaseHolder<LarkDeviceDetail> {
     @BindView(R.id.item_device_name)
     TextView itemDeviceName;
     @BindView(R.id.item_device_oil)
@@ -29,17 +31,17 @@ public class DeviceHoler extends BaseHolder<McDeviceInfo> {
     }
 
     @Override
-    public void initViewHolder(McDeviceInfo item) {
+    public void initViewHolder(LarkDeviceDetail item) {
         if (item == null) {
             return;
         }
-        itemDeviceName.setText(item.getName());
+        itemDeviceName.setText(item.getDeviceName());
         if (CommonUtils.isHConfig(item.getSnId())){
             itemDeviceHc.setVisibility(View.VISIBLE);
         }else{
             itemDeviceHc.setVisibility(View.GONE);
         }
-        McDeviceLocation location = item.getLocation();
+        LarkLocBean location = item.getLocation();
         if (location != null) {
             itemDeviceLoc.setText(location.getPosition());
         }
