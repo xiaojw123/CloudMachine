@@ -19,7 +19,6 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.EmunBean;
-import com.cloudmachine.bean.TypeItem;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
@@ -71,7 +70,7 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
         Object obj = view.getTag();
         if (obj!=null){
             Intent intent=new Intent();
-            intent.putExtra(Constants.TYPE_ITEM,(TypeItem) obj);
+            intent.putExtra(Constants.ENUM_ITEM,(EmunBean) obj);
             intent.putExtra(Constants.RELATION_POSITION,position);
             setResult(RESULT_OK,intent);
             finish();
@@ -81,7 +80,7 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
     private class RelationAdapter extends BaseRecyclerAdapter<EmunBean> {
 
 
-        public RelationAdapter(Context context, List<EmunBean> items) {
+        RelationAdapter(Context context, List<EmunBean> items) {
             super(context, items);
         }
 
@@ -99,7 +98,7 @@ public class RelationActivity extends BaseAutoLayoutActivity implements BaseRecy
         TextView nameTv;
         ImageView statusImg;
 
-        public RelationHolder(View itemView) {
+        RelationHolder(View itemView) {
             super(itemView);
             nameTv = (TextView) itemView.findViewById(R.id.item_relation_name);
             statusImg = (ImageView) itemView.findViewById(R.id.item_relation_status);

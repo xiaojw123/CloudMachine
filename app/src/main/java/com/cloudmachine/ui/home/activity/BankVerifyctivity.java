@@ -1,7 +1,5 @@
 package com.cloudmachine.ui.home.activity;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
@@ -9,21 +7,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cloudmachine.R;
-import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.chart.utils.AppLog;
-import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.ApiConstants;
 import com.cloudmachine.net.api.HostType;
-import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import butterknife.BindView;
@@ -77,9 +70,9 @@ public class BankVerifyctivity extends BaseAutoLayoutActivity implements View.On
                 String mobile = mobileEdt.getText().toString();
                 String name = nameEdt.getText().toString();
 
-                mRxManager.add(Api.getDefault(HostType.HOST_LARK).authBankCard(cardNo, mobile, name).compose(RxHelper.handleCommonResult(JsonObject.class)).subscribe(new RxSubscriber<JsonObject>(mContext) {
+                mRxManager.add(Api.getDefault(HostType.HOST_LARK).authBankCard(cardNo, mobile, name).compose(RxHelper.handleCommonResult(String.class)).subscribe(new RxSubscriber<String>(mContext) {
                     @Override
-                    protected void _onNext(JsonObject s) {
+                    protected void _onNext(String s) {
                         ToastUtils.showToast(mContext, "验证成功");
                         finish();
                     }
@@ -93,7 +86,7 @@ public class BankVerifyctivity extends BaseAutoLayoutActivity implements View.On
                 break;
             case R.id.bank_verify_question:
                 Bundle data=new Bundle();
-//                data.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppBankList);
+                data.putString(QuestionCommunityActivity.H5_URL, ApiConstants.AppBankCmVerify);
                 Constants.toActivity(this,QuestionCommunityActivity.class,data);
                 break;
 

@@ -4,68 +4,47 @@ package com.cloudmachine.net.api;
 import com.cloudmachine.base.Operator;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.AdBean;
-import com.cloudmachine.bean.AllianceDetail;
-import com.cloudmachine.bean.AllianceItem;
 import com.cloudmachine.bean.AuthBean;
 import com.cloudmachine.bean.AuthDeviceItem;
 import com.cloudmachine.bean.AuthInfoDetail;
-import com.cloudmachine.bean.BOInfo;
-import com.cloudmachine.bean.CWInfo;
-import com.cloudmachine.bean.CheckNumBean;
-import com.cloudmachine.bean.CouponBean;
 import com.cloudmachine.bean.DepositItem;
 import com.cloudmachine.bean.DeviceAuthItem;
-import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.ElectronicFenceBean;
 import com.cloudmachine.bean.EmunBean;
-import com.cloudmachine.bean.ForceVBean;
 import com.cloudmachine.bean.H5Config;
 import com.cloudmachine.bean.LarkDeviceBasicDetail;
 import com.cloudmachine.bean.LarkDeviceDetail;
 import com.cloudmachine.bean.LarkDeviceInfo;
 import com.cloudmachine.bean.LarkMemberInfo;
 import com.cloudmachine.bean.LarkMemberItem;
-import com.cloudmachine.bean.LoanAuthInfo;
 import com.cloudmachine.bean.MachineBrandInfo;
 import com.cloudmachine.bean.MachineModelInfo;
 import com.cloudmachine.bean.McDeviceInfo;
-import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.MenuBean;
 import com.cloudmachine.bean.MessageBO;
 import com.cloudmachine.bean.OilSynBean;
 import com.cloudmachine.bean.PayCodeItem;
 import com.cloudmachine.bean.PickItemBean;
 import com.cloudmachine.bean.QiToken;
-import com.cloudmachine.bean.RedPacket;
 import com.cloudmachine.bean.RepairDetail;
 import com.cloudmachine.bean.RepairHistoryInfo;
 import com.cloudmachine.bean.ResonItem;
-import com.cloudmachine.bean.RoleBean;
 import com.cloudmachine.bean.SalaryHistoryItem;
-import com.cloudmachine.bean.SalaryPayInfo;
 import com.cloudmachine.bean.ScanningOilLevelInfoArray;
-import com.cloudmachine.bean.SiteBean;
 import com.cloudmachine.bean.TelBean;
-import com.cloudmachine.bean.TypeItem;
 import com.cloudmachine.bean.VersionInfo;
 import com.cloudmachine.bean.VideoBean;
-import com.cloudmachine.ui.home.model.OrderCouponBean;
 import com.google.gson.JsonObject;
 
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
@@ -466,7 +445,7 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("picture/personalImageUpload")
-    Observable<BaseRespose<String>> perImgUpload(@Field("uniqueId") String uniqueId, @Field("pictureUrls") String pictureUrls, @Field("bnsType") int bnsType, @Field("annualIncome") String annualIncome);
+    Observable<BaseRespose<String>> perImgUpload(@Field("uniqueId") String uniqueId, @Field("pictureUrls") String pictureUrls, @Field("bnsType") int bnsType);
 
 
 
@@ -494,7 +473,7 @@ public interface ApiService {
 
 
     @GET("ticket/openAccountUrl")
-    Observable<BaseRespose<String>>  getOpenAccountUrl();
+    Observable<BaseRespose<String>>  getOpenAccountUrl(@Query("uniqueId") String uniqueId);
 
 
 

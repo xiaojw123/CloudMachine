@@ -17,10 +17,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -48,7 +44,6 @@ import com.cloudmachine.bean.LarkDeviceDetail;
 import com.cloudmachine.bean.LarkDeviceInfo;
 import com.cloudmachine.bean.LarkLocBean;
 import com.cloudmachine.bean.McDeviceInfo;
-import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.activity.DeviceDetailActivity;
@@ -143,7 +138,6 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
 
 
     private void loadData() {
-
         mPresenter.getDeviceMapList(1);
         if (UserHelper.isLogin(getActivity())) {
             memberId = UserHelper.getMemberId(getActivity());
@@ -153,18 +147,20 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
                 menuTv.setVisibility(View.GONE);
             }
             mPresenter.getAllDeviceList(1, null);
+            mPresenter.getRedPacketConfig();
         } else {
             memberId = Constants.INVALID_DEVICE_ID;
             aMap.clear();
             aMap.reloadMap();
             menuTv.setVisibility(View.GONE);
+            mPresenter.cancelRedPacketAnim();
+            redPacketImg.setVisibility(View.GONE);
         }
         if (mItems == null) {
             mHandler = new Handler(this);
             ((HomeActivity) getActivity()).obtainSystemAd(HomeActivity.AD_ROLL);
         }
         mPresenter.getServiceTel();
-        mPresenter.getReadPacketConfig();
     }
 
 
@@ -443,7 +439,7 @@ public class DeviceFragment extends BaseMapFragment<DevicePresenter, DeviceModel
     public void retrunPacketConfig(String imgUrl, String jumpUrl, final boolean isNoOpen) {
         redPacketImg.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(imgUrl)) {
-            Glide.with(getActivity()).load(imgUrl).into(new SimpleTarget<GlideDrawable>() {
+            Glide.with(getActivity()).load(imgUrl).error(R.drawable.ic_red_packet).into(new SimpleTarget<GlideDrawable>() {
                 @Override
                 public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                     redPacketImg.setImageDrawable(resource);

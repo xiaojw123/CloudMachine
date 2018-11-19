@@ -91,10 +91,12 @@
 
             <ImageView
                 android:id="@+id/bank_verify_question"
-                android:layout_width="@dimen/dimen_size_12"
-                android:layout_height="@dimen/dimen_size_22"
+                android:layout_width="@dimen/dimen_size_23"
+                android:layout_height="@dimen/dimen_size_23"
                 android:paddingTop="@dimen/dimen_size_5"
                 android:paddingBottom="@dimen/dimen_size_5"
+                android:paddingLeft="@dimen/dimen_size_5"
+                android:paddingRight="@dimen/dimen_size_5"
                 android:src="@drawable/icon_question_bank"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"

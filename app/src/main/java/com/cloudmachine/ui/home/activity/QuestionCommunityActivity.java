@@ -26,7 +26,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
@@ -47,8 +46,6 @@ import com.cloudmachine.autolayout.widgets.CustomDialog;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.bean.EmunBean;
-import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.bean.ResidentAddressInfo;
 import com.cloudmachine.chart.utils.AppLog;
@@ -68,7 +65,6 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.FileStorage;
 import com.cloudmachine.utils.FileUtils;
 import com.cloudmachine.utils.LarkUrls;
-import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.PhotosGallery;
 import com.cloudmachine.utils.ShareDialog;
@@ -78,7 +74,7 @@ import com.cloudmachine.utils.VersionU;
 import com.cloudmachine.widget.CommonTitleView;
 import com.cloudmachine.widget.ItemLongClickedPopWindow;
 import com.cloudmachine.zxing.activity.CaptureActivity;
-import com.google.gson.JsonElement;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
@@ -151,6 +147,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
     boolean isQrCode;
     String locMethod;
     AMapLocationClient locationClient = null;
+    String mSlink, mSpic;
 
 
     @Override
@@ -222,7 +219,13 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
                 Constants.callJsMethod(mWebView, "callbackDSFPayResultCancelOrError()");
             }
         });
-
+//        mRxManager.on(Constants.FLUSH_TOKEN, new Action1<Object>() {
+//
+//            @Override
+//            public void call(Object o) {
+//                loadWebUrl(mUrl);
+//            }
+//        });
     }
 
 
@@ -232,9 +235,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
         if (bundle != null) {
             mTitle = bundle.getString(H5_TITLE);
             mUrl = bundle.getString(H5_URL);
-            shareLink = bundle.getString(SHARE_LINK);
-            sharePic = bundle.getString(SHARE_PIC);
+            mSlink = bundle.getString(SHARE_LINK);
+            mSpic = bundle.getString(SHARE_PIC);
             isQrCode = bundle.getBoolean(QR_CODE);
+        }
+        if (TextUtils.isEmpty(mSlink)) {
+            mSlink = mUrl;
         }
     }
 
@@ -260,9 +266,9 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
 
     private void loadWebUrl(String url) {
         String tempUrl;
-        if (!TextUtils.isEmpty(UserHelper.TOKEN)) {
-            tempUrl = CommonUtils.fillParams(url, Constants.KEY_TOKEN, UserHelper.TOKEN);
-            tempUrl = CommonUtils.fillParams(tempUrl, Constants.MEMBER_ID, UserHelper.ID);
+        if (UserHelper.isLogin(this)) {
+            tempUrl = CommonUtils.fillParams(url, Constants.KEY_TOKEN, UserHelper.getToken(this));
+            tempUrl = CommonUtils.fillParams(tempUrl, Constants.MEMBER_ID, UserHelper.getId(this));
         } else {
             tempUrl = url;
         }
@@ -272,6 +278,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
             tempUrl = CommonUtils.fillParams(tempUrl, Constants.APP_NAME, "CloudmMachine-AppStore");
         }
         mWebView.loadUrl(CommonUtils.fillParams(tempUrl, PARAMS_KEY_VERSION, VersionU.getVersionName()));
+        AppLog.print("loadUrl__" + tempUrl);
     }
 
     private View.OnLongClickListener lcl = new View.OnLongClickListener() {
@@ -355,8 +362,12 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
             } else {
                 mWvTitle.setCloseVisible(View.VISIBLE);
             }
-            if (!url.startsWith("cloudm://")) {
+            if (url.startsWith("http")) {
                 mUrl = url;
+                mUrl = CommonUtils.resetUrl(mUrl, Constants.KEY_TOKEN);
+                mUrl = CommonUtils.resetUrl(mUrl, Constants.MEMBER_ID);
+                loadWebUrl(mUrl);
+                return true;
             }
             return false;
         }
@@ -483,7 +494,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
         isForbidenAd = true;
         File file = new FileStorage().createIconFile();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            imageUri = FileProvider.getUriForFile(this, "com.cloudmachine.fileprovider", file);//通过FileProvider创建一个content类型的Uri
+            imageUri = FileProvider.getUriForFile(this, Constants.FILE_PROVIDER, file);//通过FileProvider创建一个content类型的Uri
         } else {
             imageUri = Uri.fromFile(file);
         }
@@ -922,16 +933,14 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
                     if (UserHelper.isLogin(QuestionCommunityActivity.this)) {
                         Constants.toActivity(QuestionCommunityActivity.this, NewRepairActivity.class, null);
                     } else {
-                        Constants.toActivityForR(QuestionCommunityActivity.this, LoginActivity.class, null);
+                        Constants.toActivityForR(QuestionCommunityActivity.this, LoginActivity.class, null, FLUSH_PAGE);
                     }
                     break;
 
                 case Constants.HANDLER_JS_JUMP:
                     String methodStr = (String) msg.obj;
                     if (JsInteface.Go_Login_Page.equals(methodStr)) {
-                        Bundle b = new Bundle();
-                        b.putInt("flag", 4);
-                        Constants.toActivityForR(QuestionCommunityActivity.this, LoginActivity.class, b, FLUSH_PAGE);
+                        Constants.toActivityForR(QuestionCommunityActivity.this, LoginActivity.class, null, FLUSH_PAGE);
                     }
                     break;
                 case Constants.HANDLER_JS_BODY:
@@ -940,9 +949,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
                     }
                     final JsBody body = (JsBody) msg.obj;
                     if (!TextUtils.isEmpty(body.getTitle())) {
-                        shareTitle = body.getTitle();
-                        shareLink = body.getLink();
-                        shareDesc = body.getDesc();
+                        setShareBody(body);
                         shareUrl();
                         break;
                     }
@@ -953,33 +960,11 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
                         rightEvent = body.getRight_event();
                     }
                     JsonObject scJobj = body.getShare_content();
-                    if (scJobj != null) {
-                        shareTitle = scJobj.get("title").getAsString();
-                        shareDesc = scJobj.get("desc").getAsString();
-                        JsonElement imgJE = scJobj.get("is_image");
-                        if (imgJE != null) {
-                            isImg = imgJE.getAsInt();
-                        }
-                        JsonElement imgUrlJE = scJobj.get("image");
-                        if (imgUrlJE != null) {
-                            shareImgUrl = imgUrlJE.getAsString();
-                        }
-                        if (TextUtils.isEmpty(shareLink)) {
-                            shareLink = scJobj.get("link").getAsString();
-                        }
-                        if (TextUtils.isEmpty(sharePic)) {
-                            sharePic = scJobj.get("image").getAsString();
-                        }
-                        AppLog.print("scObj 不为空___title_" + shareTitle + ", desc__" + shareDesc + ", lin__" + shareLink);
-                    } else {
-                        shareTitle = h5Title;
-                        shareDesc = SHAREDESC;
-                        if (TextUtils.isEmpty(shareLink)) {
-                            shareLink = mUrl;
-                        }
-                        AppLog.print("scObj___title_" + shareTitle + ", desc__" + shareDesc + ", lin__" + shareLink);
+                    if (scJobj != null && !scJobj.isJsonNull()) {
+                        Gson gson = new Gson();
+                        JsBody scBody = gson.fromJson(scJobj, JsBody.class);
+                        setShareBody(scBody);
                     }
-
                     if (!TextUtils.isEmpty(h5Title)) {
                         mWvTitle.setTitleName(h5Title);
                         String rightTitle = body.getRight_title();
@@ -1048,11 +1033,30 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
             }
         }
 
-        // TODO: 2018/1/10 Test Share IMG
+        private void setShareBody(JsBody body) {
+            shareTitle = body.getTitle();
+            shareDesc = body.getDesc();
+            shareLink = body.getLink();
+            isImg = body.getIs_image();
+            sharePic = body.getImage();
+            shareImgUrl = sharePic;
+        }
+
         private void shareUrl() {
+            if (TextUtils.isEmpty(shareTitle)) {
+                shareTitle = h5Title;
+            }
+            if (TextUtils.isEmpty(shareDesc)) {
+                shareDesc = SHAREDESC;
+            }
+            if (TextUtils.isEmpty(shareLink)) {
+                shareLink = mSlink;
+            }
+            if (TextUtils.isEmpty(sharePic)) {
+                sharePic = mSpic;
+            }
             if (isImg == 0) {
                 ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, shareLink, shareTitle, shareDesc, sharePic);
-                shareDialog.setLinkUrl(mUrl);
                 shareDialog.show();
             } else if (isImg == 1) {
                 ShareDialog shareDialog = new ShareDialog(QuestionCommunityActivity.this, shareImgUrl);
@@ -1065,7 +1069,7 @@ public class QuestionCommunityActivity extends BaseAutoLayoutActivity {
     private void gotoFace() {
         Bundle faceData = new Bundle();
         faceData.putString(LivenessDetectActivity.URL_CONTRASTFACE, LarkUrls.CONTRAST_FACE);
-        faceData.putString(LivenessDetectActivity.TOKEN, UserHelper.TOKEN);
+        faceData.putString(LivenessDetectActivity.TOKEN, UserHelper.getToken(this));
         Constants.toActivityForR(QuestionCommunityActivity.this, LivenessDetectActivity.class, faceData);
     }
 

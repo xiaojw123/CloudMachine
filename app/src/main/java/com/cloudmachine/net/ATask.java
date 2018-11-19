@@ -29,9 +29,9 @@ public class ATask extends AsyncTask<String, Integer, String> {
      **/
     @Override
     protected void onPreExecute() {
-        if (!MyApplication.getInstance().isOpenNetwork(MyApplication.mContext)) {
-            UIHelper.ToastMessage(MyApplication.mContext,
-                    MyApplication.mContext.getResources().getString(R.string.no_network));
+        if (!MyApplication.getInstance().isOpenNetwork(MyApplication.getInstance())) {
+            UIHelper.ToastMessage(MyApplication.getInstance(),
+                    MyApplication.getInstance().getResources().getString(R.string.no_network));
             return;
         }
         super.onPreExecute();
@@ -49,14 +49,11 @@ public class ATask extends AsyncTask<String, Integer, String> {
         if (br != null) {
             message = br.getMessage();
             isSuccess = br.isSuccess();
-            if (!isSuccess && br.getCode() == -10086) {
-                Intent intent = new Intent(MyApplication.mContext, LoginActivity.class);
-                MyApplication.mContext.startActivity(intent);
+            if (!isSuccess) {
+                Constants.checkToken(br);
             }
         }
     }
-
-
 
 
 }

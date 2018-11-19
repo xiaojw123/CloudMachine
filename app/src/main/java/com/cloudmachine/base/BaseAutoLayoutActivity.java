@@ -1,5 +1,6 @@
 package com.cloudmachine.base;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -120,11 +121,12 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         if (isNewAdd()) {
             return;
         }
+        isInfoUpdate = true;
         mRxManager.add(Api.getDefault(HostType.HOST_LARK).getPersonalInformation(uniqueId, bnsType).compose(RxHelper.<AuthInfoDetail>handleResult()).subscribe(new RxSubscriber<AuthInfoDetail>(mContext) {
             @Override
             protected void _onNext(AuthInfoDetail infoDetail) {
+
                 if (infoDetail != null) {
-                    isInfoUpdate = true;
                     returnInfoDetail(infoDetail);
                 }
             }
@@ -157,7 +159,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.showToast(mContext, "更新失败！");
+                ToastUtils.showToast(mContext, "提交失败！");
 
             }
         }));
@@ -256,7 +258,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 
     private void showStartAd() {
         Activity curAct = CustomActivityManager.getInstance().getTopActivity();
-        AppLog.print("onresume___curAct__"+curAct+"__topAct__"+topAct);
+        AppLog.print("onresume___curAct__" + curAct + "__topAct__" + topAct);
         if (topAct == curAct) {
             AdBean curAdBean = DataSupportManager.findFirst(AdBean.class);
             if (curAdBean != null) {
@@ -421,7 +423,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
         super.onStop();
         if (!isForbidenAd) {
             topAct = CustomActivityManager.getInstance().getTopActivity();
-            AppLog.print("onstop___"+topAct);
+            AppLog.print("onstop___" + topAct);
         } else {
             isForbidenAd = false;
             topAct = null;
@@ -599,7 +601,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
                 deleteFile(appCacheDir);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
     }
 
@@ -624,7 +626,7 @@ public abstract class BaseAutoLayoutActivity<T extends BasePresenter, E extends 
 
 
     protected void startCamera() {
-        isForbidenAd=true;
+        isForbidenAd = true;
         Intent tpIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (tpIntent.resolveActivity(mContext.getPackageManager()) != null) {

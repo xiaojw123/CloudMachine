@@ -72,7 +72,7 @@ public class CommonUtils {
                 ((ViewGroup) parent).removeView(webView);
             }
         }
-        assert webView!=null;
+        assert webView != null;
         webView.stopLoading();
         webView.getSettings().setJavaScriptEnabled(false);
         webView.clearHistory();
@@ -397,6 +397,9 @@ public class CommonUtils {
             case Constants.PermissionType.ADDRESS_BOOK:
                 msg = "需要开启通讯录，请到设置->找到云机械->通讯录，打开通讯录";
                 break;
+            case Constants.PermissionType.LOCATION_STORAGE:
+                msg = "需要读写存储权限、定位服务，请到设置->权限管理打开";
+                break;
         }
         builder.setMessage(msg);
         builder.setNeutralButton("好", new DialogInterface.OnClickListener() {
@@ -598,17 +601,44 @@ public class CommonUtils {
     }
 
     public static String fillParams(String url, String key, String value) {
-        if (!TextUtils.isEmpty(value)) {
-            if (url != null && !url.contains(key)) {
-                if (url.contains("?")) {
-                    url += "&";
-                } else {
-                    url += "?";
-                }
-                url += key + "=" + value;
+        if (!TextUtils.isEmpty(url)) {
+            String resetUrl = resetUrl(url, key);
+            if (resetUrl.contains("?")) {
+                resetUrl += "&";
+            } else {
+                resetUrl += "?";
             }
+            resetUrl += key + "=" + value;
+            return resetUrl;
         }
         return url;
     }
+
+    public static String resetUrl(String url, String key) {
+        if (url.contains(key)) {
+            StringBuilder sb = new StringBuilder(url);
+            int index = sb.indexOf(key);
+            char c = sb.charAt(index - 1);
+            int nextIndex = sb.indexOf("&", index);
+            int startIndex, endIndex;
+            if (c == '&') {
+                startIndex = index - 1;
+            } else {
+                startIndex = index;
+            }
+            if (nextIndex == -1) {
+                endIndex = sb.length();
+            } else {
+                endIndex = c == '?' ? nextIndex + 1 : nextIndex;
+            }
+            sb.delete(startIndex, endIndex);
+            if (sb.charAt(sb.length() - 1) == '?') {
+                sb.deleteCharAt(sb.length() - 1);
+            }
+            return sb.toString();
+        }
+        return url;
+    }
+
 
 }

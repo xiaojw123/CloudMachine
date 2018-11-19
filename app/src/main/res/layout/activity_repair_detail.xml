@@ -448,7 +448,9 @@
             android:background="@color/cor1"
             android:text="去支付"
             android:textColor="@color/cor15"
-            android:textSize="@dimen/siz3" />
+            android:textSize="@dimen/siz3"
+            android:visibility="gone"
+            />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -16,15 +16,13 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.AuthInfoDetail;
-import com.cloudmachine.bean.TypeItem;
-import com.cloudmachine.helper.UserHelper;
+import com.cloudmachine.bean.EmunBean;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
-import com.cloudmachine.utils.widgets.ClearEditTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,8 +37,6 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
     private static final int SELECT_CONTACT = 0x19;
     private static final int SELECT_RELATION = 0x20;
 
-    @BindView(R.id.contact_emergency_item)
-    FrameLayout emergencyItem;
     @BindView(R.id.contact_relation_item)
     FrameLayout relationItem;
     @BindView(R.id.contact_mobile_tv)
@@ -51,12 +47,10 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
     TextView relationTv;
     @BindView(R.id.contact_submit_btn)
     RadiusButtonView submitBtn;
-
-
+    @BindView(R.id.contact_mobile_item)
+    FrameLayout mobileItem;
     PermissionsChecker mChecker;
-    TypeItem typeItem;
-    int mFirstCode = -1;
-
+    EmunBean enumItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,33 +60,23 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
         mChecker = new PermissionsChecker(mContext);
         submitBtn.setButtonClickEnable(false);
         submitBtn.setButtonClickListener(this);
-        String uniqueId = getIntent().getStringExtra(Constants.UNIQUEID);
-        getPersonalInfo(uniqueId, InfoAuthActivity.BNS_TYPE_CONTACT);
     }
 
-    @Override
-    protected void returnInfoDetail(AuthInfoDetail infoDetail) {
-        mFirstCode = infoDetail.getCode();
-        String name=infoDetail.getEmergencyContactName();
-        nameTv.setText(name);
-        mobileTv.setText(infoDetail.getEmergencyContactMobile());
-        relationTv.setText(infoDetail.getEmergencyRelation());
-        nameTv.setSelection(name.length());
-    }
+
 
     @Override
     public void initPresenter() {
 
     }
 
-    @OnClick({R.id.contact_emergency_item, R.id.contact_relation_item})
+    @OnClick({R.id.contact_mobile_item, R.id.contact_relation_item})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.radius_button_text:
                 saveContact();
                 break;
 
-            case R.id.contact_emergency_item:
+            case R.id.contact_mobile_item:
                 if (mChecker.lacksPermissions(Manifest.permission.READ_CONTACTS)) {
                     PermissionsActivity.startActivityForResult(this, REQ_READ_CONTACT,
                             Manifest.permission.READ_CONTACTS);
@@ -104,12 +88,8 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
                 String name = nameTv.getText().toString();
                 if (!TextUtils.isEmpty(name)) {
                     Bundle data = new Bundle();
-                    if (typeItem != null) {
-                        data.putInt(Constants.RELATION_CODE, typeItem.getCode());
-                    } else {
-                        if (isInfoUpdate) {
-                            data.putInt(Constants.RELATION_CODE, mFirstCode);
-                        }
+                    if (enumItem != null) {
+                        data.putInt(Constants.RELATION_CODE, enumItem.getKeyType());
                     }
                     Constants.toActivityForR(this, RelationActivity.class, data, SELECT_RELATION);
                 } else {
@@ -121,14 +101,14 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
 
     private void saveContact() {
         String contactName = nameTv.getText().toString();
-        String contactMobile=mobileTv.getText().toString();
-        JSONArray contactJarray=new JSONArray();
-        JSONObject contactJobj=new JSONObject();
+        String contactMobile = mobileTv.getText().toString();
+        JSONArray contactJarray = new JSONArray();
+        JSONObject contactJobj = new JSONObject();
         try {
-            contactJobj.put("contactName",contactName);
-            contactJobj.put("contactMobile",contactMobile);
-            contactJobj.put("isEmergency",1);
-            contactJobj.put("relationType",typeItem.getCode());
+            contactJobj.put("contactName", contactName);
+            contactJobj.put("contactMobile", contactMobile);
+            contactJobj.put("isEmergency", 1);
+            contactJobj.put("relationType", enumItem.getKeyType());
             contactJarray.put(contactJobj);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -136,13 +116,13 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
         mRxManager.add(Api.getDefault(HostType.HOST_LARK).saveContacts(contactJarray.toString()).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
-                ToastUtils.showToast(mContext,"提交成功");
+                ToastUtils.showToast(mContext, "提交成功");
                 finish();
             }
 
             @Override
             protected void _onError(String message) {
-                ToastUtils.showToast(mContext,message);
+                ToastUtils.showToast(mContext, message);
 
             }
         }));
@@ -155,7 +135,7 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
         switch (requestCode) {
             case REQ_READ_CONTACT:
                 if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                    CommonUtils.showPermissionDialog(mContext,Constants.PermissionType.ADDRESS_BOOK);
+                    CommonUtils.showPermissionDialog(mContext, Constants.PermissionType.ADDRESS_BOOK);
                 } else {
                     Constants.toActivityForR(this, AddressBookActivity.class, null, SELECT_CONTACT);
                 }
@@ -171,8 +151,8 @@ public class ContactActivity extends BaseAutoLayoutActivity implements View.OnCl
                 break;
             case SELECT_RELATION:
                 if (data != null) {
-                    typeItem = data.getParcelableExtra(Constants.TYPE_ITEM);
-                    relationTv.setText(typeItem.getValue());
+                    enumItem = data.getParcelableExtra(Constants.ENUM_ITEM);
+                    relationTv.setText(enumItem.getValueName());
                     submitBtn.setButtonClickEnable(true);
                 }
                 break;

@@ -38,7 +38,6 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
     private int imageSource = -1;
     private String iconUrl;
     private SHARE_MEDIA mMedia;
-    private String mLinkUrl;
     private boolean isImageShare;
     private String imgUrl;
 
@@ -81,10 +80,6 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
         setContentView(view);
         initWindow();
         initView();
-    }
-
-    public void setLinkUrl(String linkUrl) {
-        mLinkUrl = linkUrl;
     }
 
     /**
@@ -131,7 +126,7 @@ public class ShareDialog extends Dialog implements View.OnClickListener, UMShare
 //                webpageUrl
                 MobclickAgent.onEvent(mContext, MobEvent.COUNT_SHARE_COPY);
                 ClipboardManager cm = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                cm.setText(mLinkUrl);
+                cm.setText(webpageUrl);
                 ToastUtils.showCenterToast(v.getContext(), "复制成功");
                 dismiss();
                 break;

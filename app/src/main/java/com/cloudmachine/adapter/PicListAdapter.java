@@ -2,8 +2,6 @@ package com.cloudmachine.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -11,24 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.amap.api.maps.model.Text;
 import com.bumptech.glide.Glide;
 import com.cloudmachine.R;
-import com.cloudmachine.adapter.holder.BaseHolder;
-import com.cloudmachine.autolayout.widgets.CustomDialog;
-import com.cloudmachine.base.BaseAutoLayoutActivity;
-import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.ScreenInfo;
-import com.cloudmachine.ui.home.activity.IncomeProofActivity;
-import com.cloudmachine.ui.home.contract.ExtrContract;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.DensityUtil;
 
 import java.util.List;
-
-import static com.cloudmachine.MyApplication.mContext;
 
 /**
  * Created by xiaojw on 2018/8/2.

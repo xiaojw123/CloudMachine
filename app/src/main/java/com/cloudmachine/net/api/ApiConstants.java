@@ -87,6 +87,8 @@ public class ApiConstants {
     public static String APPBmxy;
     public static String APPSjyysxy;
     public static String AppBankList;
+    public static String AppBankCmVerify;
+    public static String AppExChange;
 //    public static String AppWorkReport="http://192.168.1.109:7718/work_report?deviceId=795&week=2";
 
 

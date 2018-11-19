@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -16,7 +15,6 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,7 +36,6 @@ import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.InputMoney;
 import com.cloudmachine.utils.PermissionsChecker;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
@@ -55,14 +52,11 @@ import java.util.Map;
 import me.iwf.photopicker.PhotoPicker;
 import me.iwf.photopicker.PhotoPreview;
 
-public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicListAdapter.OnItemClickListener, View.OnClickListener, PicPop.OnPopUpdateListener, ClearEditTextView.OnTextChangeListener, QiniuManager.OnKeyUploadListener {
+public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicListAdapter.OnItemClickListener, View.OnClickListener, PicPop.OnPopUpdateListener, ClearEditTextView.OnTextChangeListener, QiniuManager.OnUploadListener {
     public static final String INCOME_PROOF = "income_proof";
     public static final String ENGINEER_CONTRACT = "engineer_contract";
     public static final String MACHINE_OWERSHIP = "machine_owership";
     LinearLayout mContentLayout;
-    LinearLayout mIncomeContainer;
-    View incomeLineView;
-    ClearEditTextView mIncomeEdt;
     RecyclerView mRecyclerView;
     RadiusButtonView submitBtn;
     TextView proveTv;
@@ -76,7 +70,6 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
     String uniqueNo;
     int deviceId;
     PicPop picPop;
-    String mLastincome;
     ArrayList<String> mLastPics = new ArrayList<>();
 
 
@@ -94,24 +87,9 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
         uniqueNo = getIntent().getStringExtra(Constants.UNIQUEID);
         mRecyclerView = (RecyclerView) findViewById(R.id.income_proof_rv);
         mContentLayout = (LinearLayout) findViewById(R.id.income_proof_layout);
-        mIncomeContainer = (LinearLayout) findViewById(R.id.income_container);
         submitBtn = (RadiusButtonView) findViewById(R.id.income_proof_submit);
-        incomeLineView = findViewById(R.id.income_container_line);
         promptTv = (TextView) findViewById(R.id.income_proof_prompt);
         proveTv = (TextView) findViewById(R.id.income_prove_tv);
-        mIncomeEdt = (ClearEditTextView) findViewById(R.id.income_edt);
-        mIncomeEdt.setOnTextChangeListener(this);
-        mIncomeEdt.setFilters(new InputFilter[]{new InputMoney(mIncomeEdt)});
-        mIncomeEdt.setFocusable(true);
-        mIncomeEdt.setFocusableInTouchMode(true);
-        mIncomeEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                AppLog.print("onEditorAction editonId__" + actionId);
-                return false;
-            }
-        });
-
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mAdapter = new PicListAdapter(this, selectedPics);
         mAdapter.setOnItemClickListener(this);
@@ -121,8 +99,6 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
         String promtText = "";
         switch (pageType) {
             case INCOME_PROOF:
-                mIncomeContainer.setVisibility(View.VISIBLE);
-                incomeLineView.setVisibility(View.VISIBLE);
                 titleName = "收入证明";
                 promtText = "请上传证明文件 (查看示例)";
                 String prove1 = "  证明文件包括：工程承包收入打款记录(需对应工程施工承揽合同)、租赁方租赁费用打款记录(需对应工程机械设备租赁合同)，或近半年的主要收入银行卡交易流水记录，或微信、支付宝近三个月大额流水记录截图";
@@ -150,9 +126,6 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
         titleView.setLeftClickListener(leftClickLi);
         submitBtn.setButtonClickEnable(false);
         submitBtn.setButtonClickListener(this);
-//        if (TextUtils.equals(pageType, MACHINE_OWERSHIP)) {
-//            promptTv.setText(promtText);
-//        } else {
         SpannableStringBuilder ssb = new SpannableStringBuilder(promtText);
         ssb.clearSpans();
         int len = ssb.length();
@@ -162,13 +135,10 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
         promptTv.setHighlightColor(Color.TRANSPARENT);
         ssb.setSpan(clickSpan, start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         promptTv.setText(ssb);
-//        }
     }
 
     @Override
     protected void returnInfoDetail(AuthInfoDetail detail) {
-        mLastincome = detail.getAnnualIncome();
-        mIncomeEdt.setText(mLastincome);
         List<AuthInfoDetail.PictureBean> picItems = detail.getPicture();
         if (picItems != null && picItems.size() > 0) {
             for (AuthInfoDetail.PictureBean item : picItems) {
@@ -341,7 +311,7 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
                         for (int i = 0; i < photos.size(); i++) {
                             String photoKey = photos.get(i);
                             if (requestCode == PhotoPicker.REQUEST_CODE) {
-                                QiniuManager.uploadFile(mContext, this, new File(photoKey), "img_proof/", photoKey);
+                                QiniuManager.uploadOriginalFile(mContext, this, new File(photoKey), "img_proof/");
                             } else {
                                 if (selectPhotosMap.size() > 0) {
                                     if (selectPhotosMap.containsKey(photoKey)) {
@@ -373,7 +343,7 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
             case REQ_CAMERA_PROOF:
                 if (resultCode == RESULT_OK) {
                     if (cmFilePath != null) {
-                        QiniuManager.uploadFile(mContext, this, new File(cmFilePath), "img_proof/", cmFilePath);
+                        QiniuManager.uploadOriginalFile(mContext, this, new File(cmFilePath), "img_proof/");
                         selectedPics.add(cmFilePath);
                         mAdapter.notifyDataSetChanged();
                     } else {
@@ -388,14 +358,7 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
 
 
     private void updateSubmitEnable() {
-        boolean isOpen;
-        if (mIncomeContainer.getVisibility() == View.VISIBLE) {
-            int editLen = mIncomeEdt.getText().length();
-            isOpen = editLen > 0;
-        } else {
-            isOpen = true;
-        }
-        if (selectPhotosMap.size() > 0 && isOpen) {
+        if (selectPhotosMap.size() > 0) {
             submitBtn.setButtonClickEnable(true);
         } else {
             submitBtn.setButtonClickEnable(false);
@@ -423,7 +386,6 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
         String pictureUrls = sb.toString();
         AppLog.print("uniqueNo____" + uniqueNo + " , pictureUrls___" + pictureUrls);
         if (isInfoUpdate) {
-            String annualIncome = null;
             String deviceIdStr = null;
             int bnsType = -1;
             if (TextUtils.equals(pageType, MACHINE_OWERSHIP)) {
@@ -433,9 +395,8 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
                 bnsType = InfoAuthActivity.BNS_TYPE_ENGINEER;
             } else if (TextUtils.equals(pageType, INCOME_PROOF)) {
                 bnsType = InfoAuthActivity.BNS_TYPE_INCOME;
-                annualIncome = mIncomeEdt.getText().toString();
             }
-            mRxManager.add(Api.getDefault(HostType.HOST_LARK).updatePersonalInformation(bnsType, uniqueNo, null, annualIncome, deviceIdStr, pictureUrls).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+            mRxManager.add(Api.getDefault(HostType.HOST_LARK).updatePersonalInformation(bnsType, uniqueNo, null, null, deviceIdStr, pictureUrls).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
                 @Override
                 protected void _onNext(String s) {
                     showSuccessDialog();
@@ -463,18 +424,12 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
                 }));
             } else {
                 int bnsType = -1;
-                String annualIncome = null;
                 if (TextUtils.equals(pageType, ENGINEER_CONTRACT)) {
                     bnsType = 1;
                 } else if (TextUtils.equals(pageType, INCOME_PROOF)) {
                     bnsType = 2;
-                    annualIncome = mIncomeEdt.getText().toString();
-                    if (TextUtils.isEmpty(annualIncome)) {
-                        ToastUtils.showToast(mContext, "年收入不能为空");
-                        return;
-                    }
                 }
-                mRxManager.add(Api.getDefault(HostType.HOST_LARK).perImgUpload(uniqueNo, pictureUrls, bnsType, annualIncome).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+                mRxManager.add(Api.getDefault(HostType.HOST_LARK).perImgUpload(uniqueNo, pictureUrls, bnsType).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
                     @Override
                     protected void _onNext(String s) {
                         showSuccessDialog();
@@ -540,7 +495,6 @@ public class IncomeProofActivity extends BaseAutoLayoutActivity implements PicLi
 
     @Override
     public void uploadSuccess(String key, String picUrl) {
-        AppLog.print("uploadSuccess___picUrl:" + picUrl);
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put(key, picUrl);
         selectPhotosMap.putAll(paramsMap);

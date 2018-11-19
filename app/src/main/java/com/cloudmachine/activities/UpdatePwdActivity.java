@@ -15,15 +15,12 @@ import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.net.task.UpdatePwdAsync;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.umeng.analytics.MobclickAgent;
 
 public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callback{
 
-	private Context mContext;
 	private Handler mHandler;
-	private RadiusButtonView btn_bottom;
 	private ClearEditTextView old_pwd;
 	private ClearEditTextView new_pwd;
 	private ClearEditTextView confirm_pwd;
@@ -32,7 +29,6 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_update_pwd);
-		mContext = this;
 		mHandler = new Handler(this);
 		initView();
 
@@ -50,14 +46,9 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 		MobclickAgent.onEvent(this, MobEvent.TIME_CHANGEPASSWORD);
 	}
 
-	@Override
-	protected void onPause() {
-		//MobclickAgent.onPageEnd(UMengKey.time_changepassword);
-		super.onPause();
-	}
 
 	private void initView(){
-		btn_bottom = (RadiusButtonView)findViewById(R.id.btn_bottom);
+		RadiusButtonView btn_bottom = (RadiusButtonView) findViewById(R.id.btn_bottom);
 		old_pwd = (ClearEditTextView)findViewById(R.id.old_pwd);
 		new_pwd = (ClearEditTextView)findViewById(R.id.new_pwd);
 		confirm_pwd = (ClearEditTextView)findViewById(R.id.confirm_pwd);
@@ -95,7 +86,6 @@ public class UpdatePwdActivity extends BaseAutoLayoutActivity implements Callbac
 		switch(msg.what){
 		case Constants.HANDLER_UPDATEPWD_SUCCESS:
 			Constants.MyToast((String)msg.obj);
-			setResult(RESULT_OK);
 			finish();
 			break;
 		case Constants.HANDLER_UPDATEPWD_FAIL:

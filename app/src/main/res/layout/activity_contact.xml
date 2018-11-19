@@ -34,27 +34,12 @@
                 style="@style/layout_key_style"
                 android:text="紧急联系人" />
 
-
-            <FrameLayout
-                android:id="@+id/contact_emergency_item"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <EditText
-                    android:id="@+id/contact_name_tv"
-                    style="@style/layout_value_style"
-                    android:gravity="center_vertical"
-                    android:layout_marginRight="@dimen/dimen_size_19"
-                    android:hint="请选择紧急联系人" />
-
-
-                <ImageView
-                    android:layout_gravity="center_vertical|right"
-                    android:layout_width="@dimen/dimen_size_19"
-                    android:layout_height="@dimen/dimen_size_16"
-                    android:src="@drawable/ic_contact" />
-            </FrameLayout>
-
-
+            <EditText
+                android:id="@+id/contact_name_tv"
+                style="@style/layout_value_style"
+                android:maxLines="1"
+                android:gravity="center_vertical"
+                android:hint="请输入紧急联系人姓名" />
         </LinearLayout>
 
         <View style="@style/CommonLandscapeLine" />
@@ -68,11 +53,27 @@
                 style="@style/layout_key_style"
                 android:text="手机号码" />
 
-            <TextView
-                android:id="@+id/contact_mobile_tv"
-                style="@style/layout_value_style"
-                android:gravity="center_vertical"
-                android:hint="紧急联系人手机号" />
+
+            <FrameLayout
+                android:id="@+id/contact_mobile_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/contact_mobile_tv"
+                    style="@style/layout_value_style"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="@dimen/dimen_size_19"
+                    android:hint="紧急联系人手机号" />
+
+                <ImageView
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_width="@dimen/dimen_size_19"
+                    android:layout_height="@dimen/dimen_size_16"
+                    android:src="@drawable/ic_contact" />
+            </FrameLayout>
+
+
+
 
         </LinearLayout>
 
@@ -92,18 +93,18 @@
                 android:layout_height="match_parent">
 
 
-            <TextView
-                android:id="@+id/contact_relation_tv"
-                style="@style/layout_value_style"
-                android:gravity="center_vertical"
-                android:layout_marginRight="@dimen/dimen_size_19"
-                android:hint="与本人关系" />
-              <ImageView
-                  android:layout_width="@dimen/dimen_size_7"
-                  android:layout_height="@dimen/dimen_size_13"
-                  android:src="@drawable/arrow_right"
-                  android:layout_gravity="right|center_vertical"
-                  />
+                <TextView
+                    android:id="@+id/contact_relation_tv"
+                    style="@style/layout_value_style"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="@dimen/dimen_size_19"
+                    android:hint="与本人关系" />
+                <ImageView
+                    android:layout_width="@dimen/dimen_size_7"
+                    android:layout_height="@dimen/dimen_size_13"
+                    android:src="@drawable/arrow_right"
+                    android:layout_gravity="right|center_vertical"
+                    />
 
             </FrameLayout>
 

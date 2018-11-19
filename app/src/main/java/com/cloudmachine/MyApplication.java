@@ -51,11 +51,15 @@ import cn.jpush.android.api.JPushInterface;
 
 public class MyApplication extends Application {
 
-    private static MyApplication baseApplication;
-    public static Context mContext;
-    private boolean isLogin;
-    private boolean isFlag = false;
     private Member tempMember;
+
+    private static MyApplication mApplicationInstance;
+
+    public static MyApplication getInstance(){
+        return mApplicationInstance;
+    }
+
+
 
 
     @Override
@@ -73,30 +77,9 @@ public class MyApplication extends Application {
     }
 
 
-    public boolean isFlag() {
-        return isFlag;
-    }
-
-    public void setFlag(boolean isFlag) {
-        this.isFlag = isFlag;
-    }
-
-
-    public boolean isLogin() {
-        return isLogin;
-    }
-
-    public void setLogin(boolean isLogin) {
-        this.isLogin = isLogin;
-    }
 
     public static ImageLoader imageLoader;
 
-    private static MyApplication mApplication;
-
-    public synchronized static MyApplication getInstance() {
-        return mApplication;
-    }
 
     static {
         //设置全局的Header构建器
@@ -120,14 +103,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppLog.print("MyApplication crated at 2017-11-13, no y");
+        mApplicationInstance=this;
         initSocialConfig();
-        mContext = this;
-//        initSopfix();
-       /* Glide.get(this).register(GlideUrl.class, InputStream.class,
-                new OkHttpUrlLoader.Factory(*//*RetrofitUtils.getOkHttpClient())*//*);*/
-        //baseApplication赋值
-        baseApplication = this;
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);
         Res.init(this);
@@ -139,11 +116,6 @@ public class MyApplication extends Application {
         ScreenInfo.screen_height = dm.heightPixels;
         ScreenInfo.screen_density = dm.density;
         ScreenInfo.screen_densityDpi = dm.densityDpi;
-
-        //		Utils.MyLog(ScreenInfo.screen_height+"*"+ScreenInfo.screen_width+":"+ScreenInfo.screen_density
-        //				+":"+ScreenInfo.screen_densityDpi);
-
-        mApplication = this;
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
                 getApplicationContext())
                 .threadPriority(Thread.NORM_PRIORITY - 1)
@@ -163,8 +135,6 @@ public class MyApplication extends Application {
     }
 
     private void initLocData() {
-        UserHelper.TOKEN = UserHelper.getValue(this, Constants.KEY_TOKEN);
-        UserHelper.ID = UserHelper.getValue(this, Constants.KEY_ID);
         if (BuildConfig.DEBUG) {
             ApiConstants.initHost(this);
         }
@@ -224,51 +194,6 @@ public class MyApplication extends Application {
         return false;
     }
 
-    private static boolean isFastMobileNetwork(Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        switch (telephonyManager.getNetworkType()) {
-            case TelephonyManager.NETWORK_TYPE_1xRTT:
-                return false; // ~ 50-100 kbps
-            case TelephonyManager.NETWORK_TYPE_CDMA:
-                return false; // ~ 14-64 kbps
-            case TelephonyManager.NETWORK_TYPE_EDGE:
-                return false; // ~ 50-100 kbps
-            case TelephonyManager.NETWORK_TYPE_EVDO_0:
-                return true; // ~ 400-1000 kbps
-            case TelephonyManager.NETWORK_TYPE_EVDO_A:
-                return true; // ~ 600-1400 kbps
-            case TelephonyManager.NETWORK_TYPE_GPRS:
-                return false; // ~ 100 kbps
-            case TelephonyManager.NETWORK_TYPE_HSDPA:
-                return true; // ~ 2-14 Mbps
-            case TelephonyManager.NETWORK_TYPE_HSPA:
-                return true; // ~ 700-1700 kbps
-            case TelephonyManager.NETWORK_TYPE_HSUPA:
-                return true; // ~ 1-23 Mbps
-            case TelephonyManager.NETWORK_TYPE_UMTS:
-                return true; // ~ 400-7000 kbps
-            case TelephonyManager.NETWORK_TYPE_EHRPD:
-                return true; // ~ 1-2 Mbps
-            case TelephonyManager.NETWORK_TYPE_EVDO_B:
-                return true; // ~ 5 Mbps
-            case TelephonyManager.NETWORK_TYPE_HSPAP:
-                return true; // ~ 10-20 Mbps
-            case TelephonyManager.NETWORK_TYPE_IDEN:
-                return false; // ~25 kbps
-            case TelephonyManager.NETWORK_TYPE_LTE:
-                return true; // ~ 10+ Mbps
-            case TelephonyManager.NETWORK_TYPE_UNKNOWN:
-                return false;
-            default:
-                return false;
-        }
-    }
-
-
-    public static Context getAppContext() {
-        return baseApplication;
-    }
 
     private ActivityLifecycleCallbacks lifecycleCallback = new ActivityLifecycleCallbacks() {
         @Override

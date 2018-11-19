@@ -17,7 +17,27 @@ public class JsBody {
      */
     private String title;
     private String desc;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     private String link;
+
+    public int getIs_image() {
+        return is_image;
+    }
+
+    public void setIs_image(int is_image) {
+        this.is_image = is_image;
+    }
+
+    private String image;
+    private int is_image;
     private String left_event;
 
     public String getTitle() {

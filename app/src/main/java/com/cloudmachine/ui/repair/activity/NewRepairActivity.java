@@ -83,7 +83,7 @@ import me.iwf.photopicker.PhotoPreview;
  * @author shixionglu 新增报修页面
  */
 public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter, NewRepairModel> implements
-        Callback, OnClickListener, NewRepairContract.View, QiniuManager.OnKeyUploadListener {
+        Callback, OnClickListener, NewRepairContract.View, QiniuManager.OnUploadListener {
     public static final String DEFAULT_LOCAITOIN = "defualt_location";
     public static final String DEFAULT_PROVINCE = "defualt_province";
     public static final String KEY_LOC_LNG = "loc_lng";
@@ -557,7 +557,7 @@ public class NewRepairActivity extends BaseAutoLayoutActivity<NewRepairPresenter
                         }else{
                             file=new File(photoKey);
                         }
-                        QiniuManager.uploadFile(mContext,this,file,"img_repair/",photos.get(i));
+                        QiniuManager.uploadFile(mContext,NewRepairActivity.this,file,"img_repair/");
                     } else {
                         if (selectPhotosMap.size() > 0) {
                             String key = photos.get(i);

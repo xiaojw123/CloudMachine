@@ -272,12 +272,9 @@ public class VerifyPhoneNumActivity extends BaseAutoLayoutActivity<VerifyPhoneNu
     @Override
     public void returnBindWx(Member member) {
         mMember = member;
-        MyApplication.getInstance().setLogin(true);
-        MyApplication.getInstance().setFlag(true);
         Intent intent = new Intent(VerifyPhoneNumActivity.this, HomeActivity.class);
         startActivity(intent);
         MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 1);
-        Constants.isMcLogin = true;
         //调用JPush API设置Alias
         mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, mMember.getId() + ""));
         MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));

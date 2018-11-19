@@ -2,7 +2,6 @@ package com.cloudmachine.ui.login.presenter;
 
 import com.cloudmachine.base.baserx.RxHelper;
 import com.cloudmachine.base.baserx.RxSubscriber;
-import com.cloudmachine.bean.CheckNumBean;
 import com.cloudmachine.bean.LarkMemberInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.helper.UserHelper;
@@ -83,12 +82,7 @@ public class VerifyPhoneNumPresenter extends VerifyPhoneNumContract.Presenter {
             public Observable<LarkMemberInfo> call(JsonObject jsonObject) {
                 String token = jsonObject.get(Constants.KEY_TOKEN).getAsString();
                 String id = jsonObject.get(Constants.KEY_ID).getAsString();
-                UserHelper.TOKEN = token;
-                UserHelper.ID = id;
-                Map<String, String> data = new HashMap<>();
-                data.put(Constants.KEY_TOKEN, token);
-                data.put(Constants.KEY_ID, id);
-                UserHelper.saveKeyValue(mContext, data);
+                UserHelper.saveUserToken(mContext, token,id);
                 return Api.getDefault(HostType.HOST_LARK).getLarkMemberInfo().compose(RxHelper.<LarkMemberInfo>handleResult());
             }
         }).subscribe(new RxSubscriber<LarkMemberInfo>(mContext) {
@@ -97,6 +91,7 @@ public class VerifyPhoneNumPresenter extends VerifyPhoneNumContract.Presenter {
                 Member member = CommonUtils.convertMember(info);
                 MemeberKeeper.saveOAuth(member, mContext);
                 mView.returnBindWx(member);
+//                mRxManage.post(Constants.FLUSH_TOKEN,null);
             }
 
             @Override

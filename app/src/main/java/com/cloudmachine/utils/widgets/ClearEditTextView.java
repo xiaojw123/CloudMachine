@@ -20,15 +20,8 @@ import com.cloudmachine.utils.DensityUtil;
 public class ClearEditTextView extends EditText implements
         OnFocusChangeListener, TextWatcher {
 
-    public interface ICoallBack {
-        public void onClickButton(boolean b);
-    }
 
-    private ICoallBack icallBack = null;
 
-    public void setICoallBack(ICoallBack iBack) {
-        icallBack = iBack;
-    }
 
     /**
      * 删除按钮的引用
@@ -138,10 +131,6 @@ public class ClearEditTextView extends EditText implements
                               int after) {
         if (hasFoucs) {
             setClearIconVisible(s.length() > 0);
-        }
-        if (s.length() == 11) {
-            if (null != icallBack)
-                icallBack.onClickButton(true);
         }
     }
 

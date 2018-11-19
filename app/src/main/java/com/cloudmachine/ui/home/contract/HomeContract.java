@@ -30,7 +30,7 @@ public interface HomeContract {
 
         void updateView(List<MenuBean> homeMenuBeans);
         void reloadUrl();
-        void updateVersionRemind();
+        void updateVersionRemind(boolean hasNewVersion);
     }
 
     interface Model extends BaseModel {

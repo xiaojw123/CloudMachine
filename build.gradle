@@ -6,8 +6,8 @@ ext {
             compileVersion   : 25,
             minSdk           : 16,
             targetSdk        : 25,
-            version_code     : 3030,
-            version_name     : "5.0.3",
+            version_code     : 3040,
+            version_name     : "5.0.4",
             isRmote          : "true",//Debug remote/local
             isOnline         : "true",//Debug formal/test
             isInterface      : "false"//Debug 179接口联调

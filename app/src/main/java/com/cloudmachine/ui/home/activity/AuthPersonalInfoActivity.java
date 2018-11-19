@@ -330,7 +330,7 @@ public class AuthPersonalInfoActivity extends BaseAutoLayoutActivity<AuthPersona
 
 
     @Override
-    public void uploadSuccess(String picUrl) {
+    public void uploadSuccess(String key, String picUrl) {
         uploadFileSuccess(picUrl);
     }
 

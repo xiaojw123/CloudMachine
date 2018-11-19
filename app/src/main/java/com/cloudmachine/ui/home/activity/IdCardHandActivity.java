@@ -147,7 +147,7 @@ public class IdCardHandActivity extends BaseAutoLayoutActivity implements View.O
     }
 
     private void submitPic() {
-        mRxManager.add(Api.getDefault(HostType.HOST_LARK).perImgUpload(uniquedNo, imgUrl, 0, null).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
+        mRxManager.add(Api.getDefault(HostType.HOST_LARK).perImgUpload(uniquedNo, imgUrl, 0).compose(RxHelper.<String>handleResult()).subscribe(new RxSubscriber<String>(mContext) {
             @Override
             protected void _onNext(String s) {
                 CustomDialog.Builder builder = new CustomDialog.Builder(mContext);
@@ -198,14 +198,13 @@ public class IdCardHandActivity extends BaseAutoLayoutActivity implements View.O
 
 
     private void updateImage() {
-        AppLog.print("updateImg path__" + cmFilePath);
         shootContainer.setEnabled(false);
         handFile = new File(cmFilePath);
         QiniuManager.uploadFile(mContext,this,handFile,"img_id_card_hand/");
     }
 
     @Override
-    public void uploadSuccess(String picUrl) {
+    public void uploadSuccess(String key, String picUrl) {
         submitBtn.setButtonClickEnable(true);
         imgUrl =picUrl;
         Glide.with(mContext).load(imgUrl).into(idCardImg);

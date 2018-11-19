@@ -67,10 +67,29 @@ public class H5Config {
         private String AppAlliancePayByKJ;
         private String AppFittingMall;
         private String AppBankList;
+        private String AppBankCmVerify;
         private String APPForgetPassword;
         private String APPFwtk;
         private String APPRzgj;
         private String APPBmxy;
+        private String AppExChange;
+
+        public String getAppExChange() {
+            return AppExChange;
+        }
+
+        public void setAppExChange(String appExChange) {
+            AppExChange = appExChange;
+        }
+
+        public String getAppBankCmVerify() {
+            return AppBankCmVerify;
+        }
+
+        public void setAppBankCmVerify(String appBankCmVerify) {
+            AppBankCmVerify = appBankCmVerify;
+        }
+
         private String APPSjyysxy;
         private String QnUptoken;
 

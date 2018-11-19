@@ -48,13 +48,51 @@ public class AuthBean {
 
     private int relationAuthStatus;
     private int resideAddressCheckStatus;
+    private int annualIncomeCheckStatus;
     private String resideAddressCheckStatusTxt;
     private String cardFourElementAuthStatusTxt;
     private String operatorAuthorizedStatusTxt;
+    private String annualIncomeCheckStatusTxt;
+    private String annualIncome;
+
+    public String getAnnualIncome() {
+        return annualIncome;
+    }
+
+    public void setAnnualIncome(String annualIncome) {
+        this.annualIncome = annualIncome;
+    }
+
+    public String getResideAddress() {
+        return resideAddress;
+    }
+
+    public void setResideAddress(String resideAddress) {
+        this.resideAddress = resideAddress;
+    }
+
+    private String resideAddress;
+    public int getAnnualIncomeCheckStatus() {
+        return annualIncomeCheckStatus;
+    }
+
+    public void setAnnualIncomeCheckStatus(int annualIncomeCheckStatus) {
+        this.annualIncomeCheckStatus = annualIncomeCheckStatus;
+    }
+
+    public String getAnnualIncomeCheckStatusTxt() {
+        return annualIncomeCheckStatusTxt;
+    }
+
+    public void setAnnualIncomeCheckStatusTxt(String annualIncomeCheckStatusTxt) {
+        this.annualIncomeCheckStatusTxt = annualIncomeCheckStatusTxt;
+    }
 
     public int getResideAddressCheckStatus() {
         return resideAddressCheckStatus;
     }
+
+
 
     public void setResideAddressCheckStatus(int resideAddressCheckStatus) {
         this.resideAddressCheckStatus = resideAddressCheckStatus;
@@ -119,6 +157,7 @@ public class AuthBean {
         return cardFourElementAuthStatus;
     }
 
+
     public void setCardFourElementAuthStatus(int cardFourElementAuthStatus) {
         this.cardFourElementAuthStatus = cardFourElementAuthStatus;
     }
@@ -126,6 +165,8 @@ public class AuthBean {
     public int getOperatorAuthorizedStatus() {
         return operatorAuthorizedStatus;
     }
+
+
 
     public void setOperatorAuthorizedStatus(int operatorAuthorizedStatus) {
         this.operatorAuthorizedStatus = operatorAuthorizedStatus;
@@ -167,6 +208,10 @@ public class AuthBean {
         return auditStatus;
     }
 
+    public boolean isAudited(){
+        return auditStatus==2;
+    }
+
     public void setAuditStatus(int auditStatus) {
         this.auditStatus = auditStatus;
     }
@@ -174,6 +219,8 @@ public class AuthBean {
     public int getIdentityCheckStatus() {
         return identityCheckStatus;
     }
+
+
 
     public void setIdentityCheckStatus(int identityCheckStatus) {
         this.identityCheckStatus = identityCheckStatus;
@@ -183,6 +230,7 @@ public class AuthBean {
         return licenceCheckStatus;
     }
 
+
     public void setLicenceCheckStatus(int licenceCheckStatus) {
         this.licenceCheckStatus = licenceCheckStatus;
     }
@@ -190,6 +238,7 @@ public class AuthBean {
     public int getIncomeCheckStatus() {
         return incomeCheckStatus;
     }
+
 
     public void setIncomeCheckStatus(int incomeCheckStatus) {
         this.incomeCheckStatus = incomeCheckStatus;
@@ -249,5 +298,38 @@ public class AuthBean {
 
     public void setBankStatusTxt(String bankStatusTxt) {
         this.bankStatusTxt = bankStatusTxt;
+    }
+
+    public boolean isAuth0(){
+        return identityCheckStatus==2;
+    }
+
+    public boolean isAuth1(){
+        return relationAuthStatus==1;
+    }
+
+
+    public boolean isAuth2(){
+        return operatorAuthorizedStatus==1;
+    }
+    public boolean  isAuth3(){
+        return cardFourElementAuthStatus==1;
+    }
+
+    public boolean isAuth4(){
+        return licenceCheckStatus==2;
+    }
+
+    public boolean isAuth5(){
+        return incomeCheckStatus==2;
+    }
+
+    public boolean isAuth6(){
+        return machineCheckStatus==2;
+    }
+
+
+    public boolean isAuth7(){
+        return resideAddressCheckStatus==2;
     }
 }

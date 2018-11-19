@@ -16,6 +16,7 @@ public class PermissionsChecker {
         mContext = context.getApplicationContext();
     }
 
+
     // 判断权限集合
     public boolean lacksPermissions(String... permissions) {
         for (String permission : permissions) {

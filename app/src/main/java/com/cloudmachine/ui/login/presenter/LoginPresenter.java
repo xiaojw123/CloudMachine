@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 
-import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.bean.LarkMemberInfo;
 import com.cloudmachine.bean.Member;
@@ -14,10 +13,7 @@ import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
-import com.cloudmachine.net.api.Api;
-import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.ui.login.acticity.FindPasswordActivity;
-import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.login.acticity.VerifyPhoneNumActivity;
 import com.cloudmachine.ui.login.contract.LoginContract;
 import com.cloudmachine.utils.CommonUtils;
@@ -26,7 +22,6 @@ import com.cloudmachine.utils.MemeberKeeper;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.AppMsg;
 import com.cloudmachine.utils.widgets.Dialog.LoadingDialog;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.umeng.analytics.MobclickAgent;
@@ -91,12 +86,7 @@ public class LoginPresenter extends LoginContract.Presenter {
     private void flushMember(JsonObject jsonObject) {
         String token = jsonObject.get(Constants.KEY_TOKEN).getAsString();
         String id = jsonObject.get(Constants.KEY_ID).getAsString();
-        UserHelper.TOKEN = token;
-        UserHelper.ID = id;
-        Map<String, String> data = new HashMap<>();
-        data.put(Constants.KEY_TOKEN, token);
-        data.put(Constants.KEY_ID, id);
-        UserHelper.saveKeyValue(mContext, data);
+        UserHelper.saveUserToken(mContext, token,id);
         getMemberInfo();
     }
 
@@ -105,12 +95,12 @@ public class LoginPresenter extends LoginContract.Presenter {
         mModel.getMemberInfo().subscribe(new RxSubscriber<LarkMemberInfo>(mContext) {
             @Override
             protected void _onNext(LarkMemberInfo info) {
+                disMiss();
                 Member member= CommonUtils.convertMember(info);
                 MemeberKeeper.saveOAuth(member, mContext);
-                disMiss();
-                Constants.isGetScore = true;
                 MySharedPreferences.setSharedPInt(MySharedPreferences.key_login_type, 0);//个人信息同步微信标记
                 mView.loginSuccess(member);
+//                mRxManage.post(Constants.FLUSH_TOKEN,null);
             }
 
             @Override

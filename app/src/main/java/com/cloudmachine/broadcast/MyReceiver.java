@@ -214,11 +214,7 @@ public class MyReceiver extends BroadcastReceiver {
                             gotoActivity(context, IncomeSpendActivity.class, incomeData);
                             break;
                         default:
-                            Intent i2 = new Intent(context, HomeActivity.class);
-                            i2.putExtras(bundle);
-                            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            context.startActivity(i2);
+                            gotoActivity(context,HomeActivity.class,bundle);
                             break;
                     }
                 }

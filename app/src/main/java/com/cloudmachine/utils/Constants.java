@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import com.cloudmachine.cache.MySharedPreferences;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.ui.home.activity.HomeActivity;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
+import com.cloudmachine.ui.personal.activity.PersonalDataActivity;
 import com.cloudmachine.utils.photo.util.ImageItem;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -40,6 +42,7 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.tbruyelle.rxpermissions.RxPermissions;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.text.ParseException;
@@ -49,6 +52,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import rx.functions.Action1;
 
 public class Constants {
@@ -157,14 +161,13 @@ public class Constants {
     public static final int CLICK_POSITION = 101;
     public static final java.lang.String APP_ID = "wxfb6afbcc23f867df";
     public static boolean isChangeDevice;
-    public static boolean isMcLogin;
-    public static boolean isGetScore;
     public static Class<?> photoParent;
     public static Bitmap photoBimap;
     public static final String DateFormat1 = "yyyy-MM-dd";
     public static final int PAY_TYPE_WX = 0;//微信客户端支付
     public static final int PAY_TYPE_ALIPAY = 1;//支付宝客户端支付
     public static final int PAY_TYPE_PURSE = 99;//钱包
+    public static final String FLUSH_TOKEN="flush_token";
     private static List<Activity> activityList = new ArrayList<Activity>();
 
 
@@ -250,13 +253,13 @@ public class Constants {
 
     public static void ToastAction(String msg) {
         if (!TextUtils.isEmpty(msg))
-            Toast.makeText(MyApplication.mContext, msg, Toast.LENGTH_LONG)
+            Toast.makeText(MyApplication.getInstance(), msg, Toast.LENGTH_LONG)
                     .show();
     }
 
     public static void MyToast(String msg) {
-        if (null != MyApplication.mContext && null != msg) {
-            Toast.makeText(MyApplication.mContext, msg, Toast.LENGTH_LONG)
+        if (!TextUtils.isEmpty(msg)) {
+            Toast.makeText(MyApplication.getInstance(), msg, Toast.LENGTH_LONG)
                     .show();
         }
     }
@@ -424,8 +427,6 @@ public class Constants {
     }
 
 
-
-
     public static void toActivity(Activity activity, Class cl,
                                   Bundle bundle) {
         Intent intent = new Intent(activity, cl);
@@ -512,10 +513,10 @@ public class Constants {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (context instanceof BaseAutoLayoutActivity) {
-                        ((BaseAutoLayoutActivity) context).mRxManager.post(HomeActivity.RXEVENT_UPDATE_REMIND, null);
-                    }
                     dialog.dismiss();
+                    if (context instanceof BaseAutoLayoutActivity) {
+                        ((BaseAutoLayoutActivity) context).mRxManager.post(HomeActivity.RXEVENT_UPDATE_REMIND, true);
+                    }
 
                 }
             });
@@ -525,6 +526,9 @@ public class Constants {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     versionDownload(context, link);
+                    if (context instanceof BaseAutoLayoutActivity) {
+                        ((BaseAutoLayoutActivity) context).mRxManager.post(HomeActivity.RXEVENT_UPDATE_REMIND, false);
+                    }
                 }
             });
         }
@@ -661,7 +665,7 @@ public class Constants {
         return null != str ? str : "";
     }
 
-
+    public static final String FILE_PROVIDER="com.cloudmachine.fileprovider";
     public static final String CUSTOMER_PHONE_BOX = "400-008-0581";
     public static final String CUSTOMER_PHONE_REPAIR = "400-816-9911";
     public static final String H5_URL = "H5_url";
@@ -681,7 +685,7 @@ public class Constants {
     public static final String OPERATOR_LIST = "operator_list";
     public static final String NAME = "name";
     public static final String MOBILE = "mobie";
-    public static final String TYPE_ITEM = "type_item";
+    public static final String ENUM_ITEM = "enum_item";
     public static final String RELATION_POSITION = "relation_position";
     public static final String DEVICE_NAME = "device_name";
     public static final String UNIQUEID = "uniqueId";
@@ -717,6 +721,7 @@ public class Constants {
         int LOCATION = 3;
         int STORAGE_CAMERA = 4;
         int ADDRESS_BOOK = 5;
+        int LOCATION_STORAGE=6;
     }
 
     public static final String[] PERMISSIONS_CAMER_SD = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -724,10 +729,18 @@ public class Constants {
 
     public static boolean checkToken(BaseRespose respose) {
         if (respose.getCode() == -10086) {
-            MyApplication.mContext.startActivity(new Intent(MyApplication.mContext, LoginActivity.class));
+            exitAccount();
+            MyApplication.getInstance().startActivity(new Intent(MyApplication.getInstance(), LoginActivity.class));
             return true;
         }
         return false;
+    }
+
+    public static void exitAccount(){
+        MobclickAgent.onEvent(MyApplication.getInstance(), UMengKey.count_logout);
+        JPushInterface.setAliasAndTags(MyApplication.getInstance(), "", null, null);
+        MemeberKeeper.clearOauth(MyApplication.getInstance());
+        WebStorage.getInstance().deleteAllData();
     }
 
 }

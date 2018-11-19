@@ -47,7 +47,7 @@ public class DevicePresenter extends DeviceContract.Prensenter {
     private ObjectAnimator mRoateAnim;
 
     @Override
-    public void getReadPacketConfig() {
+    public void getRedPacketConfig() {
         cancelRedPacketAnim();
         mRxManage.add(mModel.getReadPacketConfig().subscribe(new RxSubscriber<RedPacket>(mContext) {
             @Override
@@ -245,36 +245,42 @@ public class DevicePresenter extends DeviceContract.Prensenter {
             mRoateAnim.setDuration(200);
             mRoateAnim.setRepeatCount(3);
             mRoateAnim.setRepeatMode(ValueAnimator.REVERSE);
-            mRoateAnim.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    target.setRotation(0);
-                    animation.start();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    target.setRotation(0);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
         }
+        mRoateAnim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                target.setRotation(0);
+                animation.start();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                target.setRotation(0);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
         mRoateAnim.start();
     }
 
-    private void cancelRedPacketAnim() {
+    public void cancelRedPacketAnim() {
         if (mRoateAnim != null) {
+            mRoateAnim.removeAllListeners();
             mRoateAnim.cancel();
+            Object object = mRoateAnim.getTarget();
+            if (object != null && object instanceof ImageView) {
+                ((ImageView) object).setRotation(0);
+            }
         }
     }
+
 
 }

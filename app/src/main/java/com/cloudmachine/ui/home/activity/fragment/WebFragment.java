@@ -29,8 +29,8 @@ import com.cloudmachine.base.BaseFragment;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.ui.home.activity.HomeActivity;
-import com.cloudmachine.ui.home.model.JsInteface;
 import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
+import com.cloudmachine.ui.home.model.JsInteface;
 import com.cloudmachine.ui.login.acticity.LoginActivity;
 import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.utils.CommonUtils;
@@ -50,6 +50,7 @@ import java.util.Map;
  */
 
 public class WebFragment extends BaseFragment {
+    private static final int FLUSH_PAGE = 0x12;
     String mUrl, baseUrl;
     boolean isClickCamera;
     WebView mWebView;
@@ -62,8 +63,7 @@ public class WebFragment extends BaseFragment {
     private static final String JS_INTERFACE_NAME = "webkit";
     private static final String[] UPLOAD_PIC_ITEMS = new String[]{"选择本地图片", "拍照"};
     private PermissionsChecker mPermissionsCheck;
-    private Uri imageUri;
-    private long lastMemberId = -1;
+
 
     public WebFragment(String url) {
         mUrl = url;
@@ -92,23 +92,25 @@ public class WebFragment extends BaseFragment {
         mWebView.setWebViewClient(new H5WebClient());
         mWebView.setWebChromeClient(new MyWebChromeClient());
         mWebView.addJavascriptInterface(new JsInteface(getActivity(), mHandler), JS_INTERFACE_NAME);
-//        loadUrl();
         loadWebUrl();
     }
+
 
     private class H5WebClient extends WebViewClient {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            AppLog.print("H5 shouldLoadUrl___" + url);
+            AppLog.print("WebFragment shouldLoadUrl___" + url);
             if (url.startsWith("http")) {
                 mUrl = url;
+                mUrl = CommonUtils.resetUrl(mUrl, Constants.KEY_TOKEN);
+                mUrl = CommonUtils.resetUrl(mUrl, Constants.MEMBER_ID);
+                loadWebUrl();
+                return true;
             }
             return false;
         }
-
     }
-
 //    public void loadUrl(String loadUrl) {
 //        mUrl = loadUrl;
 //        if (UserHelper.isLogin(getActivity())) {
@@ -119,9 +121,9 @@ public class WebFragment extends BaseFragment {
 
     public void loadWebUrl() {
         String tmpUrl;
-        if (!TextUtils.isEmpty(UserHelper.TOKEN)) {
-            tmpUrl = CommonUtils.fillParams(mUrl, Constants.KEY_TOKEN, UserHelper.TOKEN);
-            tmpUrl=CommonUtils.fillParams(tmpUrl,Constants.MEMBER_ID,UserHelper.ID);
+        if (UserHelper.isLogin(getActivity())) {
+            tmpUrl = CommonUtils.fillParams(mUrl, Constants.KEY_TOKEN, UserHelper.getToken(getActivity()));
+            tmpUrl = CommonUtils.fillParams(tmpUrl, Constants.MEMBER_ID, UserHelper.getId(getActivity()));
         } else {
             tmpUrl = mUrl;
         }
@@ -131,43 +133,8 @@ public class WebFragment extends BaseFragment {
             tmpUrl = CommonUtils.fillParams(tmpUrl, Constants.APP_NAME, "CloudmMachine-AppStore");
         }
         mWebView.loadUrl(CommonUtils.fillParams(tmpUrl, QuestionCommunityActivity.PARAMS_KEY_VERSION, VersionU.getVersionName()));
+        AppLog.print("loadWebUrl___tmpUrl__" + tmpUrl);
     }
-//    public void loadUrl() {
-//        if (!TextUtils.isEmpty(mUrl)) {
-//            if (UserHelper.isLogin(getActivity())) {
-//                long memeberId = UserHelper.getMemberId(getActivity());
-//                if (lastMemberId != -1 && lastMemberId != memeberId) {
-//                    resetUrl();
-//                }
-//                fillParams(PARAMS_KEY_MEMBERID, memeberId);
-//                lastMemberId = memeberId;
-//            } else {//http:xxx/xx?memberid=110   http:xx/xx?page=1&memberId=110
-//                resetUrl();
-//            }
-//            loadWebUrl();
-//        }
-//    }
-
-//    private void resetUrl() {
-//        if (mUrl.contains(PARAMS_KEY_MEMBERID)) {
-//            int index = mUrl.indexOf(PARAMS_KEY_MEMBERID);
-//            char c = mUrl.charAt(index - 1);
-//            int nextIndex = mUrl.indexOf("&", index);
-//            int startIndex, endIndex;
-//            if (c == '&') {
-//                startIndex = index - 1;
-//            } else {
-//                startIndex = index;
-//            }
-//            if (nextIndex == -1) {
-//                endIndex = mUrl.length();
-//            } else {
-//                endIndex = c == '?' ? nextIndex + 1 : nextIndex;
-//            }
-//            mUrl = mUrl.replaceAll(mUrl.substring(startIndex, endIndex), "");
-//        }
-//    }
-
 
     //需要申请的权限数组
     static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -264,8 +231,9 @@ public class WebFragment extends BaseFragment {
     private void openCamera() {
         ((HomeActivity) getActivity()).isForbidenAd = true;
         File file = new FileStorage().createIconFile();
+        Uri imageUri;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            imageUri = FileProvider.getUriForFile(getActivity(), "com.cloudmachine.fileprovider", file);//通过FileProvider创建一个content类型的Uri
+            imageUri = FileProvider.getUriForFile(getActivity(), Constants.FILE_PROVIDER, file);//通过FileProvider创建一个content类型的Uri
         } else {
             imageUri = Uri.fromFile(file);
         }
@@ -325,15 +293,13 @@ public class WebFragment extends BaseFragment {
                     if (UserHelper.isLogin(getActivity())) {
                         Constants.toActivity(getActivity(), NewRepairActivity.class, null);
                     } else {
-                        Constants.toActivityForR(getActivity(), LoginActivity.class, null);
+                        Constants.toActivity(getActivity(), LoginActivity.class, null);
                     }
                     break;
                 case Constants.HANDLER_JS_JUMP:
                     String methodStr = (String) msg.obj;
                     if (JsInteface.Go_Login_Page.equals(methodStr)) {
-                        Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
-                        loginIntent.putExtra("flag", 4);
-                        startActivity(loginIntent);
+                        Constants.toActivity(getActivity(), LoginActivity.class, null);
                     }
                     break;
             }
@@ -413,15 +379,5 @@ public class WebFragment extends BaseFragment {
         CommonUtils.clearWebView(mWebView);
         super.onDestroyView();
     }
-    //    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        switch (requestCode) {
-//            case FLUSH_PAGE:
-//                loadUrl();
-//                break;
-//        }
-//
-//    }
 }
 

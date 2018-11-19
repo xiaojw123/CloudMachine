@@ -370,8 +370,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.home.activity.HomeActivity"
-            android:launchMode="singleTask"
-            />
+            android:launchMode="singleTask" />
         <activity android:name=".ui.home.activity.ActivitesActivity" />
         <activity
             android:name=".ui.home.activity.DeviceDetailActivity"
@@ -549,7 +548,8 @@
         <!-- android:name="com.taobao.android.hotfix.RSASECRET" -->
         <!-- android:value="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnQX3myAaH+JR1olEebfYST/3Zjp11eJOn8EVVpkj5FDSK1rQfIER7c0TwHDzdjRJ8e0okJUoBdYeZBcUEyprQfEtyXpUxKSFTQFn+sb0VF27jtnEiBOoZQkOGyCHhX/xblk9ZfqQEAmKghh1D2ZAq/6iufUbayEdRXCpXPfpbpmzhOJs/NdykSfP5ZH6gK210lf9DmwsxJVX/yTShOhaw7iaCSNhnAzQbpCtl9EjvLAylg29zrAX0nxGrox6yqe4mZX5MpjljrC1ZqzHcfEyRgdMiWyaBv7g7dwFUyHl3LqKt2c1oULucal1iwbp7iICtQWxSr5LehHY9o3GPM3x1AgMBAAECggEAOQInqbvQDhR6dcYHpDmSwBcnzTnBDcM1gO5yk4kEInHynsgjyOA0t2dIvhbB4DovbOKRGNTk7q5is5O13bY5IorbJHZ8n68HPtsWUau/aSr9jvwmf5PxPv7JCW25rpoK6CTJkxWJThyKBXDxFKlZbG6Lzj3BIt1VAbRKckYbyZTWPni64oN7iSShu0TMkGTuXETXDzCNYRmCk8uLH4vWTen+8yJUDuwY4qIloqjCEz1KspTe4WYVL6+4HKsW3fRiiJOcR9lfDK09zAEewkgcUfnHxFNmqINihe14Z0uK/iQ0g9ZmNhviiuyTYjlbpSkpB9tZ/mVVh9lMRxdV3fQ/2QKBgQD+bOMNgd1Wzj32vPlhVSgoVJRudXvU4PqgloGHIjj09clewdnmqDSlfC27RCqtGudMPW1BcTeYiMRWTFeboU/MiiEJ28Qr2zIbK7afG3XiGEraAs0FugcwJQpFZiKtHfHQUfuDzx5LC/2xD1q8dJKh2fwhOVZ5gPQF+86V4ia7qwKBgQCoSn4zAXYologvkhzGFuWrv+jF9Sj+I4e/Oq5Z9gUfJNO5I2moruASFkVoZgSBlctXi97g5tMPT+GEyzy16qXVFyp52z0PaXwg4Vghq7Lup8+mbLFG5eggMkvW2unkWZ0Oxut9O5C6PpuuA0Nxp9St4M/28AHLoNOeBmz+dGOIXwKBgQD88D+idBMac5vCqwi6LTDpN30Be6cKckh4UmifcfRyA9CYddwtpdgBFT1ZyWEsC20brI3r26TL7lxS9z65qFtvG3vREz0p5Jch0AmUkHZXupLfvp0ZLmJrCMf3Spz6wqRe2MJVvhl9voQN/RfV94a3hcFVPm2sCfmP4VD2TYj4VQKBgA417B4me3HF9E4ACon3mQE9vUwp/YIoQeg17k8OZTRSCcbSZLOnwKgGVWoRY0QGABuuZe2b0Cq01hg+iSvbWpF52U5c4vUQNTkZjjWZqAxbAz/MYdPYyhcd6CWGasWrg4Wh6nSyuO/hJYg2IlXQlDbyit0ROzWUqQnpBP8fmOAFAoGBAJ6QSUBSUl3Boo+x/vxcKOaKNW4WdEp4hgQnA1lFjgWNQGjOdDNX3qzg9ZY44KNSmJaqZonUheXpbWX3efEC9V+dD8AmsAdqX67B7lkbXgTjgBBXeT3cXQ33UVm54Bg7AaqmIrsedhpzWRLF2KikPQ06ZCdlsOpgBA1QW2J9GJWK" /> -->
 
-        <activity android:name=".ui.home.activity.HostConfigActivity"></activity>
+        <activity android:name=".ui.home.activity.HostConfigActivity"/>
+        <activity android:name=".ui.home.activity.AnnualIncomeActivity"/>
     </application>
 
 </manifest>

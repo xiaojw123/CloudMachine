@@ -103,7 +103,7 @@ public class Api {
     public Api(int hostType) {
 
         //缓存
-        File cacheFile = new File(MyApplication.getAppContext().getCacheDir(), "cache");
+        File cacheFile = new File(MyApplication.getInstance().getCacheDir(), "cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
         // Create a trust manager that does not validate certificate chains
         final TrustManager[] trustAllCerts = new TrustManager[]{
@@ -179,8 +179,9 @@ public class Api {
                 build.addHeader("osPlatform", "Android");
                 build.addHeader("osSystem", Build.VERSION.RELEASE);
                 build.addHeader("osVersion", VersionU.getVersionName());
-                if (!TextUtils.isEmpty(UserHelper.TOKEN)) {
-                    build.addHeader(Constants.KEY_TOKEN, UserHelper.TOKEN);
+                String token=UserHelper.getToken(MyApplication.getInstance());
+                if (!TextUtils.isEmpty(token)){
+                    build.addHeader(Constants.KEY_TOKEN, token);
                 }
                 Request request = build.build();
                 return chain.proceed(request);
@@ -219,18 +220,6 @@ public class Api {
     }
 
 
-    public static void clearHostType() {
-        sRetrofitManager.clear();
-    }
-
-    /**
-     * 根据网络状况获取缓存的策略
-     */
-    @NonNull
-    public static String getCacheControl() {
-        return NetWorkUtils.isNetConnected(MyApplication.getAppContext()) ? CACHE_CONTROL_AGE : CACHE_CONTROL_CACHE;
-    }
-
     /**
      * 云端响应头拦截器，用来配置缓存策略
      * Dangerous interceptor that rewrites the server's cache-control header.
@@ -240,13 +229,13 @@ public class Api {
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
             String cacheControl = request.cacheControl().toString();
-            if (!NetWorkUtils.isNetConnected(MyApplication.getAppContext())) {
+            if (!NetWorkUtils.isNetConnected(MyApplication.getInstance())) {
                 request = request.newBuilder()
                         .cacheControl(TextUtils.isEmpty(cacheControl) ? CacheControl.FORCE_NETWORK : CacheControl.FORCE_CACHE)
                         .build();
             }
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtils.isNetConnected(MyApplication.getAppContext())) {
+            if (NetWorkUtils.isNetConnected(MyApplication.getInstance())) {
                 //有网的时候读接口上的@Headers里的配置，你可以在这里进行统一的设置
 
                 return originalResponse.newBuilder()

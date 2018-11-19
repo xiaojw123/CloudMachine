@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/public_bg"
-    android:orientation="vertical"
-    tools:context="com.cloudmachine.ui.home.activity.AddressActivity">
+    android:orientation="vertical">
+
 
     <com.cloudmachine.widget.CommonTitleView
-        android:id="@+id/address_title_ctv"
+        android:id="@+id/annual_income_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:common_title_name="居住地址" />
+        app:common_title_name="年均收入" />
 
 
     <LinearLayout
@@ -20,18 +18,17 @@
         android:layout_marginTop="@dimen/dimen_size_6"
         android:orientation="horizontal">
 
-
         <TextView
             style="@style/layout_key_style"
-            android:text="居住地址" />
+            android:text="年均收入(元):" />
 
         <com.cloudmachine.utils.widgets.ClearEditTextView
-            android:id="@+id/address_edt"
+            android:id="@+id/annual_income_edt"
             style="@style/layout_value_style"
-            android:hint="请输入详细地址包含省市区街道门牌号等" />
+            android:hint="请输入年均收入"
+            android:inputType="numberDecimal" />
+
 
     </LinearLayout>
-
-
 
 </LinearLayout>

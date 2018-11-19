@@ -6,7 +6,9 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -38,6 +40,7 @@ import com.cloudmachine.bean.AdBean;
 import com.cloudmachine.bean.McDeviceInfo;
 import com.cloudmachine.bean.Member;
 import com.cloudmachine.bean.MenuBean;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.net.api.ApiConstants;
@@ -152,7 +155,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     List<AdBean> mItems;
     Fragment deviceFragment, maintenaceFragment, h5Fragment;
     int leftMargin, lastSelIndex;
-    long lastMemberId;
+    String lastToken;
     boolean isFirst = true;
     SparseArray<WebFragment> webFmtArray = new SparseArray<>();
     WebFragment selWebFragment;
@@ -176,13 +179,14 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
     private void checkLocPermission() {
-        RxPermissions.getInstance(this).request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe(new Action1<Boolean>() {
+        RxPermissions.getInstance(mContext).request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE).subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean grant) {
-                if (grant) {
+                int code = ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION);
+                if (code == PackageManager.PERMISSION_GRANTED) {
                     mPresenter.initLocation();
                 } else {
-                    CommonUtils.showPermissionDialog(mContext, Constants.PermissionType.LOCATION);
+                    CommonUtils.showPermissionDialog(mContext, Constants.PermissionType.LOCATION_STORAGE);
                 }
             }
         });
@@ -418,6 +422,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
 
+
     @Override
     protected void onPause() {
         isForeground = false;
@@ -440,7 +445,7 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     private void loadData() {
         Member member = MemeberKeeper.getOauth(this);
         if (member != null) {
-            long memberId = member.getId();
+            String token = UserHelper.getToken(this);
             Glide.with(mContext).load(member.getLogo())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
@@ -452,11 +457,11 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 isFirst = false;
                 mPresenter.initHomeMenu(false);
             } else {
-                if (lastMemberId != memberId) {
+                if (!TextUtils.equals(lastToken, token)) {
                     mPresenter.initHomeMenu(true);
                 }
             }
-            lastMemberId = memberId;
+            lastToken = token;
             mPresenter.updateUnReadMessage();
         } else {
             homeHeadImg.setImageResource(R.drawable.ic_default_head);
@@ -472,11 +477,11 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
                 isFirst = false;
                 mPresenter.initHomeMenu(false);
             } else {
-                if (lastMemberId != -1) {
+                if (lastToken != null) {
                     mPresenter.initHomeMenu(true);
                 }
             }
-            lastMemberId = -1;
+            lastToken = null;
         }
         obtainSystemAd(AD_ACTIVITIES);
         mPresenter.getVersionInfo();
@@ -497,9 +502,14 @@ public class HomeActivity extends BaseAutoLayoutActivity<HomePresenter, HomeMode
     }
 
     @Override
-    public void updateVersionRemind() {
-        meAlert.setVisibility(View.VISIBLE);
-        aboutNimg.setNotifyPointVisible(true);
+    public void updateVersionRemind(boolean hasNewVersion) {
+        if (hasNewVersion) {
+            meAlert.setVisibility(View.VISIBLE);
+            aboutNimg.setNotifyPointVisible(true);
+        } else {
+            meAlert.setVisibility(View.VISIBLE);
+            aboutNimg.setNotifyPointVisible(true);
+        }
 
     }
 

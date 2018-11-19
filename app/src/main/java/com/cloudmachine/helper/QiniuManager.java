@@ -10,6 +10,7 @@ import com.cloudmachine.bean.QiToken;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
+import com.cloudmachine.ui.repair.activity.NewRepairActivity;
 import com.cloudmachine.utils.CommonUtils;
 import com.cloudmachine.utils.ToastUtils;
 import com.qiniu.android.common.FixedZone;
@@ -66,47 +67,6 @@ public class QiniuManager {
                                     public void complete(String key, ResponseInfo info, final JSONObject response) {
                                         if (info.isOK()) {
                                             if (listener != null) {
-                                                listener.uploadSuccess(qiToken.getOrigin() + key);
-                                            }
-                                        } else {
-                                            _onError("图片上传失败，请检查网络后重试");
-                                        }
-                                    }
-                                }, null);
-                            }
-                        });
-
-
-            }
-
-            @Override
-            protected void _onError(String message) {
-                ToastUtils.showToast(context, message);
-                if (listener != null) {
-                   listener.uploadFailed();
-                }
-            }
-        });
-    }
-
-
-
-    public static void uploadFile(final Context context, final OnKeyUploadListener listener, final File file, final String dir, String key) {
-        Api.getDefault(HostType.HOST_H5).getQinuParams().compose(RxHelper.<QiToken>handleResult()).subscribe(new RxSubscriber<QiToken>(context) {
-            @Override
-            protected void _onNext(final QiToken qiToken) {
-                Compressor.getDefault(context)
-                        .compressToFileAsObservable(file)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<File>() {
-                            @Override
-                            public void call(File file) {
-                                getUploadManager().put(file, dir + file.getName(), qiToken.getUptoken(), new UpCompletionHandler() {
-                                    @Override
-                                    public void complete(String key, ResponseInfo info, final JSONObject response) {
-                                        if (info.isOK()) {
-                                            if (listener != null) {
                                                 listener.uploadSuccess(key, qiToken.getOrigin() + key);
                                             }
                                         } else {
@@ -130,15 +90,38 @@ public class QiniuManager {
         });
     }
 
-    public interface OnUploadListener {
+    public static void uploadOriginalFile(final Context context, final OnUploadListener listener, final File file, final String dir) {
+        Api.getDefault(HostType.HOST_H5).getQinuParams().compose(RxHelper.<QiToken>handleResult()).subscribe(new RxSubscriber<QiToken>(context) {
+            @Override
+            protected void _onNext(final QiToken qiToken) {
+                getUploadManager().put(file, dir + file.getName(), qiToken.getUptoken(), new UpCompletionHandler() {
+                    @Override
+                    public void complete(String key, ResponseInfo info, final JSONObject response) {
+                        if (info.isOK()) {
+                            if (listener != null) {
+                                listener.uploadSuccess(key, qiToken.getOrigin() + key);
+                            }
+                        } else {
+                            _onError("图片上传失败，请检查网络后重试");
+                        }
+                    }
+                }, null);
 
-        void uploadSuccess(String picUrl);
-        void uploadFailed();
+            }
 
+            @Override
+            protected void _onError(String message) {
+                ToastUtils.showToast(context, message);
+                if (listener != null) {
+                    listener.uploadFailed();
+                }
+            }
+        });
     }
 
 
-    public interface OnKeyUploadListener {
+    public interface OnUploadListener {
+
         void uploadSuccess(String key, String picUrl);
 
         void uploadFailed();

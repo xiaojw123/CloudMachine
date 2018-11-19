@@ -52,21 +52,17 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
 /**
  * Created by xiaojw on 2018/3/9.
  */
 
-public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVideoModel> implements WorkVideoContract.View, XRecyclerView.LoadingListener, BaseRecyclerAdapter.OnItemClickListener {
+public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVideoModel> implements WorkVideoContract.View, XRecyclerView.LoadingListener, BaseRecyclerAdapter.OnItemClickListener, View.OnClickListener {
     private static final String PROMPT_NO_ONLINE = "当前设备离线，无法观看视频";
-    private static final String PROMPT_NO_SUPPORT = "抱歉，当前设备不支持查看视频";
     private static final String PROMPT_NO_VIDEO = "抱歉，当前暂无工作视频";
     @BindView(R.id.work_live_videoview)
     PLVideoView workLiveVideoview;
     @BindView(R.id.work_live_status)
     TextView workLiveStatus;
-    @BindView(R.id.work_live_play)
-    ImageView workLivePlay;
     @BindView(R.id.work_video_tab_today)
     TextView workVideoTabToday;
     @BindView(R.id.work_video_tab_yesterday)
@@ -75,10 +71,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     TextView workVideoTabPeriod;
     @BindView(R.id.work_video_xrlv)
     XRecyclerView workVideoXrlv;
-    @BindView(R.id.work_video_fullscreen)
-    ImageView fullScreenImg;
-    @BindView(R.id.work_live_pause)
-    ImageView workLivePause;
     @BindView(R.id.work_video_tab_indicator)
     View indicatorView;
     @BindView(R.id.work_video_list_empty)
@@ -105,6 +97,9 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     WheelView mWvSecond;
     @BindView(R.id.work_video_replay)
     Button rePlayBtn;
+    ImageView workLivePlay;
+    ImageView fullScreenImg;
+    ImageView workLivePause;
 
     VideoListAdapter mVideoListAdapter;
     String deviceId;
@@ -114,9 +109,6 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
     String startTime, endTime;
     String name;
     int timeType = 0;
-    private final String hour_unit = "时";
-    private final String minute_unit = "分";
-    private final String second_unit = "秒";
     long startTimeL, endTimeL;
     String time1 = null;
     String time2 = null;
@@ -130,11 +122,21 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
     @Override
     protected void initView() {
+        remedyBind();
         initParams();
         initTab();
         initWheelView();
         initRecyclerView();
         initVideoView();
+    }
+
+    private void remedyBind() {
+        workLivePlay= (ImageView) viewParent.findViewById(R.id.work_live_play);
+        workLivePause= (ImageView) viewParent.findViewById(R.id.work_live_pause);
+        fullScreenImg= (ImageView) viewParent.findViewById(R.id.work_video_fullscreen);
+        workLivePlay.setOnClickListener(this);
+        workLivePause.setOnClickListener(this);
+        fullScreenImg.setOnClickListener(this);
     }
 
     private void setMuteVolume() {
@@ -154,18 +156,21 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
 
     private void initWheelView() {
         NumericWheelAdapter hAdpater = new NumericWheelAdapter(getActivity(), 0, 23, "%02d");
+        String hour_unit = "时";
         hAdpater.setLabel(hour_unit);
         mWvHour.setViewAdapter(hAdpater);
         mWvHour.setCyclic(true);
         mWvHour.setVisibleItems(7);
         mWvHour.addScrollingListener(scrollListener);
         NumericWheelAdapter mAdapter = new NumericWheelAdapter(getActivity(), 0, 59, "%02d");
+        String minute_unit = "分";
         mAdapter.setLabel(minute_unit);
         mWvMinute.setViewAdapter(mAdapter);
         mWvMinute.setCyclic(true);
         mWvMinute.setVisibleItems(7);
         mWvMinute.addScrollingListener(scrollListener);
         NumericWheelAdapter sAdapter = new NumericWheelAdapter(getActivity(), 0, 59, "%02d");
+        String second_unit = "秒";
         sAdapter.setLabel(second_unit);
         mWvSecond.setViewAdapter(sAdapter);
         mWvSecond.setCyclic(true);
@@ -349,7 +354,7 @@ public class WorkVideoFragment extends BaseFragment<WorkVideoPresenter, WorkVide
         }
     }
 
-    @OnClick({R.id.work_live_status, R.id.work_video_replay, R.id.video_wheelview_cancel, R.id.video_wheelview_determine, R.id.work_video_tab_period, R.id.work_video_fullscreen, R.id.work_live_pause, R.id.work_live_play, R.id.work_video_tab_today, R.id.work_video_tab_yesterday})
+    @OnClick({R.id.work_live_status, R.id.work_video_replay, R.id.video_wheelview_cancel, R.id.video_wheelview_determine, R.id.work_video_tab_period, R.id.work_video_tab_today, R.id.work_video_tab_yesterday})
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {

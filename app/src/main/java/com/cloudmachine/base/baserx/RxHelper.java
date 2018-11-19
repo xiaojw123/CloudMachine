@@ -44,20 +44,26 @@ public class RxHelper {
                             if (cls != null) {
                                 JsonElement resultJE = s.get(Constants.RESULT);
                                 if (resultJE != null && !resultJE.isJsonNull()) {
-                                    JsonObject resultJobj = resultJE.getAsJsonObject();
-                                    M m;
-                                    if (cls == JsonObject.class) {
-                                        m = (M) resultJobj;
+                                    try {
+                                        M m;
+                                        if (cls == String.class) {
+                                            m = (M) resultJE.getAsString();
+                                        } else {
+                                            JsonObject resultJobj = resultJE.getAsJsonObject();
+                                            if (cls == JsonObject.class) {
+                                                m = (M) resultJobj;
+                                            } else {
+                                                m = gson.fromJson(resultJobj, cls);
+                                            }
+                                        }
                                         return createData(m);
-                                    } else {
-                                        m = gson.fromJson(resultJobj, cls);
-                                        return createData(m);
+                                    } catch (Exception e) {
+                                        return createData(null);
                                     }
-
                                 } else {
                                     return createData(null);
                                 }
-                            }else{
+                            } else {
                                 return createData(null);
                             }
                         } else {

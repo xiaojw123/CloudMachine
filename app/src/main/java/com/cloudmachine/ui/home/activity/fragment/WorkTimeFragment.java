@@ -73,13 +73,13 @@ public class WorkTimeFragment extends BaseFragment implements View.OnClickListen
     private int pageNum;
     private int showNum;
     private static final int[] VORDIPLOM_COLORS0 = {
-            MyApplication.mContext.getResources().getColor(R.color.chart_not), Color.TRANSPARENT
+            MyApplication.getInstance().getResources().getColor(R.color.chart_not), Color.TRANSPARENT
     };
     private static final int[] VORDIPLOM_COLORS1 = {//工作中
-            Color.TRANSPARENT, MyApplication.mContext.getResources().getColor(R.color.chart_yes)
+            Color.TRANSPARENT, MyApplication.getInstance().getResources().getColor(R.color.chart_yes)
     };
     private static final int[] VORDIPLOM_COLORS2 = {
-            Color.TRANSPARENT, MyApplication.mContext.getResources().getColor(R.color.chart_not)
+            Color.TRANSPARENT, MyApplication.getInstance().getResources().getColor(R.color.chart_not)
     };
 
     private ScanningWTInfo[][] showWTInof;

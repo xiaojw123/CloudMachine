@@ -18,7 +18,6 @@ import com.cloudmachine.chart.utils.AppLog;
 
 
 public class RadiusButtonView extends AutoRelativeLayout {
-    private Context context;
     private View radius_button_layout;
     private TextView radius_button_text;
     private int strokeWidth = (int) getResources().getDimension(R.dimen.radius_button_strokeWidth); // 0.5dp 边框宽度
@@ -65,7 +64,6 @@ public class RadiusButtonView extends AutoRelativeLayout {
     }
 
     private void initView(Context context) {
-        this.context = context;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.view_radius_button_auto, this);
 //    	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);

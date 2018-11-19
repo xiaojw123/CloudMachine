@@ -15,19 +15,7 @@ public class Member implements Serializable{
 	private static final long serialVersionUID = 263723165474245016L;
 
 
-	public int getIdentifyStatus() {
-		return identifyStatus;
-	}
-
-	public void setIdentifyStatus(int identifyStatus) {
-		this.identifyStatus = identifyStatus;
-	}
-	public boolean isIdentify(){
-		return  identifyStatus==1;
-	}
-
 	private int isAuth;//1:已认证 0：未认证
-	private int identifyStatus;//资质认证1:true 0:false
 	private String token;
 
 	public String getToken() {
@@ -61,8 +49,6 @@ public class Member implements Serializable{
 	private Integer isValidate;// 是否邮箱验证通过
 	
 	private String logo;//大头像 
-//	private String middlelogo;//小头像
-//	private String smalllogo;//小小头像
 	private int isDeleted;//逻辑删除标记 1有效 0删除
 	private boolean reKgStatus;//0开启  1关闭
 	private String icphotoFont;

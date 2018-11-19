@@ -2,8 +2,11 @@ package com.cloudmachine.ui.home.activity;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.cloudmachine.R;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
@@ -11,9 +14,11 @@ import com.cloudmachine.base.baserx.RxSchedulers;
 import com.cloudmachine.base.baserx.RxSubscriber;
 import com.cloudmachine.base.bean.BaseRespose;
 import com.cloudmachine.bean.AuthInfoDetail;
+import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.net.api.Api;
 import com.cloudmachine.net.api.HostType;
 import com.cloudmachine.utils.Constants;
+import com.cloudmachine.utils.InputMoney;
 import com.cloudmachine.utils.ToastUtils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
 import com.cloudmachine.widget.CommonTitleView;
@@ -24,7 +29,6 @@ public class AddressActivity extends BaseAutoLayoutActivity implements View.OnCl
     CommonTitleView titleView;
     String uniqueId;
     String mLastAddress;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,11 +59,15 @@ public class AddressActivity extends BaseAutoLayoutActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         String address = addressEdt.getText().toString();
-        if (TextUtils.equals(address,mLastAddress)){
-            ToastUtils.showToast(mContext,getResources().getString(R.string.cannot_submit));
+        if (TextUtils.isEmpty(address)) {
+            ToastUtils.showToast(mContext, "居住地址不能为空");
             return;
         }
         if (isInfoUpdate) {
+            if (TextUtils.equals(address, mLastAddress)) {
+                ToastUtils.showToast(mContext, getResources().getString(R.string.cannot_submit));
+                return;
+            }
             updatePersonalInfo(InfoAuthActivity.BNS_TYPE_ADDRESS, uniqueId, address, null, null, null);
         } else {
             mRxManager.add(Api.getDefault(HostType.HOST_LARK).submitHomeAddress(uniqueId, address).compose(RxSchedulers.<BaseRespose<String>>io_main()).subscribe(new RxSubscriber<BaseRespose<String>>(mContext) {

@@ -153,7 +153,9 @@ public class HomePresenter extends HomeContract.Presenter {
                         ApiConstants.APPRzgj = pg.getAPPRzgj();
                         ApiConstants.APPBmxy = pg.getAPPBmxy();
                         ApiConstants.APPSjyysxy = pg.getAPPSjyysxy();
-                        ApiConstants.AppBankList=pg.getAppBankList();
+                        ApiConstants.AppBankList = pg.getAppBankList();
+                        ApiConstants.AppBankCmVerify = pg.getAppBankCmVerify();
+                        ApiConstants.AppExChange=pg.getAppExChange();
                     }
                 }
                 mView.updateH5View();
@@ -325,16 +327,10 @@ public class HomePresenter extends HomeContract.Presenter {
     }
 
     public void registerNewVersionRemid() {
-        mRxManage.on(HomeActivity.RXEVENT_UPDATE_REMIND, new Action1<Object>() {
+        mRxManage.on(HomeActivity.RXEVENT_UPDATE_REMIND, new Action1<Boolean>() {
             @Override
-            public void call(Object o) {
-                String newVersion = MySharedPreferences.getSharedPString(Constants.KEY_NewVersion);
-                if (!TextUtils.isEmpty(newVersion)) {
-                    boolean isUpdate = CommonUtils.checVersion(VersionU.getVersionName(), newVersion);
-                    if (isUpdate) {
-                        mView.updateVersionRemind();
-                    }
-                }
+            public void call(Boolean o) {
+                mView.updateVersionRemind(o);
             }
         });
         mRxManage.post(HomeActivity.RXEVENT_UPDATE_REMIND, null);

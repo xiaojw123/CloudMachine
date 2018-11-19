@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
@@ -112,12 +113,10 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     private static final int REQUEST_PERMISSION = 0x004;  //权限请求
     private static final int REQUEST_PERMISSION_PICK = 0x008;  //权限请求
     private static final int REQUEST_UPDATE = 0x005;  //权限请求
-    private static final int PSW_UPDATE = 0x006;  //权限请求
     private String mLogo;
     private String mNickName;
     private String mWecharNickname;
     private String mWecharLogo;
-    private Long mMemberId;
     private String mUrl;
     private boolean syncWx = false;
     private Member member;
@@ -157,7 +156,6 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         if (member == null) {
             return;
         }
-        mMemberId = member.getId();
         mLogo = member.getLogo();
         String mobile = member.getMobile();
         mNickName = member.getNickname();
@@ -218,7 +216,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                 break;
             case R.id.my_pwd:
                 MobclickAgent.onEvent(mContext, MobEvent.COUNT_CHANGEPASSWORD);
-                Constants.toActivityForR(PersonalDataActivity.this, UpdatePwdActivity.class, null, PSW_UPDATE);
+                Constants.toActivity(PersonalDataActivity.this, UpdatePwdActivity.class, null);
                 break;
             //同步微信信息
 //            case R.id.btn_synchronousWxData:
@@ -296,7 +294,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         isForbidenAd = true;
         File file = new FileStorage().createIconFile();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            imageUri = FileProvider.getUriForFile(PersonalDataActivity.this, "com.cloudmachine.fileprovider", file);//通过FileProvider创建一个content类型的Uri
+            imageUri = FileProvider.getUriForFile(PersonalDataActivity.this, Constants.FILE_PROVIDER, file);//通过FileProvider创建一个content类型的Uri
         } else {
             imageUri = Uri.fromFile(file);
         }
@@ -382,8 +380,6 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
                     member.setNickname(nickname);
                     MemeberKeeper.saveOAuth(member, this);
                 }
-                break;
-            case PSW_UPDATE:
                 break;
         }
         // super.onActivityResult(requestCode, resultCode, data);
@@ -479,7 +475,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
     private void cropPhoto() {
         isForbidenAd = true;
         File file = new FileStorage().createCropFile();
-        Uri outputUri = Uri.fromFile(file);//缩略图保存地址
+        Uri outputUri = Uri.fromFile(file);
         Intent intent = new Intent("com.android.camera.action.CROP");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -603,11 +599,11 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                MobclickAgent.onEvent(PersonalDataActivity.this, UMengKey.count_logout);
-                Constants.isMcLogin = true;
-                JPushInterface.setAliasAndTags(getApplicationContext(), "", null, null);
-                MemeberKeeper.clearOauth(PersonalDataActivity.this);
                 dialog.dismiss();
+                Constants.exitAccount();
+                if (!mPermissionsChecker.lacksPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    clearWebCahe();
+                }
                 Intent intent = new Intent(PersonalDataActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -618,7 +614,7 @@ public class PersonalDataActivity extends BaseAutoLayoutActivity<PersonalDataPre
 
 
     @Override
-    public void uploadSuccess(String picUrl) {
+    public void uploadSuccess(String key, String picUrl) {
         Message msg = Message.obtain();
         msg.what = Constants.HANDLER_UPLOAD_SUCCESS;
         msg.obj = picUrl;

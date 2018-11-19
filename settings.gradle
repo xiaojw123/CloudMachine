@@ -1,1 +1,1 @@
-include ':app', ':toasty', ':PhotoPicker', ':xrecyclerview', ':stickheader', ':FaceIdentify', ':swiperecyclerview'
+include ':app', ':toasty', ':xrecyclerview', ':stickheader', ':FaceIdentify', ':swiperecyclerview', ':PhotoPicker'

@@ -3,9 +3,11 @@ package com.cloudmachine.net;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.cloudmachine.MyApplication;
 import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.UserHelper;
 import com.cloudmachine.utils.CommonUtils;
+import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.LarkUrls;
 import com.cloudmachine.utils.VersionU;
 
@@ -32,7 +34,6 @@ import java.util.Map;
 public class HttpURLConnectionImp implements IHttp {
 
     private static final int TIMEOUT = 60000;
-
 
 
     /**
@@ -114,6 +115,7 @@ public class HttpURLConnectionImp implements IHttp {
         httpURLConnection.setRequestProperty("osPlatform", "Android");
         httpURLConnection.setRequestProperty("osSystem", Build.VERSION.RELEASE);
         httpURLConnection.setRequestProperty("osVersion", VersionU.getVersionName());
+        String token=UserHelper.getToken(MyApplication.getInstance());
         if (LarkUrls.LOGIN_URL.equals(url) || LarkUrls.GET_PAY_SIGN.equals(url)) {
             String timeStamp = CommonUtils.getTimeStamp();
             String signValue = null;
@@ -121,16 +123,12 @@ public class HttpURLConnectionImp implements IHttp {
                 signValue = CommonUtils.getD5Str("passworduserName" + timeStamp);
             } else if (LarkUrls.GET_PAY_SIGN.equals(url)) {
                 signValue = CommonUtils.getD5Str("orderNopayType" + timeStamp);
-                if (!TextUtils.isEmpty(UserHelper.TOKEN)) {
-                    httpURLConnection.setRequestProperty("token", UserHelper.TOKEN);
-                }
+                httpURLConnection.setRequestProperty(Constants.KEY_TOKEN, token);
             }
             httpURLConnection.setRequestProperty("timeStamp", timeStamp);
             httpURLConnection.setRequestProperty("sign", signValue);
         } else {
-            if (!TextUtils.isEmpty(UserHelper.TOKEN)) {
-                httpURLConnection.setRequestProperty("token", UserHelper.TOKEN);
-            }
+            httpURLConnection.setRequestProperty(Constants.KEY_TOKEN, token);
         }
     }
 

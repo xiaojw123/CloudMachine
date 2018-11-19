@@ -2,6 +2,6 @@
 <paths>
     <external-path name="external_storage_root" path="."/>
     <files-path name="files" path="."/>
-
     <external-path path="." name="camera_photos" />
+    <external-files-path name="name" path="." />
 </paths>

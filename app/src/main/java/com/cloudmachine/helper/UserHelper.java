@@ -7,6 +7,7 @@ import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.text.TextUtils;
 import android.util.ArraySet;
 
+import com.amap.api.maps.model.Text;
 import com.autonavi.rtbt.IFrameForRTBT;
 import com.cloudmachine.bean.DeviceItem;
 import com.cloudmachine.bean.McDeviceInfo;
@@ -15,6 +16,7 @@ import com.cloudmachine.utils.Constants;
 import com.cloudmachine.utils.MemeberKeeper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,39 +27,33 @@ import java.util.Set;
  */
 
 public class UserHelper {
-    public static String TOKEN;
-    public static String ID;
-
-    private static List<McDeviceInfo> sDeviceList = new ArrayList<>();
-
-    public static void setMyDevices(List<McDeviceInfo> deviceList) {
-        sDeviceList = deviceList;
-    }
-
-    public static List<McDeviceInfo> getMyDevices() {
-        return sDeviceList;
-    }
 
 
-//    public static boolean isLogin(Context context) {
-//        return MemeberKeeper.getOauth(context) != null;
-//    }
-
-    // TODO: 2018/9/13 登录判断
     public static boolean isLogin(Context context) {
-        String token = getValue(context, "token");
+        String token = getValue(context, Constants.KEY_TOKEN);
         return !TextUtils.isEmpty(token);
     }
 
 
-    //    public static long getMemberId(Context context) {
-//        return MemeberKeeper.getOauth(context).getId();
-//    }
+    public static String getToken(Context context) {
+        return getValue(context, Constants.KEY_TOKEN);
+    }
+
+    public static String getId(Context context) {
+
+        return getValue(context, Constants.KEY_ID);
+    }
+
     public static long getMemberId(Context context) {
-        if (TextUtils.isEmpty(ID)) {
-            return -1;
+        String id = getValue(context, Constants.KEY_ID);
+        if (!TextUtils.isEmpty(id)) {
+            try {
+                return Long.parseLong(id);
+            } catch (Exception e) {
+                return -1;
+            }
         } else {
-            return Integer.parseInt(ID);
+            return -1;
         }
     }
 
@@ -66,25 +62,19 @@ public class UserHelper {
         if (sUserSp == null) {
             sUserSp = context.getSharedPreferences(USER_SP, Context.MODE_PRIVATE);
         }
-        return sUserSp.getString(key, null);
+        return sUserSp.getString(key, "");
     }
 
-    public static void saveKeyValue(Context context, String key, String value) {
+    public static void saveUserToken(Context context, String token, String id) {
         if (sUserSp == null) {
             sUserSp = context.getSharedPreferences(USER_SP, Context.MODE_PRIVATE);
         }
         SharedPreferences.Editor editor = sUserSp.edit();
-        editor.putString(key, value);
-        editor.apply();
-    }
-
-    public static void saveKeyValue(Context context, Map<String, String> data) {
-        if (sUserSp == null) {
-            sUserSp = context.getSharedPreferences(USER_SP, Context.MODE_PRIVATE);
-        }
-        SharedPreferences.Editor editor = sUserSp.edit();
-        for (Map.Entry<String, String> entry : data.entrySet()) {
-            editor.putString(entry.getKey(), entry.getValue());
+        if (TextUtils.isEmpty(token)) {
+            editor.clear();
+        } else {
+            editor.putString(Constants.KEY_TOKEN, token);
+            editor.putString(Constants.KEY_ID, id);
         }
         editor.apply();
     }
@@ -192,7 +182,7 @@ public class UserHelper {
     }
 
     public static void setOwner(Context context, long memberId, boolean isOwner) {
-        if (memberId== Constants.INVALID_DEVICE_ID){
+        if (memberId == Constants.INVALID_DEVICE_ID) {
             return;
         }
         if (GuideTagSp == null) {
@@ -204,7 +194,9 @@ public class UserHelper {
     }
 
     public static boolean isOwner(Context context, long memberId) {
-        if (memberId==Constants.INVALID_DEVICE_ID)
+        if (memberId == Constants.INVALID_DEVICE_ID) {
+            return false;
+        }
         if (GuideTagSp == null) {
             GuideTagSp = context.getSharedPreferences(GuideTag, Context.MODE_PRIVATE);
         }

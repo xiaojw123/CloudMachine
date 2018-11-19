@@ -14,11 +14,10 @@
         android:layout_height="wrap_content"
         app:common_title_name="@string/info_auth" />
 
-    <ScrollView
+    <com.cloudmachine.widget.ReboundScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        >
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,8 +103,7 @@
 
                 <FrameLayout
                     android:id="@+id/info_auth_idcard_container"
-                    style="@style/info_auth_container_style"
-                    >
+                    style="@style/info_auth_container_style">
 
                     <TextView
                         style="@style/info_auth_key_style"
@@ -114,14 +112,13 @@
 
                     <TextView
                         android:id="@+id/info_auth_idcard_status"
-                        android:text="待上传"
-                        style="@style/info_auth_value_style" />
+                        style="@style/info_auth_value_style"
+                        android:text="待上传" />
                 </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/info_auth_relation_container"
-                    style="@style/info_auth_container_style"
-                    >
+                    style="@style/info_auth_container_style">
 
                     <TextView
                         style="@style/info_auth_key_style"
@@ -131,8 +128,7 @@
                     <TextView
                         android:id="@+id/info_auth_relation_status"
                         style="@style/info_auth_value_style"
-                        android:text="待完善"
-                        />
+                        android:text="待完善" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -147,8 +143,7 @@
                     <TextView
                         android:id="@+id/info_auth_operator_status"
                         style="@style/info_auth_value_style"
-                        android:text="待授权"
-                        />
+                        android:text="待授权" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -163,41 +158,9 @@
                     <TextView
                         android:id="@+id/info_auth_bank_status"
                         style="@style/info_auth_value_style"
-                        android:text="待验证"
-                        />
+                        android:text="待验证" />
                 </FrameLayout>
 
-                <FrameLayout
-                    android:id="@+id/info_auth_engineer_contract"
-                    style="@style/info_auth_container_style">
-
-                    <TextView
-                        style="@style/info_auth_key_style"
-                        android:drawableLeft="@drawable/ic_item_pic4"
-                        android:text="工程合同" />
-
-                    <TextView
-                        android:id="@+id/engineer_contract_status"
-                        style="@style/info_auth_value_style"
-                        android:text="待上传"
-                        />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/info_auth_personal_income"
-                    style="@style/info_auth_container_style">
-
-                    <TextView
-                        style="@style/info_auth_key_style"
-                        android:drawableLeft="@drawable/ic_item_pic5"
-                        android:text="个人收入证明" />
-
-                    <TextView
-                        android:id="@+id/personal_income_status"
-                        style="@style/info_auth_value_style"
-                        android:text="待上传"
-                        />
-                </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/info_auth_device_owner"
@@ -211,8 +174,7 @@
                     <TextView
                         android:id="@+id/device_owner_status"
                         style="@style/info_auth_value_style"
-                        android:text="待上传"
-                        />
+                        android:text="待上传" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -227,11 +189,78 @@
                     <TextView
                         android:id="@+id/address_status"
                         style="@style/info_auth_value_style"
-                        android:text="待完善"
-                        />
+                        android:text="待完善" />
                 </FrameLayout>
+
+
+                <FrameLayout
+                    android:id="@+id/info_auth_annual_income"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic9"
+                        android:text="年均收入" />
+
+                    <TextView
+                        android:id="@+id/info_auth_annual_income_status"
+                        style="@style/info_auth_value_style"
+                        android:text="待完善" />
+                </FrameLayout>
+
             </LinearLayout>
 
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_size_30"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dimen_size_15"
+                android:text="借款总额超过3万需完善以下资料"
+                android:textColor="@color/cor10"
+                android:textSize="@dimen/text_size_13_sp" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:divider="@drawable/divider_line_horztial"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dimen_size_15"
+                android:showDividers="middle">
+
+                <FrameLayout
+                    android:id="@+id/info_auth_engineer_contract"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic4"
+                        android:text="工程合同" />
+
+                    <TextView
+                        android:id="@+id/engineer_contract_status"
+                        style="@style/info_auth_value_style"
+                        android:text="待上传" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/info_auth_personal_income"
+                    style="@style/info_auth_container_style">
+
+                    <TextView
+                        style="@style/info_auth_key_style"
+                        android:drawableLeft="@drawable/ic_item_pic5"
+                        android:text="个人收入证明" />
+
+                    <TextView
+                        android:id="@+id/personal_income_status"
+                        style="@style/info_auth_value_style"
+                        android:text="待上传" />
+                </FrameLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/bankaccount_model_container"
@@ -243,8 +272,7 @@
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/dimen_size_15"
                 android:showDividers="middle"
-                android:visibility="gone"
-                >
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -277,9 +305,26 @@
             </LinearLayout>
 
 
+            <com.cloudmachine.autolayout.widgets.RadiusButtonView
+                android:id="@+id/info_auth_exchange"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spa3"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/dimen_size_20"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_20"
+                app:rbtn_fillColor_dw="@color/cor5"
+                app:rbtn_fillColor_nm="@color/cor5"
+                app:rbtn_strokeColor="@color/cor5"
+                app:rbtn_text="@string/imme_exchange"
+                app:rbtn_textColor="@color/cor2015"
+                app:rbtn_textSize="@dimen/siz3" />
+
+
         </LinearLayout>
 
-    </ScrollView>
+    </com.cloudmachine.widget.ReboundScrollView>
 
 
 </LinearLayout>

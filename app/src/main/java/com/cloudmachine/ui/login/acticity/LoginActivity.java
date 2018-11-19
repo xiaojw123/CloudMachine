@@ -2,8 +2,6 @@ package com.cloudmachine.ui.login.acticity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler.Callback;
-import android.os.Message;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -16,27 +14,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.cloudmachine.MyApplication;
 import com.cloudmachine.R;
 import com.cloudmachine.autolayout.widgets.CircleTextImageView;
 import com.cloudmachine.autolayout.widgets.RadiusButtonView;
 import com.cloudmachine.base.BaseAutoLayoutActivity;
 import com.cloudmachine.bean.Member;
-import com.cloudmachine.cache.MySharedPreferences;
-import com.cloudmachine.chart.utils.AppLog;
 import com.cloudmachine.helper.MobEvent;
 import com.cloudmachine.helper.UserHelper;
-import com.cloudmachine.net.api.ApiConstants;
-import com.cloudmachine.ui.home.activity.HomeActivity;
-import com.cloudmachine.ui.home.activity.QuestionCommunityActivity;
 import com.cloudmachine.ui.login.contract.LoginContract;
 import com.cloudmachine.ui.login.model.LoginModel;
 import com.cloudmachine.ui.login.presenter.LoginPresenter;
 import com.cloudmachine.utils.Constants;
-import com.cloudmachine.utils.Utils;
 import com.cloudmachine.utils.widgets.ClearEditTextView;
-import com.cloudmachine.utils.widgets.ClearEditTextView.ICoallBack;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
 import cn.jpush.android.api.JPushInterface;
@@ -46,8 +35,6 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     private ClearEditTextView username_ed;
 
     private RadiusButtonView login_btn;
-    //    private int flag = 2;
-    private int flag;
     private CircleTextImageView userImage;
     private Member mMember;
 
@@ -57,11 +44,17 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
-        flag = getIntent().getIntExtra("flag", 0);
         initView();
         MobclickAgent.onEvent(this, MobEvent.TIME_LOGIN);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (UserHelper.isLogin(mContext)) {
+            Constants.exitAccount();
+        }
+    }
 
     @Override
     public void initPresenter() {
@@ -91,7 +84,6 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         password_ed = (ClearEditTextView) findViewById(R.id.password_ed);
         ImageView password_switch_img = (ImageView) findViewById(R.id.password_switch_img);
         password_switch_img.setOnClickListener(this);
-        username_ed.setICoallBack(nameCallBack);
         username_ed.addTextChangedListener(this);
         password_ed.addTextChangedListener(this);
         login_btn = (RadiusButtonView) findViewById(R.id.login_btn);
@@ -105,19 +97,6 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
         username_ed.setShakeAnimation();
     }
 
-    private ICoallBack nameCallBack = new ICoallBack() {
-
-        @Override
-        public void onClickButton(boolean b) {
-            if (b) {
-                String url = MySharedPreferences.getSharedPString(MySharedPreferences.key_user_image_ + username_ed.getText().toString().trim());
-                if (null != url && url.length() > 0)
-                    ImageLoader.getInstance().displayImage(url, userImage, Utils.displayImageOptions);
-            }
-        }
-    };
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -130,6 +109,7 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
                 break;
 
             case R.id.left_layout:
+                setResult(RESULT_OK);
                 finish();
                 break;
             case R.id.right_layout:
@@ -157,40 +137,23 @@ public class LoginActivity extends BaseAutoLayoutActivity<LoginPresenter, LoginM
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-
         if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getAction() == KeyEvent.ACTION_DOWN && flag == 1) {
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent);
-            LoginActivity.this.finish();
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_DOWN) {
-            LoginActivity.this.finish();
+            setResult(RESULT_OK);
+            finish();
         }
         return true;
     }
 
 
     private void jumpNextPage() {
-        MyApplication.getInstance().setLogin(true);
-        MyApplication.getInstance().setFlag(true);
-        Constants.isMcLogin = true;
         if (mMember != null) {
             //调用JPush API设置Alias
             JPushInterface.setAliasAndTags(getApplicationContext(), String.valueOf(mMember.getId()), null, null);
             MobclickAgent.onProfileSignIn(String.valueOf(mMember.getId()));
         }
-        if (flag == 4) {
-            setResult(RESULT_OK);
-            finish();
-        } else if (flag == 2) {
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent);
-        } else {
-            setResult(RES_LOGIN_SUCCESS);
-            finish();
-        }
+        setResult(RESULT_OK);
+        finish();
     }
 
 

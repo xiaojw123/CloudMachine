@@ -49,7 +49,7 @@ public interface DeviceContract {
     }
 
     abstract class Prensenter extends BasePresenter<DeviceContract.View, DeviceContract.Model> {
-        public abstract void getReadPacketConfig();
+        public abstract void getRedPacketConfig();
 
         public abstract void getAllDeviceList(int page, String deviceName);
 
