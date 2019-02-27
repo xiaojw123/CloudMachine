@@ -1,6 +1,6 @@
 # CloudMachine
 
-![image text](img/pg1.png)
+![image text](img/pg1.png width="375")
 ![image text](img/pg2.png)
 
 
