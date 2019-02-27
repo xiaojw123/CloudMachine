@@ -1,3 +1,3 @@
 # CloudMachine
 
-![image text](img/pg1/png)
+![image text](img/pg1.png)
