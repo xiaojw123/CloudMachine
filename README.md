@@ -1,7 +1,7 @@
 # CloudMachine
 
 
-<img src="img/pg1.png width="375""/>
+<img src="img/pg1.png" width="375" alt="首页"/>
 
 
 
