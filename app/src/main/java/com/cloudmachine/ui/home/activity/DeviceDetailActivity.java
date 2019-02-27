@@ -47,6 +47,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
